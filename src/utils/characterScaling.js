@@ -47,13 +47,24 @@ export function scaleCharacter(character, targetLevel) {
     }
 
     // Add extra items for higher levels
+    // Add extra items for higher levels
     if (targetLevel >= 5) {
-        newChar.inventory.gold += 500;
-        newChar.inventory.consumables.push("強效治療藥水");
+        // Gold
+        if (typeof newChar.gold === 'number') newChar.gold += 500;
+        else if (newChar.inventory && typeof newChar.inventory.gold === 'number') newChar.inventory.gold += 500;
+
+        // Consumables
+        if (Array.isArray(newChar.consumables)) newChar.consumables.push("強效治療藥水");
+        else if (newChar.inventory && Array.isArray(newChar.inventory.consumables)) newChar.inventory.consumables.push("強效治療藥水");
     }
     if (targetLevel >= 8) {
-        newChar.inventory.gold += 2000;
-        newChar.inventory.consumables.push("復活卷軸");
+        // Gold
+        if (typeof newChar.gold === 'number') newChar.gold += 2000;
+        else if (newChar.inventory && typeof newChar.inventory.gold === 'number') newChar.inventory.gold += 2000;
+
+        // Consumables
+        if (Array.isArray(newChar.consumables)) newChar.consumables.push("復活卷軸");
+        else if (newChar.inventory && Array.isArray(newChar.inventory.consumables)) newChar.inventory.consumables.push("復活卷軸");
     }
 
     console.log(`Scaled ${newChar.name} to Lv${targetLevel} (HP: ${newChar.hp})`);

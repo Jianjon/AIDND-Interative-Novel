@@ -17,12 +17,13 @@ const IS_PROD = import.meta.env.PROD;
 
 // Helper to generate URL
 const getAudioUrl = (filename) => {
-    if (IS_PROD) {
-        // Firebase Storage URL: https://firebasestorage.googleapis.com/v0/b/<bucket>/o/<path>?alt=media
-        // Path must be URL encoded (slashes becomes %2F)
-        const path = encodeURIComponent(`assets/audio/${filename}`);
-        return `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${path}?alt=media`;
-    }
+    // if (IS_PROD) {
+    //     // Firebase Storage URL: https://firebasestorage.googleapis.com/v0/b/<bucket>/o/<path>?alt=media
+    //     // Path must be URL encoded (slashes becomes %2F)
+    //     // const path = encodeURIComponent(`assets/audio/${filename}`);
+    //     // return `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${path}?alt=media`;
+    // }
+    // Local Dev URL (Also works for Firebase Hosting as local static files)
     // Local Dev URL
     return `/assets/audio/${filename}`;
 };

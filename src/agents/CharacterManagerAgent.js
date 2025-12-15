@@ -152,7 +152,7 @@ export class CharacterManagerAgent {
         Threat Level: ${threat_level || "Unknown"}
         Pacing: ${pacing_signal || "Normal"}
         Opportunity: ${mechanical_opportunity || "None"}
-        Story So Far: ${lastNarrative.slice(-800)}
+        Story So Far: ${lastNarrative.slice(-2000)}
         ${plotContext ? `Plot Goal: ${plotContext}` : ''}
 
         === CHARACTERS ===
@@ -172,9 +172,11 @@ export class CharacterManagerAgent {
 
         **CRITICAL COMBAT RULE**:
         - IF 'Threat Level' is "High" OR enemies are attacking:
-        - **Option A MUST BE A COMBAT ACTION** (Attack, Spell, Rage, Smite).
-        - **Option B MUST BE A TACTICAL ACTION** (Dodge, Hide, Disengage, Flank).
-        - **DO NOT** offer "Look around", "Investigate", or "Talk" as Option A during active combat. You will die.
+          - **Option A**: USUALLY a Combat Action, BUT if the "Pacing Signal" is 'Climax' or 'Resolution', use the Plot Context.
+            - Example: If the goal is "Destroy the Crystal", then "Smashing the Crystal" is a valid Option A even if enemies are attacking.
+          - **Option B**: Tactical Action (Dodge, Hide) OR distinct Plot Interaction.
+          - **Option C**: Roleplay/Personality.
+          - **DO NOT** offer passive "Look around" or "Investigate" as Option A during active combat unless it's to find a specific weakness mentioned in the story.
 
         For EACH character, generate:
         1. A short monologue (15-20 chars, Traditional Chinese).

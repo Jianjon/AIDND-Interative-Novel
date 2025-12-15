@@ -170,7 +170,7 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
         Do NOT write a story. Output the RAW MECHANICAL RESULT.
 
         [CONTEXT]
-        Previous Situation: "${narrative.slice(-500)}"
+        Previous Situation: "${narrative.slice(-2000)}"
         Party Level: ${level}
         Party Status: ${JSON.stringify(partyStatus)}
 
@@ -179,6 +179,7 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
 
         [TASK]
         1. **Intent Analysis**: What is the player trying to do? (Attack, Cast Spell, Hiding, Persuasion?)
+           - **PLOT CHECK**: If the action matches a specific plot goal mentioned in the context (e.g., "Pull the lever", "Destroy the gem"), prioritize that interpretation over a generic attack.
         2. **Difficulty Assessment**: 
            - Attack: Assume standard Enemy AC based on Level (Lvl 1-4: AC 12-14, Lvl 5+: AC 15-18).
            - Skill Check: Set DC (Easy: 10, Medium: 15, Hard: 20).

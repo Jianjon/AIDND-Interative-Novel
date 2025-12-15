@@ -11,6 +11,7 @@ import { CharacterAgent } from '../libs/CharacterAgent';
 export const CharacterCreator = ({ onClose, onCreate }) => {
     // Basic Info
     const [name, setName] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Race & Subrace
     // Get list of races from our rules engine
@@ -93,6 +94,8 @@ export const CharacterCreator = ({ onClose, onCreate }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+        setIsSubmitting(true);
 
         const selectedClassInfo = CLASS_DATA.find(c => c.name === charClass) || CLASS_DATA[0];
         const bgData = BACKGROUNDS[backgroundKey];
@@ -126,6 +129,7 @@ export const CharacterCreator = ({ onClose, onCreate }) => {
 
         const newAgent = new CharacterAgent(newCharacterData);
         onCreate(newAgent);
+        // onClose will be called by parent or we can call it here, but let's wait a tick to ensure state updates
         onClose();
     };
 
@@ -338,7 +342,8 @@ export const CharacterCreator = ({ onClose, onCreate }) => {
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className="px-6 py-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
+                        disabled={isSubmitting}
+                        className="px-6 py-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Shield size={18} /> 建立角色
                     </button>

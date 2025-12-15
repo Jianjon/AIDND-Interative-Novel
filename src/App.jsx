@@ -579,9 +579,9 @@ export default function InteractiveDND() {
     // Auto-Process Turn Effect
     useEffect(() => {
         const processAutoTurns = async () => {
-            // Assuming `isPrologue` is defined elsewhere or will be added. For now, commenting out.
-            // if (isPrologue || isGenerating || isPreGenerating || isAutoProcessing || Object.keys(pendingActions).length > 0) return;
-            if (isGenerating || isPreGenerating || isAutoProcessing) return;
+            // Prevent auto-turns during prologue or generation
+            const isPrologue = logs.length === 0;
+            if (isPrologue || isGenerating || isPreGenerating || isAutoProcessing) return;
             if (gameMode !== GAME_MODES.TRPG) return;
 
             // Identify AUTO characters who need actions
@@ -2578,7 +2578,7 @@ JSON格式回覆：
                     >
                         <ChevronRight className="rotate-180" size={14} /> 回上一頁 (BACK)
                     </button>
-                    <h2 className="text-3xl font-serif text-amber-500 tracking-wide drop-shadow-md">集結隊伍 <span className="text-lg text-slate-500 align-middle ml-2 font-sans">({party.length}/4)</span></h2>
+                    <h2 className="text-3xl font-serif text-amber-500 tracking-wide drop-shadow-md">集結隊伍 <span className="text-lg text-slate-500 align-middle ml-2 font-sans">({party.length}/6)</span></h2>
                 </div>
                 <div className="flex items-center gap-4">
                     {/* START LEVEL: Default 3, UI removed as requested */}
@@ -2591,7 +2591,7 @@ JSON格式回覆：
 
                     <button
                         onClick={() => setView('mode_select')}
-                        disabled={party.length !== 4}
+                        disabled={party.length === 0}
                         className="bg-amber-600 hover:bg-amber-500 disabled:opacity-30 disabled:cursor-not-allowed text-slate-950 px-8 py-2 rounded font-bold flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(217,119,6,0.5)] disabled:shadow-none hover:scale-105 active:scale-95"
                     >
                         <Sword size={20} /> 下一步：選擇模式
@@ -2634,7 +2634,7 @@ JSON格式回覆：
                                 if (isSelected) {
                                     setParty(prev => prev.filter(id => id !== agent.id));
                                 } else {
-                                    if (party.length < 4) {
+                                    if (party.length < 6) {
                                         setParty(prev => [...prev, agent.id]);
                                     }
                                 }
@@ -2798,7 +2798,7 @@ JSON格式回覆：
                         // Update Roster logic
                         setRoster(prev => [newCharData, ...prev]);
                         // Auto-add to party if space exists
-                        setParty(prev => prev.filter(p => p !== 'error_char').length < 4 ? [...prev, newCharData.id] : prev);
+                        setParty(prev => prev.filter(p => p !== 'error_char').length < 6 ? [...prev, newCharData.id] : prev);
 
                         setShowCreator(false);
                         showToast(`角色 ${newCharData.name} 創建成功！`, "success");
@@ -2927,6 +2927,8 @@ JSON格式回覆：
                                         }}
                                         instant={false}
                                         textSpeed={userSettings.textSpeed}
+                                        theme={userSettings.theme}
+                                        fontSize={userSettings.fontSize}
                                     />
                                 ) : log.type === 'narrative' ? (
                                     <div className="prose prose-invert prose-p:text-slate-300 prose-lg max-w-none">
@@ -3365,8 +3367,17 @@ JSON格式回覆：
         ));
     };
 
+    const getThemeClasses = () => {
+        switch (userSettings.theme) {
+            case 'light': return 'bg-[#f0f0f0] text-slate-900';
+            case 'sepia': return 'bg-[#f4ecd8] text-[#433422]';
+            case 'midnight': return 'bg-[#0f0f1a] text-[#aaccff]';
+            default: return 'bg-slate-950 text-slate-100';
+        }
+    };
+
     return (
-        <div className="relative w-full min-h-screen font-serif overflow-hidden selection:bg-amber-500/20 bg-slate-950 text-slate-100">
+        <div className={`relative w-full min-h-screen font-serif overflow-hidden selection:bg-amber-500/20 ${getThemeClasses()}`}>
             {/* Dynamic Background Layer */}
             <div
                 className="fixed inset-0 z-0 transition-opacity duration-1000 ease-in-out pointer-events-none"

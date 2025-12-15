@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import DualDiceRoll from './DualDiceRoll';
 import { Sword, Shield, Zap, Skull, Crown, Ghost, User, Dices } from 'lucide-react';
 
@@ -40,15 +40,43 @@ const TypewriterText = ({ text, renderWithDice, speed = 20 }) => {
     );
 };
 
-export default function SequentialLogRenderer({ content, roster = [], renderTextWithDice, onComplete, instant = false, textSpeed = 20 }) {
-    const [items, setItems] = useState([]);
+export default function SequentialLogRenderer({ content, roster = [], renderTextWithDice, onComplete, instant = false, textSpeed = 20, theme = 'default', fontSize = 'text-base' }) {
     const [visibleIndex, setVisibleIndex] = useState(instant ? 99999 : 0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [hasStartedRoll, setHasStartedRoll] = useState(false);
 
-    // Parse content into linear list of renderable items with styles
-    useEffect(() => {
-        if (!content) return;
+    // THEME MAPPING (Moved to Function Scope)
+    const THEME_STYLES = {
+        default: {
+            border: "border-slate-700",
+            bg: "bg-slate-900/40",
+            text: "text-slate-200",
+            titleDefault: "text-slate-400"
+        },
+        light: {
+            border: "border-slate-300",
+            bg: "bg-white/60",
+            text: "text-slate-800",
+            titleDefault: "text-slate-600"
+        },
+        sepia: {
+            border: "border-amber-700/30",
+            bg: "bg-amber-100/30",
+            text: "text-amber-900",
+            titleDefault: "text-amber-800/70"
+        },
+        midnight: {
+            border: "border-blue-900/50",
+            bg: "bg-blue-950/30",
+            text: "text-blue-200",
+            titleDefault: "text-blue-400/70"
+        }
+    };
+    const currentTheme = THEME_STYLES[theme] || THEME_STYLES.default;
+
+    // Split Content into Chunks for Animation
+    const items = useMemo(() => {
+        if (!content) return [];
 
         const newItems = [];
 
@@ -63,9 +91,11 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
             const bodyLines = isHeader ? lines.slice(1) : lines;
 
             // Determine Style & Identity
-            let borderColor = "border-slate-700";
-            let bgColor = "bg-slate-900/40";
-            let titleColor = "text-slate-400";
+            /* THEME MAPPING MOVED TO FUNCTION SCOPE */
+
+            let borderColor = currentTheme.border;
+            let bgColor = currentTheme.bg;
+            let titleColor = currentTheme.titleDefault;
             let icon = <Ghost size={20} className="text-slate-500" />;
             let avatarUrl = null;
             let displayName = headerText;
@@ -122,8 +152,8 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                 } else if (headerText.includes("DM") || headerText.includes("GM") || headerText.includes("Game Master")) {
                     // DM Explicit
                     borderColor = "border-slate-500 shadow-[inset_4px_0_0_0_#64748b]";
-                    bgColor = "bg-slate-900/60";
-                    titleColor = "text-slate-300";
+                    bgColor = theme === 'light' ? "bg-slate-200/50" : "bg-slate-900/60";
+                    titleColor = theme === 'light' ? "text-slate-600" : "text-slate-300";
                     displayName = "Game Master";
                     controlMode = 'auto'; // DM is auto
                 }
@@ -243,15 +273,20 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
             });
         });
 
-        setItems(newItems);
-    }, [content, roster]);
+        return newItems;
+    }, [content, roster, theme]);
+
+    // Use Ref to access latest items without triggering effect re-runs on streaming updates
+    const itemsRef = useRef(items);
+    useEffect(() => { itemsRef.current = items; }, [items]);
 
     // Playback Logic
     useEffect(() => {
-        if (items.length === 0) return;
+        const currentItems = itemsRef.current;
+        if (currentItems.length === 0) return;
 
         let totalSteps = 0;
-        items.forEach(sec => totalSteps += 1 + sec.children.length);
+        currentItems.forEach(sec => totalSteps += 1 + sec.children.length);
 
         if (visibleIndex >= totalSteps) {
             if (onComplete) onComplete();
@@ -266,7 +301,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
         let counter = 0;
         let found = false;
 
-        for (let s of items) {
+        for (let s of currentItems) {
             if (counter === visibleIndex) { currentType = 'header'; found = true; break; }
             counter++;
             for (let c of s.children) {
@@ -275,7 +310,6 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     contentLen = c.content.length;
                     if (c.type === 'dice') {
                         setIsAnimating(true);
-                        // Auto-start roll if character is managed by AI (auto)
                         console.log("Dice visible for:", s.headerText, "Mode:", s.controlMode);
                         if (s.controlMode === 'auto') {
                             setHasStartedRoll(true);
@@ -300,7 +334,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
         }, delay);
         return () => clearTimeout(timer);
 
-    }, [visibleIndex, items, isAnimating, onComplete]);
+    }, [visibleIndex, isAnimating, onComplete]); // Removed 'items' dependency to prevent stall during streaming
 
     const handleAnimEnd = () => {
         setIsAnimating(false);
@@ -345,7 +379,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                 </div>
                             </div>
                         )}
-                        <div className="text-slate-200 leading-relaxed space-y-2 whitespace-pre-line font-serif text-lg pl-1">
+                        <div className={`${theme === 'default' ? 'text-slate-200' : currentTheme.text} leading-relaxed space-y-2 whitespace-pre-line font-serif ${fontSize} pl-1`}>
                             {sec.children.map((child, cIdx) => {
                                 if (visibleIndex < child.index) return null;
 
@@ -415,7 +449,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                 }
 
                                 return (
-                                    <div key={cIdx} className="animate-in fade-in slide-in-from-bottom-1 duration-700 fill-mode-backwards">
+                                    <div key={cIdx} className="mb-2">
                                         {renderTextWithDice(child.content)}
                                     </div>
                                 );
