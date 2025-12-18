@@ -180,7 +180,24 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                     </div>
 
                     <h2 className="text-2xl font-serif text-amber-500 font-bold text-center mb-1">{data.name}</h2>
-                    <p className="text-slate-400 text-sm mb-4">{data.race} {data.class}</p>
+                    <p className="text-slate-400 text-sm">{data.race} {data.class}</p>
+
+                    {/* Level, Alignment, Background */}
+                    <div className="flex flex-wrap justify-center gap-2 mt-2 mb-4">
+                        <span className="px-2 py-0.5 bg-amber-900/50 text-amber-400 text-xs rounded-full border border-amber-700/50 font-bold">
+                            Lv.{data.level || character.level || 3}
+                        </span>
+                        {data.alignment && (
+                            <span className="px-2 py-0.5 bg-slate-800 text-slate-300 text-xs rounded-full border border-slate-700">
+                                {data.alignment}
+                            </span>
+                        )}
+                    </div>
+                    {data.background && (
+                        <p className="text-slate-500 text-xs text-center mb-4">
+                            背景: <span className="text-slate-400">{data.background}</span>
+                        </p>
+                    )}
 
                     {/* Vitals (Simplified) */}
                     <div className="w-full space-y-3 mb-6">
@@ -235,12 +252,7 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                         >
                             Attributes
                         </button>
-                        <button
-                            onClick={() => setActiveTab('actions')}
-                            className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'actions' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
-                        >
-                            Actions
-                        </button>
+
                         <button
                             onClick={() => setActiveTab('inventory')}
                             className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'inventory' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
@@ -300,47 +312,26 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                         )
                         }
 
-                        {
-                            activeTab === 'actions' && (
-                                <div className="space-y-6">
-                                    {/* Auto-Calculated Actions */}
-                                    <div>
-                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
-                                            <Sword size={14} /> Combat Actions
-                                        </h4>
-                                        <div className="space-y-2">
-                                            {data.actions && data.actions.map((action, idx) => (
-                                                <div key={idx} className="flex justify-between items-center bg-slate-950 p-3 rounded border border-slate-800 hover:border-amber-900/50 transition-colors">
-                                                    <div>
-                                                        <div className="font-bold text-slate-200">{action.name}</div>
-                                                        <div className="text-xs text-slate-500">{action.type.replace('_', ' ')}</div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="text-amber-500 font-mono font-bold">
-                                                            {action.hitBonus >= 0 ? '+' : ''}{action.hitBonus} to Hit
-                                                        </div>
-                                                        <div className="text-xs text-slate-400 font-mono">
-                                                            {action.damage} Dmg
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            {(!data.actions || data.actions.length === 0) && (
-                                                <div className="text-slate-600 text-sm italic py-2">Unarmed Strike (+0, 1)</div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        }
+
 
                         {
                             activeTab === 'inventory' && (
                                 <div className="space-y-6">
+                                    {/* Gold Display */}
+                                    {(data.inventory?.gold !== undefined || data.gold !== undefined) && (
+                                        <div className="flex items-center gap-2 p-3 bg-amber-950/30 rounded-lg border border-amber-900/30">
+                                            <span className="text-xl">🪙</span>
+                                            <div>
+                                                <div className="text-xs text-amber-600 uppercase font-bold">金幣</div>
+                                                <div className="text-lg font-bold text-amber-400">{data.inventory?.gold ?? data.gold ?? 0} gp</div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* Full Inventory */}
                                     <div>
                                         <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
-                                            <Package size={14} /> Backpack
+                                            <Package size={14} /> 背包
                                         </h4>
                                         <div className="space-y-4">
                                             {/* Helper to render list or empty */}
@@ -360,7 +351,7 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                                 <>
                                                     {/* Equipment */}
                                                     <div>
-                                                        <h5 className="text-xs text-slate-500 uppercase font-bold mb-1">Equipment</h5>
+                                                        <h5 className="text-xs text-slate-500 uppercase font-bold mb-1">⚔️ 裝備</h5>
                                                         <ul className="text-sm text-slate-300 space-y-1">
                                                             {data.inventory.equipment && data.inventory.equipment.length > 0 ? (
                                                                 data.inventory.equipment.map((item, i) => (
@@ -370,14 +361,14 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                                                     </li>
                                                                 ))
                                                             ) : (
-                                                                <span className="text-slate-600 text-xs italic">None</span>
+                                                                <span className="text-slate-600 text-xs italic">無</span>
                                                             )}
                                                         </ul>
                                                     </div>
 
                                                     {/* Consumables */}
                                                     <div>
-                                                        <h5 className="text-xs text-slate-500 uppercase font-bold mb-1 mt-2">Consumables</h5>
+                                                        <h5 className="text-xs text-amber-500 uppercase font-bold mb-1 mt-2">🧪 消耗品</h5>
                                                         <ul className="text-sm text-slate-300 space-y-1">
                                                             {data.inventory.consumables && data.inventory.consumables.length > 0 ? (
                                                                 data.inventory.consumables.map((item, i) => (
@@ -387,14 +378,14 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                                                     </li>
                                                                 ))
                                                             ) : (
-                                                                <span className="text-slate-600 text-xs italic">None</span>
+                                                                <span className="text-slate-600 text-xs italic">無</span>
                                                             )}
                                                         </ul>
                                                     </div>
 
                                                     {/* Magic Items */}
                                                     <div>
-                                                        <h5 className="text-xs text-slate-500 uppercase font-bold mb-1 mt-2 text-purple-400">Magic Items</h5>
+                                                        <h5 className="text-xs text-purple-400 uppercase font-bold mb-1 mt-2">✨ 魔法物品</h5>
                                                         <ul className="text-sm text-slate-300 space-y-1">
                                                             {data.inventory.magicItems && data.inventory.magicItems.length > 0 ? (
                                                                 data.inventory.magicItems.map((item, i) => (
@@ -404,7 +395,7 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                                                     </li>
                                                                 ))
                                                             ) : (
-                                                                <span className="text-slate-600 text-xs italic">None</span>
+                                                                <span className="text-slate-600 text-xs italic">無</span>
                                                             )}
                                                         </ul>
                                                     </div>
@@ -438,37 +429,7 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                         </p>
                                     </div>
 
-                                    {/* Avatar Controls (Restored) */}
-                                    <div className="p-4 bg-slate-900 rounded-lg border border-slate-700">
-                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-3 flex items-center gap-2">
-                                            <Sparkles size={14} /> Avatar Settings
-                                        </h4>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => onGeneratePortrait && onGeneratePortrait(data)}
-                                                className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-amber-500 text-slate-300 text-xs rounded transition-colors flex items-center justify-center gap-2"
-                                            >
-                                                <Sparkles size={12} className="text-amber-500" />
-                                                Generate AI Avatar
-                                            </button>
-                                            <label className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-blue-500 text-slate-300 text-xs rounded transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                                                <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (file && onUpdatePortrait) {
-                                                        const reader = new FileReader();
-                                                        reader.onloadend = () => {
-                                                            onUpdatePortrait(data, reader.result);
-                                                        };
-                                                        reader.readAsDataURL(file);
-                                                    }
-                                                }} />
-                                                <span>Upload Image</span>
-                                            </label>
-                                        </div>
-                                        <p className="text-[10px] text-slate-600 mt-2 text-center">
-                                            * Click 'Generate' to create a new unique portrait using AI.
-                                        </p>
-                                    </div>
+
 
                                     <div>
                                         <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Secrets & Inner Monologue</h4>

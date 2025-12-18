@@ -10,6 +10,23 @@ import rogueImg from '../assets/characters/Rogue.png';
 import sorcererImg from '../assets/characters/Sorcerer.png';
 import warlockImg from '../assets/characters/Warlock.png';
 import wizardImg from '../assets/characters/Wizard.png';
+// Extended class images
+import artificerImg from '../assets/characters/artificer.png';
+import necromancerImg from '../assets/characters/necromancer.png';
+import bloodhunterImg from '../assets/characters/bloodhunter.png';
+import shamanImg from '../assets/characters/shaman.png';
+import witchImg from '../assets/characters/witch.png';
+import duelistImg from '../assets/characters/duelist.png';
+import summonerImg from '../assets/characters/summoner.png';
+import magusImg from '../assets/characters/magus.png';
+import oracleImg from '../assets/characters/oracle.png';
+import investigatorImg from '../assets/characters/investigator.png';
+import deathknightImg from '../assets/characters/deathknight.png';
+import psionImg from '../assets/characters/psion.png';
+import eldritchknightImg from '../assets/characters/eldritchknight.png';
+import alchemistImg from '../assets/characters/alchemist.png';
+import championImg from '../assets/characters/champion.png';
+import chronomancerImg from '../assets/characters/chronomancer.png';
 
 /**
  * Preset Playable Characters (The Iconic 12)
@@ -31,8 +48,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Male',
         alignment: '混亂善良',
         background: '化外之民',
-        hp: 15,
-        maxHp: 15,
+        mbti: 'ESTP',
+        hp: 32,
+        maxHp: 32,
         baseStats: { str: 16, dex: 14, con: 14, int: 8, wis: 12, cha: 10 },
         skills: ['運動', '生存'],
         feats: ['不息之息', '狂暴'],
@@ -57,8 +75,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Female',
         alignment: '混亂善良',
         background: '藝人',
-        hp: 9,
-        maxHp: 9,
+        mbti: 'ENFP',
+        hp: 21,
+        maxHp: 21,
         baseStats: { str: 8, dex: 14, con: 12, int: 14, wis: 10, cha: 16 },
         skills: ['表演', '說服', '歷史'],
         feats: ['侏儒狡黠', '詩人激勵'],
@@ -85,8 +104,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Male',
         alignment: '守序善良',
         background: '侍僧',
-        hp: 11,
-        maxHp: 11,
+        mbti: 'ISTJ',
+        hp: 24,
+        maxHp: 24,
         baseStats: { str: 14, dex: 10, con: 14, int: 10, wis: 16, cha: 10 },
         skills: ['洞察', '醫療'],
         feats: ['矮人堅韌', '施法能力'],
@@ -113,8 +133,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Female',
         alignment: '絕對中立',
         background: '隱士',
-        hp: 9,
-        maxHp: 9,
+        mbti: 'INFP',
+        hp: 21,
+        maxHp: 21,
         baseStats: { str: 10, dex: 14, con: 12, int: 12, wis: 16, cha: 10 },
         skills: ['自然', '生存'],
         feats: ['煉獄抗性', '德魯伊語'],
@@ -153,8 +174,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Male',
         alignment: '中立善良',
         background: '士兵',
-        hp: 12,
-        maxHp: 12,
+        mbti: 'ESTJ',
+        hp: 28,
+        maxHp: 28,
         baseStats: { str: 16, dex: 14, con: 14, int: 10, wis: 12, cha: 10 },
         skills: ['特技', '察覺'],
         feats: ['精靈血統', '回氣', '戰鬥風格 (射箭)'],
@@ -179,8 +201,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Female',
         alignment: '守序中立',
         background: '賢者',
-        hp: 9,
-        maxHp: 9,
+        mbti: 'INTJ',
+        hp: 21,
+        maxHp: 21,
         baseStats: { str: 12, dex: 16, con: 12, int: 10, wis: 16, cha: 8 },
         skills: ['特技', '洞察'],
         feats: ['武術', '無甲防禦'],
@@ -205,8 +228,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Male',
         alignment: '守序善良',
         background: '貴族',
-        hp: 12,
-        maxHp: 12,
+        mbti: 'ENFJ',
+        hp: 25,
+        maxHp: 25,
         baseStats: { str: 16, dex: 10, con: 14, int: 8, wis: 12, cha: 16 },
         skills: ['運動', '宗教'],
         feats: ['神聖感知', '聖療'],
@@ -231,8 +255,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Male',
         alignment: '中立善良',
         background: '化外之民',
-        hp: 11,
-        maxHp: 11,
+        mbti: 'ISTP',
+        hp: 25,
+        maxHp: 25,
         baseStats: { str: 10, dex: 16, con: 12, int: 12, wis: 14, cha: 10 },
         skills: ['隱匿', '欺瞞', '巧手'],
         feats: ['宿敵', '自然探索者'],
@@ -269,8 +294,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Female',
         alignment: '混亂中立',
         background: '罪犯',
-        hp: 9,
-        maxHp: 9,
+        mbti: 'ENTP',
+        hp: 21,
+        maxHp: 21,
         baseStats: { str: 8, dex: 16, con: 12, int: 14, wis: 12, cha: 12 },
         skills: ['隱匿', '特技', '調查', '巧手'],
         feats: ['偷襲', '盜賊黑話'],
@@ -295,8 +321,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Female',
         alignment: '混亂善良',
         background: '貴族',
-        hp: 7,
-        maxHp: 7,
+        mbti: 'INFJ',
+        hp: 17,
+        maxHp: 17,
         baseStats: { str: 8, dex: 14, con: 12, int: 12, wis: 10, cha: 16 },
         skills: ['馴獸', '隱匿'],
         feats: ['天生施法', '術法起源'],
@@ -323,8 +350,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Male',
         alignment: '混亂中立',
         background: '騙子',
-        hp: 10,
-        maxHp: 10,
+        mbti: 'INTP',
+        hp: 24,
+        maxHp: 24,
         baseStats: { str: 10, dex: 14, con: 14, int: 12, wis: 10, cha: 16 },
         skills: ['欺瞞', '威嚇'],
         feats: ['契約魔法', '異界宗主'],
@@ -351,8 +379,9 @@ export const PRESET_CHARACTERS = [
         gender: 'Female',
         alignment: '守序中立',
         background: '賢者',
-        hp: 8,
-        maxHp: 8,
+        mbti: 'ENTJ',
+        hp: 20,
+        maxHp: 20,
         baseStats: { str: 12, dex: 14, con: 14, int: 16, wis: 10, cha: 8 },
         skills: ['奧秘', '歷史'],
         feats: ['奧術回想', '施法能力'],
@@ -379,6 +408,500 @@ export const PRESET_CHARACTERS = [
             attacks: [],
             abilities: ['飛掠', '敏銳聽覺/視覺', '協助行動 (下次攻擊優勢)']
         }
+    },
+
+    // === EXPANDED CLASSES ===
+    // --- 13. Artificer (Female) - 可愛矮人發明家 ---
+    {
+        id: 'preset_artificer',
+        name: '可可·齒輪心 (Coco)',
+        race: '矮人',
+        class: '奇械師',
+        gender: 'Female',
+        alignment: '中立善良',
+        background: '公會工匠',
+        mbti: 'ENFP',
+        hp: 24,
+        maxHp: 24,
+        baseStats: { str: 10, dex: 14, con: 14, int: 16, wis: 12, cha: 14 },
+        skills: ['奧秘', '調查'],
+        feats: ['魔法灌注', '魔法修補'],
+        spells: ['修補術', '雷鳴斬', '護盾術', '治療創傷'],
+        slots: { 1: 2 },
+        personality: '天才蘿莉發明家。雖然身材嬌小但充滿活力，說話時眼睛會閃閃發光。她的發明經常失敗，但她認為爆炸也是一種成功——因為「至少它動了」。',
+        monologue: '嘿嘿嘿～這次絕對沒問題！準備見證奇蹟吧！（興奮搓手）',
+        appearance: 'Adorable young dwarven girl with rosy cheeks, large sparkling amber eyes, fluffy copper hair in twin tails with gear hairpins, oversized goggles on head, wearing a cute steampunk dress with tool belt, always covered in oil stains but somehow still cute.',
+        inventory: {
+            equipment: ['魔改輕弩', '工匠工具套組', '可愛皮甲（有齒輪裝飾）', '小型機械寵物「蒸氣貓」'],
+            gold: 20,
+            consumables: ['口糧 (1日) x5', '油壺 x5', '治療藥水 x2', '彩色煙霧彈'],
+            magicItems: []
+        },
+        avatar: artificerImg,
+        bio: '鑄造公會最年輕的成員，被大人們叫做「爆炸公主」。她相信有一天會發明出改變世界的東西——目前最接近的是一台會自動泡茶的機器人，只是它把茶泡成了火焰。',
+        companion: {
+            name: '蒸氣貓 (Steamy)',
+            type: '機械寵物',
+            hp: 5,
+            maxHp: 5,
+            ac: 13,
+            attacks: [{ name: '蒸氣噴射', hitBonus: 3, damage: '1d4 火焰' }],
+            abilities: ['火焰抗性', '工具輔助', '可愛外表']
+        }
+    },
+    // --- 14. Necromancer (Male) - 宅男死靈法師 ---
+    {
+        id: 'preset_necromancer',
+        name: '希洛·闇之書 (Hiro)',
+        race: '半精靈',
+        class: '死靈法師',
+        gender: 'Male',
+        alignment: '絕對中立',
+        background: '隱士',
+        mbti: 'INTP',
+        hp: 18,
+        maxHp: 18,
+        baseStats: { str: 6, dex: 12, con: 12, int: 18, wis: 12, cha: 8 },
+        skills: ['奧秘', '歷史'],
+        feats: ['死靈專精', '亡靈驅使'],
+        spells: ['寒冷之觸', '虛假生命', '復活亡靈', '幻影殺手'],
+        slots: { 1: 2 },
+        personality: '社恐宅男死靈術士。他研究死靈術只是因為「死人不會嘲笑我」。房間裡堆滿了魔法書和人偶，他稱骷髏僕從為「老婆」。',
+        monologue: '三次元的人類太可怕了...還是我的骷髏醬們可愛...（撫摸骷髏頭）',
+        appearance: 'Pale half-elf with messy black hair covering one eye, dark circles from staying up late, wearing a tattered black hoodie over robes, figure collection pouches on belt, slouching posture, avoiding eye contact, surrounded by cute skeleton minions with ribbons.',
+        inventory: {
+            equipment: ['骷髏法杖（有可愛裝飾）', '死靈魔法書', '黑色連帽袍', '人偶收藏背包'],
+            gold: 5,
+            consumables: ['速食拉麵 x10', '能量飲料', '治療藥水', '骷髏香水'],
+            magicItems: []
+        },
+        avatar: necromancerImg,
+        bio: '因為社交恐懼症被精靈社區排擠後隱居研究死靈術。他的夢想是建立一個「完美的地下城」——全是聽話的骷髏。骷髏們被他打扮得花枝招展。'
+    },
+    // --- 15. Blood Hunter (Male) - 吸血鬼血脈尋源者 ---
+    {
+        id: 'preset_bloodhunter',
+        name: '威廉·緋月 (William)',
+        race: '吸血鬼裔',
+        class: '血獵手',
+        gender: 'Male',
+        alignment: '守序中立',
+        background: '貴族',
+        mbti: 'INTJ',
+        hp: 26,
+        maxHp: 26,
+        baseStats: { str: 14, dex: 16, con: 12, int: 14, wis: 12, cha: 14 },
+        skills: ['調查', '歷史'],
+        feats: ['血儀式', '暗影行者'],
+        personality: '百年前被初擁的貴族吸血鬼。他壓抑著血之渴望，只為找到創造他的血源宗主——傳說中的「始祖」。他舉止優雅但內心充滿矛盾。',
+        monologue: '這份詛咒與祝福並存的血液...我必須找到源頭。（克制著對血的渴望）',
+        appearance: 'Aristocratic pale man with slicked-back silver hair, blood-red eyes with slit pupils, wearing an elegant Victorian coat with high collar, carrying a crimson-stained rapier, fangs slightly visible, eternal youth frozen at 25.',
+        inventory: {
+            equipment: ['血染細劍', '貴族禮服', '銀質懷錶', '血袋保存箱'],
+            gold: 50,
+            consumables: ['獸血袋 x5', '遮陽斗篷', '日光抗性藥劑', '治療藥水'],
+            magicItems: []
+        },
+        avatar: bloodhunterImg,
+        bio: '三百年前是個普通貴族，一夜之間被不知名的吸血鬼初擁。他厭惡自己的不死之身，卻也依賴它尋找真相。他只喝動物血，拒絕傷害人類。'
+    },
+    // --- 16. Shaman (Female) - 變形怪薩滿 ---
+    {
+        id: 'preset_shaman',
+        name: '無名·千面 (Nameless)',
+        race: '變形怪',
+        class: '薩滿',
+        gender: 'Female',
+        alignment: '絕對中立',
+        background: '隱士',
+        mbti: 'INFJ',
+        hp: 20,
+        maxHp: 20,
+        baseStats: { str: 10, dex: 14, con: 12, int: 14, wis: 16, cha: 14 },
+        skills: ['洞察', '欺瞞'],
+        feats: ['祖靈連結', '變形專精'],
+        spells: ['治療創傷', '易容術', '召喚祖靈', '偵查思想'],
+        slots: { 1: 2 },
+        personality: '有自我意識的變形怪。她能感知並模仿任何人的外表和部分記憶，這讓她對「我是誰」感到困惑。她與過去被她模仿的靈魂產生了連結。',
+        monologue: '我不知道自己原本的樣子...也許從來沒有「原本」。我是每一個我遇見的人的碎片。',
+        appearance: 'Her true form is a humanoid with smooth pale grey skin, featureless face with only faint indentations for eyes and mouth, currently taking the form of a gentle-looking elven woman with shifting hair colors.',
+        inventory: {
+            equipment: ['祖靈圖騰 (可變形)', '千面面具', '流動袍', '靈魂容器'],
+            gold: 15,
+            consumables: ['口糧 (1日) x5', '記憶水晶', '身份偽裝套件', '治療藥水'],
+            magicItems: []
+        },
+        avatar: shamanImg,
+        bio: '她不記得自己的起源。在一次偶然中，她吸收了一位垂死薩滿的記憶和力量。現在，數十個靈魂在她體內低語，引導她尋找自我。'
+    },
+    // --- 17. Witch (Female) - 黑髮御姐半精靈女巫 ---
+    {
+        id: 'preset_witch',
+        name: '莉莉絲·暮影 (Lilith)',
+        race: '半精靈',
+        class: '女巫',
+        gender: 'Female',
+        alignment: '混亂中立',
+        background: '貴族',
+        mbti: 'ENTJ',
+        hp: 19,
+        maxHp: 19,
+        baseStats: { str: 8, dex: 14, con: 12, int: 16, wis: 12, cha: 16 },
+        skills: ['奧秘', '威嚇'],
+        feats: ['巫術', '魔寵'],
+        spells: ['邪眼', '魅惑人類', '不幸詛咒', '占卜術'],
+        slots: { 1: 2 },
+        personality: '高傲的御姐女巫。說話慢條斯理，眼神帶著玩味。她享受看別人被她玩弄於股掌之間的表情。表面冷酷，但偶爾會露出不經意的溫柔。',
+        monologue: '呵...真是有趣。讓姐姐我來教教你什麼叫做「絕望」吧～（舔唇）',
+        appearance: 'Tall elegant half-elf with long silky black hair to her waist, sharp violet eyes with a knowing smirk, wearing a revealing black dress with purple accents, ornate choker, holding an elegant black staff, mature and seductive aura.',
+        inventory: {
+            equipment: ['暗影法杖', '高跟長靴', '紫水晶頸鏈', '禁忌魔法書'],
+            gold: 30,
+            consumables: ['口糧 (1日) x5', '紅酒', '魅惑香水', '治療藥水'],
+            magicItems: []
+        },
+        avatar: witchImg,
+        bio: '某沒落貴族的私生女，從小被視為恥辱。她發誓要讓那些看不起她的人跪在腳下。她的黑鴉魔寵「漆夜」是她唯一信任的存在。',
+        companion: {
+            name: '漆夜 (Crow)',
+            type: '黑鴉 (魔寵)',
+            hp: 2,
+            maxHp: 2,
+            ac: 12,
+            attacks: [],
+            abilities: ['飛行偵查', '模仿人聲', '法術傳遞']
+        }
+    },
+    // --- 18. Duelist (Male) - 唐朝神秘劍客 ---
+    {
+        id: 'preset_duelist',
+        name: '李少白 (Li Shaobai)',
+        race: '人類',
+        class: '劍客',
+        gender: 'Male',
+        alignment: '守序中立',
+        background: '流亡者',
+        mbti: 'ISTP',
+        hp: 26,
+        maxHp: 26,
+        baseStats: { str: 14, dex: 18, con: 12, int: 12, wis: 14, cha: 10 },
+        skills: ['特技', '洞察'],
+        feats: ['劍氣', '無影步'],
+        personality: '來自東方帝國的神秘劍客。他很少說話，每句話都像詩一般。他的劍術源自失傳的皇家劍道，一劍出鞘必取人性命。',
+        monologue: '劍在心中，心在劍中。一劍...足矣。',
+        appearance: 'Handsome East Asian man with long black hair tied in a topknot, calm piercing eyes, wearing flowing white and black Tang dynasty robes, carrying a beautifully crafted jian sword, perpetual calm expression, moves like flowing water.',
+        inventory: {
+            equipment: ['唐劍「無塵」', '東方絲袍', '竹編斗笠', '書生背包'],
+            gold: 25,
+            consumables: ['茶葉', '米酒壺', '傷藥', '治療藥水'],
+            magicItems: []
+        },
+        avatar: duelistImg,
+        bio: '前大唐皇家劍術教習，因一場宮廷政變被迫西逃。他的劍下亡魂無數，但他從不殺無辜之人。他在異國尋找能讓他放下劍的答案。'
+    },
+    // --- 19. Summoner (Male) - 異境召喚師 (現世之影) ---
+    {
+        id: 'preset_summoner',
+        name: '田中誠一 (Seiichi)',
+        race: '人類',
+        class: '召喚師',
+        gender: 'Male',
+        alignment: '中立善良',
+        background: '異鄉人',
+        mbti: 'INTP',
+        hp: 18,
+        maxHp: 18,
+        baseStats: { str: 8, dex: 14, con: 12, int: 16, wis: 12, cha: 12 },
+        skills: ['奧秘', '調查', '歷史'],
+        feats: ['現代造物召喚', '技術分析'],
+        spells: ['偵查無人機', '萬能智慧手機', '強光手電筒', '神之膠帶', '高壓滅火器'],
+        slots: { 1: 3 },
+        personality: '前日本生活用品店店員，對現代造物的結構瞭若指掌。他總是帶著黑框眼鏡，面無表情地分析著戰況，並從異界召喚出「看似無害」的現代用品來應對危機。',
+        monologue: '雖然這只是個灭火器，但如果噴在火龍的肺裡，結果是一樣的。',
+        appearance: "Young Japanese man with black messy hair and glasses. Wearing a modern traveler's vest with many pockets, a white shirt, and cargo pants. He carries a glowing tablet that serves as his summoning focus.",
+        inventory: {
+            equipment: ['戰術平板', '多功能背心', '黑框眼鏡', '旅行者背包'],
+            gold: 25,
+            consumables: ['能量飲料 x3', '速食拉麵 (1日) x5', '強力膠帶', '治療藥水'],
+            magicItems: []
+        },
+        avatar: summonerImg,
+        bio: '因為在過馬路時為了救一隻貓而被卡車撞飛。轉生後獲得了召喚現代日本造物的能力。他深知科技的力量（即使只是日用品），並致力於用「現代文明」來征服這個劍與魔法的異世界。',
+        companion: {
+            name: '小七 (Seven)',
+            type: '召喚物（智慧終端）',
+            hp: 10,
+            maxHp: 10,
+            ac: 14,
+            attacks: [{ name: '微弱電擊', hitBonus: 4, damage: '1d4 雷鳴' }],
+            abilities: ['戰術掃描', '即時翻譯', '投影地圖']
+        }
+    },
+    // --- 20. Magus/魔戰士 (Female) - 人造人少女 ---
+    {
+        id: 'preset_magus',
+        name: '伊芙·零號 (Eve Zero)',
+        race: '人造人',
+        class: '魔戰士',
+        gender: 'Female',
+        alignment: '守序善良',
+        background: '被遺棄者',
+        mbti: 'ISFJ',
+        hp: 24,
+        maxHp: 24,
+        baseStats: { str: 16, dex: 14, con: 14, int: 12, wis: 10, cha: 12 },
+        skills: ['運動', '奧秘'],
+        feats: ['魔力迴路', '自我修復'],
+        spells: ['護盾術', '雷擊斬', '修復術', '強化'],
+        slots: { 1: 2 },
+        personality: '被鍊金術士創造的人造生命。她擁有完美的戰鬥程式和魔力迴路，但她真正渴望的是「成為真正的人類」。她努力學習人類的情感和表情。',
+        monologue: '這就是「開心」嗎...？（努力微笑但表情有點僵硬）我會努力學習的。',
+        appearance: 'Beautiful young woman with pale porcelain-like skin, silver-white hair with glowing blue circuit patterns occasionally visible, heterochromatic eyes (one blue, one gold), wearing modified combat dress, mechanical joints visible at wrists and neck.',
+        inventory: {
+            equipment: ['魔力劍「創世」', '人造皮膚護甲', '維修工具', '日記本（學習人類用）'],
+            gold: 10,
+            consumables: ['魔力核心 x3', '潤滑油', '人造血液', '治療藥水'],
+            magicItems: []
+        },
+        avatar: magusImg,
+        bio: '編號零的實驗體，是鍊金術士「完美人造人計畫」的唯一成功品。創造者死後，她離開了實驗室，開始尋找「成為人類的方法」。她收集人類的故事和表情，希望有一天能真正理解什麼是「心」。'
+    },
+    // --- 21. Oracle/先知 (Male) - 韓系長髮美男神裔 ---
+    {
+        id: 'preset_oracle',
+        name: '白瑞恩·星落 (Ryan Starfall)',
+        race: '神裔',
+        class: '先知',
+        gender: 'Male',
+        alignment: '混亂善良',
+        background: '貴族',
+        mbti: 'ENFJ',
+        hp: 20,
+        maxHp: 20,
+        baseStats: { str: 10, dex: 12, con: 12, int: 12, wis: 16, cha: 16 },
+        skills: ['洞察', '說服'],
+        feats: ['神諭啟示', '天界血脈'],
+        spells: ['治療創傷', '神聖光芒', '預知術', '祝福'],
+        slots: { 1: 2 },
+        personality: '擁有天使血脈的美男先知。飄逸的長髮和溫柔的微笑迷倒無數人，但他的預言往往帶來厄運。他總是用優雅的方式說出可怕的預言。',
+        monologue: '親愛的，命運告訴我...（溫柔微笑）...你大概還有三天可活。不要擔心，我會陪著你。',
+        appearance: 'Stunningly handsome Korean-style man with long flowing silver-white hair reaching his waist, glowing amber eyes, flawless pale skin with subtle golden markings, wearing elegant white robes with gold trim, small ethereal wings occasionally visible, unnervingly beautiful smile.',
+        inventory: {
+            equipment: ['神諭權杖', '天使羽飾', '絲綢法袍', '占卜工具'],
+            gold: 40,
+            consumables: ['口糧 (1日) x5', '香薰', '眼藥水（預言太多會眼痠）', '治療藥水'],
+            magicItems: []
+        },
+        avatar: oracleImg,
+        bio: '出身神聖貴族家庭，從小就能看見他人的命運。問題是他的預言準確率100%，但內容通常是壞消息。他被稱為「死亡微笑」，因為他總是微笑著告訴你死期。'
+    },
+    // --- 22. Investigator (Male) - 英國紳士探險家 ---
+    {
+        id: 'preset_investigator',
+        name: '艾德蒙·乾坤 (Edmund Sterling)',
+        race: '人類',
+        class: '調查員',
+        gender: 'Male',
+        alignment: '守序善良',
+        background: '貴族',
+        mbti: 'ESTJ',
+        hp: 20,
+        maxHp: 20,
+        baseStats: { str: 12, dex: 16, con: 12, int: 16, wis: 14, cha: 14 },
+        skills: ['調查', '歷史', '生存', '洞察'],
+        feats: ['紳士決鬥', '線索分析'],
+        personality: '來自遙遠島國的紳士探險家。無論身處多危險的地城，他都堅持保持整潔的西裝和禮儀。他的手杖實際上是一把暗藏的劍。',
+        monologue: '失禮了，在動手之前——請允許我先整理一下儀容。（調整領帶後拔出杖劍）',
+        appearance: 'Distinguished gentleman in his 30s with neatly combed brown hair and well-trimmed mustache, wearing a tailored three-piece suit somehow still pristine after adventures, monocle, carrying an elegant cane sword, pith helmet on back.',
+        inventory: {
+            equipment: ['紳士杖劍', '西裝三件套', '單片眼鏡', '探險家帽', '皮革公事包'],
+            gold: 50,
+            consumables: ['伯爵紅茶 x5', '手帕', '火柴', '治療藥水'],
+            magicItems: []
+        },
+        avatar: investigatorImg,
+        bio: '大陸皇家探險學會的資深會員。他曾深入無數古代遺跡，面對過龍和惡魔，但從未讓自己的西裝沾上污漬。他的座右銘是：「探險歸探險，紳士風度不能丟。」'
+    },
+    // --- 23. Inquisitor/審判者 (Female) - 魅魔裔異端獵人 ---
+    {
+        id: 'preset_deathknight', // ID kept for file consistency, user to replace 'deathknight.png'
+        name: '維斯帕·夜歌 (Vesper)',
+        race: '魅魔裔',
+        class: '審判者',
+        gender: 'Female',
+        alignment: '守序中立',
+        background: '異端獵人',
+        mbti: 'ISTJ',
+        hp: 24,
+        maxHp: 24,
+        baseStats: { str: 10, dex: 16, con: 12, int: 12, wis: 16, cha: 14 },
+        skills: ['察覺', '洞察', '宗教', '隱匿'],
+        feats: ['審判', '異端克星'],
+        spells: ['神聖恩典', '命令術', '真言術'],
+        slots: { 1: 2 },
+        personality: '終生與自身血統本能對抗的審判者。她深知墮落的誘惑，因此更能冷靜地在灰色地帶做出裁決。她並非沒有感情，而是選擇將情感像武器一樣精確控制。',
+        monologue: '光明無法照亮所有角落。有些罪惡，必須由同樣身處黑暗的人來審判。',
+        appearance: 'Short sharp bob haircut, pale skin with subtle horns hidden by hair, intense golden eyes, wearing practical clerical leather armor with silver inquisitor symbols, cold but alluring presence.',
+        inventory: {
+            equipment: ['審判者十字弓', '銀劍', '禁魔鐐銬', '異端獵人風衣'],
+            gold: 25,
+            consumables: ['聖水', '解毒劑', '治療藥水'],
+            magicItems: []
+        },
+        avatar: deathknightImg,
+        bio: '擁有魅魔血統的她，從小就以此為恥。她加入了教會的異端裁判所，專門獵殺那些被惡魔誘惑的墮落者。她比任何人都清楚：越美麗的東西，越致命。'
+    },
+    // --- 24. Psion/靈能者 (Female) - 冰山美女 ---
+    {
+        id: 'preset_psion',
+        name: '冬雪·寂靜 (Fuyuki Silent)',
+        race: '人類',
+        class: '靈能者',
+        gender: 'Female',
+        alignment: '守序中立',
+        background: '隱士',
+        mbti: 'INTJ',
+        hp: 16,
+        maxHp: 16,
+        baseStats: { str: 6, dex: 14, con: 10, int: 16, wis: 16, cha: 10 },
+        skills: ['洞察', '奧秘'],
+        feats: ['念力衝擊', '心靈護壁'],
+        spells: ['念力推', '心靈感應', '精神控制', '念力飛行'],
+        slots: { 1: 2 },
+        personality: '冰山美人型的靈能者。她壓抑著自己的情緒，因為任何情緒波動都會引發災難性的念力爆發。她看起來冷漠，實際上只是害怕傷害他人。',
+        monologue: '...保持距離。不是因為討厭你...是因為靠太近，你可能會受傷。',
+        appearance: 'Beautiful young woman with long straight black hair, piercing ice-blue eyes, expressionless pale face, wearing a form-fitting dark blue dress with silver accents, objects float around her unconsciously, temperature drops when she is nearby.',
+        inventory: {
+            equipment: ['念力抑制器', '冷色調長裙', '日記本', '隱士背包'],
+            gold: 15,
+            consumables: ['口糧 (1日) x5', '鎮靜劑', '冰水', '治療藥水'],
+            magicItems: []
+        },
+        avatar: psionImg,
+        bio: '從小擁有強大念力，但因為一次情緒失控毀掉了整個村莊。從此她封閉了自己的心，用冷漠作為保護他人的方式。她尋找控制力量的方法，希望有一天能正常地微笑。'
+    },
+    // --- 25. Eldritch Knight/魔劍士 (Female) - 劍靈附身農家女 ---
+    {
+        id: 'preset_eldritchknight',
+        name: '小麥·田中 (Mugi Tanaka)',
+        race: '半精靈',
+        class: '魔劍士',
+        gender: 'Female',
+        alignment: '混亂善良',
+        background: '平民',
+        mbti: 'ESFP',
+        hp: 26,
+        maxHp: 26,
+        baseStats: { str: 16, dex: 14, con: 14, int: 10, wis: 10, cha: 14 },
+        skills: ['運動', '生存'],
+        feats: ['劍靈附身', '本能戰鬥'],
+        spells: ['護盾術', '雷刃', '加速術'],
+        slots: { 1: 2 },
+        personality: '原本是普通農家女孩，偶然撿到一把封印著古代劍聖靈魂的劍。被附身後變成戰鬥天才，但平時還是個吃貨和路痴。',
+        monologue: '欸？！又迷路了！（劍在發光：「往左邊...」）喔喔謝謝你劍爺爺！',
+        appearance: 'Cheerful young farm girl with tanned skin, messy brown hair in a ponytail with wheat stalk, bright green eyes, wearing simple peasant clothes with an overly-fancy magic sword strapped to her back, perpetual confused but happy expression.',
+        inventory: {
+            equipment: ['劍聖遺劍「麥浪」', '農家工作服', '斗笠', '農民背包'],
+            gold: 5,
+            consumables: ['麵包 x10', '自製果醬', '水壺', '治療藥水'],
+            magicItems: []
+        },
+        avatar: eldritchknightImg,
+        bio: '村裡最普通的農家女孩，除了食量驚人之外沒有任何特別。直到她在田裡挖出一把會說話的劍——裡面封印著千年前的劍聖。劍聖教她劍術，但無法治好她的路痴。',
+        companion: {
+            name: '劍聖·無名',
+            type: '劍靈（封印在劍中）',
+            hp: 1,
+            maxHp: 1,
+            ac: 20,
+            attacks: [],
+            abilities: ['附身戰鬥', '劍術指導', '千年智慧（但方向感為零）']
+        }
+    },
+    // --- 26. Alchemist (Male) - 哥布林天才科學家 ---
+    {
+        id: 'preset_alchemist',
+        name: '乒乒·爆破博士 (Dr. Ping Boom)',
+        race: '哥布林',
+        class: '鍊金術士',
+        gender: 'Male',
+        alignment: '混亂中立',
+        background: '公會工匠',
+        mbti: 'ENTP',
+        hp: 18,
+        maxHp: 18,
+        baseStats: { str: 6, dex: 16, con: 12, int: 18, wis: 10, cha: 12 },
+        skills: ['奧秘', '調查'],
+        feats: ['爆破專家', '快速煉金'],
+        spells: ['酸液噴射', '煙霧彈', '爆炸藥劑', '強化藥水'],
+        slots: { 1: 3 },
+        personality: '哥布林中的天才——這意味著他的實驗只有30%會爆炸（對哥布林來說是極低的失敗率）。他相信「任何問題都能用足夠數量的炸彈解決」。',
+        monologue: '不不不，這不是炸彈！這是...有策略性的煉金放熱反應裝置！（小聲）只是碰巧會爆炸而已...',
+        appearance: 'Small green-skinned goblin with oversized goggles, wild white hair sticking up from chemical exposure, wearing a singed lab coat covered in patches and burn marks, carrying a bandolier of colorful potions and bombs, manic gleeful grin, fingers stained with various substances.',
+        inventory: {
+            equipment: ['煉金投擲器', '燒焦實驗服', '炸彈背帶', '哥布林工具包'],
+            gold: 35,
+            consumables: ['爆炸藥劑 x5', '煙霧彈 x3', '強化藥水 x3', '治療藥水 x2'],
+            magicItems: []
+        },
+        avatar: alchemistImg,
+        bio: '被哥布林學院開除——不是因為實驗太危險，而是因為他的實驗「太成功」炸掉了三棟教學樓。他出來冒險是為了籌集資金建立自己的研究所，在那裡沒人能限制他的「科學追求」。'
+    },
+    // --- 27. Champion/冠軍勇士 (Female) - 迷人半獸人角鬥士 ---
+    {
+        id: 'preset_champion',
+        name: '卡菈·緋紅 (Kara)',
+        race: '半獸人',
+        class: '冠軍勇士',
+        gender: 'Female',
+        alignment: '混亂善良',
+        background: '角鬥士',
+        mbti: 'ESFP',
+        hp: 36,
+        maxHp: 36,
+        baseStats: { str: 18, dex: 14, con: 16, int: 10, wis: 10, cha: 14 },
+        skills: ['運動', '表演', '威嚇'],
+        feats: ['健壯', '酒館鬥毆者'],
+        personality: '競技場的超級明星。她熱愛聚光燈和歡呼聲，把每一場戰鬥都當作是華麗的表演。雖然外表強悍，但其實很喜歡可愛的小東西和精緻的甜點。',
+        monologue: '看到那邊的觀眾了嗎？他們是為了看我才來的！所以——Show Time！',
+        appearance: 'Stunningly muscular female half-orc with vibrant red curly hair cascading down her back, confident charming smile, wearing flashy gladiator armor that shows off her abs, blowing a kiss to the invisible crowd.',
+        inventory: {
+            equipment: ['冠軍巨劍', '華麗角鬥士盔甲', '簽名板', '明星背包'],
+            gold: 50,
+            consumables: ['蛋白粉', '精緻甜點', '粉絲信 x3', '治療藥水'],
+            magicItems: []
+        },
+        avatar: championImg,
+        bio: '前地下格鬥場的不敗女王。她覺得單純的戰鬥太無聊了，所以決定出來冒險，順便在世界各地舉辦她的「個人巡迴戰鬥秀」。'
+    },
+    // --- 28. Chronomancer/時空術士 (Female) - 千年時空旅者 ---
+    {
+        id: 'preset_chronomancer',
+        name: '芙莉蓮·千年 (Frieren)',
+        race: '精靈',
+        class: '時空術士',
+        gender: 'Female',
+        alignment: '絕對中立',
+        background: '隱士',
+        mbti: 'INTP',
+        hp: 16,
+        maxHp: 16,
+        baseStats: { str: 6, dex: 12, con: 10, int: 18, wis: 16, cha: 10 },
+        skills: ['奧秘', '歷史'],
+        feats: ['時間感知', '時空凍結'],
+        spells: ['時間減速', '預知術', '時空傳送', '記憶投影', '花束術'],
+        slots: { 1: 3 },
+        personality: '活了一千多年的精靈時空術士。她對時間的概念和人類完全不同，經常為了找魔法店而在一個城鎮待上十年。她收集「無用但有趣」的魔法。',
+        monologue: '這個魔法可以讓花束變得更漂亮...等等，才過了一百年？感覺像昨天。',
+        appearance: 'Petite elf woman with very long silver-white hair, pointed ears, calm purple eyes, wearing simple white and blue mage robes with hourglass motifs, carrying an ancient staff topped with a floating temporal orb, eternally youthful but ancient aura.',
+        inventory: {
+            equipment: ['時空法杖', '魔法書（收錄1000年魔法）', '時空懷錶', '學者背包'],
+            gold: 100,
+            consumables: ['口糧 (1日) x5', '千年老酒', '古代餅乾', '治療藥水'],
+            magicItems: ['變花魔杖', '時間沙漏']
+        },
+        avatar: chronomancerImg,
+        bio: '八十年前和勇者一起打敗了魔王。現在她開始意識到人類朋友的壽命有多短暫，決定去尋找當年同伴的足跡。她研究時空魔法，希望能保存與短命種族的珍貴記憶。'
     }
 ];
 

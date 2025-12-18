@@ -89,7 +89,7 @@ export class CharacterAgent {
         this.background = data.background || "Mysterious";
         this.monologue = data.monologue || data.innerMonologue || "Ready.";
         this.bio = data.bio || "";
-        this.avatarUrl = data.avatar || `https://api.dicebear.com/7.x/adventurer/svg?seed=${this.name}123&backgroundColor=b6e3f4`;
+        this.avatarUrl = data.avatar || data.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${this.name}123&backgroundColor=b6e3f4`;
 
         // History
         this.growthHistory = data.growthHistory || [];
@@ -345,6 +345,7 @@ export class CharacterAgent {
             maxHp: this.maxHp,
             ac: this.ac, // Computational
             avatar: this.avatarUrl,
+            avatarUrl: this.avatarUrl, // Ensure both properties exist for compatibility
             psych: this.psych,
             pendingAction: this.pendingAction
         };

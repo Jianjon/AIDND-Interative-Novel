@@ -460,6 +460,257 @@ export const CLASS_PROGRESSION = {
             19: ["Ability Score Improvement"],
             20: ["Eldritch Master"]
         }
+    },
+    "奇械師": {
+        hitDie: 8,
+        primaryStat: "int",
+        conStat: "con",
+        saves: ["con", "int"],
+        features: {
+            1: ["Magical Tinkering", "Spellcasting"],
+            2: ["Infuse Item (2)"],
+            3: ["Artificer Specialist", "The Right Tool for the Job"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack or Potent Cantrip"],
+            6: ["Infuse Item (3)", "Tool Expertise"],
+            7: ["Flash of Genius"],
+            8: ["Ability Score Improvement"],
+            9: ["Specialist Feature"],
+            10: ["Magic Item Adept"],
+            11: ["Spell-Refueling Ring"],
+            12: ["Ability Score Improvement"],
+            14: ["Magic Item Savant"],
+            15: ["Specialist Feature"],
+            16: ["Ability Score Improvement"],
+            18: ["Magic Item Master"],
+            19: ["Ability Score Improvement"],
+            20: ["Soul of Artifice"]
+        },
+        spellSlots: {
+            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+        }
+    },
+    "死靈法師": {
+        hitDie: 6,
+        primaryStat: "int",
+        saves: ["int", "wis"],
+        features: {
+            1: ["Necromancy Savant", "Grim Harvest"],
+            2: ["Undead Thralls"],
+            4: ["Ability Score Improvement"],
+            6: ["Inured to Undeath"],
+            8: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+        }
+    },
+    "血獵手": {
+        hitDie: 10,
+        primaryStat: "dex",
+        secondaryStat: "int",
+        saves: ["dex", "int"],
+        features: {
+            1: ["Hunter's Bane", "Crimson Rite"],
+            2: ["Blood Curses (1)"],
+            3: ["Blood Hunter Order"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Blood Curses (2)", "Brand of Castigation"],
+            7: ["Order Feature"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "薩滿": {
+        hitDie: 8,
+        primaryStat: "wis",
+        saves: ["int", "wis"],
+        features: {
+            1: ["Spirit Bond", "Spellcasting"],
+            2: ["Totemic Call"],
+            3: ["Spirit Journey"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack (Spirit)"],
+            6: ["Spirit Journey Feature"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "女巫": {
+        hitDie: 8,
+        primaryStat: "cha",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Hexes", "Spellcasting", "Familiar"],
+            2: ["Witch's Brew"],
+            3: ["Coven Initiation"],
+            4: ["Ability Score Improvement"],
+            6: ["Coven Feature"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "劍客": {
+        hitDie: 10,
+        primaryStat: "dex",
+        saves: ["str", "dex"],
+        features: {
+            1: ["Fighting Style", "Exotic Weapon Training"],
+            2: ["Evasion (Partial)"],
+            3: ["Sword Saint Path"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Defensive Flourish"],
+            7: ["Path Feature"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "召喚師": {
+        hitDie: 8,
+        primaryStat: "int",
+        saves: ["int", "cha"],
+        features: {
+            1: ["Modern Summoning", "Spellcasting"],
+            2: ["Item Bond"],
+            3: ["Convenience Store Inventory"],
+            4: ["Ability Score Improvement"],
+            5: ["Advanced Blueprint"],
+            6: ["Summoning Expert"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "魔戰士": {
+        hitDie: 10,
+        primaryStat: "str",
+        secondaryStat: "int",
+        saves: ["con", "int"],
+        features: {
+            1: ["Spell Combat", "Spellstrike"],
+            2: ["Magus Arcana"],
+            3: ["Spell Recall"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Magus Arcana"],
+            7: ["Knowledge Pool"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "先知": {
+        hitDie: 8,
+        primaryStat: "cha",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Oracle's Curse", "Mystery", "Spellcasting"],
+            2: ["Revelation"],
+            4: ["Ability Score Improvement"],
+            6: ["Revelation"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "調查員": {
+        hitDie: 8,
+        primaryStat: "int",
+        saves: ["dex", "int"],
+        features: {
+            1: ["Inspiration", "Trapfinding"],
+            2: ["Investigative Talent"],
+            3: ["Keen Recollection"],
+            4: ["Ability Score Improvement"],
+            5: ["Inspiration (d8)"],
+            6: ["Investigative Talent"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "審判者": {
+        hitDie: 8,
+        primaryStat: "wis",
+        secondaryStat: "cha",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Judgment (1/day)", "Stern Gaze"],
+            2: ["Cunning Initiative", "Detect Alignment"],
+            3: ["Solo Tactics"],
+            4: ["Ability Score Improvement"],
+            5: ["Bane", "Judgment (2/day)"],
+            6: ["Teamwork Feat"],
+            8: ["Ability Score Improvement", "Judgment (3/day)"]
+        }
+    },
+    "靈能者": {
+        hitDie: 6,
+        primaryStat: "int",
+        saves: ["int", "wis"],
+        features: {
+            1: ["Psionic Talent", "Telepathy"],
+            2: ["Psionic Disciplines (2)"],
+            3: ["Psionic Focus"],
+            4: ["Ability Score Improvement"],
+            5: ["Mental Force"],
+            6: ["Psionic Disciplines (3)"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "魔劍士": {
+        hitDie: 10,
+        primaryStat: "str",
+        secondaryStat: "int",
+        saves: ["str", "con"],
+        features: {
+            1: ["Fighting Style", "Second Wind"],
+            2: ["Action Surge"],
+            3: ["Weapon Bond", "Spellcasting"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Ability Score Improvement"],
+            7: ["War Magic"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "鍊金術士": {
+        hitDie: 8,
+        primaryStat: "int",
+        saves: ["con", "int"],
+        features: {
+            1: ["Experimental Elixir", "Magical Tinkering"],
+            2: ["Infuse Item (2)"],
+            3: ["Alchemist Specialist"],
+            4: ["Ability Score Improvement"],
+            5: ["Alchemical Savant"],
+            6: ["Infuse Item (3)"],
+            7: ["Flash of Genius"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "冠軍勇士": {
+        hitDie: 10,
+        primaryStat: "str",
+        saves: ["str", "con"],
+        features: {
+            1: ["Fighting Style", "Second Wind"],
+            2: ["Action Surge"],
+            3: ["Improved Critical"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Ability Score Improvement"],
+            7: ["Remarkable Athlete"],
+            8: ["Ability Score Improvement"]
+        }
+    },
+    "時空術士": {
+        hitDie: 6,
+        primaryStat: "int",
+        saves: ["int", "wis"],
+        features: {
+            1: ["Temporal Awareness", "Chronal Shift"],
+            2: ["Convergent Future"],
+            4: ["Ability Score Improvement"],
+            6: ["Momentary Stasis"],
+            8: ["Ability Score Improvement"]
+        }
     }
 };
 

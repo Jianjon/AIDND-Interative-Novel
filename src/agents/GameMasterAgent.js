@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { formatModuleContext } from '../data/modules_data.js';
 
 // LOCKED BY USER REQUEST (2025-12-10). DO NOT EDIT WITHOUT EXPLICIT PERMISSION.
+// UPDATED 2025-12-15: Added encounter balance level reference (user-approved)
 /**
  * GameMasterAgent: The Referee
  * Responsible for mechanics, rules enforcement, and state updates.
@@ -54,7 +55,7 @@ export class GameMasterAgent {
      * @returns {Promise<Object>} JSON object with hp_updates, options, loot.
      */
     async analyzeState(context) {
-        const { narrative, level, partyStatus, moduleId = null, currentAct = 1 } = context;
+        const { narrative, level, partyStatus, moduleId = null, currentAct = 1, lootGuidelines = '' } = context;
 
         // Generate module plot context if available
         const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
@@ -113,6 +114,8 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
            - **Quest Items**: Mark as \`isQuestItem: true\`. Must aid story progression.
            - **General Loot**: Gold, potions, generic gear.
            - **Class Items**: If an item fits a specific party member (e.g. Plate for Paladin), target them.
+
+${lootGuidelines ? `${lootGuidelines}\n` : ''}
 
         [OUTPUT SCHEMA]
         {

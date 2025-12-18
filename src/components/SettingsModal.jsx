@@ -185,6 +185,45 @@ const SettingsModal = ({
                                 </section>
 
                                 <section className="space-y-4">
+                                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                        字距 (Letter Spacing)
+                                    </h4>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-400">緊密</span>
+                                            <span className="text-xs text-amber-500 font-mono">{settings.letterSpacing || 0}px</span>
+                                            <span className="text-xs text-slate-400">寬鬆</span>
+                                        </div>
+                                        <input
+                                            type="range" min="0" max="4" step="0.5"
+                                            value={settings.letterSpacing || 0}
+                                            onChange={(e) => onUpdateSettings('letterSpacing', parseFloat(e.target.value))}
+                                            className="w-full accent-amber-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                                        />
+                                    </div>
+                                </section>
+
+                                <section className="space-y-4">
+                                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                        行高 (Line Height)
+                                    </h4>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-400">緊密</span>
+                                            <span className="text-xs text-amber-500 font-mono">{settings.lineHeight || 1.8}</span>
+                                            <span className="text-xs text-slate-400">寬鬆</span>
+                                        </div>
+                                        <input
+                                            type="range" min="1.4" max="2.4" step="0.1"
+                                            value={settings.lineHeight || 1.8}
+                                            onChange={(e) => onUpdateSettings('lineHeight', parseFloat(e.target.value))}
+                                            className="w-full accent-amber-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                                        />
+                                    </div>
+                                </section>
+
+
+                                <section className="space-y-4">
                                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <ImageIcon size={14} /> 場景生成 (Scene Visualization)
                                     </h4>

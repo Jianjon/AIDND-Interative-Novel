@@ -66,7 +66,33 @@ const getApiKey = () => {
     return import.meta.env.VITE_GOOGLE_AI_KEY || localStorage.getItem('gemini_api_key');
 };
 
-export const generateAIPortrait = async (character) => {
+// Simple hash function for cache keys
+const simpleHash = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return hash.toString(36);
+};
+
+export const generateAIPortrait = async (character, forceRegenerate = false) => {
+    // Cache key based on character ID
+    const cacheKey = `portrait_v1_${character.id}`;
+
+    // Check cache first (unless force regenerate)
+    if (!forceRegenerate) {
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached && cached.startsWith('data:image')) {
+                console.log(`[Portrait] Cache hit for ${character.name}`);
+                return cached;
+            }
+        } catch (e) {
+            console.warn('[Portrait] Cache read failed:', e);
+        }
+    }
+
     try {
         const apiKey = getApiKey();
         if (!apiKey) {
@@ -137,32 +163,28 @@ export const generateAIPortrait = async (character) => {
         ];
         const randomPose = poses[Math.floor(Math.random() * poses.length)];
 
-        // Prioritize the class and race + specific details
-        // Prioritize the class and race + specific details
-        const prompt = `character portrait of ${nameForPrompt}, ${genderStr} ${englishRace} ${englishClass}.
-        ${descriptionForPrompt}
-        Style: cartoon style, western comic book art, vibrantly colored, thick sharp outlines, flat coloring, detailed fantasy character concept, solid background, masterpiece, best quality, no text.
-        Atmosphere: Heroic, dynamic, expressive.
-        Features: Clear and distinctive face, expressive ${personality} look.
-        Race Details: ${raceHints}.
-        
-        Negative Constraint: (Do NOT include: ${negativePrompts}, 3d render, photorealistic, blurry, low resolution, distorted face, realism, grainy)
-        Composition: ${randomPose}, upper body portrait, neutral background.`;
+        // American comic book style with D&D elements - MUST match CharacterManagerAgent.js
+        const prompt = `Dungeons and Dragons character portrait, American comic book art style, Marvel DC comics illustration, western superhero comic coloring, cell shaded, thick black outlines, flat bold colors, no gradients, no anime, ${nameForPrompt}, ${genderStr} ${englishRace} ${englishClass}, ${descriptionForPrompt}, ${raceHints}, ${randomPose}, heroic pose, fantasy medieval setting background, dramatic clouds, vibrant saturated colors, professional tabletop RPG art, D&D 5e official art style, Pathfinder illustration, three-quarter body shot, showing head to knees, high quality, highly detailed, sharp lines, clean artwork, professional illustration, 4k resolution`;
 
         console.log("Generating portrait with prompt:", prompt);
 
-        // Priority 1: Gemini 2.5 Flash (Nano Banana)
+        // Priority 1: Gemini 2.0 Flash Experimental (supports image generation)
         try {
-            console.log("Attempting generation with gemini-2.5-flash-preview-09-2025 (Nano Banana)...");
+            console.log("Attempting generation with gemini-2.0-flash-exp...");
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `${prompt} \n\n(Generate a high quality image based on this description)` }] }],
+                        contents: [{
+                            parts: [{
+                                text: `Generate an image: ${prompt}`
+                            }]
+                        }],
                         generationConfig: {
-                            responseMimeType: "image/jpeg"
+                            responseModalities: ["IMAGE", "TEXT"],
+                            responseMimeType: "text/plain"
                         }
                     })
                 }
@@ -170,14 +192,18 @@ export const generateAIPortrait = async (character) => {
 
             if (response.ok) {
                 const data = await response.json();
-                const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-                if (inlineData && inlineData.data) {
-                    return `data:${inlineData.mimeType || 'image/jpeg'};base64,${inlineData.data}`;
+                const parts = data.candidates?.[0]?.content?.parts || [];
+                for (const part of parts) {
+                    if (part.inlineData?.data) {
+                        const result = `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+                        try { localStorage.setItem(cacheKey, result); } catch (e) { console.warn('[Portrait] Cache save failed:', e); }
+                        return result;
+                    }
                 }
             }
-            console.warn("Gemini 2.5 Flash failed or returned no image. Falling back...");
+            console.warn("Gemini 2.0 Flash failed or returned no image. Falling back...");
         } catch (e) {
-            console.warn("Gemini 2.5 Flash error:", e);
+            console.warn("Gemini 2.0 Flash error:", e);
         }
 
         // Priority 2: Imagen 4.0
@@ -198,7 +224,9 @@ export const generateAIPortrait = async (character) => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.predictions?.[0]?.bytesBase64Encoded) {
-                    return `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    const result = `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    try { localStorage.setItem(cacheKey, result); } catch (e) { console.warn('[Portrait] Cache save failed:', e); }
+                    return result;
                 }
             }
             console.warn("Imagen 4.0 failed. Falling back...");
@@ -224,7 +252,9 @@ export const generateAIPortrait = async (character) => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.predictions?.[0]?.bytesBase64Encoded) {
-                    return `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    const result = `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    try { localStorage.setItem(cacheKey, result); } catch (e) { console.warn('[Portrait] Cache save failed:', e); }
+                    return result;
                 }
             }
         } catch (e) {
@@ -241,7 +271,7 @@ export const generateAIPortrait = async (character) => {
 
             const promptEncoded = encodeURIComponent(smoothPrompt);
             const randomSeed = Math.floor(Math.random() * 1000000);
-            return `https://image.pollinations.ai/prompt/${promptEncoded}?width=512&height=768&nologo=true&model=flux&seed=${randomSeed}`;
+            return `https://image.pollinations.ai/prompt/${promptEncoded}?width=1024&height=1024&nologo=true&model=flux&seed=${randomSeed}`;
         } catch (e) {
             console.error("Pollinations fallback failed", e);
             throw new Error("All image generation methods failed.");
@@ -251,9 +281,40 @@ export const generateAIPortrait = async (character) => {
         console.error("Final fallback failed or initial API key error:", e);
         throw e;
     }
+
+    // This should not be reached, but adding for safety
+    // Save to cache before returning (moved to after generation success)
 };
 
-export const generateAIScene = async (locationName, contextLogs = "") => {
+// Internal wrapper to cache successful portrait generation
+const _cachePortrait = (cacheKey, portrait) => {
+    try {
+        if (portrait && portrait.startsWith('data:image')) {
+            localStorage.setItem(cacheKey, portrait);
+            console.log(`[Portrait] Cached successfully`);
+        }
+    } catch (e) {
+        console.warn('[Portrait] Cache storage failed (quota?):', e);
+    }
+};
+
+export const generateAIScene = async (locationName, contextLogs = "", forceRegenerate = false) => {
+    // Cache key based on location name hash
+    const cacheKey = `scene_v1_${simpleHash(locationName)}`;
+
+    // Check cache first (unless force regenerate)
+    if (!forceRegenerate) {
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached && cached.startsWith('data:image')) {
+                console.log(`[Scene] Cache hit for ${locationName}`);
+                return cached;
+            }
+        } catch (e) {
+            console.warn('[Scene] Cache read failed:', e);
+        }
+    }
+
     try {
         const apiKey = getApiKey();
         if (!apiKey) {
@@ -291,7 +352,9 @@ No text, no UI overlay.`;
             const imagePart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
 
             if (imagePart?.inlineData?.data) {
-                return `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
+                const result = `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
+                try { localStorage.setItem(cacheKey, result); } catch (e) { console.warn('[Scene] Cache save failed:', e); }
+                return result;
             }
         } catch (e) {
             console.warn("Gemini Scene Gen failed:", e);
@@ -314,7 +377,9 @@ No text, no UI overlay.`;
             if (response.ok) {
                 const data = await response.json();
                 if (data.predictions?.[0]?.bytesBase64Encoded) {
-                    return `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    const result = `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    try { localStorage.setItem(cacheKey, result); } catch (e) { console.warn('[Scene] Cache save failed:', e); }
+                    return result;
                 }
             }
         } catch (e) {

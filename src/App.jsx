@@ -55,6 +55,7 @@ import LevelUpModal from './components/LevelUpModal';
 import LocationBreadcrumbs from './components/LocationBreadcrumbs';
 import PRESET_CHARACTERS from './data/preset_characters';
 import { scaleCharacter } from './utils/characterScaling';
+import GroupDecisionOptions from './components/GroupDecisionOptions'; // New Component
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS & DATA (Traditional Chinese)      */
@@ -85,6 +86,9 @@ import { GameMasterAgent } from './agents/GameMasterAgent';
 import { CartographerAgent } from './agents/CartographerAgent';
 import { CharacterManagerAgent } from './agents/CharacterManagerAgent';
 import { AudioManager } from './services/AudioManager';
+import { getMemoryService } from './services/MemoryService';
+import { getEncounterGuidelinesWithPersona } from './data/rules/encounter_balance';
+import { getLootGuidelines } from './data/rules/loot_tables';
 import { BACKGROUND_MAP } from './data/background_map';
 
 
@@ -351,21 +355,9 @@ export default function InteractiveDND() {
     const storyAgent = useMemo(() => new StoryAgent(sanitizedApiKey), [sanitizedApiKey]);
 
     const handleCreateCustomModule = async (prompt, difficulty) => {
-        setIsGenerating(true);
+        // Use sandbox mode: No AI wait, instant module creation
         try {
-            const newModule = await storyAgent.generateModuleFromPrompt(prompt, difficulty);
-
-            // Validate basic structure
-            if (!newModule || !newModule.acts || newModule.acts.length === 0) {
-                throw new Error("Invalid module structure generated.");
-            }
-
-            // Map Difficulty to Level
-            let derivedLevel = 3;
-            if (difficulty === 'intermediate') derivedLevel = 5;
-            if (difficulty === 'advanced') derivedLevel = 8;
-            newModule.startLevel = derivedLevel;
-
+            const newModule = storyAgent.generateSandboxModule(prompt, difficulty);
 
             setCustomModules(prev => [...prev, newModule]);
             setShowCustomStoryModal(false);
@@ -375,12 +367,10 @@ export default function InteractiveDND() {
             setLevel(newModule.startLevel || 3);
             setView('roster');
 
-            setToast({ message: "傳奇篇章已鑄造完成！", type: "success" });
+            setToast({ message: `「${newModule.title}」沙盒冒險已準備就緒！`, type: "success" });
         } catch (error) {
             console.error(error);
-            setToast({ message: "創造世界失敗，魔網不穩定...", type: "error" });
-        } finally {
-            setIsGenerating(false);
+            setToast({ message: "創造世界失敗...", type: "error" });
         }
     };
 
@@ -466,7 +456,7 @@ export default function InteractiveDND() {
     const [styleMode, setStyleMode] = useState(true); // Character dialogue styling mode
     const [isGeneratingPortrait, setIsGeneratingPortrait] = useState(false); // Portrait generation loading
     const [isAutoProcessing, setIsAutoProcessing] = useState(false); // AI Auto-Control processing state
-
+    const [groupDecisionOptions, setGroupDecisionOptions] = useState([]); // Array of strings (options)
     // Quest Journal & Location
     const [questJournal, setQuestJournal] = useState([]); // [{ turn, event, details, timestamp }]
     // Agent System 2.0: Cross-Agent Signals
@@ -1189,6 +1179,13 @@ JSON格式回覆：
     const mapAgent = useMemo(() => new CartographerAgent(sanitizedApiKey), [sanitizedApiKey]);
     const charAgent = useMemo(() => new CharacterManagerAgent(sanitizedApiKey), [sanitizedApiKey]);
 
+    // Memory Service - Tiered memory for story coherence
+    const memoryService = useRef(getMemoryService());
+
+    // API Throttler - Prevents rapid consecutive API calls (429 protection)
+    const lastApiCallTime = useRef(0);
+    const MIN_API_INTERVAL = 1500; // Minimum 1.5 seconds between API calls
+
     const executeTurn = async (forcePrologue = false) => {
         if (!apiKey) {
             showToast("請先設定 API Key!", "error");
@@ -1196,6 +1193,16 @@ JSON格式回覆：
         }
 
         if (isGenerating) return;
+
+        // Throttle check - wait if called too quickly
+        const now = Date.now();
+        const timeSinceLastCall = now - lastApiCallTime.current;
+        if (timeSinceLastCall < MIN_API_INTERVAL && lastApiCallTime.current > 0) {
+            const waitTime = MIN_API_INTERVAL - timeSinceLastCall;
+            console.log(`[Throttle] Waiting ${waitTime}ms before API call...`);
+            await new Promise(r => setTimeout(r, waitTime));
+        }
+        lastApiCallTime.current = Date.now();
 
         // Security / Validation
         if (!apiKey) {
@@ -1221,6 +1228,9 @@ JSON格式回覆：
         console.log("Is Prologue:", isPrologue);
 
         setIsGenerating(true);
+        // Clear old action cache to prevent stale options showing during generation
+        // New options will be generated after narrative completes
+        setActionCache({});
         // setPendingActions({}); // Don't clear yet, we need to process them
 
         try {
@@ -1301,15 +1311,24 @@ JSON格式回覆：
             }
 
             // --- AGENT 1: STORYTELLER ---
+            // Build memory context from tiered memory + recent logs
+            const recentLogsText = logs.slice(-2).map(l => {
+                if (typeof l.content === 'string') return l.content;
+                if (l.type === 'trpg_turn') return l.dm_narration || "";
+                if (l.content?.turns) return l.content.turns.map(t => t.narration).join(" ");
+                return "";
+            }).join("\n");
+
+            // Combine memory service context with recent logs
+            const memoryContext = memoryService.current.getContextForAI();
+            const fullContext = memoryContext
+                ? `${memoryContext}\n\n[最新發展]\n${recentLogsText}`
+                : recentLogsText;
+
             const narrativeContext = {
                 moduleTitle: selectedModule?.title || "Unknown Adventure",
                 currentLocation: Array.isArray(currentLocation) ? currentLocation.join(" > ") : String(currentLocation),
-                lastLog: logs.slice(-3).map(l => {
-                    if (typeof l.content === 'string') return l.content;
-                    if (l.type === 'trpg_turn') return l.dm_narration || "";
-                    if (l.content?.turns) return l.content.turns.map(t => t.narration).join(" ");
-                    return "";
-                }).join("\n"),
+                lastLog: fullContext,
                 tone: gameOptions.tone,
                 pacing: gameOptions.pacing,
                 gmSignals: worldSignals, // Feed previous turn's signals to Story
@@ -1350,6 +1369,24 @@ JSON格式回覆：
                 // MODULE PLOT NAVIGATION
                 moduleId: selectedModule?.id || null,
                 currentAct: currentAct,
+                // ENCOUNTER BALANCE: Inject CR guidelines based on party level AND DM persona
+                encounterGuidelines: (() => {
+                    const partyChars = party.map(id => agentRoster.find(c => c.id === id)).filter(Boolean);
+                    if (partyChars.length === 0) return '';
+                    const avgLevel = Math.round(partyChars.reduce((sum, c) => sum + (c.level || 3), 0) / partyChars.length);
+                    // Use gameOptions.tone for DM persona (guide/arbiter/ruthless in TRPG, relaxed/normal/grim in Novel)
+                    return getEncounterGuidelinesWithPersona(avgLevel, partyChars.length, gameOptions.tone);
+                })(),
+                // DIFFICULTY TIER: Map level to tier for enemy behavior adjustment
+                difficultyTier: (() => {
+                    const partyChars = party.map(id => agentRoster.find(c => c.id === id)).filter(Boolean);
+                    const avgLevel = partyChars.length > 0
+                        ? Math.round(partyChars.reduce((sum, c) => sum + (c.level || 3), 0) / partyChars.length)
+                        : 3;
+                    if (avgLevel <= 4) return '初階 (Beginner)';
+                    if (avgLevel <= 7) return '中階 (Intermediate)';
+                    return '高階 (Advanced)';
+                })(),
             };
 
             const narrativeResult = await storyAgent.generateNarrative(narrativeContext, userActionText);
@@ -1405,6 +1442,39 @@ JSON格式回覆：
             let sceneDirty = false;
             let tempScenarioRoster = [...scenarioRoster];
 
+            // --- MEMORY SYSTEM UPDATE ---
+            // Add narrative to immediate memory
+            memoryService.current.addTurn(finalNarrative);
+
+            // Asynchronously update working memory and extract key events (non-blocking)
+            (async () => {
+                try {
+                    const memoryResult = await mapAgent.generateMemorySummary({
+                        narrative: finalNarrative,
+                        existingKeyEvents: memoryService.current.longTerm,
+                        currentSummary: memoryService.current.working
+                    });
+
+                    if (memoryResult.data) {
+                        if (memoryResult.data.workingSummary) {
+                            memoryService.current.updateWorkingSummary(memoryResult.data.workingSummary);
+                        }
+                        if (memoryResult.data.newKeyEvents?.length > 0) {
+                            memoryService.current.addKeyEvents(memoryResult.data.newKeyEvents);
+                            console.log('[Memory] New key events:', memoryResult.data.newKeyEvents);
+                        }
+                        if (memoryResult.data.characterUpdates) {
+                            Object.entries(memoryResult.data.characterUpdates).forEach(([name, status]) => {
+                                memoryService.current.updateCharacterState(name, status);
+                            });
+                        }
+                        memoryService.current.save();
+                    }
+                } catch (e) {
+                    console.warn('[Memory] Summary update failed:', e);
+                }
+            })();
+
             // --- LOOT SYSTEM ---
             const lootMatch = finalNarrative.match(/\[\[LOOT:\s*(.+?)\]\]/);
             if (lootMatch) {
@@ -1450,6 +1520,152 @@ JSON格式回覆：
                 audioManager.current.playBgm(bgmKey);
                 setCurrentBgmKey(bgmKey);
                 finalNarrative = finalNarrative.replace(bgmMatch[0], '');
+            }
+
+            // --- MERCHANT SYSTEM: PURCHASE ---
+            // Format: [[購買: 角色名|物品名|價格]]
+            const purchaseRegex = /\[\[購買:\s*([^|]+)\|([^|]+)\|(\d+)\]\]/g;
+            for (const match of finalNarrative.matchAll(purchaseRegex)) {
+                const [fullTag, charName, itemName, priceStr] = match;
+                const price = parseInt(priceStr);
+                const charIdx = tempRoster.findIndex(c => c.name.includes(charName.trim()));
+
+                if (charIdx !== -1) {
+                    const char = { ...tempRoster[charIdx] };
+                    const currentGold = char.inventory?.gold ?? char.gold ?? 0;
+
+                    if (currentGold >= price) {
+                        // Deduct gold
+                        if (char.inventory) {
+                            char.inventory = { ...char.inventory, gold: currentGold - price };
+                        } else {
+                            char.gold = currentGold - price;
+                        }
+                        // Add item to consumables (simplified)
+                        const inv = char.inventory || { equipment: [], consumables: [], magicItems: [] };
+                        const lower = itemName.toLowerCase();
+                        let type = 'equipment';
+                        if (lower.includes('藥水') || lower.includes('卷軸') || lower.includes('口糧') || lower.includes('火把')) type = 'consumables';
+                        inv[type] = [...(inv[type] || []), itemName.trim()];
+                        char.inventory = inv;
+
+                        tempRoster[charIdx] = char;
+                        rosterDirty = true;
+                        showToast(`🛒 ${char.name} 購買了 ${itemName.trim()} (-${price}金)`, "success");
+                    } else {
+                        showToast(`❌ ${char.name} 金幣不足 (需要 ${price}金，擁有 ${currentGold}金)`, "error");
+                    }
+                }
+                finalNarrative = finalNarrative.replace(fullTag, '');
+            }
+
+            // --- MERCHANT SYSTEM: SELL ---
+            // Format: [[出售: 角色名|物品名|價格]]
+            const sellRegex = /\[\[出售:\s*([^|]+)\|([^|]+)\|(\d+)\]\]/g;
+            for (const match of finalNarrative.matchAll(sellRegex)) {
+                const [fullTag, charName, itemName, priceStr] = match;
+                const price = parseInt(priceStr);
+                const charIdx = tempRoster.findIndex(c => c.name.includes(charName.trim()));
+
+                if (charIdx !== -1) {
+                    const char = { ...tempRoster[charIdx] };
+                    // Add gold
+                    if (char.inventory) {
+                        char.inventory = { ...char.inventory, gold: (char.inventory.gold ?? 0) + price };
+                    } else {
+                        char.gold = (char.gold ?? 0) + price;
+                    }
+                    // TODO: Remove item from inventory (complex, skip for now)
+                    tempRoster[charIdx] = char;
+                    rosterDirty = true;
+                    showToast(`💰 ${char.name} 出售了 ${itemName.trim()} (+${price}金)`, "success");
+                }
+                finalNarrative = finalNarrative.replace(fullTag, '');
+            }
+
+            // --- GOLD CHANGE ---
+            // Format: [[金幣: 角色名|金額]]
+            const goldRegex = /\[\[金幣:\s*([^|]+)\|([+-]?\d+)\]\]/g;
+            for (const match of finalNarrative.matchAll(goldRegex)) {
+                const [fullTag, charName, amountStr] = match;
+                const amount = parseInt(amountStr);
+                const charIdx = tempRoster.findIndex(c => c.name.includes(charName.trim()));
+
+                if (charIdx !== -1) {
+                    const char = { ...tempRoster[charIdx] };
+                    if (char.inventory) {
+                        char.inventory = { ...char.inventory, gold: Math.max(0, (char.inventory.gold ?? 0) + amount) };
+                    } else {
+                        char.gold = Math.max(0, (char.gold ?? 0) + amount);
+                    }
+                    tempRoster[charIdx] = char;
+                    rosterDirty = true;
+                    showToast(`🪙 ${char.name} ${amount >= 0 ? '獲得' : '花費'} ${Math.abs(amount)}金`, amount >= 0 ? "success" : "info");
+                }
+                finalNarrative = finalNarrative.replace(fullTag, '');
+            }
+
+            // --- SHORT REST SYSTEM ---
+            // Format: [[短休: 角色名]] or [[短休: 全隊]]
+            const shortRestMatch = finalNarrative.match(/\[\[短休:\s*(.+?)\]\]/);
+            if (shortRestMatch) {
+                const target = shortRestMatch[1].trim();
+                const isParty = target === '全隊' || target.toLowerCase() === 'all';
+
+                const healChar = (char) => {
+                    const level = char.level ?? 3;
+                    const conMod = Math.floor(((char.stats?.con ?? char.baseStats?.con ?? 10) - 10) / 2);
+                    // Short rest: Heal 1d8 + CON * level (simplified)
+                    const healAmount = Math.floor((level * 4.5) + (conMod * level));
+                    return {
+                        ...char,
+                        hp: Math.min(char.maxHp, char.hp + healAmount)
+                    };
+                };
+
+                if (isParty) {
+                    tempRoster = tempRoster.map(char => party.includes(char.id) ? healChar(char) : char);
+                    showToast(`☕ 隊伍進行短休，恢復了部分生命值`, "success");
+                } else {
+                    const charIdx = tempRoster.findIndex(c => c.name.includes(target));
+                    if (charIdx !== -1) {
+                        tempRoster[charIdx] = healChar(tempRoster[charIdx]);
+                        showToast(`☕ ${tempRoster[charIdx].name} 進行短休`, "success");
+                    }
+                }
+                rosterDirty = true;
+                finalNarrative = finalNarrative.replace(shortRestMatch[0], '');
+            }
+
+            // --- LONG REST SYSTEM ---
+            // Format: [[長休: 角色名]] or [[長休: 全隊]]
+            const longRestMatch = finalNarrative.match(/\[\[長休:\s*(.+?)\]\]/);
+            if (longRestMatch) {
+                const target = longRestMatch[1].trim();
+                const isParty = target === '全隊' || target.toLowerCase() === 'all';
+
+                const fullHealChar = (char) => {
+                    // Long rest: Full HP, reset spell slots
+                    return {
+                        ...char,
+                        hp: char.maxHp,
+                        // Reset spell slots to max (based on level)
+                        slots: char.maxSlots ? { ...char.maxSlots } : char.slots
+                    };
+                };
+
+                if (isParty) {
+                    tempRoster = tempRoster.map(char => party.includes(char.id) ? fullHealChar(char) : char);
+                    showToast(`🏕️ 隊伍進行長休，完全恢復！`, "success");
+                } else {
+                    const charIdx = tempRoster.findIndex(c => c.name.includes(target));
+                    if (charIdx !== -1) {
+                        tempRoster[charIdx] = fullHealChar(tempRoster[charIdx]);
+                        showToast(`🏕️ ${tempRoster[charIdx].name} 進行長休`, "success");
+                    }
+                }
+                rosterDirty = true;
+                finalNarrative = finalNarrative.replace(longRestMatch[0], '');
             }
 
             // --- RELATIONSHIP SYSTEM ---
@@ -1563,29 +1779,50 @@ JSON格式回覆：
             };
             const deferredStateChanges = {}; // Map<id, { hp, status, deathSaves }>
 
-            // 1. HP Updates: [[HP: Name|Amount]]
-            const hpRegex = /\[\[HP:\s*([^|]+)\|\s*([+-]?\d+)\]\]/g;
+            // 1. HP Updates: [[HP: Name|Amount]] or [[HP: Name|Current/Max]]
+            // Format 1: [[HP: Name|+5]] or [[HP: Name|-3]] (change amount)
+            // Format 2: [[HP: Name|2/9]] (current/max HP)
+            const hpRegex = /\[\[HP:\s*([^|]+)\|\s*([^\]]+)\]\]/g;
 
             for (const match of finalNarrative.matchAll(hpRegex)) {
                 const targetName = match[1].trim();
-                const amount = parseInt(match[2]);
+                const hpValue = match[2].trim();
+
+                // Determine if it's change format (+/-X) or current/max format (X/Y)
+                let amount = 0;
+                let absoluteHp = null;
+                let maxHpUpdate = null;
+
+                if (hpValue.includes('/')) {
+                    // Format: current/max (e.g., "2/9")
+                    const [current, max] = hpValue.split('/').map(s => parseInt(s.trim()));
+                    absoluteHp = current;
+                    maxHpUpdate = max;
+                } else {
+                    // Format: change amount (e.g., "+5" or "-3")
+                    amount = parseInt(hpValue);
+                }
 
                 // Try Player Roster first
                 const agentIdx = tempRoster.findIndex(c => c.name.includes(targetName) || targetName.includes(c.name));
                 if (agentIdx !== -1) {
                     const charData = tempRoster[agentIdx];
-                    // Manual HP adjustment (assuming maxHp exists or defaulting to 100)
                     const currentHp = charData.hp !== undefined ? charData.hp : 100;
-                    const maxHp = charData.maxHp || 100;
-                    const newHp = Math.min(maxHp, Math.max(0, currentHp + amount));
+                    const maxHp = maxHpUpdate || charData.maxHp || 100;
+
+                    // Calculate new HP based on format
+                    let newHp;
+                    if (absoluteHp !== null) {
+                        newHp = absoluteHp;
+                    } else {
+                        newHp = Math.min(maxHp, Math.max(0, currentHp + amount));
+                    }
 
                     // --- DEATH & DYING LOGIC ---
                     let statusUpdate = {};
                     if (newHp <= 0) {
                         if (gameMode === GAME_MODES.TRPG) {
                             statusUpdate = { status: 'unconscious' };
-                            // Initialize Death Saves if not present
-
                             deferredStateChanges[charData.id] = {
                                 ...(deferredStateChanges[charData.id] || {}),
                                 hp: 0,
@@ -1594,50 +1831,59 @@ JSON格式回覆：
                             };
                             showToast(`${charData.name} 已陷入昏迷！ (Unconscious)`, "error");
                         } else {
-                            // Novel Mode: Fail Forward
                             statusUpdate = { status: 'injured' };
                             showToast(`${charData.name} 受了重傷！ (Injured)`, "warning");
                         }
                     } else {
-                        // Healed up - Clear Death States
                         if (charData.status === 'unconscious' || charData.status === 'dead' || charData.status === 'injured') {
-                            statusUpdate = { status: 'active' }; // Reset to active
-                            // Clear Death Saves
-
+                            statusUpdate = { status: 'active', deathSaves: undefined };
                             deferredStateChanges[charData.id] = {
                                 ...(deferredStateChanges[charData.id] || {}),
                                 status: 'active',
                                 hp: newHp,
-                                deathSaves: null // encoding clear by null or undefined? Let's check logic later.
+                                deathSaves: null
                             };
-                            // NOTE: 'deathSaves' key removal needs careful handling in merger.
-                            // We will use a specific flag or just undefined.
-                            statusUpdate = { status: 'active', deathSaves: undefined };
-
                             showToast(`${charData.name} 恢復了意識！`, "success");
                         }
                     }
 
-                    tempRoster[agentIdx] = { ...charData, hp: newHp, ...statusUpdate };
+                    tempRoster[agentIdx] = {
+                        ...charData,
+                        hp: newHp,
+                        ...(maxHpUpdate ? { maxHp: maxHpUpdate } : {}),
+                        ...statusUpdate
+                    };
                     rosterDirty = true;
-                    if (newHp > 0 && amount !== 0) showToast(`${charData.name} HP ${amount > 0 ? '+' : ''}${amount}`, amount > 0 ? "success" : "error");
 
-                    // Sync GameState (DEFERRED)
-                    // Update local tracker
                     deferredStateChanges[charData.id] = {
                         ...(deferredStateChanges[charData.id] || {}),
                         hp: newHp,
                         ...statusUpdate
                     };
                 } else {
-                    // Try Scenario Roster
+                    // Try Scenario Roster (enemies/NPCs)
                     const sceneIdx = tempScenarioRoster.findIndex(c => c.name.includes(targetName) || targetName.includes(c.name));
                     if (sceneIdx !== -1) {
                         const actor = tempScenarioRoster[sceneIdx];
-                        const newHp = Math.min(actor.maxHp || 100, Math.max(0, (actor.hp || 0) + amount));
-                        tempScenarioRoster[sceneIdx] = { ...actor, hp: newHp };
+
+                        let newHp;
+                        let newMaxHp = maxHpUpdate || actor.maxHp || 100;
+
+                        if (absoluteHp !== null) {
+                            newHp = absoluteHp;
+                        } else {
+                            newHp = Math.min(newMaxHp, Math.max(0, (actor.hp || 0) + amount));
+                        }
+
+                        // Remove dead enemies from roster
+                        if (newHp <= 0) {
+                            console.log(`[HP Update] ${actor.name} defeated (HP 0), removing from Scene Actors`);
+                            tempScenarioRoster.splice(sceneIdx, 1);
+                            showToast(`💀 ${actor.name} 已被擊敗！`, "success");
+                        } else {
+                            tempScenarioRoster[sceneIdx] = { ...actor, hp: newHp, maxHp: newMaxHp };
+                        }
                         sceneDirty = true;
-                        // Optional: showToast(`${actor.name} HP ${amount}`, "error");
                     }
                 }
                 finalNarrative = finalNarrative.replace(match[0], '');
@@ -1718,26 +1964,56 @@ JSON格式回覆：
                 }
             }
 
-            // 2. Scene Updates: [[SCENE_UPDATE: ...]]
-            const sceneMatch = finalNarrative.match(/\[\[SCENE_UPDATE:\s*(.+?)\]\]/);
-            if (sceneMatch) {
-                const commands = sceneMatch[1];
+            // 2. Scene Updates: [[SCENE_UPDATE: ...]] or [[場景更新: ...]]
+            // Support multiple tags and both English/Chinese labels
+            const sceneUpdateRegex = /\[\[(SCENE_UPDATE|場景更新):\s*(.+?)\]\]/g;
+            const sceneMatches = [...finalNarrative.matchAll(sceneUpdateRegex)];
 
-                // Parse "Add(Name, HP, Type)"
-                const addRegex = /Add\(([^,]+),\s*(\d+),\s*([^)]+)\)/g;
+            for (const sceneMatch of sceneMatches) {
+                const commands = sceneMatch[2];
+
+                // Parse "Add(Name, HP, Type)" or "新增(Name, HP, Type)"
+                const addRegex = /(?:Add|新增)\(([^,]+),\s*(\d+),\s*([^)]+)\)/g;
                 for (const match of commands.matchAll(addRegex)) {
                     const [_, name, hp, type] = match;
                     const cleanName = name.trim();
+
+                    // Skip if this is a party member (check by name - comprehensive matching)
+                    const partyNames = tempRoster.filter(c => party.includes(c.id)).map(c => c.name);
+                    const normalizedCleanName = cleanName.replace(/[·•．]/g, '').toLowerCase();
+                    const isPartyMember = partyNames.some(pName => {
+                        const normalizedPartyName = pName.replace(/[·•．]/g, '').toLowerCase();
+                        const pNameFirst = pName.split(/[·•．\s]/)[0];
+                        const cleanNameFirst = cleanName.split(/[·•．\s]/)[0];
+                        return (
+                            cleanName.includes(pNameFirst) ||
+                            pName.includes(cleanNameFirst) ||
+                            cleanName === pName ||
+                            normalizedCleanName.includes(normalizedPartyName) ||
+                            normalizedPartyName.includes(normalizedCleanName)
+                        );
+                    });
+                    if (isPartyMember) {
+                        console.log(`[SceneUpdate] Skipping party member: ${cleanName}`);
+                        continue;
+                    }
 
                     // Generate Unique Name
                     const uniqueName = getUniqueEnemyName(cleanName, tempScenarioRoster);
 
                     if (!tempScenarioRoster.some(c => c.name === uniqueName)) {
+                        // Normalize Chinese types to English for consistent display
+                        const rawType = type.trim();
+                        let normalizedType = rawType;
+                        if (rawType === '敵人') normalizedType = 'Enemy';
+                        else if (rawType === '盟友') normalizedType = 'Ally';
+                        else if (rawType === 'NPC' || rawType === '中立') normalizedType = 'NPC';
+
                         tempScenarioRoster.push({
                             name: uniqueName,
                             hp: parseInt(hp),
                             maxHp: parseInt(hp),
-                            type: type.trim(),
+                            type: normalizedType,
                             id: `npc-${Date.now()}-${Math.random()}`
                         });
                         sceneDirty = true;
@@ -1745,21 +2021,36 @@ JSON格式回覆：
 
                 }
 
-                // Parse "Remove(Name)"
-                const removeRegex = /Remove\(([^)]+)\)/g;
+                // Parse "Remove(Name)" or "移除(Name)"
+                const removeRegex = /(?:Remove|移除)\(([^)]+)\)/g;
                 for (const match of commands.matchAll(removeRegex)) {
                     const name = match[1].trim();
                     tempScenarioRoster = tempScenarioRoster.filter(c => !c.name.includes(name));
                     sceneDirty = true;
                 }
 
-                // Parse "Clear"
-                if (commands.includes("Clear")) {
+                // Parse "Clear" or "清空"
+                if (commands.includes("Clear") || commands.includes("清空")) {
                     tempScenarioRoster = [];
                     sceneDirty = true;
                 }
+            }
 
-                finalNarrative = finalNarrative.replace(sceneMatch[0], '');
+            // Remove all SCENE_UPDATE tags from narrative
+            finalNarrative = finalNarrative.replace(sceneUpdateRegex, '');
+
+            // 3. Group Decision: [[DECISION: OpA | OpB]]
+            const decisionRegex = /\[\[DECISION:\s*(.+?)\]\]/;
+            const decisionMatch = finalNarrative.match(decisionRegex);
+            if (decisionMatch) {
+                const rawOptions = decisionMatch[1].split('|').map(s => s.trim());
+                if (rawOptions.length > 0) {
+                    // Set for next render
+                    setGroupDecisionOptions(rawOptions);
+                }
+                finalNarrative = finalNarrative.replace(decisionRegex, '');
+            } else {
+                setGroupDecisionOptions([]); // Clear if no decision this turn
             }
 
             // Batched Updates
@@ -1793,6 +2084,14 @@ JSON格式回覆：
                 })),
                 moduleId: selectedModule?.id || null,
                 currentAct: currentAct,
+                // LOOT SYSTEM: Inject loot guidelines based on party level and classes
+                lootGuidelines: (() => {
+                    const partyChars = party.map(id => agentRoster.find(c => c.id === id)).filter(Boolean);
+                    if (partyChars.length === 0) return '';
+                    const avgLevel = Math.round(partyChars.reduce((sum, c) => sum + (c.level || 3), 0) / partyChars.length);
+                    const partyClasses = partyChars.map(c => c.class);
+                    return getLootGuidelines(avgLevel, partyClasses, 'combat');
+                })(),
             };
 
             const { data: mechanicsData, usage: gmUsage } = await gmAgent.analyzeState(gmContext);
@@ -1906,12 +2205,13 @@ JSON格式回覆：
             if (journalResult.location) setCurrentLocation(journalResult.location); // Immediate Map Update (Header)
 
             // --- AGENT 4 (PART 2): OPTION GENERATION ---
+            // IMPORTANT: Use finalNarrative (processed with battle summary) not raw narrativeText
             if (!isPrologue || forcePrologue) {
                 setIsPreGenerating(true);
                 const { results: nextOptions, usage: charUsage } = await charAgent.generateOptions(
                     agentRoster.filter(c => party.includes(c.id)),
                     { location: newMapLocation.join(" > "), time: "N/A" },
-                    narrativeText,
+                    finalNarrative, // Use finalNarrative for complete context including battle summary
                     mechanicsData.hp_updates ? "Outcome processed" : "Nothing happened",
                     newSignals,
                     selectedModule?.id || null,
@@ -1931,16 +2231,25 @@ JSON格式回覆：
                     // Simple HP Check (Current State) - Approximation OK for options
                     const hp = gameState[char.id]?.hp ?? char.hp;
                     if (hp <= 0) {
+                        // Allow CharacterManagerAgent's generated "Downed" options to pass through
+                        // But also ensure "Death Saving Throw" is available as a mechanic fallback if not present
                         if (!processedCharIds.has(charId)) {
-                            processedOptions.push({
-                                id: `${charId}-death-save`,
-                                label: "💀 瀕死檢定",
-                                description: "生命垂危...",
+                            // Check if AI generated "Downed" options? It should have.
+                            // But adding explicit Death Save is still good for mechanics.
+                            // Let's MERGE them or PREPEND the mechanic action.
+                            const deathSaveOption = {
+                                id: `${charId}-death-save-mechanic`,
+                                label: "💀 瀕死檢定 (Death Save)",
                                 type: "action",
                                 characterId: charId,
-                                monologue: "...",
-                                action: "makes a Death Saving Throw."
-                            });
+                                text: "makes a Death Saving Throw.",
+                                monologue: "(瀕死掙扎...)"
+                            };
+                            // Start with AI options, but ensure death save is an option or the default if AI failed
+                            // Actually, CharacterManagerAgent now generates "Downed" options.
+                            // Let's just push the AI options. The AI prompt was updated to handle this.
+                            // We don't need to force override unless AI failed.
+                            processedOptions.push(opt);
                             processedCharIds.add(charId);
                         }
                     } else {
@@ -2920,15 +3229,17 @@ JSON格式回覆：
                                         renderTextWithDice={renderTextWithDice}
                                         isNarrating={isNarrating}
                                         onComplete={() => {
-                                            // Only handle complete for the LAST log? 
-                                            // No, the renderer handles the internal typing.
-                                            // If we are at the end, trigger.
-                                            handleNarrativeComplete();
+                                            // Only handle complete for the LAST log
+                                            if (idx === logs.length - 1) {
+                                                handleNarrativeComplete();
+                                            }
                                         }}
-                                        instant={false}
+                                        instant={idx !== logs.length - 1} // Old logs should be instant
                                         textSpeed={userSettings.textSpeed}
                                         theme={userSettings.theme}
                                         fontSize={userSettings.fontSize}
+                                        letterSpacing={userSettings.letterSpacing}
+                                        lineHeight={userSettings.lineHeight}
                                     />
                                 ) : log.type === 'narrative' ? (
                                     <div className="prose prose-invert prose-p:text-slate-300 prose-lg max-w-none">
@@ -3108,7 +3419,7 @@ JSON格式回覆：
                     </div>
 
                     {/* Unified Scrollable Roster Area (Party + Enemies) */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div className={`flex-1 overflow-y-auto custom-scrollbar transition-all duration-500 ${groupDecisionOptions.length > 0 ? 'grayscale opacity-50 pointer-events-none' : ''}`}>
                         <div className="p-4 space-y-3">
                             {party.map((id, index) => {
                                 const char = agentRoster.find(c => c.id === id);
@@ -3128,7 +3439,17 @@ JSON格式回覆：
                                 return (
                                     <div
                                         key={id}
-                                        onClick={() => !isDead && !isGenerating && char.controlMode !== 'auto' && setActionModalChar(char)}
+                                        onClick={() => {
+                                            if (isDead || isGenerating || char.controlMode === 'auto' || groupDecisionOptions.length > 0) return;
+
+                                            // Auto-generate options if missing
+                                            const cached = actionCache[char.id];
+                                            if (!cached || !cached.options || cached.options.length === 0) {
+                                                handleRegenerateOptions(char);
+                                            }
+
+                                            setActionModalChar(char);
+                                        }}
                                         className={`
                                             group relative p-3 rounded transition-all cursor-pointer flex flex-col gap-2
                                             ${cardBorder} ${cardBg}
@@ -3250,8 +3571,34 @@ JSON格式回覆：
                             })}
                         </div>
 
-                        {/* Scenario Roster (Active Enemies & NPCs) */}
-                        <ScenarioRoster roster={scenarioRoster.filter(r => !party.includes(r.id))} />
+                        {/* Scenario Roster (Active Enemies & NPCs) - Exclude Party Members */}
+                        <ScenarioRoster roster={scenarioRoster.filter(r => {
+                            // Filter out party members by ID
+                            if (party.includes(r.id)) return false;
+
+                            // Get party names from both roster and agentRoster for comprehensive matching
+                            const partyChars = agentRoster.filter(c => party.includes(c.id));
+                            const partyNames = partyChars.map(c => c.name);
+
+                            // Normalize name for comparison (remove dots, lowercase)
+                            const normalizedActorName = (r.name || '').replace(/[·•．\s]/g, '').toLowerCase();
+
+                            // Check if this actor matches any party member
+                            const isPartyMember = partyNames.some(pName => {
+                                const normalizedPartyName = pName.replace(/[·•．\s]/g, '').toLowerCase();
+                                const pNameFirst = pName.split(/[·•．\s]/)[0];
+                                const actorNameFirst = (r.name || '').split(/[·•．\s]/)[0];
+                                return (
+                                    r.name === pName ||
+                                    r.name.includes(pNameFirst) ||
+                                    pName.includes(actorNameFirst) ||
+                                    normalizedActorName.includes(normalizedPartyName) ||
+                                    normalizedPartyName.includes(normalizedActorName)
+                                );
+                            });
+
+                            return !isPartyMember;
+                        })} />
 
                         {/* Journal Modal (Kept - triggered from top-left) */}
                         {showJournalModal && (
@@ -3307,6 +3654,20 @@ JSON格式回覆：
                     </div>
                 </div>
 
+                {/* Group Decision Options Overlay */}
+                {groupDecisionOptions.length > 0 && !isGenerating && !isNarrating && (
+                    <GroupDecisionOptions
+                        options={groupDecisionOptions}
+                        onSelect={(option) => {
+                            // Clear decision options
+                            setGroupDecisionOptions([]);
+                            // Set as a group action for all party members
+                            const groupAction = `【團隊決策】${option}`;
+                            // Execute turn with the selected group decision
+                            executeTurn(false, groupAction);
+                        }}
+                    />
+                )}
 
             </div >
         );

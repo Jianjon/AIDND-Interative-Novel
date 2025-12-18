@@ -30,6 +30,8 @@ export default function ActionModal({
     const charOptions = actionCache[character.id] || { options: [], monologue: '' };
     const options = charOptions.options || [];
     const monologue = charOptions.monologue || '';
+    const hp = character.hp ?? 0; // Use direct prop as App.jsx passes updated character object
+    const isDowned = hp <= 0;
 
     // Handle option selection
     const handleSelectOption = (optionText) => {
@@ -66,12 +68,20 @@ export default function ActionModal({
         : "top-full mt-2 slide-in-from-top-2 origin-top";
 
     // Dark Tome Aesthetic Classes
-    const containerClasses = "bg-slate-900/95 border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md";
-    const headerClasses = "bg-slate-950/50 border-b border-white/5";
-    const textPrimary = "text-slate-200";
-    const textSecondary = "text-slate-500";
-    const accentColor = "text-amber-500";
-    const accentHover = "hover:text-amber-400";
+    // Dark Tome Aesthetic Classes
+    // If Downed, use Red/Black theme
+    const containerClasses = isDowned
+        ? "bg-red-950/95 border border-red-500/50 shadow-[0_10px_40px_rgba(255,0,0,0.2)] backdrop-blur-md"
+        : "bg-slate-900/95 border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md";
+
+    const headerClasses = isDowned
+        ? "bg-red-900/40 border-b border-red-500/30"
+        : "bg-slate-950/50 border-b border-white/5";
+
+    const accentColor = isDowned ? "text-red-500" : "text-amber-500";
+    const accentHover = isDowned ? "hover:text-red-400" : "hover:text-amber-400";
+    const textPrimary = isDowned ? "text-red-100" : "text-slate-200";
+    const textSecondary = isDowned ? "text-red-400/80" : "text-slate-400";
 
     return (
         <div className={`absolute left-0 z-50 w-[400px] rounded-lg flex flex-col overflow-hidden animate-in fade-in ${positionClasses} ${containerClasses} font-serif`}>
@@ -86,7 +96,7 @@ export default function ActionModal({
                 </button>
 
                 <h3 className={`${accentColor} font-bold text-xs uppercase tracking-[0.2em] mb-2 flex items-center gap-2 font-tome-header`}>
-                    <Feather size={12} fill="currentColor" /> {character.name}'s Turn
+                    <Feather size={12} fill="currentColor" /> {character.name}'s Turn {isDowned && <span className="text-red-500 animate-pulse font-extrabold ml-2">[濒死 - DOWNED]</span>}
                 </h3>
 
                 {monologue ? (

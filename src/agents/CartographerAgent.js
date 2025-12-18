@@ -60,10 +60,14 @@ export class CartographerAgent {
 ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
         [TASKS]
         1. **Location Tracking**: Decide whether the party moved, transitioned zones, or entered a sub-area.
-        2. **Journal Entry Creation**: Produce a NEW log entry with 3 layers:
-           - **Public**: Concise summary for the UI.
+        2. **Journal Entry Creation**: Produce a NEW log entry with these layers:
+           - **Public**: Concise summary for the UI (1-2 sentences).
            - **Logic**: Updates for world state (e.g., "NPC X Hostile", "Door Locked").
-           - **Hooks**: Potential future plot threads.
+           - **Hooks**: Potential future plot threads to revisit.
+        3. **Plot Tracking**: Track quest items, foreshadowing, and unresolved threads.
+           - **questItems**: Any quest-related items mentioned (obtained, used, lost).
+           - **foreshadowing**: Hints/clues for future events (mark as resolved when paid off).
+           - **unresolved**: Open plot threads needing resolution (mark urgency).
 
         [OUTPUT SCHEMA]
         {
@@ -71,9 +75,20 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
             "journal_entry": {
                 "public": "Turn ${turnCount}: The party arrived in Phandalin...",
                 "logic": ["Met Gundren", "Gundren is anxious"],
-                "hooks": ["Strange map mentioned"]
+                "hooks": ["Strange map mentioned"],
+                "questItems": [
+                    { "name": "神秘地圖", "status": "obtained", "notes": "標記著失落礦坑位置" }
+                ],
+                "foreshadowing": [
+                    { "hint": "黑袍人提到「黎明之劍」", "turnPlanted": ${turnCount}, "resolved": false }
+                ],
+                "unresolved": [
+                    { "thread": "失蹤的商人 Gundren", "urgency": "high" }
+                ]
             }
         }
+
+        NOTE: questItems, foreshadowing, unresolved are OPTIONAL arrays. Only include if relevant to this turn.
         `;
 
         try {
@@ -89,6 +104,78 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
                 data: {
                     location: currentLocation,
                     journal_entry: null
+                },
+                usage: null
+            };
+        }
+    }
+
+    /**
+     * Generates memory summary for long-term story coherence.
+     * @param {Object} context
+     * @param {string} context.narrative - Latest narrative text
+     * @param {string[]} context.existingKeyEvents - Already tracked key events
+     * @param {string} context.currentSummary - Existing chapter summary
+     * @returns {Promise<Object>} { workingSummary, newKeyEvents, characterUpdates }
+     */
+    async generateMemorySummary(context) {
+        const { narrative, existingKeyEvents = [], currentSummary = "" } = context;
+
+        const systemPrompt = `
+        你是故事記憶管理員，負責提取關鍵事件以維護長期故事連貫性。
+        **輸出必須是繁體中文。**
+
+        [最新敘事內容]
+        "${narrative.slice(0, 4000)}"
+
+        [現有關鍵事件]
+        ${existingKeyEvents.length > 0 ? existingKeyEvents.join('\n') : "(無)"}
+
+        [現有章節摘要]
+        ${currentSummary || "(無)"}
+
+        === 任務 ===
+        1. **章節摘要更新**：根據最新敘事，更新或維持當前章節的重點摘要（100字內）。
+        2. **新關鍵事件**：識別這段敘事中的重要事件（最多3個），只列出真正重要的：
+           - 劇情轉折（如：發現陰謀、盟友背叛）
+           - 重要人物死亡或出現
+           - 獲得關鍵物品
+           - 解鎖新區域
+           - 完成任務
+        3. **角色狀態**：如果有角色狀態發生明顯變化（受傷、瘋狂、覺醒等），記錄下來。
+
+        === 輸出格式 ===
+        {
+            "working_summary": "當前章節摘要...",
+            "new_key_events": ["事件1", "事件2"],
+            "character_updates": {"角色名": "狀態變化"}
+        }
+
+        **重要**：如果沒有新關鍵事件，返回空陣列 []。不要捏造不存在的事件。
+        `;
+
+        try {
+            const result = await this.model.generateContent(systemPrompt);
+            const response = result.response;
+            const text = response.text();
+            const usage = response.usageMetadata;
+
+            const parsed = JSON.parse(text);
+            return {
+                data: {
+                    workingSummary: parsed.working_summary || "",
+                    newKeyEvents: parsed.new_key_events || [],
+                    characterUpdates: parsed.character_updates || {}
+                },
+                usage
+            };
+        } catch (error) {
+            console.error("CartographerAgent Memory Summary Error:", error);
+            return {
+                data: {
+                    workingSummary: currentSummary,
+                    newKeyEvents: [],
+                    characterUpdates: {}
                 },
                 usage: null
             };

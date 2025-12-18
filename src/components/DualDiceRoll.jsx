@@ -7,11 +7,18 @@ const DualDiceRoll = ({
     target = { dc: 10, label: 'DC' },
     result = 'Success', // 'Success' | 'Failure'
     checkName = 'Check',
-    onComplete
+    onComplete,
+    autoPlay = false
 }) => {
     const [phase, setPhase] = useState('rolling'); // rolling -> reveal_target -> outcome -> finished
     const [displayRoll, setDisplayRoll] = useState(1);
     const [showResultParams, setShowResultParams] = useState(false);
+    const onCompleteRef = React.useRef(onComplete);
+
+    // Keep ref updated
+    React.useEffect(() => {
+        onCompleteRef.current = onComplete;
+    }, [onComplete]);
 
     // Rolling Animation for Player
     useEffect(() => {
@@ -43,23 +50,39 @@ const DualDiceRoll = ({
 
         if (phase === 'outcome') {
             // Stamp the result
-            const timer = setTimeout(() => {
+            const timer1 = setTimeout(() => {
                 setShowResultParams(true);
-                // Hold for a bit then finish
-                setTimeout(() => {
-                    if (onComplete) onComplete();
-                }, 2000);
             }, 500);
-            return () => clearTimeout(timer);
-        }
-    }, [phase, onComplete]);
 
-    const isSuccess = result.includes('成功') || result.includes('Success');
+            // Complete after showing result for 1.5s (reduced from 2s)
+            const timer2 = setTimeout(() => {
+                setPhase('finished');
+            }, 1800);
+
+            return () => {
+                clearTimeout(timer1);
+                clearTimeout(timer2);
+            };
+        }
+    }, [phase]);
+
+    // Separate effect for completion - avoids stale closure issues
+    useEffect(() => {
+        if (phase === 'finished' && onCompleteRef.current) {
+            console.log('[DualDiceRoll] Animation complete, calling onComplete');
+            onCompleteRef.current();
+        }
+    }, [phase]);
+
+    const isSuccess = result.includes('成功') || result.includes('Success') || result.includes('SUCCESS');
     const isCrit = playerRoll.base === 20;
     const isFail = playerRoll.base === 1;
 
     // Portal Target
     const targetEl = document.getElementById('game-left-panel') || document.body;
+
+    // Don't render overlay once animation is finished
+    if (phase === 'finished') return null;
 
     return ReactDOM.createPortal(
         <div className="absolute inset-0 z-[50] flex items-center justify-center bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-300 rounded-lg overflow-hidden">

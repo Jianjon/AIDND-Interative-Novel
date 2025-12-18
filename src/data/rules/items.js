@@ -61,3 +61,55 @@ export const MAGIC_ITEMS = {
     "Flame Tongue": { type: "Weapon (Any Sword)", effect: "Bonus action to ignite. +2d6 Fire damage on hit. Sheds light." },
     "Vorpal Sword": { type: "Weapon (Slashing)", effect: "+3 Weapon. On Nat 20, decapitates enemy (if applicable) or deals 6d8 extra dmg." }
 };
+
+/**
+ * D&D 5E Armor Database
+ * AC Formula: Light = Base + DEX, Medium = Base + DEX (max 2), Heavy = Base only
+ */
+export const ARMOR_DATABASE = {
+    // === LIGHT ARMOR (Full DEX bonus) ===
+    "Padded": { baseAC: 11, type: "Light", stealthDisadv: true, cost: "5gp", weight: 8 },
+    "Leather": { baseAC: 11, type: "Light", stealthDisadv: false, cost: "10gp", weight: 10 },
+    "Studded Leather": { baseAC: 12, type: "Light", stealthDisadv: false, cost: "45gp", weight: 13 },
+
+    // === MEDIUM ARMOR (DEX bonus max +2) ===
+    "Hide": { baseAC: 12, type: "Medium", stealthDisadv: false, cost: "10gp", weight: 12 },
+    "Chain Shirt": { baseAC: 13, type: "Medium", stealthDisadv: false, cost: "50gp", weight: 20 },
+    "Scale Mail": { baseAC: 14, type: "Medium", stealthDisadv: true, cost: "50gp", weight: 45 },
+    "Breastplate": { baseAC: 14, type: "Medium", stealthDisadv: false, cost: "400gp", weight: 20 },
+    "Half Plate": { baseAC: 15, type: "Medium", stealthDisadv: true, cost: "750gp", weight: 40 },
+
+    // === HEAVY ARMOR (No DEX bonus) ===
+    "Ring Mail": { baseAC: 14, type: "Heavy", strReq: null, stealthDisadv: true, cost: "30gp", weight: 40 },
+    "Chain Mail": { baseAC: 16, type: "Heavy", strReq: 13, stealthDisadv: true, cost: "75gp", weight: 55 },
+    "Splint": { baseAC: 17, type: "Heavy", strReq: 15, stealthDisadv: true, cost: "200gp", weight: 60 },
+    "Plate": { baseAC: 18, type: "Heavy", strReq: 15, stealthDisadv: true, cost: "1500gp", weight: 65 },
+
+    // === SHIELD ===
+    "Shield": { acBonus: 2, type: "Shield", cost: "10gp", weight: 6 }
+};
+
+/**
+ * Calculate final AC based on armor type and DEX modifier
+ * @param {string} armorName - Name of the armor
+ * @param {number} dexMod - DEX modifier
+ * @param {boolean} hasShield - Whether wielding a shield
+ * @returns {number} Final AC
+ */
+export const calculateAC = (armorName, dexMod = 0, hasShield = false) => {
+    const armor = ARMOR_DATABASE[armorName];
+    if (!armor) return 10 + dexMod + (hasShield ? 2 : 0); // Unarmored
+
+    let ac = armor.baseAC || 0;
+
+    if (armor.type === "Light") {
+        ac += dexMod;
+    } else if (armor.type === "Medium") {
+        ac += Math.min(dexMod, 2);
+    }
+    // Heavy: no DEX bonus
+
+    if (hasShield) ac += 2;
+    return ac;
+};
+
