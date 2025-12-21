@@ -83,16 +83,16 @@ export const CLASS_BEHAVIORS = {
         }
     },
     "冠軍勇士": {
-        instinct: "絕不後退，誓死守護榮譽。單挑強敵。",
-        professional: "利用盾牌與重甲構築防線，使用挑戰 (Challenge) 技能鎖定敵人。",
-        team: "與隊友並肩作戰，提供鄰近盟友防禦加成 (Aura)，或治療受傷的同伴 (Lay on Hands)。",
-        combatStyle: "神聖誓約的戰士。鏗鏘有力，光輝萬丈。",
-        signatureMoves: ["神聖懲擊 (Divine Smite)", "聖療術", "守護光環"],
-        roleInParty: "前線坦克/輔助治療",
+        instinct: "用最簡單直接的方式擊垮對手。相信自己的體力與武器。",
+        professional: "在夾擊中尋求爆發，利用高暴擊率在關鍵時刻解決強敵。保持穩定的站位。",
+        team: "作為團隊的堅實壁壘，物理上擋住敵人。在戰鬥中為隊友提供可靠的物理掩護。",
+        combatStyle: "純粹的身體素質。力量、速度、韌性的極致展現。",
+        signatureMoves: ["卓越體能", "高等暴擊", "額外攻擊"],
+        roleInParty: "前線坦克/輸出",
         levelBehaviors: {
-            beginner: { tactics: "聖療術保命，神懲打高價值目標。", abilities: ["神聖懲擊", "聖療術", "神聖感知"], threats: "法術位消耗快" },
-            intermediate: { tactics: "光環保護隊友，額外攻擊配合神懲爆發。", abilities: ["守護光環", "額外攻擊", "淨化邪惡"], threats: "邪惡生物會優先攻擊" },
-            advanced: { tactics: "傳奇聖武士，免疫控制效果，神懲傷害驚人。", abilities: ["淨化之觸", "復仇天使", "神聖光輝"], threats: "對付魔王需要智慧" }
+            beginner: { tactics: "基礎攻防，利用健壯體魄硬扛傷。尋求穩定暴擊。", abilities: ["卓越體能", "戰鬥風格"], threats: "小心被控場，缺乏遠程手段" },
+            intermediate: { tactics: "在混戰中尋求優勢，利用魯莽或夾擊提高暴擊率。", abilities: ["額外攻擊", "不屈意志"], threats: "注意法術傷害，維持血線" },
+            advanced: { tactics: "傳奇戰士，幾乎每兩次揮砍就有一次暴擊。無法被擊倒。", abilities: ["生命恢復", "終極暴擊"], threats: "在高階戰鬥中需要魔法支援" }
         }
     },
     "遊俠": {
@@ -395,6 +395,202 @@ export const CLASS_BEHAVIORS = {
             intermediate: { tactics: "時間凍結控制敵人，時空傳送靈活移動。", abilities: ["時間凍結", "時空傳送", "加速術"], threats: "時間悖論可能發生" },
             advanced: { tactics: "主宰時間流，幾乎無所不能。", abilities: ["時間停止", "記憶回溯", "時空主宰"], threats: "時間守護者的注視" }
         }
+    },
+    // --- New Specialized Classes ---
+    "戰吟弓手": {
+        instinct: "一邊歌唱一邊放箭，讓旋律與箭矢同步。",
+        professional: "在後方保持節奏，利用歌聲強化遠程攻擊的威力與精準度。",
+        team: "歌聲激勵全隊，箭矢掩護前線隊友，提供靈魂層面的支援。",
+        combatStyle: "音律與狙擊。旋律即是弓弦，歌聲即是箭羽。",
+        signatureMoves: ["戰吟射擊", "以太之歌", "自然律動"],
+        roleInParty: "遠程輸出/戰地支援",
+        levelBehaviors: {
+            beginner: { tactics: "基礎射擊配合激勵歌聲。尋求高地。", abilities: ["自然感知", "宿敵標記"], threats: "近戰非常脆弱" },
+            intermediate: { tactics: "在魔法歌聲中連續射擊。利用以太之歌移動。", abilities: ["額外攻擊", "以太之舞"], threats: "容易在歌唱時被中斷" },
+            advanced: { tactics: "每支箭都帶有靈魂共鳴。無人能逃脫這場演奏。", abilities: ["殺手旋律", "終極戰吟"], threats: "神聖禁魔區域" }
+        }
+    },
+    "混沌法師": {
+        instinct: "追求魔力的混亂之美。不穩定才是最強大的。",
+        professional: "掌握混亂的流向。在風險中尋求最大的法術爆發。",
+        team: "提醒隊友離自己遠點。關鍵時刻用不可預測的力量扭轉戰局。",
+        combatStyle: "不可預測的魔力噴泉。狂野、危險、毀滅性。",
+        signatureMoves: ["狂野魔法激湧", "混沌箭", "命運波折"],
+        roleInParty: "高風險爆發輸出",
+        levelBehaviors: {
+            beginner: { tactics: "盡量使用低環法術測試穩定性。隨時準備跑路。", abilities: ["波折命運", "混沌噴發"], threats: "魔法反噬可能炸到自己" },
+            intermediate: { tactics: "利用超魔專長引導混亂，造成大範圍傷害。", abilities: ["混沌護盾", "狂野施法"], threats: "隨機效果可能不利於團隊" },
+            advanced: { tactics: "主宰混亂，將不確定性化為確定性的毀滅。", abilities: ["混沌主宰", "流星爆(混沌)"], threats: "世界意志的排斥" }
+        }
+    },
+    "血族領主": {
+        instinct: "嗅吸戰場上的生命氣息。渴求鮮血與臣服。",
+        professional: "利用恐懼與威懾控制場域。吸取敵人的生命力來維持自己的狂怒。",
+        team: "在前線作為恐怖的領軍者，讓敵人在恐懼中露出破綻給隊友。",
+        combatStyle: "死亡與貴氣。殘忍與優雅的血色華爾滋。",
+        signatureMoves: ["吸血鬼懲擊", "恐懼光環", "黑夜形態"],
+        roleInParty: "恐懼控場/前線坦克",
+        levelBehaviors: {
+            beginner: { tactics: "利用負能量打擊目標。建立威壓感。", abilities: ["亡靈感應", "吸血打擊"], threats: "神聖光芒令其虛弱" },
+            intermediate: { tactics: "呼喚黑夜的力量，建立恐懼光環。召喚僕從。", abilities: ["恐懼光環", "霧化移動"], threats: "需要定期補充血氣" },
+            advanced: { tactics: "黑夜的主宰，眾多亡靈的君王。無法被真正殺死。", abilities: ["永恆之軀", "血色領域"], threats: "傳奇獵魔人的追擊" }
+        }
+    },
+    "幸運兒": {
+        instinct: "靠運氣和直覺在刀尖上跳舞。總是能化險為夷。",
+        professional: "在混亂中尋求最輕鬆的解決方案。利用環境中的巧合來獲得優勢。",
+        team: "給隊友帶來好運，或者乾脆讓敵人因為倒楣而失手。",
+        combatStyle: "即興與好運。看似笨拙實則精妙。",
+        signatureMoves: ["好運連連", "巧妙閃避", "意外收穫"],
+        roleInParty: "機會主義/干擾控場",
+        levelBehaviors: {
+            beginner: { tactics: "在邊緣遊走，利用巧合反擊。尋求安全位置。", abilities: ["直覺閃避", "運氣爆發"], threats: "被包圍後無處可躲" },
+            intermediate: { tactics: "讓敵人的失誤成為自己的機會。靈活移動。", abilities: ["神來一筆", "不倒翁"], threats: "運氣用完時會很慘" },
+            advanced: { tactics: "命運的寵兒。世界彷彿在為其開路。無往不利。", abilities: ["天佑之人", "命運硬幣"], threats: "絕對規則的束縛" }
+        }
+    },
+    "守約騎士": {
+        instinct: "守護與承諾。站在最危險的地方保護弱小。",
+        professional: "建立穩定的防禦線。優先標記會威脅後排的敵人並將其攔截。",
+        team: "作為隊伍的盾牌，主動分擔傷員的壓力。確保戰役能按計畫進行。",
+        combatStyle: "防禦與權威。不動如山的紀律感。",
+        signatureMoves: ["守護誓言", "不屈防線", "誓約打擊"],
+        roleInParty: "純前線坦克",
+        levelBehaviors: {
+            beginner: { tactics: "利用盾牌格擋，保護鄰近隊友。", abilities: ["守護風格", "第二風"], threats: "機動力較低" },
+            intermediate: { tactics: "標記敵人，強迫其攻擊自己。建立防守光環。", abilities: ["額外攻擊", "守護光環"], threats: "小心魔法控制效果" },
+            advanced: { tactics: "傳奇守護者，只要他還站著，就沒人能傷害他的盟友。", abilities: ["不屈意志", "終極防衛"], threats: "需要應對地形破壞" }
+        }
+    },
+    "劍刃舞者": {
+        instinct: "優美地旋轉與揮砍。戰場是展現實力的舞台。",
+        professional: "在刀光劍影中尋求節奏，利用華麗的假動作迷惑對手後造成致命傷。",
+        team: "用靈魂的魅力激勵隊友，同時在高壓區域吸引敵人的注意。",
+        combatStyle: "藝術與格鬥。流暢、華麗、充滿觀賞性。",
+        signatureMoves: ["劍刃花招", "華麗舞步", "魅力旋律"],
+        roleInParty: "靈巧輸出/群體支援",
+        levelBehaviors: {
+            beginner: { tactics: "基礎劍術配合短促的吟唱。靈活閃避。", abilities: ["激勵骰", "劍舞風格"], threats: "身穿輕甲，HP不高" },
+            intermediate: { tactics: "在施展花招的同時進行多次攻擊。保持高移動。", abilities: ["高等花招", "魔法武器"], threats: "容易在表演時被集火" },
+            advanced: { tactics: "劍與魂的完美融合。他的舞步就是死亡的旋律。", abilities: ["戰場主宰", "傳奇舞步"], threats: "封閉空間難以施展" }
+        }
+    },
+    "偵察兵": {
+        instinct: "先發制人。在敵方反應過來前就完成觀察或擊殺。",
+        professional: "利用隱蔽與地形獲取情報。在戰鬥中負責清除敵方視野或關鍵目標。",
+        team: "為隊伍開路。在側翼提供精準的物理支援。標記危險路徑。",
+        combatStyle: "機動與伏擊。野外作戰的大師。",
+        signatureMoves: ["快速標記", "伏擊突襲", "荒野感知"],
+        roleInParty: "機動輸出/斥候",
+        levelBehaviors: {
+            beginner: { tactics: "利用宿敵與自然探索找出優勢目標。打了就跑。", abilities: ["自然感知", "快速機動"], threats: "容易衝得太深" },
+            intermediate: { tactics: "在複雜地形中隱形。利用多次攻擊封鎖敵人。", abilities: ["伏擊大師", "荒野行走"], threats: "在高科技/強魔環境受限" },
+            advanced: { tactics: "幽靈般的偵察兵。戰場上沒有他發現不了的秘密。", abilities: ["完美標記", "傳奇追跡"], threats: "真視與預言魔法" }
+        }
+    },
+    "戰鬥祭師": {
+        instinct: "一手持聖徽，一手持重錘。以神之名行武人之事。",
+        professional: "站在戰線中央，一邊施放防護神跡一邊打擊邪惡生物。",
+        team: "作為隊伍的中流砥柱，提供治療的同時不失進攻壓力。戰地協調者。",
+        combatStyle: "神聖與鐵鎚。堅毅、神聖、威風凜凜。",
+        signatureMoves: ["戰爭神念", "神聖打擊", "神威領域"],
+        roleInParty: "前線支援/副坦克",
+        levelBehaviors: {
+            beginner: { tactics: "使用祝福術提升士氣，聖錘擊退近敵。", abilities: ["戰爭祭師", "祝福術"], threats: "法術位與攻擊的取捨" },
+            intermediate: { tactics: "施展領域法術分割戰場。開始使用重型懲擊。", abilities: ["神威光環", "額外攻擊"], threats: "專注容易被近戰打斷" },
+            advanced: { tactics: "神之代理人。他的每一次揮動都帶著神國的重壓。", abilities: ["戰爭巔峰", "神聖干涉"], threats: "反神聖能量區域" }
+        }
+    },
+    "奧法騎士": {
+        instinct: "左手火球右手長劍。物理與魔法的交響織體。",
+        professional: "利用魔法強化自身的物理防禦（如護盾術），並在白兵戰中穿插短法術。",
+        team: "作為萬能的前線戰位，在法師與戰士間架起橋樑。應對多樣化威脅。",
+        combatStyle: "戰技與奧術。靈活、多變、充滿戰術思考。",
+        signatureMoves: ["戰鬥施法", "繫譜武器", "奧法激湧"],
+        roleInParty: "魔法前線/多功能戰士",
+        levelBehaviors: {
+            beginner: { tactics: "利用戲法進行遠程牽制，近戰則以護盾保命。", abilities: ["繫譜武器", "防護法術"], threats: "法術位極度有限" },
+            intermediate: { tactics: "攻擊後瞬發施法。利用位移術調整位置。", abilities: ["戰鬥施法", "二環法術"], threats: "能力多樣但都不極致" },
+            advanced: { tactics: "奧法大師。每一次斬擊都是高環法術學的導火線。", abilities: ["奧法打擊", "傳奇融合"], threats: "依賴魔法強化，怕禁魔" }
+        }
+    },
+    "獵人": {
+        instinct: "精準無比的追獵。在陰影中等待完美的射擊時機。",
+        professional: "分析目標的類型（如大型生物、群體），選擇最合適的獵殺專長。設下陷阱。",
+        team: "作為隊伍的遠程支柱，清除關鍵威脅。在野外為全隊提供食物與安全保障。",
+        combatStyle: "專注與毀滅。宿敵的噩夢。",
+        signatureMoves: ["多重攻擊", "宿敵標記", "荒野求生"],
+        roleInParty: "遠程/近戰輸出",
+        levelBehaviors: {
+            beginner: { tactics: "標記獵物，利用射程優勢消耗。", abilities: ["獵人印記", "自然探索"], threats: "被近身後缺乏脫逃手段" },
+            intermediate: { tactics: "根據敵人組合切換打擊方式（旋風斬或多重射擊）。", abilities: ["防禦戰術", "額外攻擊"], threats: "容易陷入持久戰" },
+            advanced: { tactics: "終極獵人。沒人能躲過他的標記，沒人能承受他的箭雨。", abilities: ["高等防守", "獵人巅峰"], threats: "需要應對具有傳奇抗性的獵物" }
+        }
+    },
+    "刺客": {
+        instinct: "一擊必殺。在敵人察覺前就結束戰鬥。",
+        professional: "精確計算潛行的路徑。利用毒藥和偽裝滲入敵方陣型，斬殺首腦。",
+        team: "在暗處提供爆發支援。負責清除敵方後排的法師或弩手。偵察陷阱。",
+        combatStyle: "冷酷與致命。陰影中的死神。",
+        signatureMoves: ["暗殺打擊", "毒藥運用", "偽裝大師"],
+        roleInParty: "單體爆發輸出/斥候",
+        levelBehaviors: {
+            beginner: { tactics: "第一回合尋求驚奇突擊。利用隱匿行動。", abilities: ["偷襲", "暗殺"], threats: "正面衝突能力極弱" },
+            intermediate: { tactics: "利用偽裝混入敵群。靈活使用閃避動作。", abilities: ["滲透專家", "直覺閃避"], threats: "被魔法感知發現" },
+            advanced: { tactics: "傳奇刺客。他的名字就是死亡的代名詞，無人能避開他的匕首。", abilities: ["致死打擊", "盲視"], threats: "真視術與預言感知" }
+        }
+    },
+    "武器大師": {
+        instinct: "見招拆招。世間兵器皆為我所用。",
+        professional: "觀察敵人的攻防模式，利用豐富的戰技（Maneuvers）來繳械、擊倒或反擊。",
+        team: "戰場上的戰術家。透過戰技為隊友創造攻擊優勢或救回受困的同伴。",
+        combatStyle: "技藝與策略。千錘百鍊的武技展現。",
+        signatureMoves: ["戰術指令", "精準打擊", "卓越防禦"],
+        roleInParty: "技術型前線/戰術協調",
+        levelBehaviors: {
+            beginner: { tactics: "使用基礎戰技控制目標，節省體力。", abilities: ["戰鬥卓越", "第二風"], threats: "戰技次數有限" },
+            intermediate: { tactics: "在攻擊中穿插多個戰技。利用卓越骰進行反擊。", abilities: ["額外攻擊", "知己知彼"], threats: "注意對手的特殊抗性" },
+            advanced: { tactics: "武技之巔。無論對手用什麼招式，他都有完美的解法。", abilities: ["無窮戰技", "戰場主宰"], threats: "大規模魔法轟炸" }
+        }
+    },
+    "氣脈醫者": {
+        instinct: "以氣禦身，以德服人。追求身心的和諧。",
+        professional: "將內氣注入傷口進行快速治療。利用極高的機動性在戰場上穿梭救火。",
+        team: "守護者與治療者的結合。在戰士與法師間快速移動，提供必要的支援。",
+        combatStyle: "輕盈與慈悲。如絲般柔和卻又堅勁。",
+        signatureMoves: ["氣脈療癒", "停戰打擊", "流光步"],
+        roleInParty: "機動治療/輔助",
+        levelBehaviors: {
+            beginner: { tactics: "利用氣進行基礎噴發治療或快速閃避。", abilities: ["氣脈基礎", "疾風步"], threats: "血量較低，小心爆發傷害" },
+            intermediate: { tactics: "在打擊的同時為鄰近盟友恢復活力。移除負面狀態。", abilities: ["震懾拳", "淨化之氣"], threats: "內氣消耗過快" },
+            advanced: { tactics: "內氣大師。只需輕輕一觸，無論是生存還是毀滅都在一念之間。", abilities: ["空寂之身", "神聖氣脈"], threats: "反靈能/反氣場環境" }
+        }
+    },
+    "戰地醫師": {
+        instinct: "戰火中的救贖。哪裡有哀嚎，哪裡就有他的身影。",
+        professional: "在高壓火線上進行手術。利用盾牌掩護病人，維持傷員的穩定。",
+        team: "戰場的守護神。確保隊友不會倒下，是團隊持續作戰的保證。",
+        combatStyle: "務實與神聖。冷靜、專業、可靠。",
+        signatureMoves: ["戰地急救", "生命守護", "神聖穩定"],
+        roleInParty: "戰地治療/坦克型輔助",
+        levelBehaviors: {
+            beginner: { tactics: "利用重甲保護自己施法。穩定倒下的隊友。", abilities: ["奉獻治療", "聖域術"], threats: "機動力不足，容易掉隊" },
+            intermediate: { tactics: "在大範圍傷害後迅速回升隊伍血線。解除詛咒。", abilities: ["群體治癒", "受福之軀"], threats: "法術位優先給予治療" },
+            advanced: { tactics: "生命的堡壘。在他身邊的人彷彿被女神親自眷顧。", abilities: ["終極生命領域", "神聖干涉"], threats: "復活資源的枯竭" }
+        }
+    },
+    "荒野女巫": {
+        instinct: "自然的憤怒。誰敢踐踏這片土地，誰就要付出代價。",
+        professional: "召喚荒野的盟友或直接變形為自然的怒火。利用植物與雲霧控制戰場。",
+        team: "提供多樣化的支援——可以是保護後排的棘牆，也可以是衝鋒陷陣的棕熊。",
+        combatStyle: "原始與神祕。變幻莫測的自然之力。",
+        signatureMoves: ["荒野變形", "荊棘之環", "自然之審判"],
+        roleInParty: "多功能坦克/控場",
+        levelBehaviors: {
+            beginner: { tactics: "變形為堅韌生物吸收傷害，施放糾纏術。", abilities: ["荒野變形", "治療創傷"], threats: "變形後思維趨向原始" },
+            intermediate: { tactics: "變形為更強大的掠食者。利用自然之力強化盟友。", abilities: ["強力變形", "召喚閃電"], threats: "長時間變形可能迷失自我" },
+            advanced: { tactics: "大地的化身。她就是這片森林，她就是這場風暴。", abilities: ["無限變形", "傳奇自然"], threats: "禁魔與工業污染環境" }
+        }
     }
 };
 
@@ -420,6 +616,13 @@ export const UNKNOWN_CLASS_FALLBACK = {
  * @param {string} className - The class name (Chinese)
  * @param {string} levelTier - 'beginner' (1-5), 'intermediate' (5-10), 'advanced' (8-15)
  * @returns {object} - Class behavior object with level-specific info
+ *
+ * task.md updates:
+ * - [x] Verify all characters (Manual & Logic Check)
+ * - [x] Sync Class Behaviors
+ *   - [x] Identify missing classes in `classBehaviors.js`
+ *   - [x] Implement decision bias and combat styles
+ *   - [x] Verify AI behavior weights
  */
 export function getClassBehavior(className, levelTier = 'beginner') {
     let behavior;

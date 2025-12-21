@@ -32,5 +32,13 @@ export const FEATS = {
     "Spell Sniper": { desc: "Double spell attack range. Ignore 1/2 and 3/4 cover. Learn 1 attack cantrip." },
     "Tavern Brawler": { desc: "+1 Str/Con. Proficient with improvised weapons/unarmed (1d4). Bonus Action Grapple on hit." },
     "Tough": { desc: "+2 HP per level." },
-    "War Caster": { desc: "Adv on Con saves for Concentration. Cast somatic with weapons. Cast spell as Opportunity Attack." }
+    "War Caster": { desc: "Adv on Con saves for Concentration. Cast somatic with weapons. Cast spell as Opportunity Attack." },
+    "Metamagic Adept": { desc: "Gain 2 Sorcery Points & 2 Metamagic options." },
+    "Fey Touched": { desc: "+1 Int/Wis/Cha. Learn Misty Step + 1st lvl Div/Ench spell." },
+    "Shadow Touched": { desc: "+1 Int/Wis/Cha. Learn Invisibility + 1st lvl Illu/Necro spell." },
+    "Telekinetic": { desc: "+1 Int/Wis/Cha. Mage Hand range +30ft. Bonus Action shove 5ft." },
+    "Telepathic": { desc: "+1 Int/Wis/Cha. Telepathy 60ft. Cast Detect Thoughts 1/day." },
+    "Fighting Initiate": { desc: "Learn a Fighting Style from Fighter list." },
+    "Eldritch Adept": { desc: "Learn 1 Warlock Invocation." },
+    "Gunner": { desc: "+1 Dex. Prof w/ Firearms. Ignore loading. No disadv in melee." }
 };

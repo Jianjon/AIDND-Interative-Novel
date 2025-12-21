@@ -114,12 +114,28 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
            - **Quest Items**: Mark as \`isQuestItem: true\`. Must aid story progression.
            - **General Loot**: Gold, potions, generic gear.
            - **Class Items**: If an item fits a specific party member (e.g. Plate for Paladin), target them.
+           - **Restock Priority**: 
+             - Check player HP status. If critical, prioritize dropping Healing Potions.
+             - **Level Scaling**: 
+               - Lv 1-4: Dropping 'Potion of Healing' (Common).
+               - Lv 5+: Dropping 'Potion of Greater Healing' (Uncommon).
+             - **Quantity**: 
+               - Relaxed/Low Threat: Drop 2-3 consumables.
+               - Grim/High Threat: Scarcity rules apply (0-1 relevant item).
 
 ${lootGuidelines ? `${lootGuidelines}\n` : ''}
 
         [OUTPUT SCHEMA]
         {
-            "hp_updates": { "character_id_or_name": -5 }, 
+            "hp_updates": { "character_id_or_name": -5 },
+            "inventory_updates": [
+                {
+                    "character": "CharacterName",
+                    "item": "Potion of Healing",
+                    "change": -1, // Negative for used/lost, Positive for gained
+                    "reason": "Used during combat"
+                }
+            ],
             "loot": [
                 {
                     "name": "Item Name",

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, Sparkles, User, Sword, Shield, Zap, BookOpen, Dice5, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Sparkles, User, Sword, Shield, Zap, BookOpen, Dice5, RefreshCw, Upload, Image as ImageIcon, Move, ZoomIn } from 'lucide-react';
 import { CHARACTER_PROMPTS } from '../data/character_prompts';
 
 /**
@@ -28,6 +28,49 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
     const [charClass, setCharClass] = useState(''); // Default empty = "Random"
     const [charAlignment, setCharAlignment] = useState('');
 
+    // Custom Input States
+    const [customRace, setCustomRace] = useState('');
+    const [customClass, setCustomClass] = useState('');
+
+    // Image Upload & Edit States
+    const [uploadedImage, setUploadedImage] = useState(null);
+    const [imageZoom, setImageZoom] = useState(1);
+    const [imagePos, setImagePos] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const imageRef = useRef(null);
+    const containerRef = useRef(null);
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setUploadedImage(e.target.result);
+                setImageZoom(1);
+                setImagePos({ x: 0, y: 0 });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleMouseDown = (e) => {
+        setIsDragging(true);
+        setDragStart({ x: e.clientX - imagePos.x, y: e.clientY - imagePos.y });
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        setImagePos({
+            x: e.clientX - dragStart.x,
+            y: e.clientY - dragStart.y
+        });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
     const RACES = [
         // Core
         "Human (人類)", "Elf (精靈)", "Dwarf (矮人)", "Halfling (半身人)",
@@ -36,7 +79,8 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
         // Exotic / Monster
         "Aasimar (阿斯莫)", "Warforged (機人)", "Mind Flayer (奪心魔)", "Duergar (灰矮人)",
         "Goblin (哥布林)", "Vampire (吸血鬼)", "Kenku (肯庫)", "Tabaxi (貓人)",
-        "Githyanki (吉斯洋基人)", "Changeling (變形者)"
+        "Githyanki (吉斯洋基人)", "Changeling (變形者)",
+        "Custom (自定義)"
     ];
 
     const CLASSES = [
@@ -47,7 +91,8 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
         // Expanded
         "Artificer (奇械師)", "Blood Hunter (血獵手)", "Necromancer (死靈法師)",
         "Alchemist (煉金術士)", "Spellblade (魔劍士)", "Psionic (靈能者)",
-        "Death Knight (死亡騎士)", "Shaman (薩滿)"
+        "Death Knight (死亡騎士)", "Shaman (薩滿)",
+        "Custom (自定義)"
     ];
 
     const ALIGNMENTS = [
@@ -79,8 +124,14 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
         let constraints = [];
         if (charName) constraints.push(`Name: ${charName}`);
         if (charGender) constraints.push(`Gender: ${charGender}`);
-        if (charRace) constraints.push(`Race: ${charRace.split(' ')[0]}`); // Take English part
-        if (charClass) constraints.push(`Class: ${charClass.split(' ')[0]}`); // Take English part
+        if (charRace) {
+            const r = charRace.startsWith("Custom") ? customRace : charRace.split(' ')[0];
+            if (r) constraints.push(`Race: ${r}`);
+        }
+        if (charClass) {
+            const c = charClass.startsWith("Custom") ? customClass : charClass.split(' ')[0];
+            if (c) constraints.push(`Class: ${c}`);
+        }
         if (charAlignment) constraints.push(`Alignment: ${charAlignment.split(' (')[0]}`);
 
         if (constraints.length > 0) {
@@ -115,12 +166,99 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
     const handleFinalize = () => {
         if (!draft || !selectedAbility) return;
 
+        let finalAvatar = draft.avatar;
+
+        // Process Custom Image if exists
+        if (uploadedImage && imageRef.current && containerRef.current) {
+            try {
+                const canvas = document.createElement('canvas');
+                const size = 300; // Final avatar size
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Calculate crop
+                // We need to map the visible area in the DOM to the canvas
+                // Container is the viewport (circle or square)
+
+                // For simplicity, we just draw the image with current transform onto a square canvas
+                // centered
+
+                ctx.fillStyle = "#1a1a1a";
+                ctx.fillRect(0, 0, size, size);
+
+                // Draw logic is complex without a library, simpler approach:
+                // Use the displayed image style transform to roughly map to canvas
+
+                const img = imageRef.current;
+                const scale = imageZoom;
+                const x = imagePos.x;
+                const y = imagePos.y;
+
+                // Center the drawing context
+                ctx.translate(size / 2, size / 2);
+                ctx.translate(x, y);
+                ctx.scale(scale, scale);
+                // Draw image centered
+                ctx.drawImage(img, -img.naturalWidth / 2 * (300 / img.naturalWidth), -img.naturalHeight / 2 * (300 / img.naturalWidth), 300, 300 * (img.naturalHeight / img.naturalWidth));
+
+                // Better approach: just use the data URL for now if we can't perfectly crop without a library
+                // But let's try a heuristic: User sees the result in the circle.
+                // We'll trust the React view is the "Preview", and for the stored data, 
+                // we might just store the original + transform data? 
+                // No, existing system expects a single URL.
+
+                // Let's implement a robust canvas draw:
+                // 1. Determine image natural dimensions
+                const natW = img.naturalWidth;
+                const natH = img.naturalHeight;
+
+                // 2. The container is say 128x128 displayed, but we want high res output
+                // Let's base it on a standard 512x512 output
+                const outSize = 512;
+                canvas.width = outSize;
+                canvas.height = outSize;
+
+                const ctx2 = canvas.getContext('2d');
+                ctx2.fillStyle = "#000";
+                ctx2.fillRect(0, 0, outSize, outSize);
+
+                // Apply transform
+                // The visual feedback is: Image is moved by {imagePos.x, imagePos.y} pixels relative to center
+                // And scaled by {imageZoom}
+
+                ctx2.translate(outSize / 2 + imagePos.x, outSize / 2 + imagePos.y);
+                ctx2.scale(imageZoom, imageZoom);
+
+                // Draw image centered at current origin
+                // We fit the image to the box initially? 
+                // Let's assume initial fit: cover
+                const aspect = natW / natH;
+                let drawW, drawH;
+                if (aspect > 1) {
+                    drawH = outSize;
+                    drawW = outSize * aspect;
+                } else {
+                    drawW = outSize;
+                    drawH = outSize / aspect;
+                }
+
+                ctx2.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+
+                finalAvatar = canvas.toDataURL('image/jpeg', 0.9);
+
+            } catch (e) {
+                console.error("Image Crop Failed", e);
+            }
+        }
+
         // Merge selected ability into character features/feats
         const finalCharacter = {
             ...draft,
             feats: [...(draft.feats || []), selectedAbility.name],
             // Store full ability detail in a special property for tooltip display later
-            specialAbility: selectedAbility
+            specialAbility: selectedAbility,
+            avatar: finalAvatar
         };
 
         onConfirm(finalCharacter);
@@ -234,6 +372,36 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
                                     </select>
                                 </div>
 
+                                {/* Custom Fields Row - Only shows if Custom is selected */}
+                                {(charRace === 'Custom (自定義)' || charClass === 'Custom (自定義)') && (
+                                    <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-2 gap-4 bg-indigo-900/20 p-3 rounded-lg border border-indigo-500/30 animate-in fade-in slide-in-from-top-2">
+                                        {charRace === 'Custom (自定義)' && (
+                                            <div className="space-y-1">
+                                                <label className="text-xs text-amber-400 font-bold uppercase tracking-wider">自定義種族 (Custom Race)</label>
+                                                <input
+                                                    type="text"
+                                                    value={customRace}
+                                                    onChange={(e) => setCustomRace(e.target.value)}
+                                                    placeholder="例如: 賽亞人, 異形, 史萊姆..."
+                                                    className="w-full bg-slate-800 border border-amber-500/50 rounded px-3 py-2 text-white focus:outline-none text-sm"
+                                                />
+                                            </div>
+                                        )}
+                                        {charClass === 'Custom (自定義)' && (
+                                            <div className="space-y-1">
+                                                <label className="text-xs text-amber-400 font-bold uppercase tracking-wider">自定義職業 (Custom Class)</label>
+                                                <input
+                                                    type="text"
+                                                    value={customClass}
+                                                    onChange={(e) => setCustomClass(e.target.value)}
+                                                    placeholder="例如: 絕地武士, 寶可夢大師..."
+                                                    className="w-full bg-slate-800 border border-amber-500/50 rounded px-3 py-2 text-white focus:outline-none text-sm"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                             </div>
 
                             <div className="relative">
@@ -304,14 +472,79 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
 
                     {/* STEP 3: SELECTION & REVIEW */}
                     {step === 'selection' && draft && (
-                        <div className="w-full h-full flex flex-col md:flex-row gap-8 animate-in slide-in-from-right-10 fade-in duration-500">
+                        <div className="w-full h-full flex flex-col md:flex-row gap-8 animate-in slide-in-from-right-10 fade-in duration-500 text-slate-200"
+                            onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseUp}
+                        >
 
-                            {/* Left: Character Preview */}
+                            {/* Left: Character Preview & Edit */}
                             <div className="w-full md:w-1/3 bg-slate-900/50 p-6 rounded-xl border border-slate-800 flex flex-col gap-4 overflow-y-auto">
                                 <div className="flex flex-col items-center">
-                                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-amber-500/30 mb-4 shadow-lg">
-                                        <img src={draft.avatar} alt="Avatar" className="w-full h-full object-cover" />
+
+                                    {/* Avatar Editor Area */}
+                                    <div className="relative group w-48 h-48 mb-4">
+                                        <div
+                                            ref={containerRef}
+                                            className="w-full h-full rounded-full overflow-hidden border-4 border-amber-500/30 shadow-lg bg-slate-950 relative cursor-move"
+                                            onMouseDown={handleMouseDown}
+                                            onMouseMove={handleMouseMove}
+                                        >
+                                            {/* Render Image */}
+                                            <img
+                                                ref={imageRef}
+                                                src={uploadedImage || draft.avatar}
+                                                alt="Avatar"
+                                                className="absolute max-w-none transform-gpu transition-transform duration-75"
+                                                draggable={false}
+                                                style={{
+                                                    transform: `translate(-50%, -50%) translate(${imagePos.x}px, ${imagePos.y}px) scale(${imageZoom})`,
+                                                    left: '50%',
+                                                    top: '50%',
+                                                    // Initial sizing to cover roughly
+                                                    height: uploadedImage ? 'auto' : '100%',
+                                                    width: uploadedImage ? '100%' : 'auto',
+                                                    minWidth: '100%',
+                                                    minHeight: '100%'
+                                                }}
+                                            />
+
+                                            {/* Overlay Hint */}
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                                <Move className="text-white drop-shadow-md" />
+                                            </div>
+                                        </div>
+
+                                        {/* Upload Button */}
+                                        <label className="absolute bottom-0 right-0 p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full cursor-pointer shadow-lg transition-transform hover:scale-110 border-2 border-slate-900">
+                                            <Upload size={16} />
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                                        </label>
                                     </div>
+
+                                    {/* Editor Controls (Only if uploaded) */}
+                                    {uploadedImage && (
+                                        <div className="w-full px-4 mb-4 bg-slate-950/50 p-3 rounded-lg border border-slate-800 animate-in slide-in-from-top-2">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <ZoomIn size={14} className="text-slate-400" />
+                                                <span className="text-xs text-slate-400 font-bold uppercase">Zoom</span>
+                                            </div>
+                                            <input
+                                                type="range"
+                                                min="0.5"
+                                                max="3"
+                                                step="0.1"
+                                                value={imageZoom}
+                                                onChange={(e) => setImageZoom(parseFloat(e.target.value))}
+                                                className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                            />
+                                            <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+                                                <span>50%</span>
+                                                <button onClick={() => { setImageZoom(1); setImagePos({ x: 0, y: 0 }); }} className="hover:text-amber-500">Reset</button>
+                                                <span>300%</span>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <h3 className="text-2xl font-bold text-amber-500 text-center">{draft.name}</h3>
                                     <p className="text-slate-400">{draft.race} {draft.class}</p>
                                 </div>

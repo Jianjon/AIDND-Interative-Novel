@@ -38,21 +38,21 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Arcane Recovery", "Spellcasting"],
             2: ["Arcane Tradition"],
-            3: [], // 2nd Level Spells
+            3: ["Misty Step", "Shield"],
             4: ["Ability Score Improvement"],
-            5: [], // 3rd Level Spells
+            5: ["Fireball", "Counterspell"],
             6: ["Arcane Tradition Feature"],
-            7: [], // 4th Level Spells
+            7: ["Polymorph", "Dimension Door"],
             8: ["Ability Score Improvement"],
-            9: [], // 5th Level Spells
+            9: ["Cone of Cold"],
             10: ["Arcane Tradition Feature"],
-            11: [], // 6th Level Spells
+            11: ["Disintegrate"],
             12: ["Ability Score Improvement"],
-            13: [], // 7th Level Spells
+            13: ["Teleport"],
             14: ["Arcane Tradition Feature"],
-            15: [], // 8th Level Spells
+            15: ["Dominate Monster"],
             16: ["Ability Score Improvement"],
-            17: [], // 9th Level Spells
+            17: ["Wish", "Time Stop"],
             18: ["Spell Mastery"],
             19: ["Ability Score Improvement"],
             20: ["Signature Spells"]
@@ -88,21 +88,21 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Divine Domain", "Spellcasting"],
             2: ["Channel Divinity (1)", "Divine Domain Feature"],
-            3: [],
+            3: ["Spiritual Weapon", "Hold Person"],
             4: ["Ability Score Improvement"],
-            5: ["Destroy Undead (CR 1/2)"],
+            5: ["Destroy Undead (CR 1/2)", "Spirit Guardians", "Revivify"],
             6: ["Channel Divinity (2)", "Divine Domain Feature"],
-            7: [],
+            7: ["Banishment"],
             8: ["Ability Score Improvement", "Destroy Undead (CR 1)", "Divine Domain Feature"],
-            9: [],
+            9: ["Mass Cure Wounds", "Greater Restoration"],
             10: ["Divine Intervention"],
-            11: ["Destroy Undead (CR 2)"],
+            11: ["Destroy Undead (CR 2)", "Heal"],
             12: ["Ability Score Improvement"],
-            13: [],
+            13: ["Resurrection"],
             14: ["Destroy Undead (CR 3)"],
-            15: [],
+            15: ["Sunburst"],
             16: ["Ability Score Improvement"],
-            17: ["Destroy Undead (CR 4)", "Divine Domain Feature"],
+            17: ["Destroy Undead (CR 4)"],
             18: ["Channel Divinity (3)"],
             19: ["Ability Score Improvement"],
             20: ["Divine Intervention Improvement"]
@@ -190,17 +190,17 @@ export const CLASS_PROGRESSION = {
         primaryStat: "cha",
         saves: ["dex", "cha"],
         features: {
-            1: ["Spellcasting", "Bardic Inspiration (d6)"],
+            1: ["Bardic Inspiration (d6)", "Spellcasting"],
             2: ["Jack of All Trades", "Song of Rest (d6)"],
             3: ["Bard College", "Expertise"],
             4: ["Ability Score Improvement"],
-            5: ["Bardic Inspiration (d8)", "Font of Inspiration"],
+            5: ["Bardic Inspiration (d8)", "Font of Inspiration", "Dissonant Whispers", "Faerie Fire"], // Lower level iconic
             6: ["Countercharm", "Bard College Feature"],
-            7: [],
+            7: ["Polymorph"],
             8: ["Ability Score Improvement"],
-            9: ["Song of Rest (d8)"],
+            9: ["Song of Rest (d8)", "Hold Person"], // 2nd lvl iconic
             10: ["Bardic Inspiration (d10)", "Expertise", "Magical Secrets"],
-            11: [],
+            11: ["Teleport"],
             12: ["Ability Score Improvement"],
             13: ["Song of Rest (d10)"],
             14: ["Magical Secrets", "Bard College Feature"],
@@ -242,19 +242,19 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Druidic", "Spellcasting"],
             2: ["Wild Shape", "Druid Circle"],
-            3: [],
-            4: ["Ability Score Improvement", "Wild Shape Improvement"],
-            5: [],
+            3: ["Moonbeam", "Heat Metal"],
+            4: ["Wild Shape Improvement", "Ability Score Improvement"],
+            5: ["Call Lightning"],
             6: ["Druid Circle Feature"],
-            7: [],
-            8: ["Ability Score Improvement", "Wild Shape Improvement"],
-            9: [],
+            7: ["Polymorph"],
+            8: ["Wild Shape Improvement", "Ability Score Improvement"],
+            9: ["Mass Cure Wounds"],
             10: ["Druid Circle Feature"],
-            11: [],
+            11: ["Sunbeam"],
             12: ["Ability Score Improvement"],
-            13: [],
+            13: ["Fire Storm"],
             14: ["Druid Circle Feature"],
-            15: [],
+            15: ["Sunburst"],
             16: ["Ability Score Improvement"],
             17: [],
             18: ["Timeless Body", "Beast Spells"],
@@ -320,18 +320,18 @@ export const CLASS_PROGRESSION = {
         saves: ["wis", "cha"],
         features: {
             1: ["Divine Sense", "Lay on Hands"],
-            2: ["Fighting Style", "Spellcasting", "Divine Smite"],
-            3: ["Divine Health", "Sacred Oath"],
+            2: ["Fighting Style", "Spellcasting", "Divine Smite", "Bless"],
+            3: ["Divine Health", "Sacred Oath", "Cure Wounds"],
             4: ["Ability Score Improvement"],
-            5: ["Extra Attack"],
+            5: ["Extra Attack", "Find Steed"],
             6: ["Aura of Protection"],
             7: ["Sacred Oath Feature"],
             8: ["Ability Score Improvement"],
-            9: [],
+            9: ["Aura of Vitality", "Revivify"],
             10: ["Aura of Courage"],
             11: ["Improved Divine Smite"],
             12: ["Ability Score Improvement"],
-            13: [],
+            13: ["Banishment"],
             14: ["Cleansing Touch"],
             15: ["Sacred Oath Feature"],
             16: ["Ability Score Improvement"],
@@ -371,18 +371,18 @@ export const CLASS_PROGRESSION = {
         saves: ["str", "dex"],
         features: {
             1: ["Favored Enemy", "Natural Explorer"],
-            2: ["Fighting Style", "Spellcasting"],
-            3: ["Ranger Archetype", "Primeval Awareness"],
+            2: ["Fighting Style", "Spellcasting", "Hunter's Mark"],
+            3: ["Ranger Archetype", "Primeval Awareness", "Cure Wounds"],
             4: ["Ability Score Improvement"],
-            5: ["Extra Attack"],
+            5: ["Extra Attack", "Pass without Trace"],
             6: ["Favored Enemy Improvement", "Natural Explorer Improvement"],
             7: ["Ranger Archetype Feature"],
             8: ["Ability Score Improvement", "Land's Stride"],
-            9: [],
-            10: ["Natural Explorer Improvement", "Hide in Plain Sight"],
+            9: ["Call Lightning"], // Iconic for some rangers
+            10: ["Hide in Plain Sight", "Natural Explorer Improvement"],
             11: ["Ranger Archetype Feature"],
             12: ["Ability Score Improvement"],
-            13: [],
+            13: ["Guardian of Nature"], // Iconic 4th lvl
             14: ["Favored Enemy Improvement", "Vanish"],
             15: ["Ranger Archetype Feature"],
             16: ["Ability Score Improvement"],
@@ -392,13 +392,21 @@ export const CLASS_PROGRESSION = {
             20: ["Foe Slayer"]
         },
         spellSlots: {
-            // Half Caster (Same as Paladin)
-            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-            4: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-            5: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
-            // ... (pattern continues similar to Paladin)
-            20: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0]
+            2: [0, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [0, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [0, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            7: [0, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            8: [0, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            9: [0, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            10: [0, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            11: [0, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            12: [0, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            13: [0, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            14: [0, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            15: [0, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            16: [0, 4, 3, 3, 2, 0, 0, 0, 0, 0]
         }
     },
     "術士": {
@@ -406,32 +414,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "cha",
         saves: ["con", "cha"],
         features: {
-            1: ["Spellcasting", "Sorcerous Origin"],
+            1: ["Sorcerous Origin", "Spellcasting"],
             2: ["Font of Magic"],
-            3: ["Metamagic"],
+            3: ["Metamagic", "Misty Step"],
             4: ["Ability Score Improvement"],
-            5: [],
+            5: ["Fireball"],
             6: ["Sorcerous Origin Feature"],
-            7: [],
+            7: ["Wall of Fire"],
             8: ["Ability Score Improvement"],
-            9: [],
+            9: ["Cone of Cold"],
             10: ["Metamagic"],
-            11: [],
+            11: ["Disintegrate"],
             12: ["Ability Score Improvement"],
-            13: [],
+            13: ["Teleport"],
             14: ["Sorcerous Origin Feature"],
-            15: [],
-            16: ["Ability Score Improvement"],
-            17: ["Metamagic"],
-            18: ["Sorcerous Origin Feature"],
-            19: ["Ability Score Improvement"],
-            20: ["Sorcerous Restoration"]
+            15: ["Dominate Monster"],
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
-            // Full Caster (Same as Wizard)
-            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-            // ... same as Wizard
-            20: [5, 4, 3, 3, 3, 3, 2, 2, 1, 1]
+            1: [4, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [4, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [5, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [5, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [5, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [5, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [5, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [5, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [6, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [6, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [6, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [6, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [6, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [6, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [6, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "邪術師": {
@@ -439,26 +455,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "cha",
         saves: ["wis", "cha"],
         features: {
-            1: ["Otherworldly Patron", "Pact Magic"],
+            1: ["Otherworldly Patron", "Pact Magic", "Eldritch Blast", "Hex"],
             2: ["Eldritch Invocations"],
-            3: ["Pact Boon"],
+            3: ["Pact Boon", "Misty Step"],
             4: ["Ability Score Improvement"],
-            5: [],
+            5: ["Eldritch Invocations", "Counterspell"],
             6: ["Otherworldly Patron Feature"],
-            7: [],
+            7: ["Banishment"],
             8: ["Ability Score Improvement"],
-            9: [],
+            9: ["Eldritch Invocations", "Hold Person"],
             10: ["Otherworldly Patron Feature"],
-            11: ["Mystic Arcanum (6th level)"],
-            12: ["Ability Score Improvement"],
-            13: ["Mystic Arcanum (7th level)"],
+            11: ["Mystic Arcanum (6th)"],
+            12: ["Ability Score Improvement", "Eldritch Invocations"],
+            13: ["Mystic Arcanum (7th)"],
             14: ["Otherworldly Patron Feature"],
-            15: ["Mystic Arcanum (8th level)"],
-            16: ["Ability Score Improvement"],
-            17: ["Mystic Arcanum (9th level)"],
-            18: [],
-            19: ["Ability Score Improvement"],
-            20: ["Eldritch Master"]
+            15: ["Mystic Arcanum (8th)", "Eldritch Invocations"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+            5: [3, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+            6: [3, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+            7: [3, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+            8: [3, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+            9: [3, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+            10: [4, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+            11: [4, 0, 0, 0, 0, 3, 1, 0, 0, 0],
+            12: [4, 0, 0, 0, 0, 3, 1, 0, 0, 0],
+            13: [4, 0, 0, 0, 0, 3, 1, 1, 0, 0],
+            14: [4, 0, 0, 0, 0, 3, 1, 1, 0, 0],
+            15: [4, 0, 0, 0, 0, 3, 1, 1, 1, 0],
+            16: [4, 0, 0, 0, 0, 3, 1, 1, 1, 0]
         }
     },
     "奇械師": {
@@ -468,30 +498,39 @@ export const CLASS_PROGRESSION = {
         saves: ["con", "int"],
         features: {
             1: ["Magical Tinkering", "Spellcasting"],
-            2: ["Infuse Item (2)"],
-            3: ["Artificer Specialist", "The Right Tool for the Job"],
+            2: ["Infuse Item (2)", "Guidance"],
+            3: ["Artificer Specialist", "The Right Tool for the Job", "Shield"],
             4: ["Ability Score Improvement"],
-            5: ["Extra Attack or Potent Cantrip"],
+            5: ["Extra Attack or Potent Cantrip", "Heat Metal"],
             6: ["Infuse Item (3)", "Tool Expertise"],
-            7: ["Flash of Genius"],
+            7: ["Flash of Genius", "Spiritual Weapon"],
             8: ["Ability Score Improvement"],
-            9: ["Specialist Feature"],
+            9: ["Specialist Feature", "Mass Cure Wounds"],
             10: ["Magic Item Adept"],
             11: ["Spell-Refueling Ring"],
             12: ["Ability Score Improvement"],
+            13: ["Specialist Feature", "Greater Restoration"],
             14: ["Magic Item Savant"],
             15: ["Specialist Feature"],
-            16: ["Ability Score Improvement"],
-            18: ["Magic Item Master"],
-            19: ["Ability Score Improvement"],
-            20: ["Soul of Artifice"]
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
             1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
             2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
             3: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
             4: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-            5: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+            5: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            7: [2, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            8: [2, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            9: [2, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            10: [3, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            11: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            12: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            13: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            14: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            15: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            16: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0]
         }
     },
     "死靈法師": {
@@ -499,16 +538,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "int",
         saves: ["int", "wis"],
         features: {
-            1: ["Necromancy Savant", "Grim Harvest"],
+            1: ["Necromancy Savant", "Grim Harvest", "Mage Hand"],
             2: ["Undead Thralls"],
+            3: ["Grim Scythe", "Misty Step"],
             4: ["Ability Score Improvement"],
+            5: ["Life Drain", "Counterspell"],
             6: ["Inured to Undeath"],
-            8: ["Ability Score Improvement"]
+            7: ["Soul Cage", "Banishment"],
+            8: ["Ability Score Improvement"],
+            9: ["Command Undead", "Raise Dead"],
+            10: ["Undead Mastery"],
+            11: ["Soul Harvest", "Disintegrate"],
+            12: ["Ability Score Improvement"],
+            13: ["Wraith Dash"],
+            14: ["Undead Fortitude"],
+            15: ["Army of the Dead", "Power Word Kill"],
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
             1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
             2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "血獵手": {
@@ -524,7 +587,15 @@ export const CLASS_PROGRESSION = {
             5: ["Extra Attack"],
             6: ["Blood Curses (2)", "Brand of Castigation"],
             7: ["Order Feature"],
-            8: ["Ability Score Improvement"]
+            8: ["Ability Score Improvement"],
+            9: ["Blood Curses (3)", "Grim Psychometry"],
+            10: ["Dark Augmentation"],
+            11: ["Blood Curses (4)", "Brand of Tethering"],
+            12: ["Ability Score Improvement"],
+            13: ["Blood Curses (5)"],
+            14: ["Hardened Soul"],
+            15: ["Blood Curses (6)", "Order Feature"],
+            16: ["Ability Score Improvement"]
         }
     },
     "薩滿": {
@@ -532,26 +603,63 @@ export const CLASS_PROGRESSION = {
         primaryStat: "wis",
         saves: ["int", "wis"],
         features: {
-            1: ["Spirit Bond", "Spellcasting"],
+            1: ["Spirit Bond", "Spellcasting", "Guidance"],
             2: ["Totemic Call"],
-            3: ["Spirit Journey"],
+            3: ["Spirit Journey", "Healing Word"],
             4: ["Ability Score Improvement"],
-            5: ["Extra Attack (Spirit)"],
+            5: ["Extra Attack (Spirit)", "Revivify"],
             6: ["Spirit Journey Feature"],
-            8: ["Ability Score Improvement"]
+            7: ["Spirit Aura", "Banishment"],
+            8: ["Ability Score Improvement"],
+            9: ["Great Totemic Call", "Mass Cure Wounds"],
+            10: ["Spirit Journey Feature"],
+            11: ["Ancestral Protection", "Heal"],
+            12: ["Ability Score Improvement"],
+            13: ["Spirit Walk", "Resurrection"],
+            14: ["Spirit Journey Feature"],
+            15: ["Soul Reclamation", "Sunburst"],
+            16: ["Ability Score Improvement"]
         }
     },
-    "女巫": {
+    "咒術師": {
         hitDie: 8,
         primaryStat: "cha",
         saves: ["wis", "cha"],
         features: {
-            1: ["Hexes", "Spellcasting", "Familiar"],
+            1: ["Hexes", "Spellcasting", "Familiar", "Vicious Mockery"],
             2: ["Witch's Brew"],
-            3: ["Coven Initiation"],
+            3: ["Coven Initiation", "Hex"],
             4: ["Ability Score Improvement"],
+            5: ["Malevolence", "Counterspell"],
             6: ["Coven Feature"],
-            8: ["Ability Score Improvement"]
+            7: ["Curse Mastery", "Polymorph"],
+            8: ["Ability Score Improvement"],
+            9: ["Vile Ritual", "Hold Person"],
+            10: ["Dark Whispers"],
+            11: ["Malevolence (Improved)", "Sunbeam"],
+            12: ["Ability Score Improvement"],
+            13: ["Coven Feature", "Teleport"],
+            14: ["Eternal Witch"],
+            15: ["Master Hex", "Power Word Kill"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "劍客": {
@@ -566,7 +674,15 @@ export const CLASS_PROGRESSION = {
             5: ["Extra Attack"],
             6: ["Defensive Flourish"],
             7: ["Path Feature"],
-            8: ["Ability Score Improvement"]
+            8: ["Ability Score Improvement"],
+            9: ["Blade Torrent"],
+            10: ["Inevitable Strike"],
+            11: ["Extra Attack (2)"],
+            12: ["Ability Score Improvement"],
+            13: ["Unfettered Movement"],
+            14: ["Path Feature"],
+            15: ["Sword Peerless"],
+            16: ["Ability Score Improvement"]
         }
     },
     "召喚師": {
@@ -574,13 +690,22 @@ export const CLASS_PROGRESSION = {
         primaryStat: "int",
         saves: ["int", "cha"],
         features: {
-            1: ["Modern Summoning", "Spellcasting"],
+            1: ["Modern Summoning", "Spellcasting", "Mage Hand"],
             2: ["Item Bond"],
-            3: ["Convenience Store Inventory"],
+            3: ["Convenience Store Inventory", "Shield"],
             4: ["Ability Score Improvement"],
-            5: ["Advanced Blueprint"],
+            5: ["Advanced Blueprint", "Haste"],
             6: ["Summoning Expert"],
-            8: ["Ability Score Improvement"]
+            7: ["Mass Production", "Dimension Door"],
+            8: ["Ability Score Improvement"],
+            9: ["Hyper Device", "Teleport"],
+            10: ["Item Bond Improvement"],
+            11: ["Summoning Mastery", "Banishment"],
+            12: ["Ability Score Improvement"],
+            13: ["Industrial Might", "Hold Person"],
+            14: ["Remote Recall"],
+            15: ["Grand Summon", "Wish"],
+            16: ["Ability Score Improvement"]
         }
     },
     "魔戰士": {
@@ -589,14 +714,40 @@ export const CLASS_PROGRESSION = {
         secondaryStat: "int",
         saves: ["con", "int"],
         features: {
-            1: ["Spell Combat", "Spellstrike"],
+            1: ["Spell Combat", "Spellstrike", "Fire Bolt"],
             2: ["Magus Arcana"],
-            3: ["Spell Recall"],
+            3: ["Spell Recall", "Shield"],
             4: ["Ability Score Improvement"],
-            5: ["Extra Attack"],
+            5: ["Extra Attack", "Misty Step"],
             6: ["Magus Arcana"],
-            7: ["Knowledge Pool"],
-            8: ["Ability Score Improvement"]
+            7: ["Knowledge Pool", "Haste"],
+            8: ["Ability Score Improvement"],
+            9: ["Magus Arcana", "Fireball"],
+            10: ["Fighter Tactics"],
+            11: ["Improved Spell Combat", "Counterspell"],
+            12: ["Ability Score Improvement"],
+            13: ["Magus Arcana", "Dimension Door"],
+            14: ["Greater Spellstrike"],
+            15: ["Magus Arcana", "Disintegrate"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 3, 2, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 0, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 2, 0, 0, 0],
+            16: [5, 4, 3, 3, 3, 2, 2, 0, 0, 0]
         }
     },
     "先知": {
@@ -604,11 +755,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "cha",
         saves: ["wis", "cha"],
         features: {
-            1: ["Oracle's Curse", "Mystery", "Spellcasting"],
+            1: ["Oracle's Curse", "Mystery", "Spellcasting", "Guidance"],
             2: ["Revelation"],
+            3: ["Mystic Sight", "Healing Word"],
             4: ["Ability Score Improvement"],
+            5: ["Divine Guidance", "Revivify"],
             6: ["Revelation"],
-            8: ["Ability Score Improvement"]
+            7: ["Curse Hardening", "Banishment"],
+            8: ["Ability Score Improvement"],
+            9: ["Oracle's Sight", "Mass Cure Wounds"],
+            10: ["Revelation"],
+            11: ["Major Revelation", "Heal"],
+            12: ["Ability Score Improvement"],
+            13: ["Mystery Feature", "Resurrection"],
+            14: ["Revelation"],
+            15: ["Mystery Feature", "Sunburst"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "調查員": {
@@ -622,7 +802,16 @@ export const CLASS_PROGRESSION = {
             4: ["Ability Score Improvement"],
             5: ["Inspiration (d8)"],
             6: ["Investigative Talent"],
-            8: ["Ability Score Improvement"]
+            7: ["Discern Lies"],
+            8: ["Ability Score Improvement"],
+            9: ["Investigative Talent"],
+            10: ["Instant Inspection"],
+            11: ["True Vision"],
+            12: ["Ability Score Improvement"],
+            13: ["Investigative Talent"],
+            14: ["Master of Disguise"],
+            15: ["Greater Inspiration"],
+            16: ["Ability Score Improvement"]
         }
     },
     "審判者": {
@@ -631,13 +820,40 @@ export const CLASS_PROGRESSION = {
         secondaryStat: "cha",
         saves: ["wis", "cha"],
         features: {
-            1: ["Judgment (1/day)", "Stern Gaze"],
+            1: ["Judgment (1/day)", "Stern Gaze", "Spellcasting", "Guidance"],
             2: ["Cunning Initiative", "Detect Alignment"],
-            3: ["Solo Tactics"],
+            3: ["Solo Tactics", "Healing Word"],
             4: ["Ability Score Improvement"],
-            5: ["Bane", "Judgment (2/day)"],
+            5: ["Bane", "Judgment (2/day)", "Hold Person"],
             6: ["Teamwork Feat"],
-            8: ["Ability Score Improvement", "Judgment (3/day)"]
+            7: ["Inquisition Mastery", "Banishment"],
+            8: ["Ability Score Improvement", "Judgment (3/day)"],
+            9: ["Second Judgment", "Mass Cure Wounds"],
+            10: ["Judgment Improvement"],
+            11: ["Stalwart", "Heal"],
+            12: ["Ability Score Improvement"],
+            13: ["Third Judgment", "Resurrection"],
+            14: ["Exploit Weakness"],
+            15: ["Judgment Improvement", "Sunburst"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "靈能者": {
@@ -645,13 +861,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "int",
         saves: ["int", "wis"],
         features: {
-            1: ["Psionic Talent", "Telepathy"],
+            1: ["Psionic Talent", "Telepathy", "Mage Hand"],
             2: ["Psionic Disciplines (2)"],
-            3: ["Psionic Focus"],
+            3: ["Psionic Focus", "Misty Step"],
             4: ["Ability Score Improvement"],
-            5: ["Mental Force"],
+            5: ["Mental Force", "Counterspell"],
             6: ["Psionic Disciplines (3)"],
-            8: ["Ability Score Improvement"]
+            7: ["Aura of Calm", "Dimension Door"],
+            8: ["Ability Score Improvement"],
+            9: ["Mental Fortress", "Hold Person"], // Pseudo-hold mental
+            10: ["Psionic Mastery (1)"],
+            11: ["Psychic Crush", "Disintegrate"],
+            12: ["Ability Score Improvement"],
+            13: ["Mind Blank (Minor)", "Teleport"],
+            14: ["Psionic Mastery (2)"],
+            15: ["Astral Form", "Dominate Monster"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "魔劍士": {
@@ -662,12 +905,36 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Fighting Style", "Second Wind"],
             2: ["Action Surge"],
-            3: ["Weapon Bond", "Spellcasting"],
+            3: ["Weapon Bond", "Spellcasting", "Shield", "Magic Missile"],
             4: ["Ability Score Improvement"],
             5: ["Extra Attack"],
             6: ["Ability Score Improvement"],
-            7: ["War Magic"],
-            8: ["Ability Score Improvement"]
+            7: ["War Magic", "Misty Step"],
+            8: ["Ability Score Improvement"],
+            9: ["Indomitable (1)"],
+            10: ["Eldritch Strike"],
+            11: ["Extra Attack (2)", "Counterspell", "Fireball"],
+            12: ["Ability Score Improvement"],
+            13: ["Indomitable (2)", "Dimension Door"],
+            14: ["Ability Score Improvement"],
+            15: ["Arcane Charge"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            3: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            6: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            7: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            8: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            9: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            10: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            11: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            12: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            13: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            14: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            15: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            16: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0]
         }
     },
     "鍊金術士": {
@@ -675,14 +942,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "int",
         saves: ["con", "int"],
         features: {
-            1: ["Experimental Elixir", "Magical Tinkering"],
+            1: ["Experimental Elixir", "Magical Tinkering", "Spellcasting", "Guidance"],
             2: ["Infuse Item (2)"],
-            3: ["Alchemist Specialist"],
+            3: ["Alchemist Specialist", "Shield"],
             4: ["Ability Score Improvement"],
-            5: ["Alchemical Savant"],
+            5: ["Alchemical Savant", "Heat Metal"],
             6: ["Infuse Item (3)"],
-            7: ["Flash of Genius"],
-            8: ["Ability Score Improvement"]
+            7: ["Flash of Genius", "Spiritual Weapon"],
+            8: ["Ability Score Improvement"],
+            9: ["Restorative Liberations", "Mass Cure Wounds"],
+            10: ["Magic Item Adept"],
+            11: ["Spell-Refueling Ring"],
+            12: ["Ability Score Improvement"],
+            13: ["Specialist Feature", "Greater Restoration"],
+            14: ["Magic Item Savant"],
+            15: ["Specialist Feature"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            7: [2, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            8: [2, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            9: [2, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            10: [3, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            11: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            12: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            13: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            14: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            15: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            16: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0]
         }
     },
     "冠軍勇士": {
@@ -697,7 +990,15 @@ export const CLASS_PROGRESSION = {
             5: ["Extra Attack"],
             6: ["Ability Score Improvement"],
             7: ["Remarkable Athlete"],
-            8: ["Ability Score Improvement"]
+            8: ["Ability Score Improvement"],
+            9: ["Indomitable (1)"],
+            10: ["Fighting Style"],
+            11: ["Extra Attack (2)"],
+            12: ["Ability Score Improvement"],
+            13: ["Indomitable (2)"],
+            14: ["Ability Score Improvement"],
+            15: ["Superior Critical"],
+            16: ["Ability Score Improvement"]
         }
     },
     "時空術士": {
@@ -705,11 +1006,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "int",
         saves: ["int", "wis"],
         features: {
-            1: ["Temporal Awareness", "Chronal Shift"],
+            1: ["Temporal Awareness", "Chronal Shift", "Spellcasting", "Guidance"],
             2: ["Convergent Future"],
+            3: ["Time Link", "Misty Step"],
             4: ["Ability Score Improvement"],
+            5: ["Temporal Shunt", "Haste"],
             6: ["Momentary Stasis"],
-            8: ["Ability Score Improvement"]
+            7: ["Chrono-Echo", "Dimension Door"],
+            8: ["Ability Score Improvement"],
+            9: ["Time Stop (Minor)", "Hold Person"], // Thematic
+            10: ["Temporal Shield"],
+            11: ["Chrono-Shift (Improved)", "Disintegrate"],
+            12: ["Ability Score Improvement"],
+            13: ["Temporal Rift", "Time Stop"],
+            14: ["Chrono-Echo Feature"],
+            15: ["Time Mastery", "Wish"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     // --- New Classes for Anthraxe and Roster Fixes ---
@@ -718,14 +1048,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "cha",
         saves: ["dex", "cha"],
         features: {
-            1: ["Spellcasting", "Bardic Inspiration (d6)"],
+            1: ["Spellcasting", "Bardic Inspiration (d6)", "Vicious Mockery"],
             2: ["Jack of All Trades", "Song of Rest (d6)"],
-            3: ["College of Valor", "Expertise"]
+            3: ["College of Valor", "Expertise", "Faerie Fire"],
+            4: ["Ability Score Improvement"],
+            5: ["Bardic Inspiration (d8)", "Font of Inspiration", "Counterspell"],
+            6: ["Countercharm", "Extra Attack"],
+            7: ["Battle Performance", "Polymorph"],
+            8: ["Ability Score Improvement"],
+            9: ["Song of Rest (d8)", "Hold Person"],
+            10: ["Bardic Inspiration (d10)", "Expertise", "Magical Secrets"],
+            11: ["Song of Rest (d10)", "Teleport"],
+            12: ["Ability Score Improvement"],
+            13: ["Song of Rest (d12)"],
+            14: ["Magical Secrets"],
+            15: ["Bardic Inspiration (d12)"],
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
             1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
             2: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [3, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [3, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [4, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "海盜女王": {
@@ -735,7 +1091,20 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Fighting Style", "Second Wind"],
             2: ["Action Surge"],
-            3: ["Swashbuckler Archetype"]
+            3: ["Swashbuckler Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Ability Score Improvement"],
+            7: ["Brilliant Flourish"],
+            8: ["Ability Score Improvement"],
+            9: ["Indomitable"],
+            10: ["Superior Duelist"],
+            11: ["Extra Attack (2)"],
+            12: ["Ability Score Improvement"],
+            13: ["Indomitable (2)"],
+            14: ["Ability Score Improvement"],
+            15: ["Master Commander"],
+            16: ["Ability Score Improvement"]
         }
     },
     "戰吟弓手": {
@@ -744,13 +1113,39 @@ export const CLASS_PROGRESSION = {
         saves: ["str", "dex"],
         features: {
             1: ["Favored Enemy", "Natural Explorer"],
-            2: ["Fighting Style", "Spellcasting"],
-            3: ["Battle-singer Lore"]
+            2: ["Fighting Style", "Spellcasting", "Hunter's Mark"],
+            3: ["Battle-singer Lore", "Cure Wounds"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack", "Pass without Trace"],
+            6: ["Favored Enemy Improvement", "Natural Explorer Improvement"],
+            7: ["Ethereal Song", "Spiritual Weapon"], // Thematic for battle-singer
+            8: ["Ability Score Improvement", "Land's Stride"],
+            9: ["Volley Song", "Call Lightning"],
+            10: ["Hide in Plain Sight"],
+            11: ["Ethereal Song (Improved)"],
+            12: ["Ability Score Improvement"],
+            13: ["Guardian Song", "Guardian of Nature"],
+            14: ["Vanish"],
+            15: ["Battle-singer Mastery"],
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
             1: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            10: [5, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            12: [5, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            13: [5, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            14: [5, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            15: [5, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            16: [5, 4, 3, 3, 2, 0, 0, 0, 0, 0]
         }
     },
     "混沌法師": {
@@ -760,12 +1155,38 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Wild Magic Surge", "Tides of Chaos"],
             2: ["Font of Magic"],
-            3: ["Metamagic"]
+            3: ["Metamagic", "Chaos Bolt", "Shield"],
+            4: ["Ability Score Improvement"],
+            5: ["Chaos Bolt (Improved)", "Fireball"],
+            6: ["Wild Magic Feature"],
+            7: ["Bending Luck", "Polymorph"],
+            8: ["Ability Score Improvement"],
+            9: ["Controlled Chaos", "Cone of Cold"],
+            10: ["Metamagic"],
+            11: ["Chaos Bolt (Greater)", "Disintegrate"],
+            12: ["Ability Score Improvement"],
+            13: ["Wild Magic Feature", "Teleport"],
+            14: ["Chaos Shield"],
+            15: ["Controlled Surge", "Power Word Stun"],
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
-            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-            2: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+            1: [4, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [4, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [5, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [5, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [5, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [5, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [5, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [5, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [6, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [6, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [6, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [6, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [6, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [6, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [6, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "血族領主": {
@@ -774,13 +1195,39 @@ export const CLASS_PROGRESSION = {
         saves: ["wis", "cha"],
         features: {
             1: ["Divine Sense", "Lay on Hands"],
-            2: ["Fighting Style", "Divine Smite"],
-            3: ["Vampiric Oath"]
+            2: ["Fighting Style", "Divine Smite", "Spellcasting", "Bless"],
+            3: ["Vampiric Oath", "Cure Wounds"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack", "Find Steed"],
+            6: ["Aura of Blood"],
+            7: ["Vampiric Oath Feature"],
+            8: ["Ability Score Improvement"],
+            9: ["Frightful Presence", "Revivify"],
+            10: ["Aura of Blood Improvement"],
+            11: ["Vampiric Smite (Improved)"],
+            12: ["Ability Score Improvement"],
+            13: ["Mist Form", "Banishment"],
+            14: ["Vampiric Oath Feature"],
+            15: ["Lord of Night"],
+            16: ["Ability Score Improvement"]
         },
         spellSlots: {
             1: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+            2: [0, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [0, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [0, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            7: [0, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            8: [0, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            9: [0, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            10: [0, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            11: [0, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            12: [0, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            13: [0, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            14: [0, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            15: [0, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            16: [0, 4, 3, 3, 2, 0, 0, 0, 0, 0]
         }
     },
     "幸運兒": {
@@ -790,7 +1237,20 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Expertise", "Lucky Streak"],
             2: ["Cunning Action"],
-            3: ["Fortuitous Archetype"]
+            3: ["Fortuitous Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Uncanny Dodge"],
+            6: ["Expertise"],
+            7: ["Evasion"],
+            8: ["Ability Score Improvement"],
+            9: ["Roguish Archetype Feature"],
+            10: ["Ability Score Improvement"],
+            11: ["Reliable Talent"],
+            12: ["Ability Score Improvement"],
+            13: ["Roguish Archetype Feature"],
+            14: ["Blindsense"],
+            15: ["Slippery Mind"],
+            16: ["Ability Score Improvement"]
         }
     },
     "守約騎士": {
@@ -800,7 +1260,20 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Fighting Style", "Second Wind"],
             2: ["Action Surge"],
-            3: ["Martial Archetype"]
+            3: ["Martial Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Ability Score Improvement"],
+            7: ["Martial Archetype Feature"],
+            8: ["Ability Score Improvement"],
+            9: ["Indomitable (1)"],
+            10: ["Martial Archetype Feature"],
+            11: ["Extra Attack (2)"],
+            12: ["Ability Score Improvement"],
+            13: ["Indomitable (2)"],
+            14: ["Ability Score Improvement"],
+            15: ["Martial Archetype Feature"],
+            16: ["Ability Score Improvement"]
         }
     },
     "劍刃舞者": {
@@ -808,9 +1281,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "dex",
         saves: ["dex", "cha"],
         features: {
-            1: ["Fighting Style", "Bardic Inspiration"],
+            1: ["Fighting Style", "Bardic Inspiration", "Spellcasting"],
             2: ["Jack of All Trades"],
-            3: ["College of Swords"]
+            3: ["College of Swords", "Dissonant Whispers"],
+            4: ["Ability Score Improvement"],
+            5: ["Bardic Inspiration (d8) font", "Misty Step"],
+            6: ["Extra Attack"],
+            7: ["Blade Flourish (Improved)", "Mirror Image"],
+            8: ["Ability Score Improvement"],
+            9: ["Song of Rest (d8)", "Haste"],
+            10: ["Bardic Inspiration (d10)"],
+            11: ["Magical Secrets"],
+            12: ["Ability Score Improvement"],
+            13: ["Song of Rest (d10)", "Dimension Door"],
+            14: ["Master's Flourish"],
+            15: ["Bardic Inspiration (d12)", "Dominate Monster"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [3, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [3, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [4, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "偵察兵": {
@@ -819,8 +1323,21 @@ export const CLASS_PROGRESSION = {
         saves: ["str", "dex"],
         features: {
             1: ["Favored Enemy", "Natural Explorer"],
-            2: ["Fighting Style", "Spellcasting"],
-            3: ["Scout Archetype"]
+            2: ["Fighting Style", "Spellcasting", "Hunter's Mark"],
+            3: ["Scout Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack", "Pass without Trace"],
+            6: ["Favored Enemy Improvement"],
+            7: ["Ambush Master"],
+            8: ["Ability Score Improvement"],
+            9: ["Call Lightning"],
+            10: ["Hide in Plain Sight"],
+            11: ["Extra Attack (2)"],
+            12: ["Ability Score Improvement"],
+            13: ["Gaseous Form"], // Scouts often have utility
+            14: ["Vanish"],
+            15: ["Hunter's Sense"],
+            16: ["Ability Score Improvement"]
         }
     },
     "戰鬥祭師": {
@@ -828,9 +1345,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "wis",
         saves: ["wis", "cha"],
         features: {
-            1: ["Divine Domain", "Spellcasting"],
+            1: ["Divine Domain", "Spellcasting", "Guidance"],
             2: ["Channel Divinity"],
-            3: ["War Domain Feature"]
+            3: ["War Domain Feature", "Spiritual Weapon"],
+            4: ["Ability Score Improvement"],
+            5: ["Destroy Undead (CR 1/2)", "Revivify"],
+            6: ["Channel Divinity (2)"],
+            7: ["Divine Guidance", "Banishment"],
+            8: ["Ability Score Improvement", "Divine Strike"],
+            9: ["Destroy Undead (CR 1)", "Mass Cure Wounds"],
+            10: ["Divine Intervention"],
+            11: ["Destroy Undead (CR 2)", "Heal"],
+            12: ["Ability Score Improvement"],
+            13: ["Destroy Undead (CR 3)", "Resurrection"],
+            14: ["Divine Strike (Improved)"],
+            15: ["Destroy Undead (CR 4)", "Sunburst"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "奧法騎士": {
@@ -840,7 +1388,20 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Fighting Style", "Second Wind"],
             2: ["Action Surge"],
-            3: ["Eldritch Knight Archetype"]
+            3: ["Eldritch Knight Archetype", "Shield", "Magic Missile"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Ability Score Improvement"],
+            7: ["War Magic", "Misty Step"],
+            8: ["Ability Score Improvement"],
+            9: ["Indomitable (1)"],
+            10: ["Eldritch Strike"],
+            11: ["Extra Attack (2)", "Counterspell", "Fireball"],
+            12: ["Ability Score Improvement"],
+            13: ["Indomitable (2)", "Dimension Door"],
+            14: ["Ability Score Improvement"],
+            15: ["Arcane Charge"],
+            16: ["Ability Score Improvement"]
         }
     },
     "獵人": {
@@ -849,8 +1410,21 @@ export const CLASS_PROGRESSION = {
         saves: ["str", "dex"],
         features: {
             1: ["Favored Enemy", "Natural Explorer"],
-            2: ["Fighting Style", "Spellcasting"],
-            3: ["Hunter Archetype"]
+            2: ["Fighting Style", "Spellcasting", "Hunter's Mark"],
+            3: ["Hunter Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack", "Spike Growth"],
+            6: ["Favored Enemy Improvement"],
+            7: ["Defensive Tactics"],
+            8: ["Ability Score Improvement"],
+            9: ["Call Lightning"],
+            10: ["Hide in Plain Sight"],
+            11: ["Multiattack"],
+            12: ["Ability Score Improvement"],
+            13: ["Guardian of Nature"],
+            14: ["Favored Enemy Improvement"],
+            15: ["Superior Hunter's Defense"],
+            16: ["Ability Score Improvement"]
         }
     },
     "刺客": {
@@ -860,7 +1434,20 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Sneak Attack", "Expertise"],
             2: ["Cunning Action"],
-            3: ["Assassin Archetype"]
+            3: ["Assassin Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Uncanny Dodge"],
+            6: ["Expertise"],
+            7: ["Evasion"],
+            8: ["Ability Score Improvement"],
+            9: ["Infiltration Expertise"],
+            10: ["Ability Score Improvement"],
+            11: ["Reliable Talent"],
+            12: ["Ability Score Improvement"],
+            13: ["Impostor"],
+            14: ["Blindsense"],
+            15: ["Slippery Mind"],
+            16: ["Ability Score Improvement"]
         }
     },
     "武器大師": {
@@ -870,17 +1457,43 @@ export const CLASS_PROGRESSION = {
         features: {
             1: ["Fighting Style", "Second Wind"],
             2: ["Action Surge"],
-            3: ["Battle Master Archetype"]
+            3: ["Battle Master Archetype"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack"],
+            6: ["Ability Score Improvement"],
+            7: ["Know Your Enemy"],
+            8: ["Ability Score Improvement"],
+            9: ["Indomitable (1)"],
+            10: ["Improved Combat Superiority"],
+            11: ["Extra Attack (2)"],
+            12: ["Ability Score Improvement"],
+            13: ["Indomitable (2)"],
+            14: ["Ability Score Improvement"],
+            15: ["Relentless"],
+            16: ["Ability Score Improvement"]
         }
     },
-    "氣脈醫者 (Qi Physician)": {
+    "氣脈醫者": {
         hitDie: 8,
         primaryStat: "wis",
         saves: ["wis", "cha"],
         features: {
             1: ["Martial Arts", "Qi Healing"],
             2: ["Qi"],
-            3: ["Way of the Open Hand"]
+            3: ["Way of the Open Hand"],
+            4: ["Ability Score Improvement"],
+            5: ["Stunning Strike"],
+            6: ["Qi-Empowered Strikes"],
+            7: ["Evasion"],
+            8: ["Ability Score Improvement"],
+            9: ["Unarmored Movement Improvement"],
+            10: ["Purity of Body"],
+            11: ["Tranquility"],
+            12: ["Ability Score Improvement"],
+            13: ["Tongue of Sun and Moon"],
+            14: ["Diamond Soul"],
+            15: ["Timeless Body"],
+            16: ["Ability Score Improvement"]
         }
     },
     "戰地醫師": {
@@ -888,9 +1501,40 @@ export const CLASS_PROGRESSION = {
         primaryStat: "wis",
         saves: ["wis", "cha"],
         features: {
-            1: ["Divine Domain", "Spellcasting"],
+            1: ["Divine Domain", "Spellcasting", "Guidance"],
             2: ["Channel Divinity"],
-            3: ["Life Domain Feature"]
+            3: ["Life Domain Feature", "Healing Word"],
+            4: ["Ability Score Improvement"],
+            5: ["Destroy Undead (CR 1/2)", "Revivify"],
+            6: ["Blessed Healer"],
+            7: ["Mercy's Reach", "Guardian of Nature"], // Healer specific
+            8: ["Ability Score Improvement", "Divine Strike"],
+            9: ["Destroy Undead (CR 1)", "Mass Cure Wounds"],
+            10: ["Divine Intervention"],
+            11: ["Destroy Undead (CR 2)", "Heal"],
+            12: ["Ability Score Improvement"],
+            13: ["Destroy Undead (CR 3)", "Resurrection"],
+            14: ["Divine Strike (Improved)"],
+            15: ["Destroy Undead (CR 4)", "Sunbeam"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     },
     "荒野女巫": {
@@ -898,11 +1542,43 @@ export const CLASS_PROGRESSION = {
         primaryStat: "wis",
         saves: ["int", "wis"],
         features: {
-            1: ["Druidic", "Spellcasting"],
-            2: ["Wild Shape"],
-            3: ["Circle of the Land"]
+            1: ["Druidic", "Spellcasting", "Guidance"],
+            2: ["Wild Shape", "Primal Path"],
+            3: ["Nature's Bond", "Moonbeam"],
+            4: ["Ability Score Improvement", "Wild Shape Improvement"],
+            5: ["Primal Strike", "Call Lightning"],
+            6: ["Circle Feature"],
+            7: ["Wild Sovereignty", "Polymorph"],
+            8: ["Ability Score Improvement", "Wild Shape Improvement"],
+            9: ["Bestial Fury", "Mass Cure Wounds"],
+            10: ["Circle Feature"],
+            11: ["Nature's Warding", "Sunbeam"],
+            12: ["Ability Score Improvement"],
+            13: ["Wild Shape Improvement (Greater)", "Fire Storm"],
+            14: ["Circle Feature"],
+            15: ["Timeless Body", "Sunburst"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [3, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [3, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [3, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [3, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [3, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [4, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
     }
+
 
 
 

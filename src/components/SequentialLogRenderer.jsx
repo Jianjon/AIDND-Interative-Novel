@@ -2,12 +2,17 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import DualDiceRoll from './DualDiceRoll';
 import { Sword, Shield, Zap, Skull, Crown, Ghost, User, Dices } from 'lucide-react';
 
-const TypewriterText = ({ text, renderWithDice, speed = 20 }) => {
-    const [displayedText, setDisplayedText] = useState('');
+const TypewriterText = ({ text, renderWithDice, speed = 20, onComplete, shouldAnimate = true }) => {
+    const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
 
     useEffect(() => {
+        if (!shouldAnimate) {
+            setDisplayedText(text);
+            return;
+        }
+
         let i = 0;
-        setDisplayedText(''); // Reset on text change
+        setDisplayedText('');
 
         const timer = setInterval(() => {
             if (i < text.length) {
@@ -15,23 +20,12 @@ const TypewriterText = ({ text, renderWithDice, speed = 20 }) => {
                 i++;
             } else {
                 clearInterval(timer);
+                if (onComplete) onComplete();
             }
         }, speed);
 
         return () => clearInterval(timer);
-    }, [text, speed]);
-
-    // If fully typed or unmounted, just show full (handled by React state update, but good to be robust)
-    // Actually, `renderWithDice` expects a string.
-    // If we pass partial string, `renderWithDice` might break if it tries to parse "[Damage..."
-    // Wait, `renderTextWithDice` parses blocks like "###" or "[Dice]".
-    // If we type character by character, the parsing might flicker or break.
-    // BETTER APPROACH: 
-    // Just type the raw text if no dice codes. 
-    // IF dice codes exist, Typewriter might be risky for the "Dice Block".
-    // But `renderTextWithDice` handles plain string too.
-    // Lets assume we only typewriter PLAIN text parts?
-    // The Input `text` here comes from `child.content` which is usually a line.
+    }, [text, speed, shouldAnimate]);
 
     return (
         <div className="animate-in fade-in duration-300">
@@ -46,7 +40,6 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
     const [hasStartedRoll, setHasStartedRoll] = useState(false);
     // Persist dice roll results across re-renders (key: unique dice id, value: { base, mod, total, result })
     const [diceResults, setDiceResults] = useState({});
-    const dicePendingKeyRef = useRef(0);
 
     // THEME MAPPING (Moved to Function Scope)
     const THEME_STYLES = {
@@ -82,6 +75,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
         if (!content) return [];
 
         const newItems = [];
+        let diceCounter = 0;
 
         // 1. Split by Sections (###)
         const rawSections = content.split(/(?=###)/g);
@@ -226,7 +220,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                         const characterName = match[1].trim();
                         const checkType = match[2].trim();
                         const targetDC = parseInt(match[3]);
-                        const diceId = `dice_${dicePendingKeyRef.current++}`;
+                        const diceId = `dice_${diceCounter++}`;
 
                         segments.push({
                             type: 'dice_pending',
@@ -677,12 +671,18 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                                     target={{ dc: targetDC, label: 'DC' }}
                                                     result={storedResult.success ? 'SUCCESS' : 'FAILURE'}
                                                     onComplete={() => {
+                                                        const hasOutcome = !!(storedResult.success ? successOutcome : failureOutcome);
+
                                                         setDiceResults(prev => ({
                                                             ...prev,
                                                             [diceId]: { ...prev[diceId], animating: false }
                                                         }));
-                                                        // Advance to next item after animation completes
-                                                        handleAnimEnd();
+
+                                                        // If we have outcome text, DON'T advance yet. wait for typewriter.
+                                                        // If no outcome text, advance immediately.
+                                                        if (!hasOutcome) {
+                                                            handleAnimEnd();
+                                                        }
                                                     }}
                                                     autoPlay={true}
                                                 />
@@ -692,6 +692,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                         // Static result display after animation - includes outcome text
                                         const isSuccess = storedResult.success;
                                         const outcomeText = isSuccess ? successOutcome : failureOutcome;
+
                                         return (
                                             <div key={cIdx} className="my-3 space-y-2">
                                                 {/* Dice result row */}
@@ -706,7 +707,15 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                                 {/* Outcome description */}
                                                 {outcomeText && (
                                                     <div className={`p-3 rounded-lg border-l-4 ${isSuccess ? 'bg-emerald-950/30 border-emerald-600 text-emerald-200' : 'bg-rose-950/30 border-rose-600 text-rose-200'} text-sm font-serif`}>
-                                                        {outcomeText}
+                                                        <TypewriterText
+                                                            text={outcomeText}
+                                                            renderWithDice={renderTextWithDice}
+                                                            speed={30}
+                                                            shouldAnimate={visibleIndex === child.index}
+                                                            onComplete={() => {
+                                                                if (visibleIndex === child.index) handleAnimEnd();
+                                                            }}
+                                                        />
                                                     </div>
                                                 )}
                                             </div>

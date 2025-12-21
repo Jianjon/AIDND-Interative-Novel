@@ -3,32 +3,61 @@
  * Exports all module data for Story Navigation
  */
 
-import MODULES_PART1 from './modules_data_part1.js';
-import MODULES_PART2 from './modules_data_part2.js';
-import MODULES_PART3 from './modules_data_part3.js';
-import MODULES_PART4 from './modules_data_part4.js';
-import MODULES_PART5 from './modules_data_part5.js';
+import hoard_of_dragon_queen from './modules/hoard_of_dragon_queen.js';
+import curse_of_strahd from './modules/curse_of_strahd.js';
+import tomb_of_annihilation from './modules/tomb_of_annihilation.js';
+import out_of_the_abyss from './modules/out_of_the_abyss.js';
+import storm_kings_thunder from './modules/storm_kings_thunder.js';
+import descent_into_avernus from './modules/descent_into_avernus.js';
+import rime_of_frostmaiden from './modules/rime_of_frostmaiden.js';
+import dragon_heist from './modules/dragon_heist.js';
+import princes_of_apocalypse from './modules/princes_of_apocalypse.js';
+import shadow_dragon_queen from './modules/shadow_dragon_queen.js';
+import lost_mine_of_phandelver from './modules/lost_mine_of_phandelver.js';
+import keep_on_borderlands from './modules/keep_on_borderlands.js';
+import tomb_of_horrors from './modules/tomb_of_horrors.js';
+import red_hand_of_doom from './modules/red_hand_of_doom.js';
+import against_the_giants from './modules/against_the_giants.js';
+import white_plume_mountain from './modules/white_plume_mountain.js';
+import expedition_barrier_peaks from './modules/expedition_barrier_peaks.js';
+import sunless_citadel from './modules/sunless_citadel.js';
+import isle_of_dread from './modules/isle_of_dread.js';
+import dragons_of_despair from './modules/dragons_of_despair.js';
+import dragons_of_stormwreck_isle from './modules/dragons_of_stormwreck_isle.js';
+import rise_of_tiamat from './modules/rise_of_tiamat.js';
+import saltmarsh from './modules/saltmarsh.js';
+import frozen_sick from './modules/frozen_sick.js';
+import fallen_fortress from './modules/fallen_fortress.js';
+import potent_brew from './modules/potent_brew.js';
 
-// Combine all modules (Enhanced versions override basic versions)
+// Combine all modules
 export const ALL_MODULES = {
-    ...MODULES_PART1,
-    ...MODULES_PART2,
-    // Part 3 enhanced modules
-    storm_kings_thunder: MODULES_PART3.storm_kings_thunder_enhanced,
-    descent_into_avernus: MODULES_PART3.descent_into_avernus_enhanced,
-    rime_of_frostmaiden: MODULES_PART3.rime_of_frostmaiden_enhanced,
-    dragon_heist: MODULES_PART3.dragon_heist_enhanced,
-    // Part 4 enhanced modules
-    princes_of_apocalypse: MODULES_PART4.princes_of_apocalypse_enhanced,
-    shadow_dragon_queen: MODULES_PART4.shadow_dragon_queen_enhanced,
-    keep_on_borderlands: MODULES_PART4.keep_on_borderlands_enhanced,
-    tomb_of_horrors: MODULES_PART4.tomb_of_horrors_enhanced,
-    // Part 5 enhanced modules
-    red_hand_of_doom: MODULES_PART5.red_hand_of_doom_enhanced,
-    against_the_giants: MODULES_PART5.against_the_giants_enhanced,
-    white_plume_mountain: MODULES_PART5.white_plume_mountain_enhanced,
-    expedition_barrier_peaks: MODULES_PART5.expedition_barrier_peaks_enhanced,
-    isle_of_dread: MODULES_PART5.isle_of_dread_enhanced
+    hoard_of_dragon_queen,
+    curse_of_strahd,
+    tomb_of_annihilation,
+    out_of_the_abyss,
+    storm_kings_thunder,
+    descent_into_avernus,
+    rime_of_frostmaiden,
+    dragon_heist,
+    princes_of_apocalypse,
+    shadow_dragon_queen,
+    lost_mine_of_phandelver,
+    keep_on_borderlands,
+    tomb_of_horrors,
+    red_hand_of_doom,
+    against_the_giants,
+    white_plume_mountain,
+    expedition_barrier_peaks,
+    sunless_citadel,
+    isle_of_dread,
+    dragons_of_despair,
+    dragons_of_stormwreck_isle,
+    rise_of_tiamat,
+    saltmarsh,
+    frozen_sick,
+    fallen_fortress,
+    potent_brew
 };
 
 /**
@@ -46,7 +75,7 @@ const NUMERIC_ID_MAP = {
     8: "dragon_heist",
     9: "princes_of_apocalypse",
     10: "shadow_dragon_queen",
-    11: "lost_mine_phandelver",
+    11: "lost_mine_of_phandelver",
     12: "keep_on_borderlands",
     13: "tomb_of_horrors",
     14: "red_hand_of_doom",
@@ -55,7 +84,13 @@ const NUMERIC_ID_MAP = {
     17: "expedition_barrier_peaks",
     18: "sunless_citadel",
     19: "isle_of_dread",
-    20: "dragons_of_despair"
+    20: "dragons_of_despair",
+    21: "dragons_of_stormwreck_isle",
+    22: "rise_of_tiamat",
+    23: "saltmarsh",
+    24: "frozen_sick",
+    25: "fallen_fortress",
+    27: "potent_brew"
 };
 
 /**
@@ -148,26 +183,34 @@ ${act.endCondition}
 `.trim();
 
 
-    // Add NPCs if available (handle both object and string formats)
+    // Add NPCs with Dialogue
     if (act.npcs && act.npcs.length > 0) {
         const npcList = act.npcs.map(npc => {
             if (typeof npc === 'object') {
-                return `${npc.name}（${npc.role}）：${npc.description}`;
+                let desc = `${npc.name}（${npc.role}）：${npc.description}`;
+                if (npc.dialogue) {
+                    desc += `\n    - Key Dialogue: "${npc.dialogue}"`;
+                }
+                return desc;
             }
             return npc;
         }).join('\n');
-        context += `\n\n【重要NPC】\n${npcList}`;
+        context += `\n\n【重要NPC (含關鍵台詞)】\n${npcList}`;
     }
 
-    // Add locations if available
+    // Add locations with Boxed Text
     if (act.locations && act.locations.length > 0) {
         const locationList = act.locations.map(loc => {
             if (typeof loc === 'object') {
-                return `${loc.name}：${loc.description}`;
+                let desc = `${loc.name}：${loc.description}`;
+                if (loc.boxedText) {
+                    desc += `\n    - Boxed Text (Read Aloud): "${loc.boxedText}"`;
+                }
+                return desc;
             }
             return loc;
         }).join('\n');
-        context += `\n\n【地點】\n${locationList}`;
+        context += `\n\n【地點細節 (包含朗讀文)】\n${locationList}`;
     }
 
     // Add boss info if available
@@ -181,11 +224,36 @@ ${act.endCondition}
 
     // Add opening text if available
     if (act.opening_text) {
-        context += `\n\n【開場場景】\n${act.opening_text}`;
+        context += `\n\n【開場場景 (Opening Scene)】\n${act.opening_text}`;
+    }
+
+    // Add transitions if available
+    if (act.transitions) {
+        context += `\n\n【場景轉場 (Transitions)】\n${act.transitions}`;
+    }
+
+    // Add strategic nodes (Logic Branches) if available
+    if (act.strategic_nodes && act.strategic_nodes.length > 0) {
+        const nodesList = act.strategic_nodes.map(node => {
+            let desc = `[節點 ${node.id}] ${node.title}\n    - 情境: ${node.situation}`;
+
+            if (node.approaches) {
+                desc += `\n    - 可選策略:`;
+                node.approaches.forEach(app => {
+                    desc += `\n      * ${app.type} (檢定: ${app.check}): ${app.outcome}`;
+                });
+            }
+
+            if (node.fail_forward) {
+                desc += `\n    - 失敗推進 (Fail-Forward): ${node.fail_forward}`;
+            }
+
+            return desc;
+        }).join('\n\n');
+        context += `\n\n【關鍵邏輯節點 (Strategic Nodes)】\n請嚴格參照以下邏輯判定玩家行動後果，特別是失敗時的處理：\n${nodesList}`;
     }
 
     return context;
 }
 
-export { MODULES_PART1, MODULES_PART2, MODULES_PART3, MODULES_PART4, MODULES_PART5 };
 export default ALL_MODULES;

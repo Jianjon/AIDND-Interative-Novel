@@ -1,5 +1,5 @@
-
 import { CLASS_PROGRESSION } from '../data/rules/class_progression.js';
+import { SPELL_DATABASE } from '../data/rules/spells.js';
 
 /**
  * Scale a character to a target level.
@@ -8,10 +8,14 @@ import { CLASS_PROGRESSION } from '../data/rules/class_progression.js';
  * @returns {Object} - The scaled character object.
  */
 export function scaleCharacter(character, targetLevel) {
-    if (!targetLevel || targetLevel <= 1) return character;
+    if (!targetLevel) return character;
 
     // Create a deep copy to avoid mutating the original
     const newChar = JSON.parse(JSON.stringify(character));
+
+    // If already at or above target level, just return the copy (still safe)
+    if (newChar.level >= targetLevel) return newChar;
+
     const charClass = newChar.class;
     const progression = CLASS_PROGRESSION[charClass];
 
@@ -21,30 +25,78 @@ export function scaleCharacter(character, targetLevel) {
     }
 
     // Calculate CON mod
-    const con = newChar.baseStats.con;
+    const con = newChar.baseStats.con || 10;
     const conMod = Math.floor((con - 10) / 2);
-    const hitDieAcross = progression.hitDie;
+    const hitDie = progression.hitDie || 8;
     // Average hit die roll is (HitDie / 2) + 1
-    const avgHpGain = (hitDieAcross / 2) + 1;
+    const avgHpGain = Math.floor(hitDie / 2) + 1;
 
-    // Scale from Level 2 up to Target Level
-    for (let lvl = 2; lvl <= targetLevel; lvl++) {
+    // INITIALIZE HP IF MISSING (Standardize to Level 1 baseline)
+    if (newChar.maxHp === undefined) {
+        newChar.maxHp = hitDie + conMod;
+        newChar.hp = newChar.maxHp;
+    }
+
+    // Scale from current level + 1 up to Target Level
+    const currentLevel = newChar.level || 1;
+    for (let lvl = currentLevel + 1; lvl <= targetLevel; lvl++) {
         // 1. Increase HP
         const hpGain = avgHpGain + conMod;
         newChar.maxHp += hpGain;
         newChar.hp = newChar.maxHp; // Heal to full
 
-        // 2. Add Class Features
         const features = progression.features[lvl];
         if (features && features.length > 0) {
-            newChar.feats.push(...features);
+            features.forEach(feat => {
+                // Check if this is a spell
+                if (SPELL_DATABASE[feat]) {
+                    if (!newChar.spells) newChar.spells = [];
+                    if (!newChar.spells.includes(feat)) {
+                        newChar.spells.push(feat);
+                    }
+                } else {
+                    // It's a feat
+                    if (!newChar.feats) newChar.feats = [];
+                    if (!newChar.feats.includes(feat)) {
+                        newChar.feats.push(feat);
+                    }
+                }
+            });
         }
 
         // 3. Update Spell Slots (if applicable)
-        if (progression.spellSlots) {
+        if (progression.spellSlots && progression.spellSlots[lvl]) {
             newChar.slots = progression.spellSlots[lvl];
         }
+
+        // 4. Scale Companion (if applicable)
+        if (newChar.companion) {
+            const comp = newChar.companion;
+            // AC: +1 every 4 levels (at 4, 8, 12, 16)
+            if (lvl % 4 === 0) comp.ac = (comp.ac || 10) + 1;
+
+            // HP: Increase by 5 per character level (roughly)
+            // Initial HP if missing
+            if (comp.maxHp === undefined) {
+                // Baseline: Start with something reasonable if not defined, or use character level
+                comp.maxHp = (comp.maxHp || 20) + 5;
+            } else {
+                comp.maxHp += 5;
+            }
+            comp.hp = comp.maxHp;
+
+            // Attacks: +1 hit bonus every 4 levels
+            if (lvl % 4 === 0 && Array.isArray(comp.attacks)) {
+                comp.attacks = comp.attacks.map(atk => ({
+                    ...atk,
+                    hitBonus: (atk.hitBonus || 0) + 1
+                }));
+            }
+        }
     }
+
+    // Update level to final target
+    newChar.level = targetLevel;
 
     // Add extra items for higher levels
     // Add extra items for higher levels

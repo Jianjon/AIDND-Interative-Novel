@@ -100,6 +100,33 @@ export class CharacterAgent {
     }
 
     /**
+     * Sync the agent instance with an external game state slice.
+     * Useful for updating HP/Inventory without recreating the agent.
+     */
+    syncState(state) {
+        if (!state) return;
+        if (state.hp !== undefined) this.hp = state.hp;
+        if (state.maxHp !== undefined) this.maxHp = state.maxHp;
+        if (state.gold !== undefined) this.gold = state.gold;
+        if (state.psych !== undefined) this.psych = state.psych;
+        if (state.inventory) {
+            this.inventory = [
+                ...(state.inventory.equipment || []),
+                ...(state.inventory.consumables || []),
+                ...(state.inventory.magicItems || [])
+            ];
+            this.equipment = state.inventory.equipment || [];
+            this.consumables = state.inventory.consumables || [];
+            this.magicItems = state.inventory.magicItems || [];
+        }
+        if (state.level !== undefined) {
+            this.level = state.level;
+            // Optionally recalculate next level XP if needed
+            this.maxXp = this._calculateNextLevelXp();
+        }
+    }
+
+    /**
      * Gain XP Calculation
      * @param {number} amount 
      */
@@ -358,7 +385,14 @@ export class CharacterAgent {
             modifiers: this.modifiers,
             skills: this.skills,
             feats: this.feats,
-            inventory: this.inventory,
+            inventory: {
+                equipment: this.equipment,
+                consumables: this.consumables,
+                magicItems: this.magicItems,
+                gold: this.gold
+            },
+            spells: this.spells,
+            slots: this.slots,
             derived: {
                 proficiency: this.proficiencyBonus,
                 initiative: this.initiativeBonus,

@@ -71,7 +71,31 @@ export const CLASS_ITEM_PREFERENCES = {
     "德魯伊": { armor: "Medium", weapons: ["Scimitar", "Quarterstaff"], focus: "Druidic Focus" },
 
     // Hybrid
-    "吟遊詩人": { armor: "Light", weapons: ["Rapier", "Shortsword"], focus: "Musical Instrument" }
+    "吟遊詩人": { armor: "Light", weapons: ["Rapier", "Shortsword"], focus: "Musical Instrument" },
+
+    // === Custom Classes & Subclasses ===
+    "工程師": { armor: "Medium", weapons: ["Light Crossbow", "Dagger"], focus: "Thieves' Tools" }, // Artificer
+    "鍊金術士": { armor: "Light", weapons: ["Dagger", "Light Crossbow"], focus: "Alchemist's Supplies" },
+    "死靈法師": { armor: "None", weapons: ["Dagger", "Quarterstaff"], focus: "Arcane Focus" },
+    "薩滿": { armor: "Medium", weapons: ["Spear", "Quarterstaff"], focus: "Totem" },
+    "荒野女巫": { armor: "Medium", weapons: ["Quarterstaff", "Sickle"], focus: "Druidic Focus" },
+    "女巫": { armor: "Light", weapons: ["Dagger", "Shortbow"], focus: "Arcane Focus" },
+    "召喚師": { armor: "Light", weapons: ["Light Crossbow", "Dagger"], focus: "Arcane Focus" },
+    "魔劍士": { armor: "Light", weapons: ["Scimitar", "Rapier"], focus: "Arcane Focus" }, // Magus
+    "奧法騎士": { armor: "Heavy", weapons: ["Longsword", "Greatsword"], focus: "Weapon" },
+    "劍刃舞者": { armor: "Light", weapons: ["Scimitar", "Rapier"], focus: "Musical Instrument" },
+    "先知": { armor: "Medium", weapons: ["Mace", "Light Crossbow"], focus: "Holy Symbol" }, // Oracle
+    "審判官": { armor: "Medium", weapons: ["Greatsword", "Heavy Crossbow"], focus: "Holy Symbol" }, // Inquisitor
+    "戰鬥祭師": { armor: "Heavy", weapons: ["Warhammer", "Shield"], focus: "Holy Symbol" },
+    "靈能者": { armor: "None", weapons: ["Spear", "Light Crossbow"], focus: "Psi Crystal" }, // Psion
+    "時空術士": { armor: "None", weapons: ["Quarterstaff", "Dagger"], focus: "Arcane Focus" },
+    "混沌法師": { armor: "None", weapons: ["Dagger", "Dart"], focus: "Arcane Focus" },
+    "血族領主": { armor: "Heavy", weapons: ["Greatsword", "Longsword"], focus: "Unholy Symbol" },
+    "偵察兵": { armor: "Medium", weapons: ["Longbow", "Shortsword"], focus: null },
+    "獵人": { armor: "Medium", weapons: ["Longbow", "Shortsword"], focus: null },
+    "戰地醫師": { armor: "Medium", weapons: ["Mace", "Light Crossbow"], focus: "Healer's Kit" },
+    "戰吼主唱": { armor: "Medium", weapons: ["Longsword", "Shortbow"], focus: "Musical Instrument" },
+    "海盜女王": { armor: "Light", weapons: ["Rapier", "Shortsword", "Hand Crossbow"], focus: "Navigator's Tools" }
 };
 
 // ============================================================

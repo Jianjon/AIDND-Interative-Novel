@@ -10,7 +10,7 @@ import { X, Sword, Shield, Map as MapIcon, Ghost, Heart, Star, BookOpen, Scroll,
 export default function CharacterModal({ character, onClose, onGeneratePortrait, onLevelUp, onUpdatePortrait, onUpdateCharacter, isGenerating }) {
     if (!character) return null;
 
-    const [activeTab, setActiveTab] = useState('stats'); // stats, inventory, backstory
+    const [activeTab, setActiveTab] = useState('stats'); // stats, inventory, backstory, companion
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({});
     const [isRefining, setIsRefining] = useState(false);
@@ -146,10 +146,10 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                 onClick={() => {
                                     const count = character.portraitGenCount || 0;
                                     if (count >= 3) {
-                                        alert("Portrait generation limit reached (Max 3).");
+                                        alert("頭像生成已達上限 (最多 3 次)。");
                                         return;
                                     }
-                                    const confirmGen = window.confirm(`Generate new AI portrait? (${3 - count} remaining)`);
+                                    const confirmGen = window.confirm(`是否生成新的 AI 頭像？(剩餘 ${3 - count} 次)`);
                                     if (confirmGen) {
                                         onGeneratePortrait(character);
                                         // The count update should happen in parent, but we can optimistically expect it
@@ -164,8 +164,8 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                     `}
                                 title={
                                     (character.portraitGenCount || 0) >= 3
-                                        ? "Limit Reached"
-                                        : `Generate AI Portrait (${3 - (character.portraitGenCount || 0)} left)`
+                                        ? "次數已滿"
+                                        : `生成 AI 頭像 (剩餘 ${3 - (character.portraitGenCount || 0)} 次)`
                                 }
                             >
                                 {isGenerating ? (
@@ -204,12 +204,12 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                     <div className="w-full space-y-3 mb-6">
                         <div className="bg-slate-900/50 p-3 rounded border border-slate-800 flex flex-col justify-center gap-1">
                             <div className="flex justify-between w-full text-xs uppercase tracking-widest text-slate-500 mb-1">
-                                <span>Health Status</span>
+                                <span>生命狀態 (Health)</span>
                                 <span className={data.hp < data.maxHp * 0.3 ? "text-red-500 animate-pulse font-bold" : "text-green-500 font-bold"}>
                                     <span className="mr-2 text-slate-400 font-mono">({data.hp}/{data.maxHp})</span>
-                                    {data.hp <= 0 ? "Unconscious" :
-                                        data.hp < data.maxHp * 0.3 ? "Critical" :
-                                            data.hp < data.maxHp * 0.6 ? "Wounded" : "Healthy"}
+                                    {data.hp <= 0 ? "不省人事" :
+                                        data.hp < data.maxHp * 0.3 ? "垂死邊緣" :
+                                            data.hp < data.maxHp * 0.6 ? "負傷" : "健康"}
                                 </span>
                             </div>
                             <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700">
@@ -226,19 +226,19 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                     {/* Combat Stats (Strict) */}
                     <div className="grid grid-cols-2 gap-2 w-full">
                         <div className="bg-slate-900 p-2 rounded text-center border border-slate-800">
-                            <div className="text-xs text-slate-500 uppercase">AC</div>
+                            <div className="text-[10px] text-slate-500 uppercase">護甲等級 (AC)</div>
                             <div className="text-lg font-bold text-slate-200">{character.ac || "10"}</div>
                         </div>
                         <div className="bg-slate-900 p-2 rounded text-center border border-slate-800">
-                            <div className="text-xs text-slate-500 uppercase">Init</div>
+                            <div className="text-[10px] text-slate-500 uppercase">先攻 (Init)</div>
                             <div className="text-lg font-bold text-slate-200">{getModString(10 + (derived.initiative || 0)).replace('10', '')}</div>
                         </div>
                         <div className="bg-slate-900 p-2 rounded text-center border border-slate-800">
-                            <div className="text-xs text-slate-500 uppercase">Prof</div>
+                            <div className="text-[10px] text-slate-500 uppercase">熟練 (Prof)</div>
                             <div className="text-lg font-bold text-slate-200">+{derived.proficiency || 2}</div>
                         </div>
                         <div className="bg-slate-900 p-2 rounded text-center border border-slate-800">
-                            <div className="text-xs text-slate-500 uppercase">DC</div>
+                            <div className="text-[10px] text-slate-500 uppercase">法術 DC</div>
                             <div className="text-lg font-bold text-slate-200">{derived.spellDC || "-"}</div>
                         </div>
                     </div>
@@ -250,23 +250,38 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                     < div className="flex border-b border-slate-800 bg-slate-950/50" >
                         <button
                             onClick={() => setActiveTab('stats')}
-                            className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'stats' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'stats' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                            Attributes
+                            屬性能力
                         </button>
-
+                        {(data.spells && data.spells.length > 0) && (
+                            <button
+                                onClick={() => setActiveTab('spells')}
+                                className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'spells' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
+                            >
+                                魔法奧秘
+                            </button>
+                        )}
                         <button
                             onClick={() => setActiveTab('inventory')}
-                            className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'inventory' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'inventory' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                            Inventory
+                            冒險裝備
                         </button>
                         <button
                             onClick={() => setActiveTab('backstory')}
-                            className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'backstory' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'backstory' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                            Story & Roleplay
+                            背景設定
                         </button>
+                        {data.companion && (
+                            <button
+                                onClick={() => setActiveTab('companion')}
+                                className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'companion' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
+                            >
+                                夥伴
+                            </button>
+                        )}
                     </div >
 
                     {/* Content Area */}
@@ -278,7 +293,14 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {Object.entries(stats).map(([key, val]) => (
                                         <div key={key} className="bg-slate-950 p-3 rounded border border-slate-800 flex flex-col items-center">
-                                            <span className="text-xs text-slate-500 uppercase font-bold">{key}</span>
+                                            <span className="text-[10px] text-slate-500 uppercase font-bold">
+                                                {key === 'str' ? '力量 STR' :
+                                                    key === 'dex' ? '敏捷 DEX' :
+                                                        key === 'con' ? '體質 CON' :
+                                                            key === 'int' ? '智力 INT' :
+                                                                key === 'wis' ? '感知 WIS' :
+                                                                    key === 'cha' ? '魅力 CHA' : key.toUpperCase()}
+                                            </span>
                                             <span className="text-2xl font-serif text-slate-200">{val}</span>
                                             <span className="text-xs text-amber-600 font-mono">{getModString(val)}</span>
                                         </div>
@@ -288,234 +310,254 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                 {/* Skills & Feats */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Primary Skills</h4>
+                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">擅長技能 (Skills)</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {data.skills.map(s => (
-                                                <span key={s} className="px-2 py-1 bg-slate-800 rounded text-xs text-slate-300 border border-slate-700">
+                                                <span key={s} className="px-2 py-1 bg-slate-800 rounded text-xs text-slate-300 border border-slate-700 shadow-sm">
                                                     {s}
                                                 </span>
                                             ))}
-                                            {data.skills.length === 0 && <span className="text-slate-600 text-xs italic">No trained skills</span>}
+                                            {data.skills.length === 0 && <span className="text-slate-600 text-xs italic">無訓練技能</span>}
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Feats & Features</h4>
+                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">專長與特性 (Feats)</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {[...(data.feats || []), ...(data.features || [])].map((f, i) => (
                                                 <span key={i} className="px-2 py-1 bg-indigo-950/50 rounded text-xs text-indigo-300 border border-indigo-900/50">
                                                     {f}
                                                 </span>
                                             ))}
-                                            {(data.feats || []).length === 0 && <span className="text-slate-600 text-xs italic">No feats</span>}
+                                            {(data.feats || []).length === 0 && (data.features || []).length === 0 && <span className="text-slate-600 text-xs italic">無特殊專長</span>}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        )
-                        }
+                        )}
 
-
-
-                        {
-                            activeTab === 'inventory' && (
-                                <div className="space-y-6">
-                                    {/* Gold Display */}
-                                    {(data.inventory?.gold !== undefined || data.gold !== undefined) && (
-                                        <div className="flex items-center gap-2 p-3 bg-amber-950/30 rounded-lg border border-amber-900/30">
-                                            <span className="text-xl">🪙</span>
-                                            <div>
-                                                <div className="text-xs text-amber-600 uppercase font-bold">金幣</div>
-                                                <div className="text-lg font-bold text-amber-400">{data.inventory?.gold ?? data.gold ?? 0} gp</div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Full Inventory */}
-                                    <div>
-                                        <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
-                                            <Package size={14} /> 背包
+                        {activeTab === 'spells' && (
+                            <div className="space-y-6 animate-in fade-in duration-300">
+                                {/* Spell Slots Summary */}
+                                {(data.slots || data.spellSlots) && (
+                                    <div className="bg-indigo-950/20 p-4 rounded-lg border border-indigo-500/30">
+                                        <h4 className="text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <Sparkles size={14} /> 法術位狀態 (Spell Slots)
                                         </h4>
-                                        <div className="space-y-4">
-                                            {/* Helper to render list or empty */}
-                                            {(Array.isArray(data.inventory) ?
-                                                // Handle Legacy/Fallback Array
-                                                <ul className="text-sm text-slate-300 space-y-1">
-                                                    {data.inventory.map((item, i) => (
-                                                        <li key={i} className="flex items-center gap-2 py-1 border-b border-slate-800/50 last:border-0">
-                                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                                                            {typeof item === 'string' ? item : item.name}
-                                                        </li>
-                                                    ))}
-                                                    {data.inventory.length === 0 && <span className="text-slate-600 text-xs italic">Empty</span>}
-                                                </ul>
-                                                :
-                                                // Handle New Schema (Object)
-                                                <>
-                                                    {/* Equipment */}
-                                                    <div>
-                                                        <h5 className="text-xs text-slate-500 uppercase font-bold mb-1">⚔️ 裝備</h5>
-                                                        <ul className="text-sm text-slate-300 space-y-1">
-                                                            {data.inventory.equipment && data.inventory.equipment.length > 0 ? (
-                                                                data.inventory.equipment.map((item, i) => (
-                                                                    <li key={`eq-${i}`} className="flex items-center gap-2 py-1 border-b border-slate-800/50">
-                                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                                                                        {typeof item === 'string' ? item : item.name}
-                                                                    </li>
-                                                                ))
-                                                            ) : (
-                                                                <span className="text-slate-600 text-xs italic">無</span>
-                                                            )}
-                                                        </ul>
-                                                    </div>
-
-                                                    {/* Consumables */}
-                                                    <div>
-                                                        <h5 className="text-xs text-amber-500 uppercase font-bold mb-1 mt-2">🧪 消耗品</h5>
-                                                        <ul className="text-sm text-slate-300 space-y-1">
-                                                            {data.inventory.consumables && data.inventory.consumables.length > 0 ? (
-                                                                data.inventory.consumables.map((item, i) => (
-                                                                    <li key={`con-${i}`} className="flex items-center gap-2 py-1 border-b border-slate-800/50">
-                                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-                                                                        {typeof item === 'string' ? item : item.name}
-                                                                    </li>
-                                                                ))
-                                                            ) : (
-                                                                <span className="text-slate-600 text-xs italic">無</span>
-                                                            )}
-                                                        </ul>
-                                                    </div>
-
-                                                    {/* Magic Items */}
-                                                    <div>
-                                                        <h5 className="text-xs text-purple-400 uppercase font-bold mb-1 mt-2">✨ 魔法物品</h5>
-                                                        <ul className="text-sm text-slate-300 space-y-1">
-                                                            {data.inventory.magicItems && data.inventory.magicItems.length > 0 ? (
-                                                                data.inventory.magicItems.map((item, i) => (
-                                                                    <li key={`mag-${i}`} className="flex items-center gap-2 py-1 border-b border-slate-800/50">
-                                                                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
-                                                                        {typeof item === 'string' ? item : item.name}
-                                                                    </li>
-                                                                ))
-                                                            ) : (
-                                                                <span className="text-slate-600 text-xs italic">無</span>
-                                                            )}
-                                                        </ul>
-                                                    </div>
-                                                </>
-                                            )}
+                                        <div className="flex flex-wrap gap-3">
+                                            {Object.entries(data.slots || data.spellSlots || {}).map(([level, count]) => (
+                                                <div key={level} className="flex flex-col items-center bg-slate-950/50 px-3 py-2 rounded border border-indigo-900/30 min-w-[60px]">
+                                                    <span className="text-[10px] text-indigo-500/70 font-bold uppercase">{level === '0' ? '戲法' : `${level} 環`}</span>
+                                                    <span className="text-xl font-serif text-indigo-300">{count}</span>
+                                                </div>
+                                            ))}
                                         </div>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <h4 className="text-amber-500 text-sm font-bold uppercase mb-4 border-b border-slate-800 pb-1 flex items-center gap-2">
+                                        <BookOpen size={16} /> 已準備法術 (Prepared Spells)
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {data.spells && data.spells.map((spell, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 p-3 bg-slate-800/40 rounded border border-slate-700/50 hover:border-indigo-500/30 transition-colors group">
+                                                <div className="text-indigo-500 group-hover:text-indigo-400 transition-colors">
+                                                    <Sparkles size={16} />
+                                                </div>
+                                                <span className="text-sm text-slate-200 font-medium">{spell}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {(!data.spells || data.spells.length === 0) && (
+                                        <p className="text-slate-600 text-sm italic py-4">目前沒有法術資料。</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'inventory' && (
+                            <div className="space-y-6">
+                                {/* Gold Display */}
+                                {(data.inventory?.gold !== undefined || data.gold !== undefined) && (
+                                    <div className="flex items-center gap-2 p-3 bg-amber-950/30 rounded-lg border border-amber-900/30">
+                                        <span className="text-xl">🪙</span>
+                                        <div>
+                                            <div className="text-xs text-amber-600 uppercase font-bold">目前資產</div>
+                                            <div className="text-lg font-bold text-amber-400">{data.inventory?.gold ?? data.gold ?? 0} GP (金幣)</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Full Inventory */}
+                                <div>
+                                    <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
+                                        <Package size={14} /> 行囊物品 (Inventory)
+                                    </h4>
+                                    <div className="space-y-4">
+                                        {/* Helper to render list or empty */}
+                                        {(Array.isArray(data.inventory) ?
+                                            // Handle Legacy/Fallback Array
+                                            <ul className="text-sm text-slate-300 space-y-1">
+                                                {data.inventory.map((item, i) => (
+                                                    <li key={i} className="flex items-center gap-2 py-1 border-b border-slate-800/50 last:border-0">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                                                        {typeof item === 'string' ? item : item.name}
+                                                    </li>
+                                                ))}
+                                                {data.inventory.length === 0 && <span className="text-slate-600 text-xs italic">背包空空如也</span>}
+                                            </ul>
+                                            :
+                                            // Handle New Schema (Object)
+                                            <>
+                                                {/* Equipment */}
+                                                <div>
+                                                    <h5 className="text-xs text-slate-500 uppercase font-bold mb-1">⚔️ 戰鬥裝備 (Equipment)</h5>
+                                                    <ul className="text-sm text-slate-300 space-y-1">
+                                                        {data.inventory.equipment && data.inventory.equipment.length > 0 ? (
+                                                            data.inventory.equipment.map((item, i) => (
+                                                                <li key={`eq-${i}`} className="flex items-center gap-2 py-1 border-b border-slate-800/50">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                                                                    {typeof item === 'string' ? item : `${item.name}${item.quantity ? ` x${item.quantity}` : ''}`}
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <span className="text-slate-600 text-xs italic">無裝備</span>
+                                                        )}
+                                                    </ul>
+                                                </div>
+
+                                                {/* Consumables */}
+                                                <div>
+                                                    <h5 className="text-xs text-amber-500 uppercase font-bold mb-1 mt-2">🧪 消耗品 (Consumables)</h5>
+                                                    <ul className="text-sm text-slate-300 space-y-1">
+                                                        {data.inventory.consumables && data.inventory.consumables.length > 0 ? (
+                                                            data.inventory.consumables.map((item, i) => (
+                                                                <li key={`con-${i}`} className="flex items-center gap-2 py-1 border-b border-slate-800/50">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                                                    {typeof item === 'string' ? item : `${item.name}${item.quantity ? ` x${item.quantity}` : ''}`}
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <span className="text-slate-600 text-xs italic">無消耗品</span>
+                                                        )}
+                                                    </ul>
+                                                </div>
+
+                                                {/* Magic Items */}
+                                                <div>
+                                                    <h5 className="text-xs text-purple-400 uppercase font-bold mb-1 mt-2">✨ 魔法物品 (Magic Items)</h5>
+                                                    <ul className="text-sm text-slate-300 space-y-1">
+                                                        {data.inventory.magicItems && data.inventory.magicItems.length > 0 ? (
+                                                            data.inventory.magicItems.map((item, i) => (
+                                                                <li key={`mag-${i}`} className="flex items-center gap-2 py-1 border-b border-slate-800/50">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                                                                    {typeof item === 'string' ? item : `${item.name}${item.quantity ? ` x${item.quantity}` : ''}`}
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <span className="text-slate-600 text-xs italic">無特殊物品</span>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
-                            )
-                        }
+                            </div>
+                        )}
 
-                        {
-                            activeTab === 'backstory' && (
-                                <div className="space-y-6">
-                                    <div>
-                                        <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Personality</h4>
-                                        <p className="text-slate-300 text-sm leading-relaxed italic">"{data.personality}"</p>
-                                    </div>
+                        {activeTab === 'backstory' && (
+                            <div className="space-y-6">
+                                <div>
+                                    <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">性格特質 (Personality)</h4>
+                                    <p className="text-slate-300 text-sm leading-relaxed italic">"{data.personality}"</p>
+                                </div>
 
-                                    <div>
-                                        <h4 className="text-purple-400 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Secrets & Inner Monologue</h4>
-                                        <p className="text-purple-300/80 text-sm leading-relaxed italic font-serif">
-                                            "{data.monologue || "No inner thoughts revealed..."}"
-                                        </p>
-                                    </div>
+                                <div>
+                                    <h4 className="text-purple-400 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">秘密與內心獨白 (Secrets)</h4>
+                                    <p className="text-purple-300/80 text-sm leading-relaxed italic font-serif">
+                                        "{data.monologue || "尚未揭曉內心深處的想法..."}"
+                                    </p>
+                                </div>
 
-                                    <div>
-                                        <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Background Story</h4>
-                                        <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">
-                                            {data.bio || data.backstory || data.background || "No backstory recorded."}
-                                        </p>
-                                    </div>
+                                <div>
+                                    <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">生平故事 (Biographical Story)</h4>
+                                    <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">
+                                        {data.bio || data.backstory || data.background || "這名冒險者的過去隱藏在迷霧之中。"}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
-
-
-                                    <div>
-                                        <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">Secrets & Inner Monologue</h4>
-                                        <p className="text-slate-500 text-sm italic">
-                                            {data.monologue}
-                                        </p>
-                                    </div>
-
-                                    {/* Companion Section */}
-                                    {data.companion && (
-                                        <div>
-                                            <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
-                                                🐾 Companion
-                                            </h4>
-                                            <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-4">
-                                                <div className="flex items-center gap-4 mb-3">
-                                                    <div className="w-12 h-12 rounded-xl bg-amber-900/50 flex items-center justify-center text-2xl overflow-hidden border border-amber-500/30">
-                                                        {data.companion.avatar ? (
-                                                            <img src={data.companion.avatar} alt={data.companion.name} className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            data.companion.type?.includes('狼') || data.companion.type?.includes('Wolf') ? '🐺' :
-                                                                data.companion.type?.includes('鷹') || data.companion.type?.includes('Hawk') ? '🦅' :
-                                                                    data.companion.type?.includes('貓頭鷹') || data.companion.type?.includes('Owl') ? '🦉' :
-                                                                        data.companion.type?.includes('蜘蛛') || data.companion.type?.includes('Spider') ? '🕷️' :
-                                                                            data.companion.type?.includes('機') || data.companion.type?.includes('Robot') || data.companion.type?.includes('終端') ? '🤖' :
-                                                                                data.companion.type?.includes('劍') || data.companion.type?.includes('Sword') ? '🗡️' :
-                                                                                    data.companion.type?.includes('貓') || data.companion.type?.includes('Cat') ? '🐱' : '🐾'
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-amber-300 font-bold">{data.companion.name}</p>
-                                                        <p className="text-amber-700 text-xs">{data.companion.type}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-3 gap-2 text-center mb-3">
-                                                    <div className="bg-slate-900/50 p-2 rounded">
-                                                        <div className="text-xs text-slate-500">AC</div>
-                                                        <div className="text-amber-400 font-bold">{data.companion.ac}</div>
-                                                    </div>
-                                                    <div className="bg-slate-900/50 p-2 rounded">
-                                                        <div className="text-xs text-slate-500">HP</div>
-                                                        <div className="text-green-400 font-bold">{data.companion.hp}/{data.companion.maxHp}</div>
-                                                    </div>
-                                                    <div className="bg-slate-900/50 p-2 rounded">
-                                                        <div className="text-xs text-slate-500">Attack</div>
-                                                        <div className="text-rose-400 font-bold text-xs">
-                                                            {data.companion.attacks?.[0]?.name || 'Help'}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {data.companion.abilities && data.companion.abilities.length > 0 && (
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {data.companion.abilities.map((ability, i) => (
-                                                            <span key={i} className="px-2 py-0.5 bg-amber-900/30 text-amber-500 text-xs rounded border border-amber-800/30">
-                                                                {ability}
-                                                            </span>
-                                                        ))}
-                                                    </div>
+                        {activeTab === 'companion' && data.companion && (
+                            <div className="space-y-6 animate-in fade-in duration-300">
+                                {/* Companion Section */}
+                                <div className="animate-in slide-in-from-bottom-2 duration-500">
+                                    <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
+                                        🐾 冒險夥伴 (Companion)
+                                    </h4>
+                                    <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-4">
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <div className="w-12 h-12 rounded-xl bg-amber-900/50 flex items-center justify-center text-2xl overflow-hidden border border-amber-500/30">
+                                                {data.companion.avatar ? (
+                                                    <img src={data.companion.avatar} alt={data.companion.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    '🐾'
                                                 )}
                                             </div>
-                                        </div>
-                                    )}
-
-                                    {/* Growth History Section */}
-                                    {data.growthHistory && data.growthHistory.length > 0 && (
-                                        <div>
-                                            <h4 className="text-cyan-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
-                                                📈 Growth History
-                                            </h4>
-                                            <div className="space-y-2">
-                                                {data.growthHistory.map((event, idx) => (
-                                                    <div key={idx} className="bg-slate-800/30 p-3 rounded-lg border-l-2 border-cyan-600">
-                                                        <p className="text-slate-300 text-sm">{event.description || event}</p>
-                                                        {event.timestamp && (
-                                                            <p className="text-slate-600 text-xs mt-1">{new Date(event.timestamp).toLocaleDateString()}</p>
-                                                        )}
-                                                    </div>
-                                                ))}
+                                            <div>
+                                                <p className="text-amber-300 font-bold">{data.companion.name}</p>
+                                                <p className="text-amber-700 text-xs">{data.companion.type}</p>
                                             </div>
                                         </div>
-                                    )}
+                                        <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                                            <div className="bg-slate-900/50 p-2 rounded">
+                                                <div className="text-[10px] text-slate-500 uppercase">AC</div>
+                                                <div className="text-amber-400 font-bold">{data.companion.ac}</div>
+                                            </div>
+                                            <div className="bg-slate-900/50 p-2 rounded">
+                                                <div className="text-[10px] text-slate-500 uppercase">HP</div>
+                                                <div className="text-green-400 font-bold">{data.companion.hp}/{data.companion.maxHp}</div>
+                                            </div>
+                                            <div className="bg-slate-900/50 p-2 rounded">
+                                                <div className="text-[10px] text-slate-500 uppercase">攻擊</div>
+                                                <div className="text-rose-400 font-bold text-xs truncate" title={data.companion.attacks?.[0]?.name}>
+                                                    {data.companion.attacks?.[0]?.name || '特殊行動'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {data.companion.abilities && data.companion.abilities.length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {data.companion.abilities.map((ability, i) => (
+                                                    <span key={i} className="px-2 py-0.5 bg-amber-900/30 text-amber-500 text-[10px] rounded border border-amber-800/30">
+                                                        {ability}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            )
-                        }
+
+                                {/* Growth History Section */}
+                                {data.growthHistory && data.growthHistory.length > 0 && (
+                                    <div className="animate-in slide-in-from-bottom-2 duration-500">
+                                        <h4 className="text-cyan-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1 flex items-center gap-2">
+                                            📈 成長歷程 (Growth)
+                                        </h4>
+                                        <div className="space-y-2">
+                                            {data.growthHistory.map((event, idx) => (
+                                                <div key={idx} className="bg-slate-800/30 p-3 rounded-lg border-l-2 border-cyan-600">
+                                                    <p className="text-slate-300 text-sm">{event.description || event}</p>
+                                                    {event.timestamp && (
+                                                        <p className="text-[10px] text-slate-600 mt-1">{new Date(event.timestamp).toLocaleDateString()}</p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                     </div>
                 </div>

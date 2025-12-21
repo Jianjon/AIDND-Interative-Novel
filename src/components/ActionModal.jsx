@@ -34,8 +34,10 @@ export default function ActionModal({
     const isDowned = hp <= 0;
 
     // Handle option selection
-    const handleSelectOption = (optionText) => {
-        onSelectAction(character.id, optionText);
+    const handleSelectOption = (option) => {
+        const text = typeof option === 'object' ? option.text : option;
+        const isGroup = typeof option === 'object' ? !!option.isGroup : false;
+        onSelectAction(character.id, text, isGroup);
         onClose();
     };
 

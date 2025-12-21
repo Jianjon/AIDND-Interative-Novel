@@ -21,6 +21,9 @@ export const SPELL_DATABASE = {
     "Shield": { level: 1, school: "Abjuration", castTime: "Reaction", range: "Self", components: "V, S", duration: "1 Round", effect: "+5 AC until start of next turn. Nullifies Magic Missile." },
     "Guiding Bolt": { level: 1, school: "Evocation", castTime: "1 Action", range: "120ft", components: "V, S", duration: "1 Round", effect: "4d6 Radiant. Next attack on target has Advantage." },
     "Hex": { level: 1, school: "Enchantment", castTime: "Bonus Action", range: "90ft", components: "V, S, M", duration: "Concentration (1 Hr)", effect: "+1d6 Necrotic dmg on hit. Disadv on chosen Ability Check." },
+    "Chaos Bolt": { level: 1, school: "Evocation", castTime: "1 Action", range: "120ft", components: "V, S", duration: "Instant", effect: "2d8 + 1d6 damage. Type determined by d8s. Chance to bounce." },
+    "Sleep": { level: 1, school: "Enchantment", castTime: "1 Action", range: "90ft", components: "V, S, M", duration: "1 Min", effect: "Put 5d8 HP of creatures to sleep." },
+    "Speak with Animals": { level: 1, school: "Divination", castTime: "1 Action", range: "Self", components: "V, S", duration: "10 Min", effect: "Communicate with beasts." },
     // Class Specific Iconic (Lvl 1)
     "Bless": { level: 1, school: "Enchantment", castTime: "1 Action", range: "30ft", components: "V, S, M", duration: "Concentration (1 Min)", effect: "+1d4 to Attack Rolls and Saves for 3 creatures." },
     "Bane": { level: 1, school: "Enchantment", castTime: "1 Action", range: "30ft", components: "V, S, M", duration: "Concentration (1 Min)", effect: "-1d4 to Attack Rolls and Saves for 3 creatures (Cha Save)." },
@@ -37,6 +40,8 @@ export const SPELL_DATABASE = {
     "Pass without Trace": { level: 2, school: "Abjuration", castTime: "1 Action", range: "Self", components: "V, S, M", duration: "Concentration (1 Hr)", effect: "+10 Stealth for group within 30ft." },
     "Moonbeam": { level: 2, school: "Evocation", castTime: "1 Action", range: "120ft", components: "V, S, M", duration: "Concentration (1 Min)", effect: "2d10 Radiant dmg in 5ft cylinder (Con Save). Shapechangers revert." },
     "Find Steed": { level: 2, school: "Conjuration", castTime: "10 Min", range: "30ft", components: "V, S", duration: "Instant", effect: "Summon a spirit mount (Warhorse, Elk, etc.)." },
+    "Mirror Image": { level: 2, school: "Illusion", castTime: "1 Action", range: "Self", components: "V, S", duration: "1 Min", effect: "Create 3 duplicates. Attacks may hit them instead." },
+    "Spike Growth": { level: 2, school: "Transmutation", castTime: "1 Action", range: "150ft", components: "V, S, M", duration: "Concentration (10 Min)", effect: "2d4 Piercing dmg for every 5ft moved in area." },
 
     // === LEVEL 3 ===
     "Fireball": { level: 3, school: "Evocation", castTime: "1 Action", range: "150ft", components: "V, S, M", duration: "Instant", effect: "8d6 Fire dmg in 20ft radius (Dex Save half)." },
@@ -46,18 +51,23 @@ export const SPELL_DATABASE = {
     "Counterspell": { level: 3, school: "Abjuration", castTime: "Reaction", range: "60ft", components: "S", duration: "Instant", effect: "Interrupt spell cast. Auto-fail Lvl 3 or lower. Check vs higher." },
     "Call Lightning": { level: 3, school: "Conjuration", castTime: "1 Action", range: "120ft", components: "V, S", duration: "Concentration (10 Min)", effect: "3d10 Lightning dmg in 5ft radius (Dex Save). Call down bold each turn." },
     "Aura of Vitality": { level: 3, school: "Evocation", castTime: "1 Action", range: "Self (30ft)", components: "V", duration: "Concentration (1 Min)", effect: "Bonus Action to heal 2d6 to one creature within aura." },
+    "Lightning Bolt": { level: 3, school: "Evocation", castTime: "1 Action", range: "Self (100ft Line)", components: "V, S, M", duration: "Instant", effect: "8d6 Lightning dmg (Dex save half)." },
+    "Speak with Plants": { level: 3, school: "Transmutation", castTime: "1 Action", range: "Self (30ft)", components: "V, S", duration: "10 Min", effect: "Communicate with plants, turn terrain normal." },
 
     // === LEVEL 4 ===
     "Polymorph": { level: 4, school: "Transmutation", castTime: "1 Action", range: "60ft", components: "V, S, M", duration: "Concentration (1 Hr)", effect: "Transform creature into Beast (CR <= Level/Rating)." },
     "Dimension Door": { level: 4, school: "Conjuration", castTime: "1 Action", range: "500ft", components: "V", duration: "Instant", effect: "Teleport self and one willing creature to spot within range." },
     "Wall of Fire": { level: 4, school: "Evocation", castTime: "1 Action", range: "120ft", components: "V, S, M", duration: "Concentration (1 Min)", effect: "5d8 Fire dmg (Dex save half). Blocks vision." },
     "Banishment": { level: 4, school: "Abjuration", castTime: "1 Action", range: "60ft", components: "V, S, M", duration: "Concentration (1 Min)", effect: "Banish target to harmless demiplane (Cha save)." },
+    "Guardian of Nature": { level: 4, school: "Transmutation", castTime: "Bonus Action", range: "Self", components: "V", duration: "Concentration (1 Min)", effect: "Transform into Primal Beast (Attack adv, +1d6 dmg) or Great Tree (Temp HP, Dex/Wis Adv)." },
 
     // === LEVEL 5 ===
     "Greater Restoration": { level: 5, school: "Abjuration", castTime: "1 Action", range: "Touch", components: "V, S, M", duration: "Instant", effect: "End Charm/Petrify/Curse/Stat Reduction/Max HP reduction." },
     "Cone of Cold": { level: 5, school: "Evocation", castTime: "1 Action", range: "Self (60ft Cone)", components: "V, S, M", duration: "Instant", effect: "8d8 Cold dmg (Con save half)." },
     "Mass Cure Wounds": { level: 5, school: "Evocation", castTime: "1 Action", range: "60ft", components: "V, S", duration: "Instant", effect: "Heal 3d8+Mod to 6 creatures in 30ft sphere." },
     "Raise Dead": { level: 5, school: "Necromancy", castTime: "1 Hour", range: "Touch", components: "V, S, M (500g Diamond)", duration: "Instant", effect: "Revive creature dead < 10 days. -4 penalty to rolls initially." },
+    "Steel Wind Strike": { level: 5, school: "Conjuration", castTime: "1 Action", range: "30ft", components: "S, M", duration: "Instant", effect: "Melee spell attack on 5 targets. 6d10 Force dmg each. Teleport." },
+    "Destructive Wave": { level: 5, school: "Evocation", castTime: "1 Action", range: "Self (30ft)", components: "V", duration: "Instant", effect: "10d6 Thunder/Radiant/Necrotic dmg + Prone (Con Save half/negate prone)." },
 
     // === LEVEL 6 ===
     "Heal": { level: 6, school: "Evocation", castTime: "1 Action", range: "60ft", components: "V, S", duration: "Instant", effect: "Heal 70 HP. Cure Blind/Deaf/Disease." },

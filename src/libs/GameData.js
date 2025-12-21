@@ -252,6 +252,8 @@ export const MODULES = [
         startLevel: 3,
         category: "beginner",
         features: ["新手友善", "經典冒險", "地城探索"],
+        chapters: 4,
+        playTime: "15-20小時",
         plot: "核心危機: 矮人兄弟尋獲了傳說中的回音洞 (Wave Echo Cave)，卻遭到了神秘的反派「黑蜘蛛」綁架。\n劇情引導:\n1. 地精伏擊: 經典的開場，玩家護送的貨車遭遇埋伏，追蹤至峭壁洞穴。\n2. 凡戴爾鎮: 與各式各樣的 NPC 互動，解決紅色烙印幫派的威脅。\n3. 回音洞: 探索充滿不死生物與魔法殘餘的古老礦坑，對決黑蜘蛛。"
     },
     {
@@ -262,6 +264,8 @@ export const MODULES = [
         startLevel: 3,
         category: "beginner",
         features: ["新手最愛", "探索遺跡", "派系互動"],
+        chapters: 3,
+        playTime: "10-12小時",
         plot: "核心危機: 奧克赫斯鎮的古老傳說提到，地底的「無日衛城」中生長著一棵古樹，其結出的果實既能治病也能致死。\n劇情引導:\n1. 地精與狗頭人的戰爭: 衛城內兩大勢力正在交戰，玩家可以選擇介入或利用。\n2. 失蹤的冒險者: 尋找上一支失蹤隊伍的下落。\n3. 古爾薩斯樹: 最終發現一切源於一位被詛咒的德魯伊與吸血鬼樹的共生關係。"
     },
     {
@@ -272,16 +276,20 @@ export const MODULES = [
         startLevel: 3,
         category: "beginner",
         features: ["懷舊經典", "沙盒", "踢門風格"],
+        chapters: 5,
+        playTime: "12-15小時",
         plot: "核心危機: 在文明邊緣的堡壘附近，渾沌洞窟 (Caves of Chaos) 中聚集了大量的怪物，威脅著人類的安危。\n劇情引導:\n1. 堡壘生活: 以堡壘為基地，獲取情報、裝備與傭兵。\n2. 渾沌洞窟: 一個包含多個不同種族（地精、獸人、狗頭人等）的複雜洞穴系統。\n3. 邪惡祭壇: 發現怪物們背後的邪惡神殿，阻止他們的黑暗儀式。"
     },
     {
         id: 8,
         title: "深水城：龍之劫 (Dragon Heist)",
         desc: "在輝煌的深水城中，一筆失落的巨額寶藏引發了各方勢力的明爭暗鬥。這是一場智慧與速度的競賽。",
-        levels: [3, 5], // Adjusted for tier
+        levels: [3, 5],
         startLevel: 3,
         category: "beginner",
         features: ["都市冒險", "據點經營", "勢力鬥爭"],
+        chapters: 4,
+        playTime: "20-25小時",
         plot: "核心危機: 前任領主私藏的 50 萬枚金龍幣寶藏下落不明。深水城內的四大反派勢力（黑道、魔鬼、卓爾、眼魔）都在尋找開啟寶庫的鑰匙「格羅爾之石」。\n劇情引導:\n1. 巨魔顱莊園: 玩家獲得一家鬧鬼的酒館作為基地，開始在城市中經營與生活。\n2. 火球術事件: 一個就在家門口的爆炸案將玩家捲入奪寶紛爭。\n3. 季節與反派: 劇本會根據季節不同而改變主要反派，主要流程是情報戰以及在城市巷弄間的追逐戰。"
     },
     {
@@ -292,7 +300,70 @@ export const MODULES = [
         startLevel: 3,
         category: "beginner",
         features: ["史詩戰役", "屠龍", "邪教陰謀"],
+        chapters: 8,
+        playTime: "30-40小時",
         plot: "核心危機: 龍后提亞馬特 (Tiamat) 的信徒「龍巫教」試圖將這位邪惡女神從九層地獄召喚回物質位面。\n劇情引導:\n1. 綠巢 (Greenest) 之圍: 冒險者在一個被藍龍與邪教徒攻擊的城鎮中開始，必須保護平民。\n2. 追蹤大篷車: 隊伍潛入並追蹤運送財寶的邪教商隊，一路向北前往博德之門與深水城。\n3.天空城堡: 最終發現邪教徒將財寶運往一座飛行的雲巨人城堡，必須在城堡墜毀或抵達目的地前阻止他們。"
+    },
+    // --- 入門任務 (Introductory / Start-up) ---
+    {
+        id: 23,
+        title: "鹽沼的險惡祕密 (The Sinister Secret of Saltmarsh)",
+        desc: "經典的「鬼屋」探險。調查城鎮邊緣那棟破舊且充滿神祕聲響的宅邸，揭開埋藏多年的真相。",
+        levels: [1, 3],
+        startLevel: 1,
+        category: "intro",
+        features: ["經典之作", "調查推理", "低難度"],
+        chapters: 2,
+        playTime: "6-8小時",
+        plot: "核心危機: 鹽沼鎮邊緣的一棟廢棄宅邸發生了種種靈異現象，傳說有鬼魂出沒。\n劇情引導:\n1. 鬼屋探險: 玩家進入宅邸後發現種種「幻象」與「陷阱」，最終發現其實是人為的偽裝。\n2. 走私基地: 發現宅邸地下室與海邊洞窟相連，是一群走私者的基地。\n3. 海之幽靈號: 攔截前來接應的走私船，徹底終結威脅。"
+    },
+    {
+        id: 24,
+        title: "寒冬之疾 (Frozen Sick)",
+        desc: "冰風之谷的極寒之地中，一種恐怖的疾病正悄悄擴散。時間緊迫，你們必須找到治癒之法。",
+        levels: [1, 3],
+        startLevel: 1,
+        category: "intro",
+        features: ["極地探險", "時間競速", "解謎"],
+        chapters: 3,
+        playTime: "8-10小時",
+        plot: "核心危機: 一種古老的魔法疾病「凍病」正在極寒的科羅納村蔓延，感染者會逐漸轉化為冰雕。\n劇情引導:\n1. 調查病源: 詢問村中的煉金術師，追蹤第一位受害者的足跡。\n2. 冰冷深淵: 深入充滿不死生物的地下冰迷宮。\n3. 治癒之光: 在最終的遠古廢墟中找到解藥配方，帶回村莊。"
+    },
+    {
+        id: 25,
+        title: "殞落地堡的領主 (Master of the Fallen Fortress)",
+        desc: "一座半塌的古老堡壘矗立在海岸邊。雖然殘破，但裡面的傳奇與財寶吸引著勇者前來挑戰。",
+        levels: [1, 2],
+        startLevel: 1,
+        category: "intro",
+        features: ["Pathfinder 經典", "短篇爬塔", "戰鬥導向"],
+        chapters: 1,
+        playTime: "3-4小時",
+        plot: "核心危機: 位於奧泰里附近的隕落地堡最近出現了異常的震動，一群遠征隊受困其中。\n劇情引導:\n1. 進入塔樓: 面對堡壘各層的守護獸與陷阱。\n2. 救援行動: 在頂層擊敗翼龍或強大首領，解救倖存的探索者。\n3. 撤離: 隨著堡壘的進一步崩塌，帶著寶藏與傷患逃離。"
+    },
+    {
+        id: 27,
+        title: "強力釀造 (A Most Potent Brew)",
+        desc: "酒館的老闆遇到了一個大麻煩——地下室出現了巨型老鼠，但這背後似乎隱藏著比老鼠更古老的東西。",
+        levels: [1, 2],
+        startLevel: 1,
+        category: "intro",
+        features: ["絕佳初體會", "經典開場", "解謎探索"],
+        chapters: 1,
+        playTime: "2-3小時",
+        plot: "核心危機: 酒館地下室的巨鼠不僅在偷吃糧食，還破壞了關鍵的釀酒設備。\n劇情引導:\n1. 地窖清理: 擊敗第一波變異生物。\n2. 隱藏通道: 追踪痕跡發現一道暗門，通向古老的實驗室。\n3. 機械陷阱: 破解簡單的魔法謎題與機械裝置，恢復釀酒系統。"
+    },
+    {
+        id: 21,
+        title: "風暴島之龍 (Dragons of Stormwreck Isle)",
+        desc: "全新的龍族冒險。在這座充滿傳說的島上，揭開古代龍魂甦醒的真相，阻止邪惡力量的崛起。",
+        levels: [1, 3],
+        startLevel: 1,
+        category: "intro",
+        features: ["新手首選", "龍族傳說", "輕快節奏"],
+        chapters: 4,
+        playTime: "10-15小時",
+        plot: "核心危機: 古老的龍魂正在島上甦醒，引發了不自然的風暴與殭屍突襲。\n劇情引導:\n1. 龍之息: 抵達和平的神廟，接受萊拉尼長老的委託。\n2. 海草洞窟: 解決威脅神廟生存的真菌感染。\n3. 天文台之戰: 在島嶼巔峰對決幼藍龍星火，阻止儀式。"
     },
     {
         id: 19,
@@ -302,6 +373,8 @@ export const MODULES = [
         startLevel: 3,
         category: "beginner",
         features: ["荒野求生", "恐龍", "熱帶風情"],
+        chapters: 5,
+        playTime: "20-25小時",
         plot: "核心危機: 玩家獲得了一張前往神祕熱帶島嶼的航海圖，那裡傳說有著巨大的財寶與古老的恐怖。\n劇情引導:\n1. 塔納羅阿村: 島上唯一的安全避風港，由原住民防守著巨大的防護牆。\n2. 史前世界: 探索充滿霸王龍、翼龍與巨猿的叢林。\n3. 禁忌城市: 深入島嶼中心的火山湖，對抗控制心靈的古老生物「考普魯 (Kopru)」。"
     },
     {
@@ -312,6 +385,8 @@ export const MODULES = [
         startLevel: 3,
         category: "beginner",
         features: ["龍槍經典", "英雄史詩", "線性劇情"],
+        chapters: 4,
+        playTime: "12-16小時",
         plot: "核心危機: (龍槍系列第一部) 真正的神祇已經離開這個世界 300 年，人們感到絕望。如今，黑暗勢力正在尋找能夠證明古神回歸的「藍水晶杖」。\n劇情引導:\n1. 最後的歸宿旅店: 多年未見的朋友們重聚，卻因保護持有藍水晶杖的情侶而被通緝。\n2. 逃亡與追擊: 逃離被龍人軍隊佔領的索雷斯城，穿越神祕的黑森林。\n3. 扎卡拉廢墟: 深入沉沒的古城，尋找關於古神與龍槍的真相，並面對第一條真龍的恐懼。"
     },
 
@@ -324,16 +399,20 @@ export const MODULES = [
         startLevel: 5,
         category: "intermediate",
         features: ["哥德恐怖", "吸血鬼", "開放世界"],
-        plot: "核心危機: 冒險者被迷霧捲入「巴洛維亞」半位面，這裡由吸血鬼領主史特拉德 (Strahd) 絕對統治。\n劇情引導:\n1. 死亡之屋: 透過探索充滿怨靈的古宅，了解這個世界的恐怖基調。\n2. 塔羅卡預言: 吉普賽算命師為隊伍占卜，決定關鍵寶物與盟友的位置。\n3. 鴉閣城堡: 收集神器，削弱史特拉德的力量，並在他的城堡中將其擊敗。"
+        chapters: 12,
+        playTime: "50-70小時",
+        plot: "核心危機: 冒覽者被迷霧捲入「巴洛維亞」半位面，這裡由吸血鬼領主史特拉德 (Strahd) 絕對統治。\n劇情引導:\n1. 死亡之屋: 透過探索充滿怨靈的古宅，了解這個世界的恐怖基調。\n2. 塔羅卡預言: 吉普賽算命師為隊伍占卜，決定關鍵寶物與盟友的位置。\n3. 鴉閣城堡: 收集神器，削弱史特拉德的力量，並在他的城堡中將其擊敗。"
     },
     {
         id: 5,
         title: "風暴君王之雷霆 (Storm King's Thunder)",
-        desc: "巨人們在北方肆虐，從小鎮到城市無一倖免。唯一的希望是找到失蹤的風暴巨人王。",
+        desc: "巨人們在北方肆虐，從小鎮到城市無一倖免。唯一的希望 is 找到失蹤的風暴巨人王。",
         levels: [5, 10],
         startLevel: 5,
         category: "intermediate",
         features: ["巨人戰爭", "廣闊沙盒", "北境探險"],
+        chapters: 10,
+        playTime: "60-80小時",
         plot: "核心危機: 巨人的階級制度被打破，各族巨人為了爭奪新地位而開始破壞。風暴巨人王赫卡頓失蹤。\n劇情引導:\n1. 巨人肆虐: 目睹不同種類的巨人（冰霜、火焰、雲、石）襲擊人類城鎮。\n2. 神諭之眼: 尋找據說無所不知的「神諭」，得知恢復秩序的方法。\n3. 王庭潛入: 潛入巨人據點，揭開陰謀並決定與巨人開戰或結盟。"
     },
     {
@@ -344,7 +423,9 @@ export const MODULES = [
         startLevel: 5,
         category: "intermediate",
         features: ["極地生存", "心理驚悚", "古神怒火"],
-        plot: "核心危機: 冰霜女神歐呂爾每晚施法，讓冰風之谷陷入永夜。\n劇情引導:\n1. 十鎮傳說: 在十個小鎮中解決因永夜而生的怪物與連環殺手案件。\n2. 毀滅之光: 發現灰矮人試圖利用特殊金屬毀滅十鎮的陰謀。\n3. 深入冰川: 前往被封印的浮空城遺跡，尋找結束永夜的神話裝置。"
+        chapters: 7,
+        playTime: "40-60小時",
+        plot: "核心危機: 冰霜女神歐呂爾每晚施法，讓冰風之谷陷入永永夜。\n劇情引導:\n1. 十鎮傳說: 在十個小鎮中解決因永夜而生的怪物與連環殺手案件。\n2. 毀滅之光: 發現灰矮人試圖利用特殊金屬毀滅十鎮的陰謀。\n3. 深入冰川: 前往被封印的浮空城遺跡，尋找結束永夜的神話裝置。"
     },
     {
         id: 10,
@@ -354,6 +435,8 @@ export const MODULES = [
         startLevel: 5,
         category: "intermediate",
         features: ["龍槍世界", "大規模戰爭", "軍事行動"],
+        chapters: 7,
+        playTime: "35-45小時",
         plot: "核心危機: 塔克西絲的紅龍軍團發動戰爭，試圖征服世界。\n劇情引導:\n1. 朋友的葬禮: 玩家在小村莊遭遇紅龍軍團的先鋒部隊。\n2. 戰爭迷霧: 作為軍隊的一部分參與大規模戰役。\n3. 飛行堡壘: 潛入並破壞龍軍的空中要塞，阻止他們攻陷最後的防線。"
     },
     {
@@ -364,6 +447,8 @@ export const MODULES = [
         startLevel: 5,
         category: "intermediate",
         features: ["叢林探險", "恐龍", "致命地下城"],
+        chapters: 9,
+        playTime: "45-60小時",
         plot: "核心危機: 「死亡詛咒」席捲世界，死者無法復活。源頭指向楚爾特叢林深處。\n劇情引導:\n1. 尼安扎羅港: 在恐龍賽跑與商業陰謀中尋找嚮導。\n2. 叢林探險: 深入雨林，對抗不死生物與蛇人，尋找失落古城。\n3. 九神之墓: 進入充滿致命陷阱的地下城，面對巫妖與「靈魂吞噬者」。"
     },
     {
@@ -374,6 +459,8 @@ export const MODULES = [
         startLevel: 5,
         category: "intermediate",
         features: ["戰爭史詩", "時間限制", "城市防禦"],
+        chapters: 5,
+        playTime: "25-30小時",
         plot: "核心危機: 一支名為「紅手」的大地精軍團，正有組織地向人類王國推進。\n劇情引導:\n1. 發現入侵: 玩家偶然發現了軍團的地圖，意識到戰爭即將來臨。\n2. 拖延戰術: 透過破壞橋樑、刺殺指揮官、尋求盟友來爭取時間。\n3. 布林德爾福圍城戰: 指揮防禦，決定城市的存亡。"
     },
     {
@@ -384,6 +471,8 @@ export const MODULES = [
         startLevel: 5,
         category: "intermediate",
         features: ["趣味迷宮", "神器", "思考解謎"],
+        chapters: 3,
+        playTime: "8-10小時",
         plot: "核心危機: 瘋狂法師偷走了三把傳奇武器並發出挑戰書。\n劇情引導:\n1. 活火山: 迷宮位於一座持續噴發的火山內部。\n2. 三個分支: 迷宮分為三個獨立區域，分別對應三把神器。\n3. 道德抉擇: 每把神器都有自己的意志，獲得它們可能會付出代價。"
     },
 
@@ -396,6 +485,8 @@ export const MODULES = [
         startLevel: 8,
         category: "advanced",
         features: ["老派風格", "連續地城", "強大敵人"],
+        chapters: 3,
+        playTime: "12-18小時",
         plot: "核心危機: 不同種族的巨人前所未有地聯合起來襲擊人類領土。\n劇情引導:\n1. 山丘巨人酋長的大廳: 潛入粗魯的山丘巨人要塞。\n2. 冰霜巨人極地裂隙: 在巨大的冰洞中對抗冰霜巨人。\n3. 火焰巨人蘇爾特大廳: 深入火山深處，揭發幕後陰謀。"
     },
     {
@@ -406,6 +497,8 @@ export const MODULES = [
         startLevel: 8,
         category: "advanced",
         features: ["科幻混搭", "外星科技", "機器人"],
+        chapters: 4,
+        playTime: "15-20小時",
         plot: "核心危機: 屏障峰發生了奇怪的襲擊，源頭是一艘墜毀的外星飛船。\n劇情引導:\n1. 進入異界: 探索充滿金屬牆壁與閃爍燈光的飛船內部。\n2. 科技對抗魔法: 面對機器人與雷射槍，學習使用高科技鑰匙卡。\n3. 主腦: 對抗飛船失控的人工智慧。"
     },
     {
@@ -416,6 +509,8 @@ export const MODULES = [
         startLevel: 10,
         category: "advanced",
         features: ["極高難度", "解謎", "死亡陷阱"],
+        chapters: 1,
+        playTime: "6-8小時",
         plot: "核心危機: 半巫妖阿塞瑞拉克建造了充滿致命陷阱的地下墓穴。\n劇情引導:\n1. 虛假入口: 在多個入口中找到唯一的正確道路，錯誤意味著即死。\n2. 死亡陷阱: 這裡沒有怪物大軍，只有球體毀滅魔與魔法謎題。\n3. 面對半巫妖: 挑戰 D&D 史上最強大的敵人之一。"
     },
     {
@@ -426,6 +521,8 @@ export const MODULES = [
         startLevel: 8,
         category: "advanced",
         features: ["地獄戰車", "魔鬼與惡魔", "墮落天使"],
+        chapters: 5,
+        playTime: "40-50小時",
         plot: "核心危機: 聖城艾爾托瑞爾被拖入九層地獄的第一層「阿佛納斯」。\n劇情引導:\n1. 博德之門的陰影: 揭露城市中的邪教腐敗。\n2. 地獄之旅: 為了拯救城市，隊伍主動進入地獄。\n3. 靈魂戰車: 在地獄荒原上駕駛戰車，在血戰中尋找救贖或毀滅之路。"
     },
     {
@@ -436,7 +533,21 @@ export const MODULES = [
         startLevel: 8,
         category: "advanced",
         features: ["幽暗地域", "生存恐怖", "惡魔領主"],
+        chapters: 15,
+        playTime: "80-100小時",
         plot: "核心危機: 惡魔領主們被錯誤地召喚到了幽暗地域，導致地下世界陷入瘋狂。\n劇情引導:\n1. 越獄: 玩家必須身無分文地逃出卓爾精靈的監獄。\n2. 生存與瘋狂: 在幽暗地域尋找出路，同時對抗瘋狂效應。\n3. 召回: 重返幽暗地域，消滅惡魔領主。"
+    },
+    {
+        id: 22,
+        title: "提亞馬特崛起 (The Rise of Tiamat)",
+        desc: "《巨龍寶庫》的震撼續集。團結劍灣各大勢力，參加深水城議會，並在最後的龍井之戰阻止龍后降臨。",
+        levels: [8, 15],
+        startLevel: 8,
+        category: "advanced",
+        features: ["史詩完結", "政治博弈", "神靈大戰"],
+        chapters: 6,
+        playTime: "30-50小時",
+        plot: "核心危機: 龍教團即將完成召喚儀式，五頭龍后提亞馬特即將降世。\n劇情引導:\n1. 深水城議會: 穿梭於各大勢力間，建立脆弱的同盟。\n2. 龍語者獵殺: 前往北境與沙漠，逐一削弱教團的高層力量。\n3. 龍井之戰: 最終的決戰，在全世界的注視下阻止神靈降世。"
     },
     {
         id: 9,
@@ -446,8 +557,10 @@ export const MODULES = [
         startLevel: 8,
         category: "advanced",
         features: ["元素魔法", "地底迷宮", "邪惡教團"],
+        chapters: 10,
+        playTime: "60-80小時",
         plot: "核心危機: 四個崇拜元素邪惡的教團試圖召喚元素親王毀滅世界。\n劇情引導:\n1. 失蹤的代表團: 調查深水城代表團失蹤案。\n2. 鬧鬼的要塞: 發現強盜據點是通往地底神廟的前哨。\n3. 元素節點: 深入地底關閉傳送門，擊敗教團首領。"
-    },
+    }
 ];
 
 // Item Database
@@ -470,8 +583,8 @@ export const ITEM_DATABASE = {
 
 // Starting inventory by class
 export const STARTING_KITS = {
-    '戰士': { equipment: ['longsword', 'chain_mail'], consumables: [{ id: 'potion_healing', quantity: 2 }] },
-    '法師': { equipment: [], consumables: [{ id: 'potion_healing', quantity: 1 }], magicItems: [{ id: 'wand_magic_missile', charges: 7 }] },
-    '盜賊': { equipment: [], consumables: [{ id: 'potion_healing', quantity: 2 }] },
-    '牧師': { equipment: [], consumables: [{ id: 'potion_healing', quantity: 3 }] }
+    '戰士': { equipment: ['longsword', 'chain_mail'], consumables: [{ id: 'potion_healing', quantity: 4 }] },
+    '法師': { equipment: [], consumables: [{ id: 'potion_healing', quantity: 4 }], magicItems: [{ id: 'wand_magic_missile', charges: 7 }] },
+    '盜賊': { equipment: [], consumables: [{ id: 'potion_healing', quantity: 4 }] },
+    '牧師': { equipment: [], consumables: [{ id: 'potion_healing', quantity: 4 }] }
 };

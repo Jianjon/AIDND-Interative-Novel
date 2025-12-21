@@ -73,6 +73,15 @@ export const RACE_TRAITS = {
         stats: { cha: 2, any1: 1, any2: 1 }, // Special handling needed for "any"
         speed: 30,
         size: "Medium",
-        traits: ["Darkvision (60ft)", "Fey Ancestry", "Skill Versatility (2 Skills)"]
+        traits: ["Darkvision (60ft)", "Fey Ancestry", "Skill Versatility (2 Skills)"],
+        subraces: {
+            "變形者": { stats: {}, traits: ["Shapechanger (Change Appearance as Action)", "Skill Proficiency (Deception)"] }
+        }
+    },
+    "變形者": { // Standalone if needed, but subrace above works too. Adding standalone for safety.
+        stats: { cha: 2, any: 1 },
+        speed: 30,
+        size: "Medium",
+        traits: ["Shapechanger", "Changeling Instincts (2 of Deception/Insight/Intimidation/Persuasion)"]
     }
 };

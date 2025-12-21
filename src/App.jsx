@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     Sword, Ghost, Map as MapIcon, Settings, Send, Sparkles, Camera,
     Heart, Shield, Wand2, Clock, Users, ChevronRight, Plus,
-    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale
+    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2
 } from 'lucide-react';
 import { CharacterCreator } from './components/CharacterCreator';
 import { ModuleDetailsModal } from './components/ModuleDetailsModal';
 import JournalModal from './components/JournalModal';
 import SaveLoadModal from './components/SaveLoadModal';
 import DualDiceRoll from './components/DualDiceRoll'; // Import for animation
+import { useToken } from './contexts/TokenContext';
 // --- CONSTANTS & HELPERS ---
 const FLAVOR_ADJECTIVES = [
     "Savage", "Cruel", "Vicious", "Wild", "Grim", "Dark", "Fierce", "Bloodthirsty",
@@ -55,6 +56,7 @@ import LevelUpModal from './components/LevelUpModal';
 import LocationBreadcrumbs from './components/LocationBreadcrumbs';
 import PRESET_CHARACTERS from './data/preset_characters';
 import { scaleCharacter } from './utils/characterScaling';
+
 import GroupDecisionOptions from './components/GroupDecisionOptions'; // New Component
 
 /* -------------------------------------------------------------------------- */
@@ -90,6 +92,8 @@ import { getMemoryService } from './services/MemoryService';
 import { getEncounterGuidelinesWithPersona } from './data/rules/encounter_balance';
 import { getLootGuidelines } from './data/rules/loot_tables';
 import { BACKGROUND_MAP } from './data/background_map';
+import { ArchiveService } from './services/ArchiveService';
+import ArchiveModal from './components/ArchiveModal';
 
 
 /* -------------------------------------------------------------------------- */
@@ -377,6 +381,14 @@ export default function InteractiveDND() {
         }
     };
 
+    const handleDeleteCustomModule = (moduleId, e) => {
+        e.stopPropagation(); // Avoid triggering module selection
+        if (window.confirm("確定要刪除這個自訂冒險嗎？這項操作無法復原。")) {
+            setCustomModules(prev => prev.filter(m => m.id !== moduleId));
+            setToast({ message: "冒險已刪除", type: "info" });
+        }
+    };
+
     // Module Selection State
     const [selectedModule, setSelectedModule] = useState(null);
     const [currentAct, setCurrentAct] = useState(1); // Track current story act for plot navigation
@@ -388,28 +400,13 @@ export default function InteractiveDND() {
         autoPlay: false     // if true, AI continues story automatically
     });
 
-    // TOKEN TRACKING STATE
-    const [tokenData, setTokenData] = useState(() => {
-        const savedTotal = localStorage.getItem('dnd_total_token_usage');
-        return {
-            session: 0,
-            lastTurn: 0,
-            total: savedTotal ? parseInt(savedTotal, 10) : 0
-        };
-    });
+    // TOKEN TRACKING STATE - Now handled by TokenContext
+    const { addUsage } = useToken();
 
-    useEffect(() => {
-        localStorage.setItem('dnd_total_token_usage', tokenData.total.toString());
-    }, [tokenData.total]);
-
-    const updateTokenCount = (usage) => {
-        if (!usage) return;
-        setTokenData(prev => ({
-            ...prev,
-            session: prev.session + (usage.totalTokenCount || 0),
-            lastTurn: usage.totalTokenCount || 0,
-            total: prev.total + (usage.totalTokenCount || 0)
-        }));
+    const updateTokenCount = (usage, source = "Game Action") => {
+        if (addUsage && usage) {
+            addUsage(usage, source);
+        }
     };
 
     const [roster, setRoster] = useState([]);
@@ -422,21 +419,28 @@ export default function InteractiveDND() {
             console.error("Roster is not an array, clearing...");
             return [];
         }
+        // User requested: Intro (1), Beginner (3), Intermediate (5), Advanced (8)
+        // Correct level should be taken from the selected module
+        const startLevel = selectedModule?.startLevel || 3;
+
         return roster
             .filter(data => data && typeof data === 'object' && data.id) // Filter out bad entries
             .map(data => {
                 try {
-                    return new CharacterAgent(data);
+                    // Important: Scale characters to the chosen module's level for selection preview
+                    const scaledData = scaleCharacter(data, startLevel);
+                    return new CharacterAgent(scaledData);
                 } catch (e) {
                     console.error("Failed to hydrate character:", data, e);
                     return null;
                 }
             })
             .filter(Boolean); // Remove null entries from failed hydration
-    }, [roster]);
+    }, [roster, selectedModule]);
 
     const [party, setParty] = useState([]); // Array of IDs
     const [gameState, setGameState] = useState({}); // { id: { hp, psych, inventory } }
+    const [showArchiveModal, setShowArchiveModal] = useState(false);
     const [logs, setLogs] = useState([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isPreGenerating, setIsPreGenerating] = useState(false); // Pre-generation loading state
@@ -1190,6 +1194,7 @@ JSON格式回覆：
     const MIN_API_INTERVAL = 1500; // Minimum 1.5 seconds between API calls
 
     const executeTurn = async (forcePrologue = false) => {
+        let tempGroupOptions = null; // Declare variable to fix scope issue
         if (!apiKey) {
             showToast("請先設定 API Key!", "error");
             return;
@@ -1257,10 +1262,16 @@ JSON格式回覆：
                         // Companion actions don't need dialogue styling, pass through directly
                         finalActions[id] = actionText;
                     } else if (styleMode) {
+                        // BYPASS STYLING FOR MECHANICAL ACTIONS (Use Item / Critical Commands)
+                        // If we style "Use Potion", the character might say "I hate medicine!" and NOT drink it.
+                        // We must preserve the mechanical intent.
+                        const isMechanicalParams = /^(Uses?|使用|Cast|施放|Attack|攻擊)/i.test(actionText.trim());
+
                         const char = agentRoster.find(c => c.id === baseCharId);
-                        if (char) {
+                        if (char && !isMechanicalParams) {
                             const styled = await charAgent.styleDialogue(char.name, char, actionText, logs.slice(-1)[0]?.content || "");
-                            finalActions[id] = styled;
+                            // Append original action to ensure DM knows the mechanics
+                            finalActions[id] = `${styled.text} (Action: ${actionText})`;
                         } else {
                             finalActions[id] = actionText;
                         }
@@ -1376,7 +1387,7 @@ JSON格式回覆：
                 encounterGuidelines: (() => {
                     const partyChars = party.map(id => agentRoster.find(c => c.id === id)).filter(Boolean);
                     if (partyChars.length === 0) return '';
-                    const avgLevel = Math.round(partyChars.reduce((sum, c) => sum + (c.level || 3), 0) / partyChars.length);
+                    const avgLevel = Math.round(partyChars.reduce((sum, c) => sum + (c.level || 1), 0) / partyChars.length);
                     // Use gameOptions.tone for DM persona (guide/arbiter/ruthless in TRPG, relaxed/normal/grim in Novel)
                     return getEncounterGuidelinesWithPersona(avgLevel, partyChars.length, gameOptions.tone);
                 })(),
@@ -1384,7 +1395,7 @@ JSON格式回覆：
                 difficultyTier: (() => {
                     const partyChars = party.map(id => agentRoster.find(c => c.id === id)).filter(Boolean);
                     const avgLevel = partyChars.length > 0
-                        ? Math.round(partyChars.reduce((sum, c) => sum + (c.level || 3), 0) / partyChars.length)
+                        ? Math.round(partyChars.reduce((sum, c) => sum + (c.level || 1), 0) / partyChars.length)
                         : 3;
                     if (avgLevel <= 4) return '初階 (Beginner)';
                     if (avgLevel <= 7) return '中階 (Intermediate)';
@@ -1399,12 +1410,7 @@ JSON格式回覆：
             if (typeof narrativeResult === 'object' && typeof narrativeResult.text === 'string') {
                 finalNarrative = narrativeResult.text;
                 if (narrativeResult.usage) {
-                    const turnTokens = narrativeResult.usage.totalTokenCount || 0;
-                    setTokenData(prev => ({
-                        session: prev.session + turnTokens,
-                        lastTurn: turnTokens,
-                        total: prev.total + turnTokens
-                    }));
+                    updateTokenCount(narrativeResult.usage, "GM Narrative");
                 }
             } else if (typeof narrativeResult === 'string') {
                 finalNarrative = narrativeResult;
@@ -2045,15 +2051,16 @@ JSON格式回覆：
             // 3. Group Decision: [[DECISION: OpA | OpB]]
             const decisionRegex = /\[\[DECISION:\s*(.+?)\]\]/;
             const decisionMatch = finalNarrative.match(decisionRegex);
+
             if (decisionMatch) {
                 const rawOptions = decisionMatch[1].split('|').map(s => s.trim());
                 if (rawOptions.length > 0) {
-                    // Set for next render
+                    tempGroupOptions = rawOptions;
                     setGroupDecisionOptions(rawOptions);
                 }
                 finalNarrative = finalNarrative.replace(decisionRegex, '');
             } else {
-                setGroupDecisionOptions([]); // Clear if no decision this turn
+                setGroupDecisionOptions([]);
             }
 
             // Batched Updates
@@ -2091,7 +2098,7 @@ JSON格式回覆：
                 lootGuidelines: (() => {
                     const partyChars = party.map(id => agentRoster.find(c => c.id === id)).filter(Boolean);
                     if (partyChars.length === 0) return '';
-                    const avgLevel = Math.round(partyChars.reduce((sum, c) => sum + (c.level || 3), 0) / partyChars.length);
+                    const avgLevel = Math.round(partyChars.reduce((sum, c) => sum + (c.level || 1), 0) / partyChars.length);
                     const partyClasses = partyChars.map(c => c.class);
                     return getLootGuidelines(avgLevel, partyClasses, 'combat');
                 })(),
@@ -2156,6 +2163,54 @@ JSON格式回覆：
                 pendingPayload.scenarioRoster = tempScenarioRoster;
             }
 
+            // --- INVENTORY UPDATES (DEFERRED) ---
+            if (mechanicsData.inventory_updates && mechanicsData.inventory_updates.length > 0) {
+                let invRoster = pendingPayload.roster || [...agentRoster];
+                let rosterChanged = false;
+                const invLogs = [];
+
+                mechanicsData.inventory_updates.forEach(update => {
+                    const targetChar = invRoster.find(c => c.name.includes(update.character) || c.id === update.character);
+                    if (targetChar) {
+                        const charIndex = invRoster.findIndex(c => c.id === targetChar.id);
+                        if (charIndex !== -1) {
+                            const updatedChar = { ...invRoster[charIndex] };
+                            const currentInv = updatedChar.inventory || [];
+
+                            // Handle Removal (Consumption)
+                            if (update.change < 0) {
+                                let removeCount = Math.abs(update.change);
+                                const newInv = [];
+                                let removed = 0;
+                                // Simple string match removal
+                                for (const item of currentInv) {
+                                    const itemName = typeof item === 'string' ? item : item.name;
+                                    if (removed < removeCount && itemName.includes(update.item)) {
+                                        removed++;
+                                    } else {
+                                        newInv.push(item);
+                                    }
+                                }
+                                updatedChar.inventory = newInv;
+                                if (removed > 0) invLogs.push(`${updatedChar.name} used ${update.item}`);
+                            }
+                            // Handle Addition (Gain)
+                            else if (update.change > 0) {
+                                for (let i = 0; i < update.change; i++) {
+                                    updatedChar.inventory = [...(updatedChar.inventory || []), update.item];
+                                }
+                                invLogs.push(`${updatedChar.name} got ${update.item}`);
+                            }
+
+                            invRoster[charIndex] = updatedChar;
+                            rosterChanged = true;
+                        }
+                    }
+                });
+
+                if (rosterChanged) pendingPayload.roster = invRoster;
+            }
+
             // --- LOOT PROCESSING (DEFERRED) ---
             if (mechanicsData.loot && mechanicsData.loot.length > 0) {
                 // We must use a separate tempRoster logic
@@ -2218,7 +2273,8 @@ JSON格式回覆：
                     mechanicsData.hp_updates ? "Outcome processed" : "Nothing happened",
                     newSignals,
                     selectedModule?.id || null,
-                    currentAct
+                    currentAct,
+                    tempGroupOptions // Pass the extracted group options
                 );
                 if (charUsage) updateTokenCount(charUsage);
 
@@ -2303,6 +2359,7 @@ JSON格式回覆：
             if (pendingTurnUpdates.roster) setRoster(pendingTurnUpdates.roster);
             if (pendingTurnUpdates.actionCache) setActionCache(pendingTurnUpdates.actionCache);
 
+            setPendingActions({}); // Clear previous turn's actions
             setPendingTurnUpdates(null);
             setIsNarrating(false);
         }
@@ -2320,6 +2377,7 @@ JSON格式回覆：
     };
 
     const startGame = () => {
+        const level = selectedModule?.startLevel || 1;
         // 1. Reset Game State to Defaults for a clean start
         setLogs([]); // Clear previous story logs
         setQuestJournal([]); // Clear journal
@@ -2332,6 +2390,7 @@ JSON格式回覆：
 
         // 2. Initialize Character State
         const initialGameState = {};
+        const updatedRoster = [];
         party.forEach(id => {
             const char = roster.find(c => c.id === id);
             if (!char) {
@@ -2363,6 +2422,61 @@ JSON格式回覆：
             // SCALE CHARACTER TO START LEVEL
             const scaledChar = scaleCharacter(charWithKit, level);
 
+            // --- DYNAMIC INVENTORY BALANCING ---
+            // User Request: Adjust initial items based on Tone (Difficulty) and Level
+            const tone = gameOptions.tone || 'normal';
+            const extraConsumables = [];
+            let extraGold = 0;
+
+            // 1. Healing Potions
+            // User requested strict counts: Relaxed 5, Normal 4, Grim 3
+            let potionCount = 0;
+            if (tone === 'relaxed') potionCount = 5;
+            else if (tone === 'grim') potionCount = 3;
+            else potionCount = 4; // Normal
+
+            // 1a. Clean up existing potions to avoid "Potion" + "Potion x5"
+            if (scaledChar.consumables) {
+                scaledChar.consumables = scaledChar.consumables.filter(item => {
+                    if (typeof item === 'string') {
+                        return !(item.includes('治療藥水') || item.includes('Healing Potion'));
+                    }
+                    return !(item.id === 'potion_healing' || item.name?.includes('治療藥水'));
+                });
+            }
+            if (potionCount > 0) extraConsumables.push(`治療藥水 x${potionCount}`);
+
+            // 2. Survival Gear (Rations/Torches) - Important for exploration
+            if (tone !== 'relaxed') {
+                // Ensure there's enough food/light for Normal/Grim
+                extraConsumables.push(`口糧 (1日) x5`);
+                extraConsumables.push(`火把 x2`);
+            }
+
+            // 3. High Level Perks (Lv 5+)
+            if (level >= 5) {
+                if (tone !== 'grim') {
+                    extraConsumables.push("優質治療藥水"); // Greater Healing Potion
+                }
+                extraGold += level * 20; // Extra pocket money
+            }
+
+            // 4. Class Specific Helper items (One-time bonus)
+            if (['Rogue', 'Bard'].includes(char.class)) extraConsumables.push("盜賊工具");
+            if (['Cleric', 'Paladin'].includes(char.class)) extraConsumables.push("醫藥箱");
+
+            // Apply to scaledChar
+            scaledChar.consumables = [...(scaledChar.consumables || []), ...extraConsumables];
+            scaledChar.gold = (scaledChar.gold || 0) + extraGold;
+            // Also store the updated inventory in character itself for components that read from roster
+            scaledChar.inventory = {
+                consumables: scaledChar.consumables,
+                magicItems: scaledChar.magicItems || [],
+                equipment: scaledChar.equipment || [],
+                gold: scaledChar.gold
+            };
+            // -----------------------------------
+
             // We use CharacterAgent to calculate the correct MaxHP/Stats using the scaled data
             // ensure the agent has the updated properties
             const tempAgent = new CharacterAgent(scaledChar);
@@ -2381,7 +2495,8 @@ JSON格式回覆：
                 },
                 relationships: {}
             };
-        });
+        }); // This closes the party.forEach loop
+
         setGameState(initialGameState);
 
         // 3. Clear Scene Enemies
@@ -2389,6 +2504,38 @@ JSON格式回覆：
 
         setView('game');
         generateIntro();
+    };
+
+    /**
+     * Archive the current game session as a permanent story.
+     */
+    const handleArchiveCurrentGame = () => {
+        if (logs.length < 5) {
+            showToast("冒險還太短，不值得寫入史詩...", "info");
+            return;
+        }
+
+        const partyChars = agentRoster.filter(c => party.includes(c.id));
+        const adventureData = {
+            title: `${selectedModule?.title || '未名'}之傳奇 - ${new Date().toLocaleDateString()}`,
+            moduleName: selectedModule?.title || '自訂冒險',
+            party: partyChars.map(c => ({
+                name: c.name,
+                avatar: c.avatar || c.avatarUrl,
+                class: c.class,
+                race: c.race
+            })),
+            logs: logs.filter(l => l.type === 'narration' || l.type === 'dialogue'), // Only story logs
+            date: new Date().toLocaleDateString(),
+            stats: {
+                turns: logs.length,
+                level: partyChars[0]?.level || 3
+            }
+        };
+
+        if (ArchiveService.addToArchive(adventureData)) {
+            showToast("已將這段冒險存入圖書館史詩中！", "success");
+        }
     };
 
     // --- REGENERATE OPTIONS HANDLER ---
@@ -2551,10 +2698,17 @@ JSON格式回覆：
                 </button>
 
                 <button
-                    onClick={loadGame}
-                    className="w-full mt-3 bg-transparent hover:bg-slate-800/50 text-slate-400 hover:text-amber-500 font-medium py-3 rounded-lg transition-colors border border-transparent hover:border-slate-700"
+                    onClick={() => setShowArchiveModal(true)}
+                    className="w-full mt-3 bg-slate-800/30 hover:bg-amber-900/20 text-slate-400 hover:text-amber-500 font-medium py-3 rounded-lg transition-all border border-slate-700/50 hover:border-amber-500/30 flex items-center justify-center gap-2"
                 >
-                    讀取進度
+                    <BookOpen size={16} /> 冒險史詩 (THE CHRONICLES)
+                </button>
+
+                <button
+                    onClick={loadGame}
+                    className="w-full mt-3 bg-transparent hover:bg-slate-800/50 text-slate-500 hover:text-slate-400 font-medium py-2 rounded-lg transition-colors text-xs uppercase tracking-widest"
+                >
+                    讀取存檔 (LOAD GAME)
                 </button>
             </div>
         </div>
@@ -2774,6 +2928,7 @@ JSON格式回覆：
 
     const renderModuleSelection = () => {
         const categories = [
+            { id: 'intro', title: "入門任務 (Introductory)", subtitle: "從等級 1 開始，適合 TRPG 核心初學者", startLevel: 1, color: "text-cyan-400", border: "border-cyan-500/30" },
             { id: 'beginner', title: "初階任務 (Beginner)", subtitle: "適合新手，開啟你的傳奇", startLevel: 3, color: "text-emerald-400", border: "border-emerald-500/30" },
             { id: 'intermediate', title: "中階任務 (Intermediate)", subtitle: "更致命的挑戰，更複雜的劇情", startLevel: 5, color: "text-amber-400", border: "border-amber-500/30" },
             { id: 'advanced', title: "高階任務 (Advanced)", "subtitle": "傳奇英雄的試煉，死亡如影隨形", startLevel: 8, color: "text-red-400", border: "border-red-500/30" },
@@ -2853,16 +3008,48 @@ JSON格式回覆：
                                             `}
                                         >
                                             <div className="flex items-start gap-4 mb-4">
-                                                <div className={`w-12 h-12 shrink-0 rounded-lg bg-slate-800/50 border border-slate-700 flex items-center justify-center group-hover:border-opacity-100 transition-colors`}>
+                                                <div className={`w-12 h-12 shrink-0 rounded-lg bg-slate-800/50 border border-slate-700 flex items-center justify-center group-hover:border-opacity-100 transition-colors relative`}>
                                                     {/* Category Symbol Replaces ID */}
+                                                    {cat.id === 'intro' && <Sparkles className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
                                                     {cat.id === 'beginner' && <MapIcon className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
                                                     {cat.id === 'intermediate' && <Sword className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
                                                     {cat.id === 'advanced' && <Skull className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
                                                     {cat.id === 'custom' && <Feather className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
                                                 </div>
-                                                <h3 className={`flex-1 text-xl font-bold text-slate-200 group-hover:${cat.color} font-serif leading-tight mt-1`}>
-                                                    {mod.title}
-                                                </h3>
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className={`text-xl font-bold text-slate-200 group-hover:${cat.color} font-serif leading-tight mt-1 truncate`}>
+                                                        {mod.title}
+                                                    </h3>
+                                                    {/* Metadata Badges */}
+                                                    <div className="flex gap-3 mt-1.5 overflow-hidden flex-wrap">
+                                                        {mod.levels && (
+                                                            <span className="text-[10px] text-amber-500/80 font-mono uppercase tracking-tighter flex items-center gap-1 shrink-0">
+                                                                <Activity size={10} /> Lv.{Array.isArray(mod.levels) ? mod.levels.join('-') : mod.levels}
+                                                            </span>
+                                                        )}
+                                                        {mod.chapters && (
+                                                            <span className="text-[10px] text-slate-500 font-mono uppercase tracking-tighter flex items-center gap-1 shrink-0">
+                                                                <BookOpen size={10} /> {mod.chapters} 章節
+                                                            </span>
+                                                        )}
+                                                        {mod.playTime && (
+                                                            <span className="text-[10px] text-slate-500 font-mono uppercase tracking-tighter flex items-center gap-1 shrink-0">
+                                                                <Clock size={10} /> {mod.playTime}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Delete Button for Custom Modules only */}
+                                                {cat.id === 'custom' && (
+                                                    <button
+                                                        onClick={(e) => handleDeleteCustomModule(mod.id, e)}
+                                                        className="text-slate-600 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-500/10"
+                                                        title="刪除冒險"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                )}
                                             </div>
                                             <p className="text-slate-400 text-sm leading-relaxed border-l-2 border-slate-800 pl-3 group-hover:border-opacity-50 transition-colors line-clamp-3">
                                                 {mod.desc}
@@ -2968,9 +3155,12 @@ JSON格式回覆：
                                     alt={charData.name}
                                     onError={(e) => e.target.style.display = 'none'}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-80"></div>
-
-                                {/* Class Icon / Overlay? Optional */}
+                                {/* Level Badge Overlay */}
+                                <div className="absolute top-2 right-2 bg-slate-900/90 border border-amber-500/50 rounded px-1.5 py-0.5 z-10 shadow-lg backdrop-blur-sm">
+                                    <span className="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">
+                                        Lv. {charData.level}
+                                    </span>
+                                </div>
                             </div>
 
                             {/* Card Header & Controls */}
@@ -3125,7 +3315,8 @@ JSON格式回覆：
     const renderGameInterface = () => {
         const aliveMembers = party.filter(id => (gameState[id]?.hp || 0) > 0);
         const pendingCount = Object.keys(pendingActions).length;
-        const isRoundReady = pendingCount === aliveMembers.length && pendingCount > 0;
+        const isRoundReady = (pendingCount === aliveMembers.length && pendingCount > 0) ||
+            (Object.values(pendingActions).some(act => act.includes("【團隊") || act.includes("[團隊") || act.includes("【方案") || act.includes("[方案")));
 
         return (
             <div
@@ -3145,8 +3336,11 @@ JSON格式回覆：
                     {/* Header */}
                     <div className="h-16 border-b border-slate-800 flex items-center px-6 justify-between bg-slate-950/80 backdrop-blur-sm shrink-0 z-20">
                         <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="p-1.5 rounded border border-amber-500/30 text-amber-500 hover:bg-amber-500/10 transition-colors">
+                            <div className="p-1.5 rounded border border-amber-500/30 text-amber-500 hover:bg-amber-500/10 transition-colors" title="冒險日誌 (Journal)">
                                 <Scroll size={18} onClick={() => setShowJournal(!showJournal)} className="cursor-pointer" />
+                            </div>
+                            <div className="p-1.5 rounded border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-colors" title="寫入圖書館 (Archive to Library)">
+                                <Book size={18} onClick={handleArchiveCurrentGame} className="cursor-pointer" />
                             </div>
                             <div className="flex flex-col">
                                 <span className={`text-[10px] font-bold uppercase tracking-widest text-slate-400 font-tome-header`}>
@@ -3424,7 +3618,7 @@ JSON格式回覆：
                     </div>
 
                     {/* Unified Scrollable Roster Area (Party + Enemies) */}
-                    <div className={`flex-1 overflow-y-auto custom-scrollbar transition-all duration-500 ${groupDecisionOptions.length > 0 ? 'grayscale opacity-50 pointer-events-none' : ''}`}>
+                    <div className={`flex-1 overflow-y-auto custom-scrollbar transition-all duration-500`}>
                         <div className="p-4 space-y-3">
                             {party.map((id, index) => {
                                 const char = agentRoster.find(c => c.id === id);
@@ -3445,7 +3639,7 @@ JSON格式回覆：
                                     <div
                                         key={id}
                                         onClick={() => {
-                                            if (isDead || isGenerating || char.controlMode === 'auto' || groupDecisionOptions.length > 0) return;
+                                            if (isDead || isGenerating || char.controlMode === 'auto') return;
 
                                             // Auto-generate options if missing
                                             const cached = actionCache[char.id];
@@ -3506,6 +3700,11 @@ JSON格式回覆：
                                                             onClick={(e) => {
                                                                 e.preventDefault();
                                                                 e.stopPropagation();
+                                                                // Sync with latest gameState before showing modal
+                                                                const charState = gameState[char.id];
+                                                                if (charState) {
+                                                                    char.syncState(charState);
+                                                                }
                                                                 setActiveModalChar(char);
                                                             }}
                                                             className="p-1 hover:bg-white/10 rounded-full border border-transparent hover:border-white/20 text-slate-500 hover:text-white transition-colors"
@@ -3546,10 +3745,26 @@ JSON格式回覆：
                                         {char.companion && (
                                             <div className="mx-2 mb-2 p-2 bg-[#1a1a1a]/40 rounded border border-slate-700/50 flex items-center gap-3 relative">
                                                 <div className="absolute -top-3 left-6 w-[2px] h-3 bg-slate-700/50"></div>
-                                                <div className="w-10 h-10 rounded-full border border-slate-600 overflow-hidden shrink-0 bg-slate-800">
-                                                    <div className="w-full h-full flex items-center justify-center text-slate-500">
-                                                        <span className="text-[8px]">PET</span>
-                                                    </div>
+                                                <div className="w-10 h-10 rounded-full border border-slate-600 overflow-hidden shrink-0 bg-slate-800 relative">
+                                                    {char.companion.avatar ? (
+                                                        <img
+                                                            src={char.companion.avatar}
+                                                            alt={char.companion.name}
+                                                            className="w-full h-full object-cover transform scale-110 hover:scale-125 transition-transform duration-300"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-500 font-bold">
+                                                            <span className="text-[10px]">
+                                                                {char.companion.type?.includes('狼') || char.companion.type?.includes('Wolf') ? '🐺' :
+                                                                    char.companion.type?.includes('鷹') || char.companion.type?.includes('Hawk') ? '🦅' :
+                                                                        char.companion.type?.includes('貓頭鷹') || char.companion.type?.includes('Owl') ? '🦉' :
+                                                                            char.companion.type?.includes('蜘蛛') || char.companion.type?.includes('Spider') ? '🕷️' :
+                                                                                char.companion.type?.includes('機') || char.companion.type?.includes('Robot') || char.companion.type?.includes('終端') ? '🤖' :
+                                                                                    char.companion.type?.includes('劍') || char.companion.type?.includes('Sword') ? '🗡️' :
+                                                                                        char.companion.type?.includes('貓') || char.companion.type?.includes('Cat') ? '🐱' : '🐾'}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex justify-between items-center mb-1">
@@ -3574,10 +3789,16 @@ JSON格式回覆：
                                                     actionCache={actionCache}
                                                     inventory={char.inventory || []}
                                                     direction={modalDirection}
-                                                    onSelectAction={(charId, actionText) => {
-                                                        const cleanText = actionText.replace(/^(Uses|使用)\s*/, '');
-                                                        setPendingActions(prev => ({ ...prev, [charId]: actionText }));
+                                                    onSelectAction={(charId, actionText, isGroup) => {
+                                                        if (isGroup) {
+                                                            setPendingActions({ [charId]: actionText });
+                                                            setGroupDecisionOptions([]);
+                                                            setTimeout(() => executeTurn(false), 100);
+                                                        } else {
+                                                            setPendingActions(prev => ({ ...prev, [charId]: actionText }));
+                                                        }
                                                         setActionModalChar(null);
+                                                        const cleanText = actionText.replace(/^(Uses|使用)\s*/, '');
                                                         showToast(`已排程行動：${cleanText}`, "info");
                                                     }}
                                                     onStyleDialogue={async (c, rawText) => {
@@ -3663,8 +3884,14 @@ JSON格式回覆：
                                                 actionCache={actionCache}
                                                 inventory={actionModalChar.inventory || []}
                                                 direction="up" // Force UP direction logic if handled, though CSS flow will handle it
-                                                onSelectAction={(charId, actionText) => {
-                                                    setPendingActions(prev => ({ ...prev, [charId]: actionText }));
+                                                onSelectAction={(charId, actionText, isGroup) => {
+                                                    if (isGroup) {
+                                                        setPendingActions({ [charId]: actionText });
+                                                        setGroupDecisionOptions([]);
+                                                        setTimeout(() => executeTurn(false), 100);
+                                                    } else {
+                                                        setPendingActions(prev => ({ ...prev, [charId]: actionText }));
+                                                    }
                                                     setActionModalChar(null);
                                                 }}
                                                 onStyleDialogue={async (c, rawText) => {
@@ -3687,25 +3914,7 @@ JSON格式回覆：
                         }
                     </div>
                 </div>
-
-                {/* Group Decision Options Overlay */}
-                {
-                    groupDecisionOptions.length > 0 && !isGenerating && !isNarrating && (
-                        <GroupDecisionOptions
-                            options={groupDecisionOptions}
-                            onSelect={(option) => {
-                                // Clear decision options
-                                setGroupDecisionOptions([]);
-                                // Set as a group action for all party members
-                                const groupAction = `【團隊決策】${option}`;
-                                // Execute turn with the selected group decision
-                                executeTurn(false, groupAction);
-                            }}
-                        />
-                    )
-                }
-
-            </div >
+            </div>
         );
     };
 
@@ -3863,6 +4072,12 @@ JSON格式回覆：
                 onClose={() => setShowCustomStoryModal(false)}
                 onGenerate={handleCreateCustomModule}
                 isGenerating={isGenerating}
+            />
+
+            {/* Adventure Archive Library */}
+            <ArchiveModal
+                isOpen={showArchiveModal}
+                onClose={() => setShowArchiveModal(false)}
             />
 
 

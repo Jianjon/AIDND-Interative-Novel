@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { PersonaService } from "../services/PersonaService";
 import { CLASS_BEHAVIORS } from "../data/classBehaviors";
 import { formatModuleContext } from "../data/modules_data.js";
+import { CHARACTER_MBTI, getInteractionPhrase } from "../data/mbtiCompatibility.js";
 
 export class CharacterManagerAgent {
     constructor(apiKey) {
@@ -145,7 +146,8 @@ export class CharacterManagerAgent {
      * @param {String} previousOutcome "Success" or "Fail" summary
      * @returns {Promise<{results: Object, usage: Object}>} { results, usage }
      */
-    async generateOptions(roster, worldState, lastNarrative, previousOutcome, signals = {}, moduleId = null, currentAct = 1) {
+    async generateOptions(roster, worldState, lastNarrative, previousOutcome, signals = {}, moduleId = null, currentAct = 1, groupOptions = []) {
+        groupOptions = groupOptions || []; // Safety check for null
         console.log(`[CharacterManager] Generating Options for ${roster.length} chars (BATCHED)...`);
 
         const { threat_level, pacing_signal, mechanical_opportunity } = signals;
@@ -155,15 +157,24 @@ export class CharacterManagerAgent {
         const charSummaries = roster.map(c => {
             const cls = c.class;
             const behaviors = CLASS_BEHAVIORS[cls] || CLASS_BEHAVIORS["戰士"];
+            const mbti = CHARACTER_MBTI[c.id] || c.mbti || "Unknown";
             return `
-            - ID: ${c.id}
+            - ID: ${c.id} (CRITICAL: COPY THIS EXACTLY AS "id" IN JSON)
               Name: ${c.name} (${c.race} ${c.class})
               HP: ${c.hp || "Unknown"}
               Personality: ${c.personality}
+              MBTI: ${mbti}
               Bio: ${c.bio ? c.bio.substring(0, 150) + "..." : "Unknown"}
               Behaviors: [Instinct: ${behaviors.instinct}, Professional: ${behaviors.professional}, Team: ${behaviors.team}]
             `;
         }).join("\n");
+
+        const groupOptionsSection = groupOptions.length > 0
+            ? `=== GROUP DECISION (團隊抉策) ===
+               The DM has proposed the following group paths. You MUST include these options as available actions for relevant characters:
+               ${groupOptions.map((opt, i) => `Option ${i + 1}: ${opt}`).join("\n")}
+               `
+            : "";
 
         const isRegenerate = previousOutcome === "Regenerate Request";
         const regenerationInstruction = isRegenerate
@@ -173,6 +184,7 @@ export class CharacterManagerAgent {
         const prompt = `
         You are a D&D Character Perspective Engine.
         Generate action options for ${roster.length} characters based on their INDIVIDUAL PERSPECTIVE.
+        **CRITICAL: Generate options ONLY for the ${roster.length} characters listed above by ID. Do NOT generate for others.**
 
         ${regenerationInstruction}
 
@@ -183,8 +195,7 @@ export class CharacterManagerAgent {
         Story So Far: ${lastNarrative.slice(-2000)}
         ${plotContext ? `Plot Goal: ${plotContext}` : ''}
 
-        === CHARACTERS ===
-        ${charSummaries}
+        ${groupOptionsSection}
 
         === CRITICAL: CHARACTER PERSPECTIVE RULES (角色視角規則) ===
         
@@ -203,11 +214,12 @@ export class CharacterManagerAgent {
         - 自私的角色會優先保護自己
         - 不是每個人都是英雄！
 
-        **3. EMOTIONAL STATE (情緒狀態)**
+        **3. EMOTIONAL STATE & MBTI**
         - 考慮角色在當下可能的情緒：緊張、恐懼、憤怒、興奮、困惑
+        - 參考 MBTI 類型決定互動風格 (e.g. ESTP 衝動, ISTJ 謹慎, ENFP 熱情)
         - 有些角色可能會恐慌做出非理性的選擇
         - 有些角色可能會過度自信
-        - 讓選項反映這些情緒
+        - 讓選項反映這些情緒與性格特質
 
         **4. CLASS-APPROPRIATE ACTIONS (職業相符)**
         - 戰士傾向直接戰鬥
@@ -236,6 +248,13 @@ export class CharacterManagerAgent {
         - **禁止** 針對「已解決」的威脅生成重複行動 (例如: 陷阱已解除，就不要再有「解除陷阱」的選項)。
         - 若玩家因某些原因卡關 (無效行動多次)，提供一個明確 **High Context Hint** 的選項 (例如：「仔細觀察周圍，發現...」)。
 
+        ${groupOptions.length > 0 ? `
+        === GROUP OPTION SELECTION ===
+        - 將提供的 GROUP DECISION 選項整合進角色的行動中。
+        - 每個角色不一定要包含所有團隊選項，但整體而言，這些選項必須在隊伍中可見。
+        - 團隊選項的文字應該反映角色的個性，例如：「[團隊方案1] 米洛點了點頭：這主意不錯，我帶路！」
+        - **IMPORTANT**: For any option that corresponds to a GROUP DECISION, set "isGroup": true in the JSON.
+        ` : ''}
 
         === RESOURCE AWARENESS (資源意識) ===
         **重要**: 法術位和特殊能力是有限的！
@@ -306,12 +325,12 @@ export class CharacterManagerAgent {
         Return ONLY a JSON Array. No markdown formatting.
         [
             {
-                "id": "character_id",
+                "id": "EXACT_ID_FROM_CONTEXT",
                 "monologue": "...",
                 "options": [
-                    { "type": "instinct", "emoji": "⚔️", "text": "⚔️ [內心想法] Option A Text..." },
-                    { "type": "strategic", "emoji": "🔍", "text": "🔍 [內心想法] Option B Text..." },
-                    { "type": "team", "emoji": "🤝", "text": "🤝 [內心想法] Option C Text..." }
+                    { "type": "instinct", "emoji": "⚔️", "text": "⚔️ [內心想法] Option A Text...", "isGroup": false },
+                    { "type": "strategic", "emoji": "🔍", "text": "🔍 [內心想法] Option B Text...", "isGroup": false },
+                    { "type": "team", "emoji": "🤝", "text": "🤝 [內心想法] Option C Text...", "isGroup": true }
                 ]
             },
             ...
@@ -321,28 +340,81 @@ export class CharacterManagerAgent {
         try {
             const result = await this._generate(prompt);
             let text = result.text;
-            // Sanitization
-            if (text.startsWith("```json")) text = text.replace(/^```json\s*/, "").replace(/\s*```$/, "");
-            else if (text.startsWith("```")) text = text.replace(/^```\s*/, "").replace(/\s*```$/, "");
 
-            const parsed = JSON.parse(text);
+            // Robust JSON Extraction
+            const jsonStart = text.indexOf('[');
+            const jsonEnd = text.lastIndexOf(']');
+            if (jsonStart !== -1 && jsonEnd !== -1) {
+                text = text.substring(jsonStart, jsonEnd + 1);
+            }
+
+            let parsed;
+            try {
+                parsed = JSON.parse(text);
+            } catch (e) {
+                console.warn("[CharacterManager] JSON Parse Failed, attempting cleanup...", text);
+                // Last ditch effort: remove trailing commas
+                text = text.replace(/,\s*\]/g, ']');
+                parsed = JSON.parse(text);
+            }
 
             // Validation & Fallback Map
             const validResults = parsed.map(item => {
-                // Ensure ID matches a character in roster
-                const char = roster.find(c => c.id === item.id);
-                if (!char) return null;
+                // Ensure ID matches a character in roster (Loose matching)
+                let char = roster.find(c => String(c.id) == String(item.id));
+
+                // Fallback: Try to match by name/alias if ID fails (handling AI hallucinated IDs like "Lan" or "Thorin")
+                if (!char) {
+                    char = roster.find(c => {
+                        const nameLower = c.name.toLowerCase();
+                        const idLower = String(item.id).toLowerCase().trim();
+                        // Handle "(English Name)" format
+                        const englishNameMatch = nameLower.match(/\((.*?)\)/);
+                        const englishName = englishNameMatch ? englishNameMatch[1] : "";
+
+                        return nameLower.includes(idLower) || idLower.includes(nameLower) || (englishName && idLower.includes(englishName));
+                    });
+                }
+
+                if (!char) {
+                    // Fallback 2: Try to match by Race/Class (e.g. "tiefling_druid" -> { race: "Tiefling", class: "Druid" })
+                    char = roster.find(c => {
+                        const idLower = String(item.id).toLowerCase();
+                        const raceLower = (c.race || "").toLowerCase();
+                        const classLower = (c.class || "").toLowerCase();
+                        // If ID contains BOTH race and class, it's a strong match
+                        return idLower.includes(raceLower) && idLower.includes(classLower);
+                    });
+                }
+
+                // Fallback 3: Index Matching (If parsed array length matches roster length)
+                if (!char && parsed.length === roster.length) {
+                    const idx = parsed.indexOf(item);
+                    if (idx !== -1 && idx < roster.length) {
+                        char = roster[idx];
+                        console.log(`[CharacterManager] ID Fallback: Matched by index ${idx} ('${item.id}' -> '${char.id}')`);
+                    }
+                }
+
+                if (!char) {
+                    console.warn(`[CharacterManager] ID Mismatch: Generated ${item.id} not found in roster`, roster.map(c => c.id));
+                    return null;
+                }
+
+                // FORCE the correct ID so the UI can render it
+                item.id = char.id;
 
                 // Ensure options exist
                 if (!item.options || !Array.isArray(item.options) || item.options.length < 3) {
                     // Quick fallback if AI malformed this entry
+                    console.warn(`[CharacterManager] Malformed Options for ${item.id}`, item.options);
                     return {
                         id: item.id,
-                        monologue: "...",
+                        monologue: item.monologue || "...",
                         options: [
-                            { type: "instinct", emoji: "🔍", text: "🔍 保持警惕，觀察四周 (fallback)" },
-                            { type: "professional", emoji: "⚔️", text: "⚔️ 準備好武器，隨時應戰 (fallback)" },
-                            { type: "team", emoji: "🤝", text: "🤝 掩護隊友，等待指令 (fallback)" }
+                            { type: "instinct", emoji: "🔍", text: "🔍 保持警惕，觀察四周" },
+                            { type: "professional", emoji: "⚔️", text: "⚔️ 準備好武器，隨時應戰" },
+                            { type: "team", emoji: "🤝", text: "🤝 掩護隊友，等待指令" }
                         ]
                     };
                 }
@@ -573,6 +645,17 @@ export class CharacterManagerAgent {
         - **consumables**: 口糧 x5, 火把 x2, 治療藥水
         - **magicItems**: 初始角色留空 []
         - **gold**: 10-15 金幣
+        - **companion** (Optional): 
+          - 若職業為 Ranger(遊俠), Druid(德魯伊), Artificer(奇械師), Warlock(邪術師 pact of chain), 或 Prompt 中明確提到有寵物/夥伴，**必須**生成此物件。
+          - 否則留空或移除此欄位。
+          - Format: { 
+              "name": "夥伴名", 
+              "type": "動物種類 (e.g. 狼, 梟熊, 機械狗)", 
+              "hp": 20, "maxHp": 20, "ac": 13, 
+              "attacks": [{ "name": "攻擊名", "hitBonus": 4, "damage": "1d6+2" }], 
+              "abilities": ["特技1"], 
+              "avatar": "Leave empty for AI to generate later" 
+            }
 
         [APPEARANCE STYLE GUIDE - ENGLISH ONLY]
         Format: [Physical Traits], [Equipment], [Expression/Pose], [Atmosphere/Aura]
@@ -604,6 +687,16 @@ export class CharacterManagerAgent {
                 "consumables": ["口糧 (1日) x5", "火把 x2", "治療藥水"],
                 "magicItems": [],
                 "gold": 10
+            },
+            "companion": {
+                "name": "Name",
+                "type": "Type",
+                "hp": 20,
+                "maxHp": 20,
+                "ac": 13,
+                "attacks": [],
+                "abilities": [],
+                "avatar": ""
             }
         }
         `;
@@ -626,6 +719,17 @@ export class CharacterManagerAgent {
             // GENERATE PORTRAIT
             data.avatar = this.generatePortraitUrl(data);
             data.avatarUrl = data.avatar; // Redundancy for safety
+
+            // GENERATE COMPANION AVATAR (If exists)
+            if (data.companion) {
+                // Heuristic for companion portrait prompt
+                const compType = data.companion.type;
+                const compName = data.companion.name;
+                const compPrompt = `D&D fantasy creature portrait, ${compType}, cute but dangerous, ${compName}, american comic book style, high quality illustration`;
+                const compEncoded = encodeURIComponent(compPrompt);
+                const compSeed = (compName || "pet").split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % 10000;
+                data.companion.avatar = `https://image.pollinations.ai/prompt/${compEncoded}?width=512&height=512&seed=${compSeed}&nologo=true&model=flux`;
+            }
 
             return data;
         } catch (error) {
