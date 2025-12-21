@@ -357,6 +357,9 @@ export default function InteractiveDND() {
     const handleCreateCustomModule = async (prompt, difficulty) => {
         // Use sandbox mode: No AI wait, instant module creation
         try {
+            // Reset persistent memory for a clean start
+            if (memoryService.current) memoryService.current.reset();
+
             const newModule = storyAgent.generateSandboxModule(prompt, difficulty);
 
             setCustomModules(prev => [...prev, newModule]);
@@ -2312,6 +2315,7 @@ JSON格式回覆：
         setQuestJournal([]); // Clear quest journal for new game
         setScenarioRoster([]); // Clear existing enemies/NPCs
         setPendingActions({});
+        if (memoryService.current) memoryService.current.reset(); // Reset persistent memory
         setTimeout(() => executeTurn(true), 100);
     };
 
@@ -2324,6 +2328,7 @@ JSON格式回覆：
         setCurrentAct(1); // Reset Act
         setIsPreGenerating(false);
         setPendingActions({});
+        if (memoryService.current) memoryService.current.reset(); // Reset persistent memory
 
         // 2. Initialize Character State
         const initialGameState = {};
@@ -3537,6 +3542,30 @@ JSON格式回覆：
                                             </div>
                                         </div>
 
+                                        {/* Companion Mini-Card (If Exists) */}
+                                        {char.companion && (
+                                            <div className="mx-2 mb-2 p-2 bg-[#1a1a1a]/40 rounded border border-slate-700/50 flex items-center gap-3 relative">
+                                                <div className="absolute -top-3 left-6 w-[2px] h-3 bg-slate-700/50"></div>
+                                                <div className="w-10 h-10 rounded-full border border-slate-600 overflow-hidden shrink-0 bg-slate-800">
+                                                    <div className="w-full h-full flex items-center justify-center text-slate-500">
+                                                        <span className="text-[8px]">PET</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className="text-xs font-bold text-slate-400 font-tome-header uppercase tracking-wider">{char.companion.name}</span>
+                                                        <span className="text-[9px] text-slate-500 uppercase">{char.companion.type}</span>
+                                                    </div>
+                                                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                                                        <div
+                                                            className="h-full bg-amber-700"
+                                                            style={{ width: `${Math.min(100, ((char.companion.hp || 1) / (char.companion.maxHp || 1)) * 100)}%` }}
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         {/* Action Dropdown (Desktop: Inline) */}
                                         <div className="hidden md:block w-full">
                                             {actionModalChar?.id === char.id && (
@@ -3567,6 +3596,7 @@ JSON格式回覆：
                                             )}
                                         </div>
                                     </div>
+
                                 );
                             })}
                         </div>
@@ -3601,73 +3631,79 @@ JSON格式回覆：
                         })} />
 
                         {/* Journal Modal (Kept - triggered from top-left) */}
-                        {showJournalModal && (
-                            <JournalModal
-                                journal={questJournal}
-                                onClose={() => setShowJournalModal(false)}
-                            />
-                        )}
+                        {
+                            showJournalModal && (
+                                <JournalModal
+                                    journal={questJournal}
+                                    onClose={() => setShowJournalModal(false)}
+                                />
+                            )
+                        }
 
                         {/* Mobile Action Bottom Sheet Overlay */}
-                        {actionModalChar && (
-                            <div className="md:hidden fixed inset-0 z-[60] flex flex-col justify-end bg-black/80 backdrop-blur-[2px] animate-in fade-in duration-200" onClick={() => setActionModalChar(null)}>
-                                <div
-                                    className="bg-slate-900 border-t border-amber-500/50 rounded-t-xl p-4 max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom duration-300 shadow-2xl safe-pb"
-                                    onClick={e => e.stopPropagation()}
-                                >
-                                    <div className="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3 sticky top-0 bg-slate-900 z-10">
-                                        <div className="flex items-center gap-3">
-                                            <img src={actionModalChar.avatar || actionModalChar.avatarUrl} className="w-8 h-8 rounded-full border border-slate-600" alt="" />
-                                            <span className="font-tome-header font-bold text-amber-500 uppercase tracking-widest text-sm">{actionModalChar.name}</span>
+                        {
+                            actionModalChar && (
+                                <div className="md:hidden fixed inset-0 z-[60] flex flex-col justify-end bg-black/80 backdrop-blur-[2px] animate-in fade-in duration-200" onClick={() => setActionModalChar(null)}>
+                                    <div
+                                        className="bg-slate-900 border-t border-amber-500/50 rounded-t-xl p-4 max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom duration-300 shadow-2xl safe-pb"
+                                        onClick={e => e.stopPropagation()}
+                                    >
+                                        <div className="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3 sticky top-0 bg-slate-900 z-10">
+                                            <div className="flex items-center gap-3">
+                                                <img src={actionModalChar.avatar || actionModalChar.avatarUrl} className="w-8 h-8 rounded-full border border-slate-600" alt="" />
+                                                <span className="font-tome-header font-bold text-amber-500 uppercase tracking-widest text-sm">{actionModalChar.name}</span>
+                                            </div>
+                                            <button onClick={() => setActionModalChar(null)} className="p-2 bg-slate-800 rounded-full text-slate-400 hover:text-white border border-slate-700">
+                                                <X size={18} />
+                                            </button>
                                         </div>
-                                        <button onClick={() => setActionModalChar(null)} className="p-2 bg-slate-800 rounded-full text-slate-400 hover:text-white border border-slate-700">
-                                            <X size={18} />
-                                        </button>
-                                    </div>
-                                    <div className="pb-8">
-                                        <ActionModal
-                                            character={actionModalChar}
-                                            actionCache={actionCache}
-                                            inventory={actionModalChar.inventory || []}
-                                            direction="up" // Force UP direction logic if handled, though CSS flow will handle it
-                                            onSelectAction={(charId, actionText) => {
-                                                setPendingActions(prev => ({ ...prev, [charId]: actionText }));
-                                                setActionModalChar(null);
-                                            }}
-                                            onStyleDialogue={async (c, rawText) => {
-                                                if (charAgent && styleMode) {
-                                                    return await charAgent.styleDialogue(c.name, c, rawText, logs.slice(-1)[0]?.content || "");
-                                                }
-                                                return rawText;
-                                            }}
-                                            onRegenerateOptions={() => handleRegenerateOptions(actionModalChar)}
-                                            onClose={(e) => {
-                                                if (e) e.stopPropagation();
-                                                // setActionModalChar(null); // Managed by wrapper
-                                            }}
-                                            isRegenerating={isPreGenerating}
-                                        />
+                                        <div className="pb-8">
+                                            <ActionModal
+                                                character={actionModalChar}
+                                                actionCache={actionCache}
+                                                inventory={actionModalChar.inventory || []}
+                                                direction="up" // Force UP direction logic if handled, though CSS flow will handle it
+                                                onSelectAction={(charId, actionText) => {
+                                                    setPendingActions(prev => ({ ...prev, [charId]: actionText }));
+                                                    setActionModalChar(null);
+                                                }}
+                                                onStyleDialogue={async (c, rawText) => {
+                                                    if (charAgent && styleMode) {
+                                                        return await charAgent.styleDialogue(c.name, c, rawText, logs.slice(-1)[0]?.content || "");
+                                                    }
+                                                    return rawText;
+                                                }}
+                                                onRegenerateOptions={() => handleRegenerateOptions(actionModalChar)}
+                                                onClose={(e) => {
+                                                    if (e) e.stopPropagation();
+                                                    // setActionModalChar(null); // Managed by wrapper
+                                                }}
+                                                isRegenerating={isPreGenerating}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )
+                        }
                     </div>
                 </div>
 
                 {/* Group Decision Options Overlay */}
-                {groupDecisionOptions.length > 0 && !isGenerating && !isNarrating && (
-                    <GroupDecisionOptions
-                        options={groupDecisionOptions}
-                        onSelect={(option) => {
-                            // Clear decision options
-                            setGroupDecisionOptions([]);
-                            // Set as a group action for all party members
-                            const groupAction = `【團隊決策】${option}`;
-                            // Execute turn with the selected group decision
-                            executeTurn(false, groupAction);
-                        }}
-                    />
-                )}
+                {
+                    groupDecisionOptions.length > 0 && !isGenerating && !isNarrating && (
+                        <GroupDecisionOptions
+                            options={groupDecisionOptions}
+                            onSelect={(option) => {
+                                // Clear decision options
+                                setGroupDecisionOptions([]);
+                                // Set as a group action for all party members
+                                const groupAction = `【團隊決策】${option}`;
+                                // Execute turn with the selected group decision
+                                executeTurn(false, groupAction);
+                            }}
+                        />
+                    )
+                }
 
             </div >
         );

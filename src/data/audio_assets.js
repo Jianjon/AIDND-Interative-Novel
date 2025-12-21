@@ -30,52 +30,51 @@ const getAudioUrl = (filename) => {
 
 export const BGM_MAP = {
     // COMBAT
-    "battle": getAudioUrl("316_Goblin_Ambush拷貝.mp3"),
-    "boss": getAudioUrl("375_Rise_of_the_Golem拷貝.mp3"),
-    "skirmish": getAudioUrl("315_Dragon_Rider拷貝.mp3"),
-    "defeat": getAudioUrl("99_Cavern_of_Lost_Souls拷貝.mp3"), // Sad/Dark fallback
-    "victory": getAudioUrl("356_Adventure_Begins拷貝.mp3"), // Triumphant
+    "battle": getAudioUrl("316_Goblin_Ambush.mp3"),
+    "boss": getAudioUrl("375_Rise_of_the_Golem.mp3"),
+    "skirmish": getAudioUrl("315_Dragon_Rider.mp3"),
+    "defeat": getAudioUrl("99_Cavern_of_Lost_Souls.mp3"), // Sad/Dark fallback
+    "victory": getAudioUrl("356_Adventure_Begins.mp3"), // Triumphant
 
     // DUNGEON & DARK
-    "dungeon": getAudioUrl("435_The_Undercroft拷貝.mp3"),
-    "mechanical": getAudioUrl("98_Lost_Mine拷貝.mp3"), // Industrial/Mine
-    "prison": getAudioUrl("466_Drow_Slave_Camp拷貝.mp3"),
+    "dungeon": getAudioUrl("435_The_Undercroft.mp3"),
+    "mechanical": getAudioUrl("98_Lost_Mine.mp3"), // Industrial/Mine
+    "prison": getAudioUrl("466_Drow_Slave_Camp.mp3"),
     "horror": getAudioUrl("mind_flayer_chamber.mp3"),
-    "haunted": getAudioUrl("488_Manor_Dark拷貝.mp3"),
-    "mystery": getAudioUrl("419_Hidden_Passage拷貝.mp3"),
+    "haunted": getAudioUrl("488_Manor_Dark.mp3"),
+    "mystery": getAudioUrl("419_Hidden_Passage.mp3"),
 
     // WILDERNESS
-    "exploration": getAudioUrl("406_Treacherous_Path拷貝.mp3"),
-    "forest": getAudioUrl("418_Pagan_Woods拷貝.mp3"),
-    "swamp": getAudioUrl("311_Swamp_Thing拷貝.mp3"),
-    "desert": getAudioUrl("406_Treacherous_Path拷貝.mp3"), // Fallback
-    "ice": getAudioUrl("472_Ice_Mephit_Cavern拷貝.mp3"),
-    "cave": getAudioUrl("369_Troll_Grotto拷貝.mp3"),
+    "exploration": getAudioUrl("406_Treacherous_Path.mp3"),
+    "forest": getAudioUrl("418_Pagan_Woods.mp3"),
+    "swamp": getAudioUrl("311_Swamp_Thing.mp3"),
+    "desert": getAudioUrl("406_Treacherous_Path.mp3"), // Fallback
+    "ice": getAudioUrl("472_Ice_Mephit_Cavern.mp3"),
+    "cave": getAudioUrl("369_Troll_Grotto.mp3"),
 
     // CIVILIZATION
-    "town": getAudioUrl("389_Medieval_Market拷貝.mp3"),
-    "city": getAudioUrl("389_Medieval_Market拷貝.mp3"), // Reuse
-    "tavern": getAudioUrl("407_Viking_Tavern拷貝.mp3"),
-    "castle": getAudioUrl("240_Throne_Room拷貝.mp3"),
-    "camp": getAudioUrl("382_Long_Rest拷貝.mp3"),
+    "town": getAudioUrl("389_Medieval_Market.mp3"),
+    "city": getAudioUrl("389_Medieval_Market.mp3"), // Reuse
+    "tavern": getAudioUrl("407_Viking_Tavern.mp3"),
+    "castle": getAudioUrl("240_Throne_Room.mp3"),
+    "camp": getAudioUrl("382_Long_Rest.mp3"),
 
     // MOOD
-    "peaceful": getAudioUrl("91_Elven_Glade拷貝.mp3"),
-    "sad": getAudioUrl("62_Middle_Earth_Dawn拷貝.mp3"),
-    "tense": getAudioUrl("465_Light_the_Beacons拷貝.mp3"),
-    "storm": getAudioUrl("465_Light_the_Beacons拷貝.mp3"), // Fallback
+    "peaceful": getAudioUrl("91_Elven_Glade.mp3"),
+    "sad": getAudioUrl("62_Middle_Earth_Dawn.mp3"),
+    "tense": getAudioUrl("465_Light_the_Beacons.mp3"),
+    "storm": getAudioUrl("465_Light_the_Beacons.mp3"), // Fallback
 
     // SPECIAL
-    "volcano": getAudioUrl("394_Demon_Army拷貝.mp3"), // Hellish
-    "underdark": getAudioUrl("69_Forest_Night拷貝.mp3"), // Dark ambient
-    "hell": getAudioUrl("394_Demon_Army拷貝.mp3"),
-    "ocean": getAudioUrl("482_Upriver_Recon拷貝.mp3"), // Watery
-    "alien": getAudioUrl("39_Temple_of_the_Eye.mp3"), // Missing? Check file list... 39 not found. Use Mind Flayer.
-    // Actually Mind Flayer is good for Alien.
+    "volcano": getAudioUrl("394_Demon_Army.mp3"), // Hellish
+    "underdark": getAudioUrl("69_Forest_Night.mp3"), // Dark ambient
+    "hell": getAudioUrl("394_Demon_Army.mp3"),
+    "ocean": getAudioUrl("482_Upriver_Recon.mp3"), // Watery
+    "alien": getAudioUrl("39_Temple_of_the_Eye.mp3"), // Keep checking if this exists, but removing suffix for consistency
     "alien_fallback": getAudioUrl("mind_flayer_chamber.mp3"),
 
     // DEFAULT
-    "default": getAudioUrl("356_Adventure_Begins拷貝.mp3")
+    "default": getAudioUrl("356_Adventure_Begins.mp3")
 };
 
 export const SFX_MAP = {

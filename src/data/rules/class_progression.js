@@ -711,7 +711,201 @@ export const CLASS_PROGRESSION = {
             6: ["Momentary Stasis"],
             8: ["Ability Score Improvement"]
         }
+    },
+    // --- New Classes for Anthraxe and Roster Fixes ---
+    "戰吼主唱": {
+        hitDie: 8,
+        primaryStat: "cha",
+        saves: ["dex", "cha"],
+        features: {
+            1: ["Spellcasting", "Bardic Inspiration (d6)"],
+            2: ["Jack of All Trades", "Song of Rest (d6)"],
+            3: ["College of Valor", "Expertise"]
+        },
+        spellSlots: {
+            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+        }
+    },
+    "海盜女王": {
+        hitDie: 10,
+        primaryStat: "dex",
+        saves: ["dex", "cha"],
+        features: {
+            1: ["Fighting Style", "Second Wind"],
+            2: ["Action Surge"],
+            3: ["Swashbuckler Archetype"]
+        }
+    },
+    "戰吟弓手": {
+        hitDie: 10,
+        primaryStat: "dex",
+        saves: ["str", "dex"],
+        features: {
+            1: ["Favored Enemy", "Natural Explorer"],
+            2: ["Fighting Style", "Spellcasting"],
+            3: ["Battle-singer Lore"]
+        },
+        spellSlots: {
+            1: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+    },
+    "混沌法師": {
+        hitDie: 6,
+        primaryStat: "cha",
+        saves: ["con", "cha"],
+        features: {
+            1: ["Wild Magic Surge", "Tides of Chaos"],
+            2: ["Font of Magic"],
+            3: ["Metamagic"]
+        },
+        spellSlots: {
+            1: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [2, 4, 2, 0, 0, 0, 0, 0, 0, 0]
+        }
+    },
+    "血族領主": {
+        hitDie: 10,
+        primaryStat: "str",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Divine Sense", "Lay on Hands"],
+            2: ["Fighting Style", "Divine Smite"],
+            3: ["Vampiric Oath"]
+        },
+        spellSlots: {
+            1: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+    },
+    "幸運兒": {
+        hitDie: 8,
+        primaryStat: "dex",
+        saves: ["dex", "int"],
+        features: {
+            1: ["Expertise", "Lucky Streak"],
+            2: ["Cunning Action"],
+            3: ["Fortuitous Archetype"]
+        }
+    },
+    "守約騎士": {
+        hitDie: 10,
+        primaryStat: "str",
+        saves: ["str", "con"],
+        features: {
+            1: ["Fighting Style", "Second Wind"],
+            2: ["Action Surge"],
+            3: ["Martial Archetype"]
+        }
+    },
+    "劍刃舞者": {
+        hitDie: 8,
+        primaryStat: "dex",
+        saves: ["dex", "cha"],
+        features: {
+            1: ["Fighting Style", "Bardic Inspiration"],
+            2: ["Jack of All Trades"],
+            3: ["College of Swords"]
+        }
+    },
+    "偵察兵": {
+        hitDie: 10,
+        primaryStat: "dex",
+        saves: ["str", "dex"],
+        features: {
+            1: ["Favored Enemy", "Natural Explorer"],
+            2: ["Fighting Style", "Spellcasting"],
+            3: ["Scout Archetype"]
+        }
+    },
+    "戰鬥祭師": {
+        hitDie: 8,
+        primaryStat: "wis",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Divine Domain", "Spellcasting"],
+            2: ["Channel Divinity"],
+            3: ["War Domain Feature"]
+        }
+    },
+    "奧法騎士": {
+        hitDie: 10,
+        primaryStat: "str",
+        saves: ["str", "con"],
+        features: {
+            1: ["Fighting Style", "Second Wind"],
+            2: ["Action Surge"],
+            3: ["Eldritch Knight Archetype"]
+        }
+    },
+    "獵人": {
+        hitDie: 10,
+        primaryStat: "dex",
+        saves: ["str", "dex"],
+        features: {
+            1: ["Favored Enemy", "Natural Explorer"],
+            2: ["Fighting Style", "Spellcasting"],
+            3: ["Hunter Archetype"]
+        }
+    },
+    "刺客": {
+        hitDie: 8,
+        primaryStat: "dex",
+        saves: ["dex", "int"],
+        features: {
+            1: ["Sneak Attack", "Expertise"],
+            2: ["Cunning Action"],
+            3: ["Assassin Archetype"]
+        }
+    },
+    "武器大師": {
+        hitDie: 10,
+        primaryStat: "str",
+        saves: ["str", "con"],
+        features: {
+            1: ["Fighting Style", "Second Wind"],
+            2: ["Action Surge"],
+            3: ["Battle Master Archetype"]
+        }
+    },
+    "氣脈醫者 (Qi Physician)": {
+        hitDie: 8,
+        primaryStat: "wis",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Martial Arts", "Qi Healing"],
+            2: ["Qi"],
+            3: ["Way of the Open Hand"]
+        }
+    },
+    "戰地醫師": {
+        hitDie: 8,
+        primaryStat: "wis",
+        saves: ["wis", "cha"],
+        features: {
+            1: ["Divine Domain", "Spellcasting"],
+            2: ["Channel Divinity"],
+            3: ["Life Domain Feature"]
+        }
+    },
+    "荒野女巫": {
+        hitDie: 8,
+        primaryStat: "wis",
+        saves: ["int", "wis"],
+        features: {
+            1: ["Druidic", "Spellcasting"],
+            2: ["Wild Shape"],
+            3: ["Circle of the Land"]
+        }
     }
+
+
+
 };
 
 /**

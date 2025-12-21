@@ -44,6 +44,9 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
     const [visibleIndex, setVisibleIndex] = useState(instant ? 99999 : 0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [hasStartedRoll, setHasStartedRoll] = useState(false);
+    // Persist dice roll results across re-renders (key: unique dice id, value: { base, mod, total, result })
+    const [diceResults, setDiceResults] = useState({});
+    const dicePendingKeyRef = useRef(0);
 
     // THEME MAPPING (Moved to Function Scope)
     const THEME_STYLES = {
@@ -186,7 +189,76 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                 // 6. PART labels (PART 1:, PART 2:, etc.)
                 if (trimmed.match(/^PART\s*\d+:/i) || trimmed.match(/^第[一二三四五六七八九十]+部分/)) return;
 
-                // Unified Dice Parsing (Bracketed + Legacy)
+                // === NEW: Inline [[DICE:Name:Type:DC]] Tag Parsing ===
+                // Check if this line contains [[DICE:...]] placeholders
+                const dicePlaceholderRegex = /\[\[DICE:([^:]+):([^:]+):(\d+)\]\]/g;
+                if (dicePlaceholderRegex.test(trimmed)) {
+                    // Reset regex for actual matching
+                    dicePlaceholderRegex.lastIndex = 0;
+
+                    // Also extract outcome texts: [[成功:...]] [[失敗:...]]
+                    const successOutcomeMatch = trimmed.match(/\[\[成功[:：]([^\]]+)\]\]/);
+                    const failureOutcomeMatch = trimmed.match(/\[\[失敗[:：]([^\]]+)\]\]/);
+                    const successOutcome = successOutcomeMatch ? successOutcomeMatch[1].trim() : null;
+                    const failureOutcome = failureOutcomeMatch ? failureOutcomeMatch[1].trim() : null;
+
+                    // Remove outcome tags from the line for processing
+                    let processedLine = trimmed
+                        .replace(/\[\[成功[:：][^\]]+\]\]/g, '')
+                        .replace(/\[\[失敗[:：][^\]]+\]\]/g, '')
+                        .trim();
+
+                    // Split the line into segments: text, dice_pending, text, ...
+                    let lastIndex = 0;
+                    let match;
+                    const segments = [];
+
+                    while ((match = dicePlaceholderRegex.exec(processedLine)) !== null) {
+                        // Add text before this match
+                        if (match.index > lastIndex) {
+                            const textBefore = processedLine.slice(lastIndex, match.index).replace(/\s*->\s*$/, '').trim();
+                            if (textBefore) {
+                                segments.push({ type: 'text', content: textBefore, index: -1 });
+                            }
+                        }
+
+                        // Add dice_pending item with outcome texts
+                        const characterName = match[1].trim();
+                        const checkType = match[2].trim();
+                        const targetDC = parseInt(match[3]);
+                        const diceId = `dice_${dicePendingKeyRef.current++}`;
+
+                        segments.push({
+                            type: 'dice_pending',
+                            content: match[0],
+                            data: {
+                                diceId,
+                                characterName,
+                                checkType,
+                                targetDC,
+                                successOutcome,
+                                failureOutcome
+                            },
+                            index: -1
+                        });
+
+                        lastIndex = match.index + match[0].length;
+                    }
+
+                    // Add remaining text after last match (but remove outcome tags)
+                    if (lastIndex < processedLine.length) {
+                        const textAfter = processedLine.slice(lastIndex).replace(/^\s*->\s*/, '').trim();
+                        if (textAfter) {
+                            segments.push({ type: 'text', content: textAfter, index: -1 });
+                        }
+                    }
+
+                    // Add all segments to sectionItems
+                    segments.forEach(seg => sectionItems.push(seg));
+                    return; // Skip other parsing for this line
+                }
+
+                // Unified Dice Parsing (Bracketed + Legacy) - for pre-rolled results
                 const isBracketed = trimmed.startsWith('[🎲') && trimmed.endsWith(']');
                 const isLegacy = trimmed.startsWith('->') && trimmed.includes('D20') && (trimmed.includes('DC') || trimmed.includes('AC'));
 
@@ -462,6 +534,11 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                             setHasStartedRoll(true);
                         }
                     }
+                    // Also block on dice_pending - wait for user click
+                    if (c.type === 'dice_pending') {
+                        setIsAnimating(true);
+                        console.log("Dice pending for:", c.data.characterName, "Check:", c.data.checkType);
+                    }
                     found = true;
                     break;
                 }
@@ -470,7 +547,8 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
             if (found) break;
         }
 
-        if (currentType === 'dice' && isAnimating) return;
+        // Block progression for both dice and dice_pending until animation completes
+        if ((currentType === 'dice' || currentType === 'dice_pending') && isAnimating) return;
 
         let delay = 800;
         if (currentType === 'text') delay = Math.max(700, contentLen * 25);
@@ -579,6 +657,100 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                                 {child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'SUCCESS' : 'FAILURE'}
                                             </span>
                                         </div>
+                                    );
+                                }
+
+                                // === NEW: dice_pending Type Rendering ===
+                                if (child.type === 'dice_pending') {
+                                    const { diceId, characterName, checkType, targetDC, successOutcome, failureOutcome } = child.data;
+                                    const storedResult = diceResults[diceId];
+
+                                    // If result already calculated, show static result or animation
+                                    if (storedResult) {
+                                        // Animation phase
+                                        if (storedResult.animating) {
+                                            return (
+                                                <DualDiceRoll
+                                                    key={cIdx}
+                                                    checkName={`${characterName} ${checkType}`}
+                                                    playerRoll={{ base: storedResult.base, mod: storedResult.mod, total: storedResult.total }}
+                                                    target={{ dc: targetDC, label: 'DC' }}
+                                                    result={storedResult.success ? 'SUCCESS' : 'FAILURE'}
+                                                    onComplete={() => {
+                                                        setDiceResults(prev => ({
+                                                            ...prev,
+                                                            [diceId]: { ...prev[diceId], animating: false }
+                                                        }));
+                                                        // Advance to next item after animation completes
+                                                        handleAnimEnd();
+                                                    }}
+                                                    autoPlay={true}
+                                                />
+                                            );
+                                        }
+
+                                        // Static result display after animation - includes outcome text
+                                        const isSuccess = storedResult.success;
+                                        const outcomeText = isSuccess ? successOutcome : failureOutcome;
+                                        return (
+                                            <div key={cIdx} className="my-3 space-y-2">
+                                                {/* Dice result row */}
+                                                <div className="p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-sm text-cyan-300 flex items-center gap-3 w-fit shadow-sm">
+                                                    <div className={`w-2.5 h-2.5 rounded-full ${isSuccess ? 'bg-cyan-500 shadow-[0_0_8px_cyan]' : 'bg-red-500 shadow-[0_0_8px_red]'}`} />
+                                                    <span className="font-bold text-slate-400">{characterName} {checkType}:</span>
+                                                    <span>D20({storedResult.base}){storedResult.mod !== 0 ? `+${storedResult.mod}` : ''} = {storedResult.total} <span className="text-slate-600 mx-1">vs</span> DC {targetDC}</span>
+                                                    <span className={`uppercase font-bold tracking-wider ml-2 ${isSuccess ? 'text-cyan-400' : 'text-rose-500'}`}>
+                                                        {isSuccess ? 'SUCCESS' : 'FAILURE'}
+                                                    </span>
+                                                </div>
+                                                {/* Outcome description */}
+                                                {outcomeText && (
+                                                    <div className={`p-3 rounded-lg border-l-4 ${isSuccess ? 'bg-emerald-950/30 border-emerald-600 text-emerald-200' : 'bg-rose-950/30 border-rose-600 text-rose-200'} text-sm font-serif`}>
+                                                        {outcomeText}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    }
+
+                                    // Show Roll Dice button
+                                    return (
+                                        <button
+                                            key={cIdx}
+                                            onClick={() => {
+                                                // Calculate dice result
+                                                const base = Math.floor(Math.random() * 20) + 1;
+                                                // Try to find modifier from roster
+                                                const char = roster.find(r => (r.name || '').includes(characterName) || characterName.includes(r.name || ''));
+                                                let mod = 0;
+                                                if (char && char.baseStats) {
+                                                    const checkLower = checkType.toLowerCase();
+                                                    if (checkLower.includes('攻擊') || checkLower.includes('attack')) {
+                                                        mod = Math.floor((char.baseStats.str - 10) / 2) + 2; // Simple attack bonus
+                                                    } else if (checkLower.includes('法術') || checkLower.includes('spell')) {
+                                                        mod = Math.floor((char.baseStats.int - 10) / 2) + 2;
+                                                    } else if (checkLower.includes('敏捷') || checkLower.includes('dex')) {
+                                                        mod = Math.floor((char.baseStats.dex - 10) / 2);
+                                                    } else if (checkLower.includes('力量') || checkLower.includes('str')) {
+                                                        mod = Math.floor((char.baseStats.str - 10) / 2);
+                                                    } else {
+                                                        mod = 2; // Default proficiency bonus
+                                                    }
+                                                }
+                                                const total = base + mod;
+                                                const success = base === 20 || (base !== 1 && total >= targetDC);
+
+                                                // Store result and trigger animation
+                                                setDiceResults(prev => ({
+                                                    ...prev,
+                                                    [diceId]: { base, mod, total, success, animating: true }
+                                                }));
+                                            }}
+                                            className="my-3 px-6 py-3 bg-amber-600 hover:bg-amber-500 hover:scale-105 transition-all rounded-full flex items-center gap-3 font-bold text-slate-900 shadow-[0_0_15px_rgba(217,119,6,0.4)]"
+                                        >
+                                            <Dices size={24} />
+                                            <span>🎲 {characterName} {checkType} (DC {targetDC}) - 點擊擲骰</span>
+                                        </button>
                                     );
                                 }
 

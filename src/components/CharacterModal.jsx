@@ -20,7 +20,8 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
 
     // Safe accessors for derived stats (using optional chaining for legacy fallback)
     const derived = data.derived || {};
-    const stats = data.stats || { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+    // Fix: Fallback to baseStats if stats is undefined (handling raw preset objects)
+    const stats = data.stats || data.baseStats || { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
     const mods = data.modifiers || {};
 
     const getModString = (val) => {
@@ -204,7 +205,8 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                         <div className="bg-slate-900/50 p-3 rounded border border-slate-800 flex flex-col justify-center gap-1">
                             <div className="flex justify-between w-full text-xs uppercase tracking-widest text-slate-500 mb-1">
                                 <span>Health Status</span>
-                                <span className={data.hp < data.maxHp * 0.3 ? "text-red-500 animate-pulse" : "text-green-500"}>
+                                <span className={data.hp < data.maxHp * 0.3 ? "text-red-500 animate-pulse font-bold" : "text-green-500 font-bold"}>
+                                    <span className="mr-2 text-slate-400 font-mono">({data.hp}/{data.maxHp})</span>
                                     {data.hp <= 0 ? "Unconscious" :
                                         data.hp < data.maxHp * 0.3 ? "Critical" :
                                             data.hp < data.maxHp * 0.6 ? "Wounded" : "Healthy"}
@@ -446,10 +448,18 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                             </h4>
                                             <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-4">
                                                 <div className="flex items-center gap-4 mb-3">
-                                                    <div className="w-12 h-12 rounded-full bg-amber-900/50 flex items-center justify-center text-2xl">
-                                                        {data.companion.type?.includes('Wolf') ? '🐺' :
-                                                            data.companion.type?.includes('Hawk') ? '🦅' :
-                                                                data.companion.type?.includes('Owl') ? '🦉' : '🐕'}
+                                                    <div className="w-12 h-12 rounded-xl bg-amber-900/50 flex items-center justify-center text-2xl overflow-hidden border border-amber-500/30">
+                                                        {data.companion.avatar ? (
+                                                            <img src={data.companion.avatar} alt={data.companion.name} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            data.companion.type?.includes('狼') || data.companion.type?.includes('Wolf') ? '🐺' :
+                                                                data.companion.type?.includes('鷹') || data.companion.type?.includes('Hawk') ? '🦅' :
+                                                                    data.companion.type?.includes('貓頭鷹') || data.companion.type?.includes('Owl') ? '🦉' :
+                                                                        data.companion.type?.includes('蜘蛛') || data.companion.type?.includes('Spider') ? '🕷️' :
+                                                                            data.companion.type?.includes('機') || data.companion.type?.includes('Robot') || data.companion.type?.includes('終端') ? '🤖' :
+                                                                                data.companion.type?.includes('劍') || data.companion.type?.includes('Sword') ? '🗡️' :
+                                                                                    data.companion.type?.includes('貓') || data.companion.type?.includes('Cat') ? '🐱' : '🐾'
+                                                        )}
                                                     </div>
                                                     <div>
                                                         <p className="text-amber-300 font-bold">{data.companion.name}</p>

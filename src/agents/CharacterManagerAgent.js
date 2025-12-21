@@ -11,33 +11,55 @@ export class CharacterManagerAgent {
         this.personaService = new PersonaService();
     }
 
-    async _generate(prompt) {
-        try {
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent?key=${this.apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
-                    })
+    async _generate(prompt, retries = 2) {
+        for (let attempt = 0; attempt <= retries; attempt++) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+            try {
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent?key=${this.apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }]
+                        }),
+                        signal: controller.signal
+                    }
+                );
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    if (response.status >= 500 && attempt < retries) {
+                        console.warn(`[CharacterManager] API 500 Error, Retrying (${attempt + 1}/${retries})...`);
+                        await new Promise(r => setTimeout(r, 1000 * (attempt + 1))); // Linear backoff
+                        continue;
+                    }
+                    const errorText = await response.text();
+                    console.error(`[CharacterManager] API Error: ${response.status} - ${errorText}`);
+                    throw new Error(`API Error: ${response.status}`);
                 }
-            );
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`[CharacterManager] API Error: ${response.status} - ${errorText}`);
-                throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                return {
+                    text: data.candidates[0].content.parts[0].text,
+                    usage: data.usageMetadata
+                };
+            } catch (error) {
+                clearTimeout(timeoutId);
+                const isTimeout = error.name === 'AbortError';
+
+                if ((isTimeout || error.message.includes('Failed to fetch')) && attempt < retries) {
+                    console.warn(`[CharacterManager] Network/Timeout Error, Retrying (${attempt + 1}/${retries})...`);
+                    await new Promise(r => setTimeout(r, 2000));
+                    continue;
+                }
+
+                console.error("[CharacterManager] Generation Failed (Final):", error);
+                throw error;
             }
-
-            const data = await response.json();
-            return {
-                text: data.candidates[0].content.parts[0].text,
-                usage: data.usageMetadata
-            };
-        } catch (error) {
-            console.error("[CharacterManager] Generation Failed:", error);
-            throw error;
         }
     }
 
@@ -143,9 +165,16 @@ export class CharacterManagerAgent {
             `;
         }).join("\n");
 
+        const isRegenerate = previousOutcome === "Regenerate Request";
+        const regenerationInstruction = isRegenerate
+            ? "**REGENERATE REQUEST**: 玩家不滿意之前的選項。請提供與之前完全不同的策略、目標或行動類型。避免重複相同的戰術。"
+            : "";
+
         const prompt = `
         You are a D&D Character Perspective Engine.
         Generate action options for ${roster.length} characters based on their INDIVIDUAL PERSPECTIVE.
+
+        ${regenerationInstruction}
 
         === SCENE CONTEXT ===
         World State: ${JSON.stringify(worldState)}
@@ -201,6 +230,13 @@ export class CharacterManagerAgent {
         - **STEP 2**: 判斷角色此刻面對的具體情況
         - **STEP 3**: 從該角色的視角生成反應
 
+        === PROGRESSION LOGIC (劇情推進邏輯) - CRITICAL ===
+        **判斷當前障礙狀態**:
+        - 若 narrative 顯示陷阱已解除/敵人已死亡/謎題已解開 -> **必須** 提供推進劇情 (移動/搜刮/進入下一區) 的選項。
+        - **禁止** 針對「已解決」的威脅生成重複行動 (例如: 陷阱已解除，就不要再有「解除陷阱」的選項)。
+        - 若玩家因某些原因卡關 (無效行動多次)，提供一個明確 **High Context Hint** 的選項 (例如：「仔細觀察周圍，發現...」)。
+
+
         === RESOURCE AWARENESS (資源意識) ===
         **重要**: 法術位和特殊能力是有限的！
         - 法師/術士/邪術師: 法術位珍貴，不要隨便浪費
@@ -216,6 +252,13 @@ export class CharacterManagerAgent {
         ❌ 錯誤範例: 開場就「放火球術！」「召喚動物！」
         ✓ 正確範例: 「觀察敵人的弱點」「嘲諷敵人注意我」「找掩體躲避」
 
+        === COMPANION SYNERGY (夥伴協同) ===
+        If the character has a 'companion' or 'pet' in their data:
+        1. **MUST** generate 1-2 additional options labeled \`[Synergy]\` (Option D/E).
+        2. **Format**: \`🤝[協同] [Character Action] +[Companion Action]\`
+        3. **Example**: \`🤝[協同] 我用劍格擋，夜語(烏鴉)啄擊敵人的眼睛\`
+        4. Companion actions should complement the master (distraction, flanking, scouting).
+
         === OUTPUT FORMAT ===
         For EACH character, generate:
         1. A short monologue (15-20 chars, 繁體中文) - 反映角色當下的想法
@@ -229,9 +272,31 @@ export class CharacterManagerAgent {
              - 💬 閒聊：和隊友說些輕鬆的話
              - 🎭 個性行動：完全基於角色獨特個性
              - ☠️ 瀕死 (僅限 HP<=0): 「(虛弱地) ...」 或 「(內心) 我不想死...」
-           - **Length**: 80-100 characters per option
-           - **Format**: MUST use "[內心想法] 具體行動" format
-           - **Language**: Traditional Chinese (繁體中文)
+            - **Emoji Categories (必須在 text 開頭加入適合的 Emoji)**:
+              - ⚔️ (近戰攻擊/打擊)
+              - 🏹 (遠程攻擊/射擊)
+              - 🪄 (施法/奧術能量)
+              - 🔱 (神聖力量/祈禱/引導)
+              - 🛡️ (防禦/保護/掩護)
+              - 👤 (潛行/隱匿/暗殺)
+              - 🎒 (使用道具/消耗品)
+              - 🧪 (藥劑/鍊金/劇毒)
+              - 💬 (說話/外交/威脅)
+              - 🎭 (表演/欺騙/嘲諷)
+              - 🔍 (調查/搜尋/洞察)
+              - 🌿 (自然互動/生存/動物)
+              - 🏃 (移動/撤退/閃避)
+              - 🛠️ (工具/機關/拆解)
+              - 🤝 (協助/配合隊友)
+              - 💖 (治療隊友/支援)
+              - 🩹 (自我治療/包紮)
+              - 🆘 (危急/求救/急需治療)
+              - 🩸 (血腥/狂暴/犧牲)
+              - 🕯️ (儀式/宗教/博學)
+              - 💀 (死亡/恐懼/死靈)
+            - **Length**: 80-100 characters per option
+            - **Format**: MUST use "[Emoji] [內心想法] 具體行動" format
+            - **Language**: Traditional Chinese (繁體中文)
 
         **ENEMY NAMING RULE**:
         - 使用描述性稱呼：「那個手持長矛的傢伙」「最靠近的敵人」「看起來像首領的那個」
@@ -244,9 +309,9 @@ export class CharacterManagerAgent {
                 "id": "character_id",
                 "monologue": "...",
                 "options": [
-                    { "type": "instinct", "text": "Option A Text..." },
-                    { "type": "strategic", "text": "Option B Text..." },
-                    { "type": "team", "text": "Option C Text..." }
+                    { "type": "instinct", "emoji": "⚔️", "text": "⚔️ [內心想法] Option A Text..." },
+                    { "type": "strategic", "emoji": "🔍", "text": "🔍 [內心想法] Option B Text..." },
+                    { "type": "team", "emoji": "🤝", "text": "🤝 [內心想法] Option C Text..." }
                 ]
             },
             ...
@@ -275,9 +340,9 @@ export class CharacterManagerAgent {
                         id: item.id,
                         monologue: "...",
                         options: [
-                            { type: "instinct", text: "保持警惕，觀察四周 (fallback)" },
-                            { type: "professional", text: "準備好武器，隨時應戰 (fallback)" },
-                            { type: "team", text: "掩護隊友，等待指令 (fallback)" }
+                            { type: "instinct", emoji: "🔍", text: "🔍 保持警惕，觀察四周 (fallback)" },
+                            { type: "professional", emoji: "⚔️", text: "⚔️ 準備好武器，隨時應戰 (fallback)" },
+                            { type: "team", emoji: "🤝", text: "🤝 掩護隊友，等待指令 (fallback)" }
                         ]
                     };
                 }
@@ -293,9 +358,9 @@ export class CharacterManagerAgent {
                 id: c.id,
                 monologue: "...",
                 options: [
-                    { type: "instinct", text: "觀察局勢..." },
-                    { type: "professional", text: "準備行動..." },
-                    { type: "team", text: "等待隊友..." }
+                    { type: "instinct", emoji: "🔍", text: "🔍 觀察局勢..." },
+                    { type: "professional", emoji: "⚔️", text: "⚔️ 準備行動..." },
+                    { type: "team", emoji: "🤝", text: "🤝 等待隊友..." }
                 ]
             }));
             return { results: fallbackResults, usage: null };

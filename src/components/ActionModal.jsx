@@ -127,16 +127,27 @@ export default function ActionModal({
                     {options.length > 0 ? (
                         <div className="space-y-3">
                             {options.map((option, idx) => {
-                                const txt = typeof option === 'string' ? option : option.text;
+                                const isObj = typeof option === 'object';
+                                let txt = isObj ? option.text : option;
+                                const emoji = isObj ? option.emoji : null;
+
+                                // If we have a separate emoji field, try to strip it from the start of the text to avoid duplication
+                                if (emoji && txt.startsWith(emoji)) {
+                                    txt = txt.substring(emoji.length).trim();
+                                }
+
                                 return (
                                     <button
                                         key={idx}
-                                        onClick={(e) => { e.stopPropagation(); handleSelectOption(txt); }}
+                                        onClick={(e) => { e.stopPropagation(); handleSelectOption(isObj ? option.text : option); }}
                                         className="w-full text-left p-3 rounded border border-white/5 bg-white/5 hover:bg-white/10 hover:border-amber-500/30 transition-all text-sm group flex items-start gap-3 relative overflow-hidden"
                                     >
                                         <div className="absolute top-0 left-0 w-1 h-full bg-white/5 group-hover:bg-amber-500"></div>
-                                        <span className={`font-bold ${accentColor} font-tome-header mt-0.5 text-xs`}>{String.fromCharCode(65 + idx)}.</span>
-                                        <span className={`${textPrimary} leading-relaxed font-tome-body group-hover:text-white`}>{txt}</span>
+                                        <div className="flex flex-col items-center min-w-[1.5rem] mt-0.5">
+                                            {/* Labels removed, using emojis only */}
+                                            {emoji && <span className="text-xl leading-none">{emoji}</span>}
+                                        </div>
+                                        <span className={`${textPrimary} leading-relaxed font-tome-body group-hover:text-white flex-1`}>{txt}</span>
                                     </button>
                                 );
                             })}

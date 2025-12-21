@@ -205,18 +205,26 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
          - **CRITICAL**: You MUST use this header for every single character provided in the action list.
          - *Inside the Header*:
            - **Narrative**: Write a **Cinematic Paragraph** describing the character's action. Do NOT use bullet points like "- Action:" or "- Result:".
-           - **Player Action**:
-             - If the player entered an action, describe it.
-             - **THEN** append the mechanic tag: \`[🎲 CheckName: D20(Roll) + Mod = Total | DC Target -> Result]\`
-             - **THEN** describe the consequence.
-             - *Format*: \`(Vivid Action Description) -> [🎲 Tag] -> (Result Description)\`
-           - **Idle Player**:
-             - If NO action is provided, describe the character hesitating or observing.
-             - **IMMEDIATELY** trigger an enemy reaction: "Seeing [Name] hesitate, the [Enemy] lunges!"
-             - *Reasoning*: Inactivity is dangerous.
-           - **Enemy Turn**:
-             - described purely in prose.
-             - **NO TAP**: Do NOT use [🎲] tags for enemies. Use text like \`(Roll: 18)\`.
+            - **Player Action**:
+              - If the player entered an action, describe it cinematically.
+              - **THEN** append the DICE PLACEHOLDER: \`[[DICE:角色名:檢定類型:DC值]]\`
+                - 攻擊範例: \`[[DICE:貝拉:攻擊:15]]\`
+                - 技能範例: \`[[DICE:卡琳:潛行:12]]\`
+              - **DO NOT ROLL THE DICE YOURSELF!** The player will click to roll.
+              - **AFTER** the dice tag, write BOTH outcomes using this format:
+                - \`[[成功:成功的結果描述，如造成傷害、效果觸發等]]\`
+                - \`[[失敗:失敗的結果描述，如攻擊落空、敵人反擊等]]\`
+              - *完整格式*: 
+                \`(生動動作描述) -> [[DICE:角色:類型:DC]] -> [[成功:成功後果]] [[失敗:失敗後果]]\`
+              - **範例**:
+                貝拉揮舞短劍刺向狗頭人，銀光閃爍間劍尖直取要害。-> [[DICE:貝拉:攻擊:13]] -> [[成功:短劍深深刺入狗頭人的肩膀，造成 5 點傷害！牠痛苦地嚎叫。]] [[失敗:狗頭人靈巧地側身閃避，貝拉的劍刃只劃過空氣。]]
+            - **Idle Player**:
+              - If NO action is provided, describe the character hesitating or observing.
+              - **IMMEDIATELY** trigger an enemy reaction: "Seeing [Name] hesitate, the [Enemy] lunges!"
+              - *Reasoning*: Inactivity is dangerous.
+            - **Enemy Turn**:
+              - described purely in prose.
+              - **NO DICE TAGS**: Do NOT use [[DICE:]] or [🎲] tags for enemies. Use text like \`(擲骰: 18)\`.
 
     3. **Difficulty Guidelines**:
        - Easy (Minion): AC 10-12, DC 10
@@ -273,7 +281,7 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
 
     6. **GROUP DECISION PHASE (團隊重大決策)**:
        - **CRITICAL CONDITION**: ONLY trigger this when the current narrative arc concludes and a MAJOR strategic divergence occurs.
-       - **FREQUENCY**: Extremely Rare. Use this primarily for "Game Master to Player" questions (e.g. "Do you want to continue to Act 2?").
+       - **FREQUENCY**: Extremely Rare. DO NOT use for minor choices. Use ONLY for Major Meta-Decisions. The Chosen Option will IMMEDIATELY drive the narrative.
        - **WHEN TO USE**: 
          - Major Meta-Decisions (e.g., Change Act, Skip Time).
          - Irreversible Plot Branches (e.g., "Burn the Forest" vs "Save the Forest").
