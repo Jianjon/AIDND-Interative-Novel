@@ -8,7 +8,7 @@ import { CHARACTER_MBTI, getInteractionPhrase } from "../data/mbtiCompatibility.
 export class CharacterManagerAgent {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.modelName = "gemini-2.0-flash-exp";
+        this.modelName = "gemini-2.0-flash";
         this.personaService = new PersonaService();
     }
 
@@ -158,6 +158,14 @@ export class CharacterManagerAgent {
             const cls = c.class;
             const behaviors = CLASS_BEHAVIORS[cls] || CLASS_BEHAVIORS["戰士"];
             const mbti = CHARACTER_MBTI[c.id] || c.mbti || "Unknown";
+
+            // DEBUG LOG: Check if companion exists here
+            if (c.companion) {
+                console.log(`[CharacterManager] Found companion for ${c.name}:`, c.companion);
+            } else {
+                console.log(`[CharacterManager] No companion for ${c.name} (ID: ${c.id})`);
+            }
+
             return `
             - ID: ${c.id} (CRITICAL: COPY THIS EXACTLY AS "id" IN JSON)
               Name: ${c.name} (${c.race} ${c.class})
@@ -165,6 +173,7 @@ export class CharacterManagerAgent {
               Personality: ${c.personality}
               MBTI: ${mbti}
               Bio: ${c.bio ? c.bio.substring(0, 150) + "..." : "Unknown"}
+              Companion: ${c.companion ? JSON.stringify(c.companion) : "None"}
               Behaviors: [Instinct: ${behaviors.instinct}, Professional: ${behaviors.professional}, Team: ${behaviors.team}]
             `;
         }).join("\n");
@@ -273,15 +282,16 @@ export class CharacterManagerAgent {
 
         === COMPANION SYNERGY (夥伴協同) ===
         If the character has a 'companion' or 'pet' in their data:
-        1. **MUST** generate 1-2 additional options labeled \`[Synergy]\` (Option D/E).
-        2. **Format**: \`🤝[協同] [Character Action] +[Companion Action]\`
-        3. **Example**: \`🤝[協同] 我用劍格擋，夜語(烏鴉)啄擊敵人的眼睛\`
-        4. Companion actions should complement the master (distraction, flanking, scouting).
+        1. **MUST** generate a 4th option: "Option D" labeled \`[Companion Order]\`.
+        2. **Format**: \`Option D (夥伴指令): 🐾 [Type] [Action]\`
+        3. **Example**: \`🐾 [內心] 我需要支援... 指揮[夥伴名]攻擊敵人的弱點\`
+        4. Companion actions should provide mechanical benefits (Help/Advantage) or independent attacks.
+        5. **CRITICAL**: ID for this option MUST be \`\${character.id}_companion\`.
 
         === OUTPUT FORMAT ===
         For EACH character, generate:
         1. A short monologue (15-20 chars, 繁體中文) - 反映角色當下的想法
-        2. 3 Action Options (A, B, C):
+        2. 4 Action Options (A, B, C, D) - If NO companion, only 3 options (A, B, C):
            - **Option A (本能反應)**: 根據職業本能 - 優先無消耗行動
            - **Option B (策略選項)**: 更謹慎或策略性 - 環境/社交/技能檢定
            - **Option C (團隊/個性)**: 隨機選擇以下之一:
@@ -291,6 +301,8 @@ export class CharacterManagerAgent {
              - 💬 閒聊：和隊友說些輕鬆的話
              - 🎭 個性行動：完全基於角色獨特個性
              - ☠️ 瀕死 (僅限 HP<=0): 「(虛弱地) ...」 或 「(內心) 我不想死...」
+           - **Option D (夥伴指令)**: **ONLY IF** Character has a Companion.
+             - 🐾 指揮夥伴進行偵查、協助、或攻擊。
             - **Emoji Categories (必須在 text 開頭加入適合的 Emoji)**:
               - ⚔️ (近戰攻擊/打擊)
               - 🏹 (遠程攻擊/射擊)
@@ -363,50 +375,52 @@ export class CharacterManagerAgent {
                 // Ensure ID matches a character in roster (Loose matching)
                 let char = roster.find(c => String(c.id) == String(item.id));
 
-                // Fallback: Try to match by name/alias if ID fails (handling AI hallucinated IDs like "Lan" or "Thorin")
+                // Fallback: Try to match by name/alias if ID fails or is missing
                 if (!char) {
+                    // Try to find name in the item object if ID is missing
+                    const possibleName = item.name || item.id || "";
+                    if (!possibleName) return null;
+
                     char = roster.find(c => {
                         const nameLower = c.name.toLowerCase();
-                        const idLower = String(item.id).toLowerCase().trim();
+                        const targetLower = String(possibleName).toLowerCase().trim();
                         // Handle "(English Name)" format
                         const englishNameMatch = nameLower.match(/\((.*?)\)/);
                         const englishName = englishNameMatch ? englishNameMatch[1] : "";
 
-                        return nameLower.includes(idLower) || idLower.includes(nameLower) || (englishName && idLower.includes(englishName));
+                        return nameLower.includes(targetLower) || targetLower.includes(nameLower) || (englishName && targetLower.includes(englishName));
                     });
                 }
 
                 if (!char) {
-                    // Fallback 2: Try to match by Race/Class (e.g. "tiefling_druid" -> { race: "Tiefling", class: "Druid" })
+                    // Fallback 2: Try to match by Race/Class
                     char = roster.find(c => {
-                        const idLower = String(item.id).toLowerCase();
+                        const targetLower = String(item.id || item.name || "").toLowerCase();
                         const raceLower = (c.race || "").toLowerCase();
                         const classLower = (c.class || "").toLowerCase();
-                        // If ID contains BOTH race and class, it's a strong match
-                        return idLower.includes(raceLower) && idLower.includes(classLower);
+                        return targetLower.includes(raceLower) && targetLower.includes(classLower);
                     });
                 }
 
-                // Fallback 3: Index Matching (If parsed array length matches roster length)
+                // Fallback 3: Index Matching
                 if (!char && parsed.length === roster.length) {
                     const idx = parsed.indexOf(item);
                     if (idx !== -1 && idx < roster.length) {
                         char = roster[idx];
-                        console.log(`[CharacterManager] ID Fallback: Matched by index ${idx} ('${item.id}' -> '${char.id}')`);
+                        console.log(`[CharacterManager] ID Fallback: Matched by index ${idx}`);
                     }
                 }
 
                 if (!char) {
-                    console.warn(`[CharacterManager] ID Mismatch: Generated ${item.id} not found in roster`, roster.map(c => c.id));
+                    console.warn(`[CharacterManager] ID Mismatch: Generated '${item.id}'/'${item.name}' not found in roster`, roster.map(c => c.id));
                     return null;
                 }
 
-                // FORCE the correct ID so the UI can render it
+                // FORCE the correct ID
                 item.id = char.id;
 
                 // Ensure options exist
                 if (!item.options || !Array.isArray(item.options) || item.options.length < 3) {
-                    // Quick fallback if AI malformed this entry
                     console.warn(`[CharacterManager] Malformed Options for ${item.id}`, item.options);
                     return {
                         id: item.id,
@@ -421,20 +435,83 @@ export class CharacterManagerAgent {
                 return item;
             }).filter(Boolean);
 
-            return { results: validResults, usage: result.usage };
+            // CRITICAL CHECK: Ensure we have options for ALL requested characters
+            // If any are missing, generate defaults for them.
+            // AND if they have companions, ensure Option D exists.
+            const finalResults = [...validResults];
+            roster.forEach(char => {
+                let existingRes = finalResults.find(r => r.id === char.id);
+
+                if (!existingRes) {
+                    // Case 1: AI completely missed this character
+                    console.warn(`[CharacterManager] Missing options for ${char.name}, generating default.`);
+                    const defaultOptions = [
+                        { type: "instinct", emoji: "🔍", text: "🔍 觀察局勢..." },
+                        { type: "professional", emoji: "⚔️", text: "⚔️ 準備行動..." },
+                        { type: "team", emoji: "🤝", text: "🤝 等待隊友..." }
+                    ];
+
+                    if (char.companion) {
+                        defaultOptions.push({
+                            type: "companion",
+                            emoji: "🐾",
+                            text: `🐾 [夥伴] 指揮 ${char.companion.name || "夥伴"} 協助作戰`,
+                            id: `${char.id}_companion`
+                        });
+                    }
+
+                    finalResults.push({
+                        id: char.id,
+                        monologue: "...",
+                        options: defaultOptions
+                    });
+                } else {
+                    // Case 2: AI returned options, but might have missed Companion Option
+                    if (char.companion) {
+                        const hasCompanionOpt = existingRes.options.some(opt =>
+                            (opt.type && opt.type === 'companion') ||
+                            (opt.text && (opt.text.includes('夥伴') || opt.text.includes(char.companion.name)))
+                        );
+
+                        if (!hasCompanionOpt) {
+                            console.log(`[CharacterManager] Force-Injecting Option D for ${char.name}`);
+                            existingRes.options.push({
+                                type: "companion",
+                                emoji: "🐾",
+                                text: `🐾 [夥伴] 指揮 ${char.companion.name || "夥伴"} 協助作戰`,
+                                id: `${char.id}_companion`
+                            });
+                        }
+                    }
+                }
+            });
+
+
+            return { results: finalResults, usage: result.usage };
 
         } catch (error) {
             console.error("[CharacterManager] Batch Generation Failed:", error);
             // Fallback: Return empty/basic options for all to prevent crash
-            const fallbackResults = roster.map(c => ({
-                id: c.id,
-                monologue: "...",
-                options: [
+            const fallbackResults = roster.map(c => {
+                const opts = [
                     { type: "instinct", emoji: "🔍", text: "🔍 觀察局勢..." },
                     { type: "professional", emoji: "⚔️", text: "⚔️ 準備行動..." },
                     { type: "team", emoji: "🤝", text: "🤝 等待隊友..." }
-                ]
-            }));
+                ];
+                if (c.companion) {
+                    opts.push({
+                        type: "companion",
+                        emoji: "🐾",
+                        text: `🐾 [夥伴] 指揮 ${c.companion.name || "夥伴"} 協助作戰`
+                    });
+                }
+                return {
+                    id: c.id,
+                    monologue: "...",
+                    options: opts
+                };
+            });
+
             return { results: fallbackResults, usage: null };
         }
     }
@@ -544,11 +621,11 @@ export class CharacterManagerAgent {
     }
 
     /**
- * Helper: Generates a style-consistent portrait URL using Pollinations.ai
- * Matches the visual style of existing 12 preset character assets.
- * CRITICAL: Keep prompt style consistent with portrait-generator.js
- * @param {object} data - Character data including name, race, class, gender, bio
- */
+    * Helper: Generates a style-consistent portrait URL using Pollinations.ai
+    * Matches the visual style of existing 12 preset character assets.
+    * CRITICAL: Keep prompt style consistent with portrait-generator.js
+    * @param {object} data - Character data including name, race, class, gender, bio
+    */
     generatePortraitUrl(data) {
         // Simple mapping for better prompt accuracy
         const raceMap = {

@@ -11,7 +11,7 @@ export class CartographerAgent {
     constructor(apiKey) {
         this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({
-            model: "gemini-2.5-flash-preview-09-2025",
+            model: "gemini-2.0-flash",
             generationConfig: { responseMimeType: "application/json" }
         });
     }

@@ -49,7 +49,7 @@ import CharacterModal from './components/CharacterModal';
 import CharacterCreationModal from './components/CharacterCreationModal';
 import ActionModal from './components/ActionModal';
 import SettingsModal from './components/SettingsModal';
-import { generateAIPortrait, generateAIScene } from './utils/portrait-generator';
+import { generateAIPortrait } from './utils/portrait-generator';
 import { CharacterAgent } from './libs/CharacterAgent';
 import { ErrorBoundary } from './libs/ErrorBoundary.jsx';
 import LevelUpModal from './components/LevelUpModal';
@@ -69,7 +69,7 @@ const GAME_MODES = {
     TRPG: 'trpg'
 };
 
-const GEMINI_MODEL = "gemini-2.5-flash-preview-09-2025";
+const GEMINI_MODEL = "gemini-2.0-flash";
 
 
 // Constants moved to GameData.js
@@ -351,12 +351,19 @@ export default function InteractiveDND() {
         // But for now, let's just force the default in the state above.
     }, []);
     const [questContext, setQuestContext] = useState(null); // { goal, worldInfo, urgentThreat }
-    const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', "AIzaSyDlbVAeyH1uKQn2EezjiRNK0LnngBx81zQ"); // Users must provide their own API key
-    // Fallback to hardcoded key if state is empty, to prevent [400] API Key not found
-    const sanitizedApiKey = apiKey?.trim() ? apiKey.trim() : "AIzaSyDlbVAeyH1uKQn2EezjiRNK0LnngBx81zQ";
+    // Check for Runtime Environment Variable (Cloud Run)
+    const runtimeApiKey = typeof window !== 'undefined' && window.ENV?.GOOGLE_API_KEY ? window.ENV.GOOGLE_API_KEY : null;
+
+    // Priority: RuntimeEnv > LocalStorage > Default
+    const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', runtimeApiKey || "AIzaSyDlbVAeyH1uKQn2EezjiRNK0LnngBx81zQ");
+
+    // Ensure we use the runtime key if present, even if LS has old data (optional, but safer for deployment)
+    // Actually, useLocalStorage syncs to LS. If we want runtime to override LS, we might need an effect or just simple logic.
+    // Let's stick to simple logic: used key is runtime || stored || default.
+    const effectiveApiKey = runtimeApiKey || (apiKey?.trim() ? apiKey.trim() : "AIzaSyDlbVAeyH1uKQn2EezjiRNK0LnngBx81zQ");
 
     // Agent Initialization
-    const storyAgent = useMemo(() => new StoryAgent(sanitizedApiKey), [sanitizedApiKey]);
+    const storyAgent = useMemo(() => new StoryAgent(effectiveApiKey), [effectiveApiKey]);
 
     const handleCreateCustomModule = async (prompt, difficulty) => {
         // Use sandbox mode: No AI wait, instant module creation
@@ -427,6 +434,20 @@ export default function InteractiveDND() {
             .filter(data => data && typeof data === 'object' && data.id) // Filter out bad entries
             .map(data => {
                 try {
+                    // ROBUST HYDRATION 2.0: Restore/Update companion data (fixes broken saves & updates behaviors)
+                    const preset = PRESET_CHARACTERS.find(p => p.id === data.id);
+                    if (preset && preset.companion) {
+                        if (!data.companion) {
+                            console.log(`[Hydration] Restoring missing companion data for ${data.name}`);
+                            data.companion = JSON.parse(JSON.stringify(preset.companion)); // Deep copy
+                        } else {
+                            // Update existing companion with new static metadata (Tactics/Personality)
+                            // We preserve dynamic state (like HP if we tracked it, but currently companion stats are mostly static or reset)
+                            data.companion.tactics = preset.companion.tactics;
+                            data.companion.personality = preset.companion.personality;
+                        }
+                    }
+
                     // Important: Scale characters to the chosen module's level for selection preview
                     const scaledData = scaleCharacter(data, startLevel);
                     return new CharacterAgent(scaledData);
@@ -525,35 +546,7 @@ export default function InteractiveDND() {
         setUserSettings(prev => ({ ...prev, [key]: value }));
     };
 
-    const handleGenerateScene = async () => {
-        if (!apiKey) return showToast("請先設定 API Key", "error");
 
-        setIsGeneratingScene(true);
-        try {
-            const loc = Array.isArray(currentLocation) ? currentLocation.join(" > ") : (currentLocation || "Unknown Location");
-
-            // Get last 3 narrative logs for context
-            const lastLogs = logs.slice(-3)
-                .map(l => typeof l.content === 'string' ? l.content : "")
-                .join("\n");
-
-            const image = await generateAIScene(loc, lastLogs);
-
-            if (image) {
-                setSceneImage(image);
-                setLogs(prev => [...prev, { type: 'image', content: image, location: loc }]);
-                if (audioManager.current) audioManager.current.playSound('magic'); // Audio feedback
-                showToast("場景生成成功！", "success");
-            } else {
-                showToast("場景生成失敗，請稍後再試。", "error");
-            }
-        } catch (e) {
-            console.error("Scene Gen Error:", e);
-            showToast("生成錯誤: " + e.message, "error");
-        } finally {
-            setIsGeneratingScene(false);
-        }
-    };
 
     // --- AI Auto-Control Logic ---
     const toggleControlMode = (charId) => {
@@ -1182,9 +1175,9 @@ JSON格式回覆：
     // --- MULTI-AGENT ORCHESTRATION ---
 
     // Agents
-    const gmAgent = useMemo(() => new GameMasterAgent(sanitizedApiKey), [sanitizedApiKey]);
-    const mapAgent = useMemo(() => new CartographerAgent(sanitizedApiKey), [sanitizedApiKey]);
-    const charAgent = useMemo(() => new CharacterManagerAgent(sanitizedApiKey), [sanitizedApiKey]);
+    const gmAgent = useMemo(() => new GameMasterAgent(effectiveApiKey), [effectiveApiKey]);
+    const mapAgent = useMemo(() => new CartographerAgent(effectiveApiKey), [effectiveApiKey]);
+    const charAgent = useMemo(() => new CharacterManagerAgent(effectiveApiKey), [effectiveApiKey]);
 
     // Memory Service - Tiered memory for story coherence
     const memoryService = useRef(getMemoryService());
@@ -1366,17 +1359,29 @@ JSON格式回覆：
                     if (!char) return "";
                     const actions = char.getActions ? char.getActions() : [];
                     const actionListStr = actions.map(a => `${a.name}(${a.hitBonus >= 0 ? '+' : ''}${a.hitBonus}, ${a.damage})`).join(', ') || 'Unarmed Strike';
-                    return `- ${char.name}: AC ${char.ac || 10}, DC ${char.spellSaveDC || '-'}, Actions: [${actionListStr}]`;
+
+                    // Companion Combat Info
+                    const companionCombat = char.companion ?
+                        ` | Companion: ${char.companion.name} (AC ${char.companion.ac}, Attacks: ${char.companion.attacks?.map(a => a.name).join(', ') || 'None'})`
+                        : "";
+
+                    return `- ${char.name}: AC ${char.ac || 10}, DC ${char.spellSaveDC || '-'}, Actions: [${actionListStr}]${companionCombat}`;
                 }).join('\n'),
                 // CRITICAL: Inject Narrative Identity (Bio/Personality)
                 partyProfiles: party.map(id => {
                     const char = agentRoster.find(c => c.id === id);
                     if (!char) return "";
+
+                    // Companion Narrative Info
+                    const companionInfo = char.companion ?
+                        `\n- **Companion**: ${char.companion.name} (${char.companion.type})\n  - **Personality**: ${char.companion.personality || "Loyal"}\n  - **Tactics**: ${char.companion.tactics || "Protects owner"}\n  - **Autonomy**: Acts independently unless commanded via Option D.`
+                        : "";
+
                     return `
 ### ${char.name} (${char.race} ${char.class})
 - **Personality**: ${char.personality || "Unknown"}
 - **Appearance**: ${char.appearance || "Generic adventurer"}
-- **Background**: ${char.bio ? char.bio.slice(0, 150) + "..." : "A mysterious traveler."}
+- **Background**: ${char.bio ? char.bio.slice(0, 150) + "..." : "A mysterious traveler."}${companionInfo}
 `.trim();
                 }).join('\n\n'),
                 isPrologue: isPrologue,

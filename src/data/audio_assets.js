@@ -11,20 +11,19 @@
  * 3. Make sure the files are public/readable.
  */
 
-const PROJECT_ID = "eternal-legends-rpg";
+const PROJECT_ID = "aidnd-interactive-novel";
 const BUCKET = `${PROJECT_ID}.firebasestorage.app`;
 const IS_PROD = import.meta.env.PROD;
 
 // Helper to generate URL
 const getAudioUrl = (filename) => {
-    // if (IS_PROD) {
-    //     // Firebase Storage URL: https://firebasestorage.googleapis.com/v0/b/<bucket>/o/<path>?alt=media
-    //     // Path must be URL encoded (slashes becomes %2F)
-    //     // const path = encodeURIComponent(`assets/audio/${filename}`);
-    //     // return `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${path}?alt=media`;
-    // }
-    // Local Dev URL (Also works for Firebase Hosting as local static files)
-    // Local Dev URL
+    // FORCE LOCAL: The user prefers bundling audio in the Docker image logic
+    // rather than dealing with external Firebase Storage uploads right now.
+    // This ensures audio works immediately upon deployment.
+    // if (IS_PROD) { ... } // Disabled for Docker bundling
+
+    // Local Dev / Docker Container URL
+    // Nginx serves /assets/ from the container's static files.
     return `/assets/audio/${filename}`;
 };
 

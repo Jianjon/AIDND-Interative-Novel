@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import DualDiceRoll from './DualDiceRoll';
-import { Sword, Shield, Zap, Skull, Crown, Ghost, User, Dices } from 'lucide-react';
+import { Sword, Shield, Zap, Skull, Crown, Ghost, User, Dices, ImageIcon } from 'lucide-react';
+import { getSceneImage } from '../data/SceneImageMap';
 
 const TypewriterText = ({ text, renderWithDice, speed = 20, onComplete, shouldAnimate = true }) => {
     const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
@@ -182,6 +183,29 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
 
                 // 6. PART labels (PART 1:, PART 2:, etc.)
                 if (trimmed.match(/^PART\s*\d+:/i) || trimmed.match(/^第[一二三四五六七八九十]+部分/)) return;
+
+                // === NEW: Scene Illustration Tag Parsing ===
+                // Format: [[SCENE:Forest]] or [[SCENE_ILLUSTRATION:Forest]]
+                if (trimmed.includes('[[SCENE:') || trimmed.includes('[[SCENE_ILLUSTRATION:')) {
+                    // DISABLED: Automatic Image Generation
+                    /*
+                    const sceneMatch = trimmed.match(/\[\[(?:SCENE|SCENE_ILLUSTRATION):(.+?)\]\]/i);
+                    if (sceneMatch) {
+                        const keyword = sceneMatch[1].trim();
+                        const imgSrc = getSceneImage(keyword);
+
+                        if (imgSrc) {
+                            sectionItems.push({
+                                type: 'illustration',
+                                content: keyword,
+                                data: { src: imgSrc, keyword },
+                                index: -1
+                            });
+                        }
+                    }
+                    */
+                    return; // Skip rendering the tag itself
+                }
 
                 // === NEW: Inline [[DICE:Name:Type:DC]] Tag Parsing ===
                 // Check if this line contains [[DICE:...]] placeholders
@@ -611,6 +635,26 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                         >
                             {sec.children.map((child, cIdx) => {
                                 if (visibleIndex < child.index) return null;
+
+                                // === NEW: Illustration Block ===
+                                if (child.type === 'illustration') {
+                                    return (
+                                        <div key={cIdx} className="my-6 relative group overflow-hidden rounded-lg border-2 border-slate-700 shadow-2xl">
+                                            <div className="absolute top-0 left-0 w-full h-full bg-slate-950 animate-pulse z-10" style={{ animationDuration: '2s', display: 'none' }}></div>
+                                            <img
+                                                src={child.data.src}
+                                                alt={child.data.keyword}
+                                                className="w-full h-auto object-cover grayscale sepia-[.2] contrast-125 hover:grayscale-0 hover:sepia-0 transition-all duration-1000"
+                                            />
+                                            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent p-4 pt-12">
+                                                <span className="text-xs uppercase tracking-[0.3em] text-white/70 font-tome-header flex items-center gap-2">
+                                                    <ImageIcon size={12} />
+                                                    SCENE: {child.data.keyword}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                }
 
                                 if (child.type === 'dice') {
                                     if (visibleIndex === child.index && isAnimating) {

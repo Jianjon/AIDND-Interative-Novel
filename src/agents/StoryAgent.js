@@ -12,7 +12,7 @@ import { formatModuleContext, getActInfo } from '../data/modules_data.js';
 export class StoryAgent {
     constructor(apiKey) {
         this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-09-2025" });
+        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     }
 
     /**
@@ -439,6 +439,8 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
                 - 移除: "移除(名稱)" → 死亡或離開時
                 - 清空: "清空" → 換場景時
         
+
+
         === ENEMY NAMING CONVENTION (重要) ===
         - **禁止**: 使用字母編號 (A, B, C, D) 命名敵人
         - **正確做法**: 根據外觀、武器、特徵命名每個敵人

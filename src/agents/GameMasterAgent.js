@@ -12,7 +12,7 @@ import { formatModuleContext } from '../data/modules_data.js';
 export class GameMasterAgent {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.modelName = "gemini-2.0-flash-exp";
+        this.modelName = "gemini-2.0-flash";
     }
 
     async _generate(prompt) {
@@ -109,6 +109,7 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
            - Level 1-4: Base damage, enemies deal 3-10 dmg
            - Level 5-10: +50% damage, enemies deal 10-25 dmg
            - Level 11+: Double damage, enemies deal 20-50 dmg
+           
         2. **Signals**: Generate the 3 signals (Threat, Pacing, Opportunity).
         3. **Loot**: Generate loot if thematically appropriate.
            - **Quest Items**: Mark as \`isQuestItem: true\`. Must aid story progression.
@@ -212,6 +213,13 @@ ${lootGuidelines ? `${lootGuidelines}\n` : ''}
              - Spell: 1d10 (Cantrip) or 4d6 (Level 1-2 Spell)
         4. **Consequences**:
            - If Failed: What happens? (Miss, Counter-attack, Trap triggers?)
+
+        5. **COMPANION / PET ADJUDICATION (IMPORTANT)**:
+           - If the action is a "Companion Order" (Option D or similar):
+           - **Type A: Assist/Help**: If ordering to "Distract", "Scout", or "Help" -> Award **Advantage** on the next check (Mechanically: success=true, no damage, but "system_fact" notes Advantage granted).
+           - **Type B: Attack**: If ordering to "Attack" -> Roll independent damage (Low: 1d4+2, High: 1d6+3). treat as a bonus attack.
+           - Output the companion's success/failure clearly in "outcome_description".
+
 
         [OUTPUT SCHEMA - TRADITIONAL CHINESE]
         {

@@ -185,6 +185,8 @@ export const PRESET_CHARACTERS = [
             ac: 15,
             attacks: [{ name: '幼喙啄擊/爪擊', hitBonus: 5, damage: '1d10+3 穿刺/揮砍' }],
             abilities: ['精確嗅覺', '威嚇萌度', '羽毛防禦'],
+            tactics: '像一頭憤怒的小熊，會用身體撞擊敵人保護卡琳，或者發出咆哮試圖嚇退對手。',
+            personality: '貪吃、忠誠且有點笨拙。認為所有靠近卡琳的人都是潛在的敵人（或食物提供者）。',
             avatar: babyOwlbearImg
         }
     },
@@ -297,6 +299,8 @@ export const PRESET_CHARACTERS = [
             ac: 15,
             attacks: [{ name: '爪擊', hitBonus: 6, damage: '1d6+4' }],
             abilities: ['俯衝攻擊', '銳利目光', '空中偵察'],
+            tactics: '利用速度優勢在戰場上方盤旋，尋找敵人死角進行俯衝騷擾，優先攻擊敵人的眼睛或手臂。',
+            personality: '高傲、敏銳。除了米洛之外，不允許任何人觸碰它的羽毛。總是站在高處俯視眾生。',
             avatar: swiftwindImg
         }
     },
@@ -415,6 +419,8 @@ export const PRESET_CHARACTERS = [
             ac: 13,
             attacks: [{ name: '撥弄', hitBonus: 4, damage: '1' }],
             abilities: ['飛掠 (Flyby)', '協助施法', '黑暗視覺'],
+            tactics: '不直接參與戰鬥，而是透過飛掠干擾敵人，為娜茲的法術提供優勢。危機時會傳送法術。',
+            personality: '充滿書卷氣的貓頭鷹，喜歡停在娜茲的肩膀上看書。會發出類似嘆氣的呼嚕聲來表達對愚蠢行為的不屑。',
             avatar: inkwellImg
         }
     },
@@ -460,6 +466,8 @@ export const PRESET_CHARACTERS = [
                 '載具模式 (可供可可騎乘)',
                 '能源限制 (強力動作消耗蒸汽壓)'
             ],
+            tactics: '根據戰況切換形態：需要防禦時變成岩犀，需要速度時變成獵豹。總是優先保護可可不受到傷害。',
+            personality: '雖然是機械，但表現得像隻熱情的大狗。高興時會噴出愛心形狀的蒸汽，生氣時會發出高壓鳴笛聲。',
             avatar: steamyImg
         },
     },
@@ -578,6 +586,8 @@ export const PRESET_CHARACTERS = [
             ac: 13,
             attacks: [{ name: '啄擊', hitBonus: 4, damage: '1' }],
             abilities: ['飛行偵查', '模仿人聲', '法術傳遞'],
+            tactics: '喜歡模仿敵人的聲音來製造混亂，或停在敵人死角的樹枝上施加不幸詛咒。',
+            personality: '毒舌且喜歡嘲諷。會用嘶啞的聲音重複別人說過的蠢話。對亮晶晶的眼球特別感興趣。',
             avatar: crowImg
         }
     },
@@ -640,6 +650,8 @@ export const PRESET_CHARACTERS = [
             ac: 16,
             attacks: [{ name: '掃描射線', hitBonus: 6, damage: '1d8+4 力場' }],
             abilities: ['掃描', '護盾投影', '數據干擾'],
+            tactics: '漂浮在空中進行戰場數據分析，標記敵人弱點，並在關鍵時刻投影護盾保護誠一。',
+            personality: '冷靜、理性的AI助手。說話帶有機械音，喜歡用百分比來計算勝率。對這個異世界的魔法現象總是表示「邏輯錯誤」。',
             avatar: sevenImg
         }
     },
@@ -814,6 +826,8 @@ export const PRESET_CHARACTERS = [
             ac: 20,
             attacks: [],
             abilities: ['附身戰鬥', '劍術指導', '千年智慧（但方向感為零）'],
+            tactics: '當小麥遇到危險時，劍會自動出鞘格擋，甚至直接控制小麥的手臂進行反擊。',
+            personality: '囉嗦的武學宗師老爺爺。喜歡點評對手的劍術（「太慢了！」「腳步虛浮！」），對小麥的食量和路痴感到絕望。',
             avatar: swordghostImg
         }
     },
@@ -1141,6 +1155,8 @@ export const PRESET_CHARACTERS = [
             ],
             abilities: ['靈體化', '感知邪惡', '協助狩獵'],
             autonomous: true,
+            tactics: '利用狼群戰術，總是試圖繞到敵人背後進行夾擊。會絆倒敵人讓柯斯有更好的射擊機會。',
+            personality: '沉默、高傲且致命。她是精靈少女的靈魂化身，對柯斯有著無盡的溫柔，對敵人則只有冰冷的殺意。',
             avatar: lunaImg
         },
         combatBehavior: {
@@ -1371,6 +1387,8 @@ export const PRESET_CHARACTERS = [
             ac: 14,
             attacks: [{ name: '螯咬', hitBonus: 5, damage: '1 毒素' }],
             abilities: ['攀爬', '織網', '毒素'],
+            tactics: '在天花板或陰影中編織網，等待獵物自投羅網。會向敵人噴射黏性網，限制其行動。',
+            personality: '耐心、安靜。喜歡緩慢地包裹獵物。對震動極其敏感，是最好的警戒哨兵。',
             avatar: silkshadeImg
         },
         combatBehavior: {
@@ -1492,6 +1510,8 @@ export const PRESET_CHARACTERS = [
             ac: 15,
             attacks: [{ name: '相位利爪', hitBonus: 6, damage: '1d6+4 力場' }],
             abilities: ['位移 (視為處於半掩護)', '虛數閃避', '空間錨點'],
+            tactics: '不斷在物質界和星界之間閃爍，讓敵人難以捉摸。會在敵人攻擊的瞬間傳送到其背後進行偷襲。',
+            personality: '捉摸不定、愛玩耍。把戰鬥當作是一場捉迷藏遊戲。喜歡趴在星辰的頭上睡覺。',
             avatar: shunImg
         }
     },
