@@ -35,7 +35,13 @@ export const CHARACTER_MBTI = {
     'preset_eldritchknight': 'ESFP', // 小麥·田中 - 農家女、吃貨
     'preset_alchemist': 'INTP',  // 維克多·碎片 - 自體實驗、瘋狂
     'preset_champion': 'ESFJ',   // 麥克斯·肌肉山 - 肌肉福音、熱情
-    'preset_chronomancer': 'INTP' // 芙莉蓮·千年 - 長壽、時空魔法
+    'preset_chronomancer': 'INTP', // 芙莉蓮·千年 - 長壽、時空魔法
+    'preset_arthur': 'INTP',      // 亞瑟·索克 - 知識、真理尋求者
+    'preset_conan': 'ISTP',       // 科南 - 戰士與意志
+    'preset_sato': 'INFP',        // 佐藤 - 吐槽村民
+    'preset_ains_skeleton': 'INFJ', // 艾因斯 - 骸骨紳士
+    'preset_pipi': 'ENFP_CHAOTIC', // 皮皮 - 混沌野法師
+    'preset_stella': 'ENFP'        // 拉姆 (Lum) - 星詠術士
 };
 
 // MBTI compatibility matrix (1-5, 5 = best synergy)
@@ -56,6 +62,8 @@ export const MBTI_SYNERGY = {
     // Opposites - can clash but also complement
     'ESTP-INFJ': 2, 'ENFP-ISTJ': 2, 'ESTJ-INFP': 2,
     'INTJ-ESFP': 2, 'ENFJ-ISTP': 2, 'ENTJ-ISFP': 2,
+    'ENFP_CHAOTIC-INFP': 5, 'ENFP_CHAOTIC-ENFJ': 4, 'ENFP_CHAOTIC-ENTP': 4,
+    'ENFP_CHAOTIC-ISTJ': 2,
     // Default synergy
     '_default': 3
 };
@@ -174,6 +182,13 @@ export const MBTI_INTERACTION_STYLES = {
         complain: ['「...（沉默離開）」', '「算了。」'],
         chat: ['「...這裡風景不錯。」', '「（安靜地待在旁邊）」'],
         cheer: ['「...（點頭）」', '「你做得很好。」']
+    },
+    'ENFP_CHAOTIC': { // Special variant for Pipi
+        cooperate: ['「嘿嘿，一起來把這裡點著吧！」', '「看我的！」'],
+        advise: ['「我覺得往那邊丟個火球應該很酷！」', '「別擔心，我『大概』知道怎麼做！」'],
+        complain: ['「嗚...你怎麼這麼嚴肅啦！」', '「好無聊喔，我們去炸點什麼吧？」'],
+        chat: ['「你有看過會飛的魚嗎？我剛剛好像變出了一隻！」', '「嘿嘿，你的斗篷上有個補丁，跟我的一樣耶！」'],
+        cheer: ['「你超棒的！再炸一次！」', '「加油呀！你是最強的夥伴！」']
     }
 };
 

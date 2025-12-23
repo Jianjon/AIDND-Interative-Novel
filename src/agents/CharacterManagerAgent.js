@@ -1,66 +1,35 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AIService } from "../services/AIService";
 import { PersonaService } from "../services/PersonaService";
 import { CLASS_BEHAVIORS } from "../data/classBehaviors";
 import { formatModuleContext } from "../data/modules_data.js";
 import { CHARACTER_MBTI, getInteractionPhrase } from "../data/mbtiCompatibility.js";
+import { COMBAT_STYLES } from "../data/combatStyles.js";
+
 
 export class CharacterManagerAgent {
-    constructor(apiKey) {
-        this.apiKey = apiKey;
-        this.modelName = "gemini-2.0-flash";
+    constructor(options = {}) {
+        this.aiService = new AIService(options);
         this.personaService = new PersonaService();
     }
 
-    async _generate(prompt, retries = 2) {
-        for (let attempt = 0; attempt <= retries; attempt++) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+    async _generate(prompt, retries = 2, isJson = true) {
+        try {
+            // AIService handles retries internally, but we can pass maxRetries if we want strictly 2
+            const result = await this.aiService.generate(prompt, {
+                model: "gemini-2.0-flash-exp",
+                maxRetries: retries,
+                isJson: isJson
+            });
 
-            try {
-                const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent?key=${this.apiKey}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }]
-                        }),
-                        signal: controller.signal
-                    }
-                );
-
-                clearTimeout(timeoutId);
-
-                if (!response.ok) {
-                    if (response.status >= 500 && attempt < retries) {
-                        console.warn(`[CharacterManager] API 500 Error, Retrying (${attempt + 1}/${retries})...`);
-                        await new Promise(r => setTimeout(r, 1000 * (attempt + 1))); // Linear backoff
-                        continue;
-                    }
-                    const errorText = await response.text();
-                    console.error(`[CharacterManager] API Error: ${response.status} - ${errorText}`);
-                    throw new Error(`API Error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                return {
-                    text: data.candidates[0].content.parts[0].text,
-                    usage: data.usageMetadata
-                };
-            } catch (error) {
-                clearTimeout(timeoutId);
-                const isTimeout = error.name === 'AbortError';
-
-                if ((isTimeout || error.message.includes('Failed to fetch')) && attempt < retries) {
-                    console.warn(`[CharacterManager] Network/Timeout Error, Retrying (${attempt + 1}/${retries})...`);
-                    await new Promise(r => setTimeout(r, 2000));
-                    continue;
-                }
-
-                console.error("[CharacterManager] Generation Failed (Final):", error);
-                throw error;
-            }
+            return {
+                text: result.text,
+                usage: result.usage
+            };
+        } catch (error) {
+            console.error("[CharacterManager] Generation Failed (Final):", error);
+            throw error;
         }
     }
 
@@ -82,7 +51,8 @@ export class CharacterManagerAgent {
 
         const prompt = `
         You are the **Character Manager** (Dialogue Stylist).
-        **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文). NO ENGLISH.**. NO ENGLISH.**
+        **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
+        **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**
         角色: ${characterName}
         種族: ${characterData.race || "人類"}
         職業: ${characterData.class}
@@ -105,7 +75,7 @@ export class CharacterManagerAgent {
         `;
 
         try {
-            const result = await this._generate(prompt);
+            const result = await this._generate(prompt, 2, false); // isJson = false for dialogue
             return { text: result.text.trim(), usage: result.usage };
         } catch (error) {
             console.error("Style Dialogue Error:", error);
@@ -144,36 +114,50 @@ export class CharacterManagerAgent {
      * @param {Object} worldState Location, time, etc.
      * @param {String} lastNarrative The story so far
      * @param {String} previousOutcome "Success" or "Fail" summary
+     * @param {Object} signals Pace/Threat signals
+     * @param {String} moduleId Module ID
+     * @param {Number} currentAct Act number
+     * @param {Array} groupOptions Group options
+     * @param {Array} activeEnemies List of alive enemies
      * @returns {Promise<{results: Object, usage: Object}>} { results, usage }
      */
-    async generateOptions(roster, worldState, lastNarrative, previousOutcome, signals = {}, moduleId = null, currentAct = 1, groupOptions = []) {
+    async generateOptions(roster, worldState, lastNarrative, previousOutcome, signals = {}, moduleId = null, currentAct = 1, groupOptions = [], activeEnemies = []) {
         groupOptions = groupOptions || []; // Safety check for null
         console.log(`[CharacterManager] Generating Options for ${roster.length} chars (BATCHED)...`);
 
         const { threat_level, pacing_signal, mechanical_opportunity } = signals;
         const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
 
+        // Format Enemy List
+        const enemyListStr = activeEnemies.length > 0
+            ? activeEnemies.map(e => `- ${e.name} (HP: ${e.hp}/${e.maxHp})`).join('\n')
+            : "None (Combat Ended or No Enemies)";
+
         // 1. Construct Batched Context
         const charSummaries = roster.map(c => {
             const cls = c.class;
             const behaviors = CLASS_BEHAVIORS[cls] || CLASS_BEHAVIORS["戰士"];
             const mbti = CHARACTER_MBTI[c.id] || c.mbti || "Unknown";
+            const styleKey = c.decisionBias || "DEFAULT";
+            const styleContext = COMBAT_STYLES[styleKey] || COMBAT_STYLES["DEFAULT"];
 
-            // DEBUG LOG: Check if companion exists here
-            if (c.companion) {
-                console.log(`[CharacterManager] Found companion for ${c.name}:`, c.companion);
-            } else {
-                console.log(`[CharacterManager] No companion for ${c.name} (ID: ${c.id})`);
-            }
+            // Filter impactful relationships
+            const relations = c.relationships || {};
+            const importantBonds = Object.entries(relations)
+                .filter(([_, rel]) => rel.affinity >= 60 || rel.bondState === 'LOVER' || rel.bondState === 'BONDED')
+                .map(([tid, rel]) => `${rel.targetName || tid}: ${rel.bondState} (${rel.affinity})`)
+                .join(", ");
 
             return `
-            - ID: ${c.id} (CRITICAL: COPY THIS EXACTLY AS "id" IN JSON)
+            - ID: ${c.id}
               Name: ${c.name} (${c.race} ${c.class})
               HP: ${c.hp || "Unknown"}
               Personality: ${c.personality}
               MBTI: ${mbti}
+              Combat Style: ${styleContext.name} (${styleContext.instruction || "Follow personality"})
               Bio: ${c.bio ? c.bio.substring(0, 150) + "..." : "Unknown"}
               Companion: ${c.companion ? JSON.stringify(c.companion) : "None"}
+              Significant Bonds: ${importantBonds || "None"}
               Behaviors: [Instinct: ${behaviors.instinct}, Professional: ${behaviors.professional}, Team: ${behaviors.team}]
             `;
         }).join("\n");
@@ -192,8 +176,16 @@ export class CharacterManagerAgent {
 
         const prompt = `
         You are a D&D Character Perspective Engine.
-        Generate action options for ${roster.length} characters based on their INDIVIDUAL PERSPECTIVE.
-        **CRITICAL: Generate options ONLY for the ${roster.length} characters listed above by ID. Do NOT generate for others.**
+        Generate action options for the SPECIFIED characters based on their INDIVIDUAL PERSPECTIVE.
+        
+        === CHARACTERS TO PROCESS (必須且僅限處理這些角色) ===
+        ${charSummaries}
+
+        **CRITICAL CONSTRAINTS (絕對指令)**:
+        1. **IDENTITY MATCHING**: Generate options ONLY for the characters listed above by ID and Name.
+        2. **NO HALLUCinations**: Do NOT generate options for "Thorin", "Bella", "Kalin" or ANY other names unless they appear in the [CHARACTERS TO PROCESS] list above.
+        3. **STRICT LIMIT**: If the list above contains only 1 character, you MUST return an array of length 1. Do NOT include other party members from the story history.
+        4. **ID CONSISTENCY**: Use the EXACT "ID" provided in the list (e.g., "preset_bard") as the "id" field in your JSON output.
 
         ${regenerationInstruction}
 
@@ -231,11 +223,15 @@ export class CharacterManagerAgent {
         - 讓選項反映這些情緒與性格特質
 
         **4. CLASS-APPROPRIATE ACTIONS (職業相符)**
-        - 戰士傾向直接戰鬥
-        - 遊蕩者傾向隱匿或偷襲
-        - 法師需要考慮施法距離和法術位
         - 牧師會關心隊友的傷勢
         - 吟遊詩人可能嘗試談判或嘲諷
+
+        **5. COMBAT STYLE & CONFLICT (戰鬥風格與衝突)**
+        - 如果角色的 [Combat Style] 與其 [Personality] 衝突（例如：膽小的角色被要求「全面進攻」）：
+          1. **Monologue**: 必須表現出猶豫、為難、恐懼或被情勢所迫的心情。
+          2. **Action Text**: 在括號內描述動作的遲疑或是心理負擔。例如：「(咬著牙，顫抖著向前跑) ...」
+        - 如果風格相符：展現出得心應手、自信或狂熱。
+        - **DEFAULT** 選項應始終反映角色的最基本本性。
 
         *** 特殊狀態規則：瀕死 (DOWNED / UNCONSCIOUS) ***
         如果角色 HP = 0 或狀態為 Unconscious/Downed：
@@ -256,6 +252,14 @@ export class CharacterManagerAgent {
         - 若 narrative 顯示陷阱已解除/敵人已死亡/謎題已解開 -> **必須** 提供推進劇情 (移動/搜刮/進入下一區) 的選項。
         - **禁止** 針對「已解決」的威脅生成重複行動 (例如: 陷阱已解除，就不要再有「解除陷阱」的選項)。
         - 若玩家因某些原因卡關 (無效行動多次)，提供一個明確 **High Context Hint** 的選項 (例如：「仔細觀察周圍，發現...」)。
+
+        [VALID TARGETS / ALIVE ENEMIES]
+        ${enemyListStr}
+        
+        ** TARGETING RULES **:
+        1. **STRICTLY PROHIBITED**: Do NOT generate attack options against enemies NOT listed above.
+        2. If "None", combat is over. Do NOT generate attack options. Focus on looting, resting, or moving.
+        3. If an enemy name in narrative is NOT in this list, they are DEAD. Do not attack them.
 
         ${groupOptions.length > 0 ? `
         === GROUP OPTION SELECTION ===
@@ -334,10 +338,12 @@ export class CharacterManagerAgent {
         - 只有在故事中明確提到敵人名字時才能使用名字
 
         **CRITICAL OUTPUT FORMAT:**
-        Return ONLY a JSON Array. No markdown formatting.
+        1. Return ONLY a JSON Array. No markdown formatting.
+        2. **VERIFICATION**: You MUST verify that the \`id\` you use matches the \`name\` of the character provided in the input. Do NOT mix up characters.
         [
             {
                 "id": "EXACT_ID_FROM_CONTEXT",
+                "name": "CHARACTER_NAME_FOR_VERIFICATION",
                 "monologue": "...",
                 "options": [
                     { "type": "instinct", "emoji": "⚔️", "text": "⚔️ [內心想法] Option A Text...", "isGroup": false },

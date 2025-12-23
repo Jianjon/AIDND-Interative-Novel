@@ -186,6 +186,45 @@ export const CLASS_BEHAVIORS = {
             advanced: { tactics: "原始之力，無盡狂暴，幾乎殺不死。", abilities: ["堅韌狂暴", "原始冠軍", "30 STR"], threats: "智力型敵人會迴避" }
         }
     },
+    "血怒者": {
+        instinct: "血液在沸騰，風暴在呼喚。在憤怒中將敵人撕成碎片。",
+        professional: "在進入血脈狂暴的瞬間施放防護法術。利用雷鳴波將被包圍的隊友解救出來。",
+        team: "作為前線的風暴中心，吸引火力並用範圍魔法打亂敵人陣型。為隊友提供掩護。",
+        combatStyle: "魔戰合一的狂暴。如颶風般狂暴，如雷霆般炸裂。",
+        signatureMoves: ["血脈狂暴", "雷鳴波", "風之恩惠"],
+        roleInParty: "前線坦克/魔法輸出",
+        levelBehaviors: {
+            beginner: { tactics: "血脈狂暴啟動，近戰與一環法術交替使用。雷鳴波清場。", abilities: ["血脈狂暴", "雷鳴波", "風之恩惠"], threats: "法術位有限，狂暴次數珍貴" },
+            intermediate: { tactics: "在狂暴中利用自動施法強化防禦。旋風斬配合魔法噴發。", abilities: ["二環法術", "額外攻擊", "風之報復"], threats: "高機動敵人的風箏戰術" },
+            advanced: { tactics: "風暴領主，狂暴時周身環繞致命氣旋。魔法與利斧的完美融合。", abilities: ["大血怒", "空氣主宰", "傳奇雷鳴"], threats: "反魔法場會削弱魔法增益" }
+        }
+    },
+    "傳說級村民": {
+        instinct: "（碎碎唸：我就知道會這樣...）總之先活下去再說。觀察戰場尋找最安全的藏身處。",
+        professional: "雖然膽小，但對烹飪器具的平衡感有著驚人的直覺。在極度恐懼下爆發的平底鍋攻擊極其致命。",
+        team: "雖然一直想逃避，但在隊友陷入危機時，會邊哭邊揮舞平底鍋衝上去。",
+        combatStyle: "絕地求生流。靠著恐懼驅動的反射神經與暴擊戰鬥。",
+        signatureMoves: ["絕地平底鍋 (高暴擊)", "碎碎唸 (降低敵人鬥志)", "慌亂閃避"],
+        roleInParty: "幸運坦克/關鍵輸出/吐槽位",
+        levelBehaviors: {
+            beginner: { tactics: "在戰場邊緣徘徊，隨機對靠近的敵人施放絕地平底鍋。持續碎碎唸。", abilities: ["路人甲的直覺", "平底鍋專精"], threats: "正面衝突" },
+            intermediate: { tactics: "利用體型優勢在敵人胯下穿梭。平底鍋攻擊帶有震懾效果。", abilities: ["滑鏟突襲", "神之吐槽"], threats: "大範圍踐踏" },
+            advanced: { tactics: "覺醒的傳說村民。只要手握平底鍋，連神靈都要退避三舍。", abilities: ["因果律平底鍋", "絕對逃脫"], threats: "無心無命的機械軍團" }
+        }
+    },
+    "骸骨紳士": {
+        instinct: "優雅，是靈魂的裝飾。即便是戰鬥，也要保持最好的禮儀。",
+        professional: "精準地計算力量的輸出，確保不會弄髒自己的盔甲與花朵。保護弱者是騎士的基石。",
+        team: "最可靠的前線護盾。沉默但堅定地站在隊伍最前方，為隊友擋下一切風暴。",
+        combatStyle: "優雅與毀滅的雙面一體。守序但致命。",
+        signatureMoves: ["優雅劍技", "骸骨重組", "謙卑守護"],
+        roleInParty: "守護騎士/強力物理攻擊",
+        levelBehaviors: {
+            beginner: { tactics: "保持距離行禮，隨後發動迅猛的突刺。利用不死亡靈的特性吸收傷害。", abilities: ["優雅禮儀", "骸骨重組"], threats: "神聖屬性攻擊" },
+            intermediate: { tactics: "利用骸骨散開避開攻擊再重組。施展古老的王室劍技。", abilities: ["騎士意志", "多重突刺"], threats: "大範圍拆解類魔法" },
+            advanced: { tactics: "不屈的皇家守衛。他的存在本身就是一座不可逾越的堡壘。", abilities: ["王國守護者", "靈魂燃燒"], threats: "神性級別的淨化力" }
+        }
+    },
 
     // === EXPANDED CLASSES ===
     "鍊金術士": {
@@ -410,17 +449,17 @@ export const CLASS_BEHAVIORS = {
             advanced: { tactics: "每支箭都帶有靈魂共鳴。無人能逃脫這場演奏。", abilities: ["殺手旋律", "終極戰吟"], threats: "神聖禁魔區域" }
         }
     },
-    "混沌法師": {
-        instinct: "追求魔力的混亂之美。不穩定才是最強大的。",
-        professional: "掌握混亂的流向。在風險中尋求最大的法術爆發。",
-        team: "提醒隊友離自己遠點。關鍵時刻用不可預測的力量扭轉戰局。",
-        combatStyle: "不可預測的魔力噴泉。狂野、危險、毀滅性。",
-        signatureMoves: ["狂野魔法激湧", "混沌箭", "命運波折"],
-        roleInParty: "高風險爆發輸出",
+    "星詠術士": {
+        instinct: "觀察萬星的流向。宇宙的秩序潛藏於混亂之中。",
+        professional: "利用星象共鳴調整魔力頻率。在不同星相下展現不同的戰鬥姿態。",
+        team: "「今晚月色正好，我的魔力也隨之共振了！」利用空間傳送保護隊友或孤立敵方。",
+        combatStyle: "優雅而神祕的宇宙編織者。位移、控制與大範圍星光爆發。",
+        signatureMoves: ["星空共鳴", "空間跳躍", "萬彩星光"],
+        roleInParty: "遠程控制/戰術位移/爆發輸出",
         levelBehaviors: {
-            beginner: { tactics: "盡量使用低環法術測試穩定性。隨時準備跑路。", abilities: ["波折命運", "混沌噴發"], threats: "魔法反噬可能炸到自己" },
-            intermediate: { tactics: "利用超魔專長引導混亂，造成大範圍傷害。", abilities: ["混沌護盾", "狂野施法"], threats: "隨機效果可能不利於團隊" },
-            advanced: { tactics: "主宰混亂，將不確定性化為確定性的毀滅。", abilities: ["混沌主宰", "流星爆(混沌)"], threats: "世界意志的排斥" }
+            beginner: { tactics: "利用空間跳躍躲避威脅，施放星火爆進行遠程牽制。", abilities: ["星空共鳴", "空間跳躍"], threats: "過度依賴位移可能導致位置孤立" },
+            intermediate: { tactics: "在滿月姿態下釋放超新星級別的爆發。利用星光致盲敵人。", abilities: ["星光屏障", "星辰軌跡"], threats: "能量過載後會陷入短接虛弱" },
+            advanced: { tactics: "主宰微型黑洞與星體引力。將戰場化為自己的星圖。", abilities: ["宇宙主宰", "星系崩毀"], threats: "異次元能量的侵蝕" }
         }
     },
     "血族領主": {
@@ -540,7 +579,7 @@ export const CLASS_BEHAVIORS = {
             advanced: { tactics: "傳奇刺客。他的名字就是死亡的代名詞，無人能避開他的匕首。", abilities: ["致死打擊", "盲視"], threats: "真視術與預言感知" }
         }
     },
-    "武器大師": {
+    "戰術大師": {
         instinct: "見招拆招。世間兵器皆為我所用。",
         professional: "觀察敵人的攻防模式，利用豐富的戰技（Maneuvers）來繳械、擊倒或反擊。",
         team: "戰場上的戰術家。透過戰技為隊友創造攻擊優勢或救回受困的同伴。",
@@ -590,6 +629,19 @@ export const CLASS_BEHAVIORS = {
             beginner: { tactics: "變形為堅韌生物吸收傷害，施放糾纏術。", abilities: ["荒野變形", "治療創傷"], threats: "變形後思維趨向原始" },
             intermediate: { tactics: "變形為更強大的掠食者。利用自然之力強化盟友。", abilities: ["強力變形", "召喚閃電"], threats: "長時間變形可能迷失自我" },
             advanced: { tactics: "大地的化身。她就是這片森林，她就是這場風暴。", abilities: ["無限變形", "傳奇自然"], threats: "禁魔與工業污染環境" }
+        }
+    },
+    "混沌野法師": {
+        instinct: "總之先丟個法術看看會發生什麼。混亂才是真理。",
+        professional: "利用隨機性產生的優勢，將意外轉化為勝利。不走尋常路。",
+        team: "「嘿嘿，大家小心喔，這個法術可能會有一點點小副作用！」利用隨機傳送救援隊友。",
+        combatStyle: "完全不可預測的魔法爆發。驚喜、混亂、爆笑。",
+        signatureMoves: ["皮皮亂丟火球", "反向治療(微炸裂)", "天真笑臉"],
+        roleInParty: "隨機性輸出/驚喜製造者",
+        levelBehaviors: {
+            beginner: { tactics: "胡亂施放低階法術，利用天真笑臉降低敵人敵意。", abilities: ["狂野魔法", "戲法施法"], threats: "法術誤傷隊友" },
+            intermediate: { tactics: "施展混沌火球術。利用混沌護盾吸收傷害。", abilities: ["混沌護盾", "混沌火球術"], threats: "魔力暴走失控" },
+            advanced: { tactics: "主宰命運與因果。讓整個戰壕都陷入不可思議的混亂中。", abilities: ["命運主宰", "傳奇級混沌法術"], threats: "現實維度的崩潰" }
         }
     }
 };

@@ -13,3 +13,10 @@ dist-ssr
 *.m4a
 *.ogg
 public/assets/audio/
+src/assets/characters/
+src/assets/scenes/
+public/assets/images/
+*.png
+*.jpg
+*.jpeg
+*.webp

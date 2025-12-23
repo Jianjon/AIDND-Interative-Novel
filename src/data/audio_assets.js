@@ -17,14 +17,18 @@ const IS_PROD = import.meta.env.PROD;
 
 // Helper to generate URL
 const getAudioUrl = (filename) => {
-    // FORCE LOCAL: The user prefers bundling audio in the Docker image logic
-    // rather than dealing with external Firebase Storage uploads right now.
-    // This ensures audio works immediately upon deployment.
-    // if (IS_PROD) { ... } // Disabled for Docker bundling
+    // DEV MODE: Use local files
+    if (!IS_PROD) {
+        return `/assets/audio/${filename}`;
+    }
 
-    // Local Dev / Docker Container URL
-    // Nginx serves /assets/ from the container's static files.
-    return `/assets/audio/${filename}`;
+    // PROD MODE: Use Firebase Storage
+    // The user has manually uploaded audio to: gs://aidnd-interactive-novel.firebasestorage.app/assets/audio/
+    // We point to the public download URL.
+
+    // URL Encoding: / -> %2F
+    const encodedPath = `assets%2Faudio%2F${encodeURIComponent(filename)}`;
+    return `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${encodedPath}?alt=media`;
 };
 
 export const BGM_MAP = {
@@ -69,7 +73,7 @@ export const BGM_MAP = {
     "underdark": getAudioUrl("69_Forest_Night.mp3"), // Dark ambient
     "hell": getAudioUrl("394_Demon_Army.mp3"),
     "ocean": getAudioUrl("482_Upriver_Recon.mp3"), // Watery
-    "alien": getAudioUrl("39_Temple_of_the_Eye.mp3"), // Keep checking if this exists, but removing suffix for consistency
+    "alien": getAudioUrl("mind_flayer_chamber.mp3"), // REPLACED missing file (39_Temple) with safe fallback
     "alien_fallback": getAudioUrl("mind_flayer_chamber.mp3"),
 
     // DEFAULT

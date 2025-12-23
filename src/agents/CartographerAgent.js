@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AIService } from "../services/AIService";
 import { formatModuleContext } from "../data/modules_data.js";
 
 /**
@@ -8,12 +8,8 @@ import { formatModuleContext } from "../data/modules_data.js";
  * Outputs: JSON Updates (Location, Journal Entry)
  */
 export class CartographerAgent {
-    constructor(apiKey) {
-        this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
-            generationConfig: { responseMimeType: "application/json" }
-        });
+    constructor(options = {}) {
+        this.aiService = new AIService(options);
     }
 
     /**
@@ -32,7 +28,8 @@ export class CartographerAgent {
 
         const systemPrompt = `
         You are the **Cartographer** (World Logic Engine).
-        **CRITICAL: ALL OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文). NO ENGLISH.**
+        **CRITICAL: ALL OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
+        **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**
         Your role is to maintain world continuity, track location changes, and summarize key events.
 
         === CORE PRINCIPLES ===
@@ -92,11 +89,8 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
         `;
 
         try {
-            const result = await this.model.generateContent(systemPrompt);
-            const response = result.response;
-            const text = response.text();
-            const usage = response.usageMetadata;
-            return { data: JSON.parse(text), usage };
+            const result = await this.aiService.generate(systemPrompt, { isJson: true });
+            return { data: JSON.parse(result.text), usage: result.usage };
         } catch (error) {
             console.error("CartographerAgent Error:", error);
             // Fallback: No change
@@ -155,19 +149,15 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
         `;
 
         try {
-            const result = await this.model.generateContent(systemPrompt);
-            const response = result.response;
-            const text = response.text();
-            const usage = response.usageMetadata;
-
-            const parsed = JSON.parse(text);
+            const result = await this.aiService.generate(systemPrompt, { isJson: true });
+            const parsed = JSON.parse(result.text);
             return {
                 data: {
                     workingSummary: parsed.working_summary || "",
                     newKeyEvents: parsed.new_key_events || [],
                     characterUpdates: parsed.character_updates || {}
                 },
-                usage
+                usage: result.usage
             };
         } catch (error) {
             console.error("CartographerAgent Memory Summary Error:", error);

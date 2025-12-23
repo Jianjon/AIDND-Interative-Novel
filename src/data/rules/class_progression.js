@@ -131,6 +131,48 @@ export const CLASS_PROGRESSION = {
             20: [5, 4, 3, 3, 3, 3, 2, 2, 1, 1]
         }
     },
+    "知識牧師": {
+        hitDie: 8,
+        primaryStat: "wis",
+        secondaryStat: "int",
+        saves: ["int", "wis"],
+        features: {
+            1: ["Divine Domain (Knowledge)", "Spellcasting", "Guidance", "Expertise (History/Arcana)"],
+            2: ["Channel Divinity: Knowledge of the Ages"],
+            3: ["Lesser Restoration", "Hold Person"],
+            4: ["Ability Score Improvement"],
+            5: ["Destroy Undead (CR 1/2)", "Revivify", "Speak with Dead"],
+            6: ["Channel Divinity: Read Thoughts"],
+            7: ["Confusion", "Banishment"],
+            8: ["Ability Score Improvement", "Potent Spellcasting"],
+            9: ["Mass Cure Wounds", "Legend Lore"],
+            10: ["Divine Intervention"],
+            11: ["Heal", "True Seeing"],
+            12: ["Ability Score Improvement"],
+            13: ["Resurrection", "Etherealness"],
+            14: ["Divine Strike (Radiant)"],
+            15: ["Sunburst", "Antimagic Field"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [5, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [5, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            13: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            14: [5, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            15: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0],
+            16: [5, 4, 3, 3, 3, 2, 1, 1, 1, 0]
+        }
+    },
     "遊蕩者": {
         hitDie: 8,
         primaryStat: "dex",
@@ -1450,7 +1492,97 @@ export const CLASS_PROGRESSION = {
             16: ["Ability Score Improvement"]
         }
     },
-    "武器大師": {
+    "血怒者": {
+        hitDie: 12,
+        primaryStat: "str",
+        secondaryStat: "cha",
+        saves: ["str", "con"],
+        features: {
+            1: ["Bloodrage", "Wind's Favor", "Unarmored Defense"],
+            2: ["Uncanny Dodge", "Fast Movement"],
+            3: ["Blood Sanctuary", "Thunderwave"],
+            4: ["Ability Score Improvement"],
+            5: ["Extra Attack", "Winds of Retribution"],
+            6: ["Bloodline Feature (Storm)"],
+            7: ["Feral Instinct"],
+            8: ["Ability Score Improvement"],
+            9: ["Brutal Critical (1 die)"],
+            10: ["Greater Bloodrage"],
+            11: ["Relentless Rage"],
+            12: ["Ability Score Improvement"],
+            13: ["Brutal Critical (2 dice)"],
+            14: ["Indomitable Might"],
+            15: ["Persistent Rage"],
+            16: ["Ability Score Improvement"]
+        },
+        spellSlots: {
+            1: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            4: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            5: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            6: [4, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            7: [4, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            8: [4, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            9: [4, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            10: [4, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            11: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            12: [4, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            13: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            14: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            15: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0],
+            16: [4, 4, 3, 3, 3, 2, 1, 1, 0, 0]
+        }
+    },
+    "傳說級村民": {
+        hitDie: 10,
+        primaryStat: "wis",
+        secondaryStat: "dex",
+        saves: ["dex", "wis"],
+        features: {
+            1: ["路人甲的直覺", "絕對幸運", "平底鍋之盾"],
+            2: ["被強迫的走位", "吐槽功力"],
+            3: ["意外的爆擊", "生存者的直覺"],
+            4: ["Ability Score Improvement"],
+            5: ["不科學的格檔", "主角光環 (被動)"],
+            6: ["美食的力量"],
+            7: ["因果閃避"],
+            8: ["Ability Score Improvement"],
+            9: ["奇蹟生還"],
+            10: ["吐槽昇華"],
+            11: ["平底鍋宗師"],
+            12: ["Ability Score Improvement"],
+            13: ["強制平局"],
+            14: ["無視重力"],
+            15: ["絕對主角權限"],
+            16: ["Ability Score Improvement"]
+        }
+    },
+    "骸骨紳士": {
+        hitDie: 12,
+        primaryStat: "str",
+        secondaryStat: "wis",
+        saves: ["str", "con"],
+        features: {
+            1: ["優雅禮儀", "骸骨重組", "亡靈天性"],
+            2: ["精準劍技", "騎士之禮"],
+            3: ["骸骨壁壘", "花之眷戀"],
+            4: ["Ability Score Improvement"],
+            5: ["額外攻擊", "騎士衝鋒"],
+            6: ["靈魂安息"],
+            7: ["盔甲加護"],
+            8: ["Ability Score Improvement"],
+            9: ["王國劍法"],
+            10: ["優雅壓制"],
+            11: ["骸骨軍團 (召喚幻影)"],
+            12: ["Ability Score Improvement"],
+            13: ["不朽意志"],
+            14: ["靈魂低語"],
+            15: ["極致紳士之道"],
+            16: ["Ability Score Improvement"]
+        }
+    },
+    "戰術大師": {
         hitDie: 10,
         primaryStat: "str",
         saves: ["str", "con"],
@@ -1577,11 +1709,73 @@ export const CLASS_PROGRESSION = {
             15: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0],
             16: [4, 4, 3, 3, 3, 2, 1, 1, 1, 0]
         }
+    },
+    "混沌野法師": {
+        hitDie: 6,
+        primaryStat: "cha",
+        saves: ["con", "cha"],
+        features: {
+            1: ["狂野魔法 (Wild Magic)", "反向咒語", "戲法施法"],
+            2: ["混沌護盾", "法力噴發"],
+            3: ["超魔：混沌", "二環法術"],
+            4: ["能力值提升"],
+            5: ["混沌火球術", "幸運(?)閃避"],
+            6: ["狂野魔法改進"],
+            7: ["因果扭曲", "四環法術"],
+            8: ["能力值提升"],
+            9: ["混沌噴發加強"],
+            10: ["命運主宰"],
+            11: ["傳奇級混沌法術", "六環法術"],
+            12: ["能力值提升"]
+        },
+        spellSlots: {
+            1: [4, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [4, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [5, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [5, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [5, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [5, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [5, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [5, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [4, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0]
+        }
+    },
+    "星詠術士": {
+        hitDie: 6,
+        primaryStat: "int",
+        saves: ["int", "cha"],
+        features: {
+            1: ["星空共鳴", "空間跳躍 (低階)", "戲法施法"],
+            2: ["星塵屏障", "萬彩星光"],
+            3: ["星辰軌跡", "二環法術"],
+            4: ["能力值提升"],
+            5: ["超新星", "星詠之歌"],
+            6: ["空間跳躍 (中階)"],
+            7: ["引力黑洞", "四環法術"],
+            8: ["能力值提升"],
+            9: ["星雲護甲"],
+            10: ["星系崩毀"],
+            11: ["傳奇級星詠法術", "六環法術"],
+            12: ["能力值提升"]
+        },
+        spellSlots: {
+            1: [4, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+            2: [4, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+            3: [4, 4, 2, 0, 0, 0, 0, 0, 0, 0],
+            4: [5, 4, 3, 0, 0, 0, 0, 0, 0, 0],
+            5: [5, 4, 3, 2, 0, 0, 0, 0, 0, 0],
+            6: [5, 4, 3, 3, 0, 0, 0, 0, 0, 0],
+            7: [5, 4, 3, 3, 1, 0, 0, 0, 0, 0],
+            8: [5, 4, 3, 3, 2, 0, 0, 0, 0, 0],
+            9: [5, 4, 3, 3, 3, 1, 0, 0, 0, 0],
+            10: [4, 4, 3, 3, 3, 2, 0, 0, 0, 0],
+            11: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0],
+            12: [4, 4, 3, 3, 3, 2, 1, 0, 0, 0]
+        }
     }
-
-
-
-
 };
 
 /**

@@ -241,6 +241,28 @@ export const PERSONALITY_PROMPTS = {
             allowExpansion: true,
             instruct: "若原始資料不足，你可推論該角色的舞台表現慾或對聲音的敏感度。"
         }
+    },
+    "求知真理者": {
+        tone: "好奇、專注、帶有學究氣息。喜歡解釋事物的原理，說話條理清晰，偶爾會陷入沈思。",
+        keywords: ["觀察", "原理", "結構", "有趣", "為什麼"],
+        style: "像個在田野調查的學者或充滿好奇心的博學家。",
+        prefix: "「根據我的觀察...」",
+        interactionStyle: {
+            respect: ["冷靜理智", "神秘莫測"],
+            rivalry: ["多疑謹慎"],
+            distrust: ["熱血衝動"],
+            tease: ["豪邁不羈"]
+        },
+        emotionModulation: {
+            battle: "比起戰鬥更熱衷於觀察敵人的行為模式，會隨口分析弱點。",
+            exploration: "對環境中的細節極度感興趣，經常脫隊去研究一塊石頭或一處圖騰。",
+            fear: "用學術分析來試圖理解恐懼的來源，語速極快。",
+            surprise: "「這不符合目前的理論模型！」"
+        },
+        autoExtendedTraits: {
+            allowExpansion: true,
+            instruct: "若原始資料不足，你可推論該角色對未知的痴迷或對常識的忽視。"
+        }
     }
 };
 

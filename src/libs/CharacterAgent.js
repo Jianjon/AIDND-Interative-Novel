@@ -1,7 +1,6 @@
-
+import { getRelationshipTier } from '../data/rules/relationships';
 import { CLASS_PROGRESSION, getXpForNextLevel } from '../data/rules/class_progression';
-import { RACE_TRAITS } from '../data/rules/race_traits';
-import { WEAPON_DATABASE, CONSUMABLES, MAGIC_ITEMS } from '../data/rules/items';
+import { WEAPON_DATABASE } from '../data/rules/items';
 
 /**
  * 🔒 STABLE CORE: CHARACTER LOGIC AGENT
@@ -29,6 +28,7 @@ export class CharacterAgent {
         this.class = data.class || "Commoner"; // e.g., "Fighter"
         this.archetype = data.archetype || "Adventurer";
         this.controlMode = data.controlMode || 'manual';
+        this.decisionBias = data.decisionBias || 'DEFAULT';
 
         // Stats & Mechanics (Private Source of Truth)
         this.level = data.level || 1;
@@ -97,6 +97,10 @@ export class CharacterAgent {
         // Companion System (Phase 3)
         // { name, type, hp, maxHp, ac, attacks: [{ name, hitBonus, damage }] }
         this.companion = data.companion || null;
+
+        // Relationship System (v2)
+        // { [targetId]: { value: 50, history: [], status: "Neutral" } }
+        this.relationships = data.relationships || {};
     }
 
     /**
@@ -124,6 +128,12 @@ export class CharacterAgent {
             // Optionally recalculate next level XP if needed
             this.maxXp = this._calculateNextLevelXp();
         }
+        if (state.relationships) {
+            this.relationships = state.relationships;
+        }
+        if (state.decisionBias !== undefined) {
+            this.decisionBias = state.decisionBias;
+        }
     }
 
     /**
@@ -141,11 +151,42 @@ export class CharacterAgent {
         });
     }
 
-    updateRelationship(targetName, value) {
-        // Simple stub for now, or actual logic if needed.
-        // In the future, this could track affinity with other characters/NPCs.
+    /**
+     * Updates relationship with a target character.
+     * @param {string} targetId 
+     * @param {number} change Can be positive or negative
+     * @param {string} reason 
+     */
+    updateRelationship(targetId, targetName, change, reason) {
         if (!this.relationships) this.relationships = {};
-        this.relationships[targetName] = (this.relationships[targetName] || 0) + value;
+
+        // Get existing or init default (50)
+        const currentData = this.relationships[targetId] || { value: 50, history: [] };
+        let newValue = currentData.value + change;
+
+        // Clamp 0-100
+        newValue = Math.max(0, Math.min(100, newValue));
+
+        // Get Tier Info
+        const tier = getRelationshipTier(newValue);
+
+        // Update State
+        this.relationships[targetId] = {
+            targetName: targetName, // Store name for UI
+            value: newValue,
+            status: tier.label,
+            icon: tier.icon,
+            history: [
+                ...(currentData.history || []).slice(-4), // Keep last 5
+                { turn: Date.now(), change, reason, timestamp: new Date().toISOString() }
+            ]
+        };
+
+        return this.relationships[targetId];
+    }
+
+    getRelationship(targetId) {
+        return this.relationships?.[targetId] || { value: 50, status: "Neutral (中立)", icon: "😐" };
     }
 
     gainXp(amount) {
@@ -406,7 +447,10 @@ export class CharacterAgent {
             personality: this.personality,
             monologue: this.monologue,
             background: this.background,
-            bio: this.bio
+            bio: this.bio,
+            // Relationship System
+            relationships: this.relationships,
+            decisionBias: this.decisionBias
         };
     }
 }

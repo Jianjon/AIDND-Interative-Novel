@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AIService } from "../services/AIService";
 import { formatModuleContext } from '../data/modules_data.js';
 
 // LOCKED BY USER REQUEST (2025-12-10). DO NOT EDIT WITHOUT EXPLICIT PERMISSION.
@@ -10,35 +10,20 @@ import { formatModuleContext } from '../data/modules_data.js';
  * Outputs: JSON Updates (HP, Options, Loot)
  */
 export class GameMasterAgent {
-    constructor(apiKey) {
-        this.apiKey = apiKey;
-        this.modelName = "gemini-2.0-flash";
+    constructor(options = {}) {
+        this.aiService = new AIService(options);
     }
 
     async _generate(prompt) {
         try {
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent?key=${this.apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                }
-            );
+            const result = await this.aiService.generate(prompt, {
+                isJson: true,
+                model: "gemini-2.0-flash-exp" // Use the same model as intended
+            });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                // console.error(`[GameMasterAgent] API Error: ${response.status} - ${errorText}`);
-                throw new Error(`API Error: ${response.status}`);
-            }
-
-            const data = await response.json();
             return {
-                text: data.candidates[0].content.parts[0].text,
-                usage: data.usageMetadata
+                text: result.text,
+                usage: result.usage
             };
         } catch (error) {
             console.error("[GameMasterAgent] Generation Failed:", error);
@@ -62,7 +47,8 @@ export class GameMasterAgent {
 
         const systemPrompt = `
         You are the **Game Master** (Mechanics Agent) for a D&D-style game.
-        **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文). NO ENGLISH.**
+        **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
+        **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**
         Your job is to read the narrative and translate it into game mechanics, risks, and agent signals.
 
         === MULTI-AGENT REASONING RULES ===

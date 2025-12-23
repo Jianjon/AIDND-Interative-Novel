@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Sword, Shield, Map as MapIcon, Ghost, Heart, Star, BookOpen, Scroll, Skull, Package, Sparkles, Settings, Save } from 'lucide-react';
+import { BondRadar } from './BondRadar';
 
 /**
  * CharacterModal.jsx
@@ -7,7 +8,7 @@ import { X, Sword, Shield, Map as MapIcon, Ghost, Heart, Star, BookOpen, Scroll,
  * Displays the full details of a character using the new Hybrid Agent architecture.
  * Shows strict derived stats (AC, DC) alongside narrative fluff.
  */
-export default function CharacterModal({ character, onClose, onGeneratePortrait, onLevelUp, onUpdatePortrait, onUpdateCharacter, isGenerating }) {
+export default function CharacterModal({ character, relationships, party, roster, onClose, onGeneratePortrait, onLevelUp, onUpdatePortrait, onUpdateCharacter, isGenerating }) {
     if (!character) return null;
 
     const [activeTab, setActiveTab] = useState('stats'); // stats, inventory, backstory, companion
@@ -32,10 +33,7 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
     // AI Refinement Handler
     const handleAiRefine = async (field) => {
         if (!character?.id) return;
-        if (!process.env.VITE_GOOGLE_AI_KEY && !localStorage.getItem('gemini_api_key')) {
-            alert('No API Key found');
-            return;
-        }
+
 
         // Check limits
         const currentRefines = character.aiRefineCount || 0;
@@ -46,8 +44,10 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
 
         setIsRefining(true);
         try {
-            const key = process.env.VITE_GOOGLE_AI_KEY || localStorage.getItem('gemini_api_key');
-            // Simple direct call for now
+            // Use AIService backed by Cloud Function
+            const { AIService } = await import('../services/AIService'); // Dynamic import to avoid top-level issues if any
+            const aiService = new AIService();
+
             const prompt = `
             Context: D&D Character Creation.
             Refine the following ${field} text for a ${data.race} ${data.class} named ${data.name}.
@@ -57,16 +57,10 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
             Output (Traditional Chinese):
             `;
 
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                }
-            );
-            const resJson = await response.json();
-            const refinedText = resJson.candidates?.[0]?.content?.parts?.[0]?.text;
+            const result = await aiService.generate(prompt, {
+                model: "gemini-2.0-flash-exp"
+            });
+            const refinedText = result.text;
 
             if (refinedText) {
                 setEditData(prev => ({ ...prev, [field]: refinedText }));
@@ -99,8 +93,31 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
         setIsEditing(false);
     };
 
+    const handleStyleChange = (e) => {
+        const styleKey = e.target.value;
+        if (onUpdateCharacter) {
+            onUpdateCharacter({
+                ...character,
+                decisionBias: styleKey
+            });
+        }
+    };
+
+    // Import COMBAT_STYLES dynamically or use a constant if preferred. 
+    // Since this is a component, we'll assume it's available or imported.
+    // I will add the import at the top in a separate chunk if needed, 
+    // but for now I'll just fix the localized list to match the keys.
+    const STYLES_LIST = [
+        { value: 'DEFAULT', label: '本性模式 (預設) - 依據個人性格行動' },
+        { value: 'AGGRESSIVE', label: '全面進攻 (Aggressive) - 優先傷害，忽視防禦' },
+        { value: 'DEFENSIVE', label: '穩健防守 (Defensive) - 優先生存與保護' },
+        { value: 'TACTICAL', label: '精準戰術 (Tactical) - 強調控場與弱點' },
+        { value: 'MERCIFUL', label: '仁慈不殺 (Merciful) - 追求和平，非致命' },
+    ];
+
     // Lightbox state
-    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    // Lightbox state
+    const [lightboxSrc, setLightboxSrc] = useState(null);
 
     // Helper to check if avatar is AI generated (starts with data:image)
     const isGenerated = data.avatar && data.avatar.startsWith('data:');
@@ -109,14 +126,14 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
 
             {/* Lightbox Overlay */}
-            {isLightboxOpen && (
+            {lightboxSrc && (
                 <div
                     className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 p-8 cursor-zoom-out animate-in zoom-in-50 duration-200"
-                    onClick={() => setIsLightboxOpen(false)}
+                    onClick={() => setLightboxSrc(null)}
                 >
                     <img
-                        src={data.avatar}
-                        alt={data.name}
+                        src={lightboxSrc}
+                        alt="Zoomed Portrait"
                         className="max-h-full max-w-full object-contain drop-shadow-2xl rounded-md"
                     />
                 </div>
@@ -138,7 +155,7 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                         <img
                             src={data.avatar}
                             alt={data.name}
-                            onClick={() => setIsLightboxOpen(true)}
+                            onClick={() => setLightboxSrc(data.avatar)}
                             className="w-full h-full object-cover rounded-full border-4 border-amber-900/30 shadow-lg group-hover:border-amber-500/50 transition-colors cursor-zoom-in hover:brightness-110"
                         />
                         {!character.id.startsWith('preset_') && (
@@ -268,6 +285,16 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                         >
                             冒險裝備
                         </button>
+
+                        {/* Only show Relationships if we are in Game Mode (party context exists) */}
+                        {(party && party.length > 0) && (
+                            <button
+                                onClick={() => setActiveTab('relationships')}
+                                className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'relationships' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
+                            >
+                                羈絆關係
+                            </button>
+                        )}
                         <button
                             onClick={() => setActiveTab('backstory')}
                             className={`flex-1 py-3 text-xs md:text-sm font-bold tracking-widest uppercase transition-colors ${activeTab === 'backstory' ? 'text-amber-500 border-b-2 border-amber-500 bg-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
@@ -289,6 +316,30 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
 
                         {activeTab === 'stats' && (
                             <div className="space-y-6">
+                                {/* Combat Style Selector */}
+                                <div className="bg-slate-950 p-4 rounded border border-slate-800">
+                                    <h4 className="text-amber-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                                        <Sword size={16} /> 戰鬥風格 (Combat Style)
+                                    </h4>
+                                    <div className="flex gap-2">
+                                        <select
+                                            value={data.decisionBias || 'DEFAULT'}
+                                            onChange={handleStyleChange}
+                                            className="w-full bg-slate-900 text-slate-200 text-sm p-2 rounded border border-slate-700 focus:border-amber-500 focus:outline-none"
+                                        >
+                                            {STYLES_LIST.map(style => (
+                                                <option key={style.value} value={style.value}>{style.label}</option>
+                                            ))}
+                                            {data.decisionBias && !STYLES_LIST.some(s => s.value === data.decisionBias) && (
+                                                <option value={data.decisionBias}>{data.decisionBias} (自定義)</option>
+                                            )}
+                                        </select>
+                                    </div>
+                                    <p className="text-slate-500 text-xs mt-2">
+                                        * 此設定將影響角色在自動戰鬥與劇情決策中的傾向。
+                                    </p>
+                                </div>
+
                                 {/* Base Stats Grid */}
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {Object.entries(stats).map(([key, val]) => (
@@ -305,6 +356,35 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                             <span className="text-xs text-amber-600 font-mono">{getModString(val)}</span>
                                         </div>
                                     ))}
+                                </div>
+
+                                { /* Derived Stats: Senses Only (Saving Throws Removed as per request) */}
+                                <div className="mt-6">
+                                    <div className="bg-slate-950/50 p-4 rounded border border-slate-800">
+                                        <h4 className="text-slate-400 text-xs font-bold uppercase mb-3 border-b border-slate-800 pb-1">感官與熟練 (Senses)</h4>
+                                        <div className="space-y-3 text-sm text-slate-300">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="flex justify-between p-2 bg-slate-900/50 rounded border border-slate-800/50">
+                                                    <span>被動感知 (Passive Perception):</span>
+                                                    <span className="font-mono text-amber-500 font-bold">
+                                                        {10 + Math.floor(((stats.wis || 10) - 10) / 2)}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between p-2 bg-slate-900/50 rounded border border-slate-800/50">
+                                                    <span>黑暗視覺 (Darkvision):</span>
+                                                    <span className="font-mono text-slate-400">
+                                                        {['Elf', 'Drow', 'Tiefling', 'Dwarf', 'Orc', 'Gnome'].some(r => (data.race || '').includes(r)) ? '60 ft' : '無'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            {data.languages && (
+                                                <div className="pt-2 border-t border-slate-800/50 mt-2">
+                                                    <span className="text-xs text-slate-500 block mb-1">語言 (Languages)</span>
+                                                    <span className="text-sm font-serif italic text-slate-400">{data.languages.join(', ')}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Skills & Feats */}
@@ -466,12 +546,115 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                             </div>
                         )}
 
+                        {activeTab === 'relationships' && (
+                            <div className="space-y-6">
+                                {/* Teammate Relationships (Party Based) */}
+                                {(() => {
+                                    // 1. Determine list of targets (Teammates)
+                                    // If 'party' prop is provided, use it. Otherwise fall back to keys in relationships (legacy/isolated view)
+                                    let targets = [];
+
+                                    if (party && Array.isArray(party) && party.length > 0) {
+                                        // Filter out self
+                                        targets = party.filter(id => id !== data.id);
+                                    } else {
+                                        // Fallback: Get all keys from data.relationships or relationships state
+                                        const globalRels = (relationships && relationships[data.id]) ? Object.keys(relationships[data.id]) : [];
+                                        const localRels = (data.relationships) ? Object.keys(data.relationships) : [];
+                                        targets = [...new Set([...globalRels, ...localRels])];
+                                    }
+
+                                    if (targets.length === 0) {
+                                        return (
+                                            <div className="flex flex-col items-center justify-center p-12 text-slate-600 bg-slate-950/30 rounded-xl border border-slate-800 border-dashed">
+                                                <Heart size={48} className="mb-4 opacity-20" />
+                                                <p>目前沒有建立特殊的羈絆關係。</p>
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-3 mb-4 px-2">
+                                                <Heart className="text-pink-500" size={20} />
+                                                <div>
+                                                    <h4 className="text-pink-500 text-sm font-bold uppercase">羈絆關係網</h4>
+                                                    <p className="text-slate-500 text-[10px]">對隊友的內心想法與評價</p>
+                                                </div>
+                                            </div>
+
+                                            {targets.map((targetId) => {
+                                                // Resolve Target Details
+                                                const targetChar = roster ? roster.find(c => c.id === targetId) : null;
+                                                const targetName = targetChar ? targetChar.name : (targetId.startsWith('preset_') ? targetId : 'Unknown');
+                                                const targetAvatar = targetChar ? (targetChar.avatar || targetChar.avatarUrl) : null;
+
+                                                // Resolve Relationship Data
+                                                // Priority: Global State -> Local Preset -> Default
+                                                // Note: relationships[data.id] might be undefined if no interactions yet
+                                                let rel = { affinity: 0, bondState: 'STRANGER', thoughts: '...' };
+
+                                                if (relationships && relationships[data.id] && relationships[data.id][targetId]) {
+                                                    rel = { ...rel, ...relationships[data.id][targetId] };
+                                                } else if (data.relationships && data.relationships[targetId]) {
+                                                    rel = { ...rel, ...data.relationships[targetId] };
+                                                }
+
+                                                return (
+                                                    <div key={targetId} className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 hover:border-pink-900/50 transition-colors group">
+                                                        <div className="flex items-start gap-4">
+                                                            {/* Avatar */}
+                                                            <div className="w-12 h-12 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden text-lg font-serif font-bold text-slate-600 relative">
+                                                                {targetAvatar ? (
+                                                                    <img src={targetAvatar} alt={targetName} className="w-full h-full object-cover opacity-80" />
+                                                                ) : (
+                                                                    <span>{targetName.charAt(0)}</span>
+                                                                )}
+                                                            </div>
+
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="flex justify-between items-start mb-2">
+                                                                    <div className="flex flex-col">
+                                                                        <h5 className="text-slate-200 font-bold text-sm truncate">{targetName}</h5>
+                                                                        <span className={`text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded border self-start mt-1 ${rel.bondState === 'FRIEND' ? 'text-green-400 border-green-900/30 bg-green-900/10' :
+                                                                            rel.bondState === 'RIVAL' ? 'text-orange-400 border-orange-900/30 bg-orange-900/10' :
+                                                                                rel.bondState === 'ENEMY' ? 'text-red-400 border-red-900/30 bg-red-900/10' :
+                                                                                    'text-slate-500 border-slate-800 bg-slate-900'
+                                                                            }`}>
+                                                                            {rel.bondState || 'STRANGER'}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Thoughts - The Core Display */}
+                                                                <div className="relative bg-[#1a1a1a]/60 p-3 rounded border border-slate-800/50">
+                                                                    <span className="absolute -top-1.5 left-3 px-1 bg-slate-950 text-[10px] text-pink-500/50 uppercase font-bold tracking-widest">
+                                                                        Impression
+                                                                    </span>
+                                                                    <p className="text-sm text-slate-400 italic leading-relaxed font-serif">
+                                                                        "{rel.thoughts || '......'}"
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        )}
+
                         {activeTab === 'backstory' && (
                             <div className="space-y-6">
                                 <div>
                                     <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">性格特質 (Personality)</h4>
                                     <p className="text-slate-300 text-sm leading-relaxed italic">"{data.personality}"</p>
                                 </div>
+
+                                {/* Relationship Radar moved to dedicated tab */}
+
 
                                 <div>
                                     <h4 className="text-purple-400 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">秘密與內心獨白 (Secrets)</h4>
@@ -498,9 +681,14 @@ export default function CharacterModal({ character, onClose, onGeneratePortrait,
                                     </h4>
                                     <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-4">
                                         <div className="flex items-center gap-4 mb-3">
-                                            <div className="w-12 h-12 rounded-xl bg-amber-900/50 flex items-center justify-center text-2xl overflow-hidden border border-amber-500/30">
+                                            <div className="w-12 h-12 rounded-xl bg-amber-900/50 flex items-center justify-center text-2xl overflow-hidden border border-amber-500/30 hover:border-amber-500 transition-colors cursor-zoom-in relative group">
                                                 {data.companion.avatar ? (
-                                                    <img src={data.companion.avatar} alt={data.companion.name} className="w-full h-full object-cover" />
+                                                    <img
+                                                        src={data.companion.avatar}
+                                                        alt={data.companion.name}
+                                                        className="w-full h-full object-cover group-hover:brightness-110 transition-all"
+                                                        onClick={() => setLightboxSrc(data.companion.avatar)}
+                                                    />
                                                 ) : (
                                                     '🐾'
                                                 )}

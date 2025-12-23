@@ -8,13 +8,15 @@ import { SPELL_DATABASE } from '../data/rules/spells.js';
  * @returns {Object} - The scaled character object.
  */
 export function scaleCharacter(character, targetLevel) {
-    if (!targetLevel) return character;
+    if (!targetLevel || (character.level && character.level >= targetLevel)) {
+        return character;
+    }
 
     // Create a deep copy to avoid mutating the original
     const newChar = JSON.parse(JSON.stringify(character));
 
-    // If already at or above target level, just return the copy (still safe)
-    if (newChar.level >= targetLevel) return newChar;
+    // Fallback for missing level
+    if (!newChar.level) newChar.level = 1;
 
     const charClass = newChar.class;
     const progression = CLASS_PROGRESSION[charClass];
@@ -119,6 +121,5 @@ export function scaleCharacter(character, targetLevel) {
         else if (newChar.inventory && Array.isArray(newChar.inventory.consumables)) newChar.inventory.consumables.push("復活卷軸");
     }
 
-    console.log(`Scaled ${newChar.name} to Lv${targetLevel} (HP: ${newChar.hp})`);
     return newChar;
 }

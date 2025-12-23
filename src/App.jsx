@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     Sword, Ghost, Map as MapIcon, Settings, Send, Sparkles, Camera,
     Heart, Shield, Wand2, Clock, Users, ChevronRight, Plus,
-    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2
+    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2, MessageCircle, Hand, AlertCircle, Play
 } from 'lucide-react';
 import { CharacterCreator } from './components/CharacterCreator';
 import { ModuleDetailsModal } from './components/ModuleDetailsModal';
@@ -29,14 +29,14 @@ const getUniqueEnemyName = (baseName, existingRoster) => {
 
     // Try Flavor Adjectives
     for (const adj of FLAVOR_ADJECTIVES) {
-        const newName = `${adj} ${cleanBase}`;
+        const newName = `${adj} ${cleanBase} `;
         if (!existingNames.has(newName)) return newName;
     }
 
     // Fallback: Numbering
     let i = 2;
     while (true) {
-        const newName = `${cleanBase} ${i}`;
+        const newName = `${cleanBase} ${i} `;
         if (!existingNames.has(newName)) return newName;
         i++;
     }
@@ -87,6 +87,7 @@ import { StoryAgent } from './agents/StoryAgent';
 import { GameMasterAgent } from './agents/GameMasterAgent';
 import { CartographerAgent } from './agents/CartographerAgent';
 import { CharacterManagerAgent } from './agents/CharacterManagerAgent';
+import AffinityManagerAgent from './agents/AffinityManagerAgent';
 import { AudioManager } from './services/AudioManager';
 import { getMemoryService } from './services/MemoryService';
 import { getEncounterGuidelinesWithPersona } from './data/rules/encounter_balance';
@@ -155,14 +156,14 @@ const ScenarioRoster = ({ roster }) => {
                     const icon = isEnemy ? <Sword size={12} /> : isAlly ? <PawPrint size={12} /> : <User size={12} />;
 
                     return (
-                        <div key={`${actor.name}-${idx}`} className={`relative p-2 rounded border ${borderColor} ${bgColor} flex flex-col gap-1.5 transition-all group hover:bg-white/5`}>
+                        <div key={`${actor.name} -${idx} `} className={`relative p-2 rounded border ${borderColor} ${bgColor} flex flex-col gap-1.5 transition-all group hover:bg-white/5`}>
                             {/* Header */}
                             <div className="flex justify-between items-center text-xs">
                                 <span className={`font-bold font-tome-header ${textColor} flex items-center gap-1.5 text-sm`}>
                                     {icon}
                                     {actor.name}
                                 </span>
-                                <span className={`text-[9px] uppercase tracking-wider font-tome-body font-bold ${isAlly ? 'text-emerald-500' : 'text-slate-500'}`}>
+                                <span className={`text-[9px]uppercase tracking-wider font-tome-body font-bold ${isAlly ? 'text-emerald-500' : 'text-slate-500'} `}>
                                     {isAlly ? 'Companion' : actor.type}
                                 </span>
                             </div>
@@ -172,7 +173,7 @@ const ScenarioRoster = ({ roster }) => {
                                 <div className="w-full h-2 bg-slate-800 border border-slate-700 mt-1 relative rounded-sm overflow-hidden">
                                     <div
                                         className={`h-full ${barColor} transition-all duration-500 relative`}
-                                        style={{ width: `${Math.min(100, Math.max(0, (actor.hp / actor.maxHp) * 100))}%` }}>
+                                        style={{ width: `${Math.min(100, Math.max(0, (actor.hp / actor.maxHp) * 100))}% ` }}>
                                         <div className="absolute inset-0 bg-white/10 opacity-30"></div>
                                     </div>
                                 </div>
@@ -181,7 +182,7 @@ const ScenarioRoster = ({ roster }) => {
                             {/* Stats Text */}
                             {(actor.hp !== undefined) && (
                                 <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-0.5 font-bold">
-                                    <span>{isEnemy ? 'Status: Unknown' : `HP: ${actor.hp}${actor.maxHp ? `/${actor.maxHp}` : ''}`}</span>
+                                    <span>{isEnemy ? 'Status: Unknown' : `HP: ${actor.hp}${actor.maxHp ? `/${actor.maxHp}` : ''} `}</span>
                                     {isAlly && <span className="text-emerald-500 flex items-center gap-1 cursor-pointer hover:underline"><Zap size={10} /> Command</span>}
                                 </div>
                             )}
@@ -193,7 +194,95 @@ const ScenarioRoster = ({ roster }) => {
     );
 };
 
+const PokeMenu = ({ isOpen, onClose, onAction, isGenerating }) => {
+    if (!isOpen) return null;
 
+    const options = [
+        { id: 'continue', label: '繼續 (Continue)', icon: <Play size={16} />, desc: 'Force the story to proceed', color: 'text-emerald-400', border: 'border-emerald-500/30 hover:bg-emerald-500/10' },
+        { id: 'review', label: '檢視 (Review)', icon: <Brain size={16} />, desc: 'DM analyzes game state', color: 'text-amber-400', border: 'border-amber-500/30 hover:bg-amber-500/10' },
+        { id: 'report', label: '回報 (Report)', icon: <MessageCircle size={16} />, desc: 'Discuss issues with DM', color: 'text-indigo-400', border: 'border-indigo-500/30 hover:bg-indigo-500/10' },
+    ];
+
+    return (
+        <div className="absolute top-12 right-12 z-50 bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-2 w-64 animate-in fade-in zoom-in-95 duration-200">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 px-1">DM INTERACTION</div>
+            <div className="space-y-2">
+                {options.map(opt => (
+                    <button
+                        key={opt.id}
+                        onClick={() => {
+                            onClose();
+                            onAction(opt.id);
+                        }}
+                        disabled={isGenerating && opt.id !== 'continue' && opt.id !== 'report'} // Allow 'continue' to reset if generating
+                        className={`w-full text-left p-2 rounded border ${opt.border} transition-colors flex items-start gap-3 group`}
+                    >
+                        <div className={`mt-0.5 ${opt.color} `}>{opt.icon}</div>
+                        <div>
+                            <div className={`text-sm font-bold ${opt.color} `}>{opt.label}</div>
+                            <div className="text-[10px] text-slate-400 group-hover:text-slate-300">{opt.desc}</div>
+                        </div>
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const DMChatModal = ({ isOpen, onClose, onSend, isGenerating }) => {
+    const [input, setInput] = useState("");
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (isOpen && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isOpen]);
+
+    const handleSend = () => {
+        if (!input.trim()) return;
+        onSend(input);
+        setInput("");
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-slate-900 border border-indigo-500/50 rounded-xl max-w-md w-full p-6 shadow-2xl relative">
+                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 hover:text-white"><X size={20} /></button>
+                <h2 className="text-lg font-bold font-tome-header text-indigo-400 mb-4 flex items-center gap-2">
+                    <MessageCircle size={18} /> DM Communication Channel
+                </h2>
+                <textarea
+                    ref={inputRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend();
+                        }
+                    }}
+                    placeholder="Report a bug, inconsistent logic, or discuss the game..."
+                    className="w-full h-24 bg-slate-950 border border-slate-700 rounded-lg p-3 text-slate-200 focus:border-indigo-500 outline-none resize-none mb-4"
+                    disabled={isGenerating}
+                />
+                <div className="flex justify-end gap-2">
+                    <button onClick={onClose} className="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
+                    <button
+                        onClick={handleSend}
+                        disabled={isGenerating || !input.trim()}
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg flex items-center gap-2 font-bold disabled:opacity-50"
+                    >
+                        {isGenerating ? <RefreshCw className="animate-spin" size={14} /> : <Send size={14} />}
+                        Send Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {
     const [prompt, setPrompt] = useState("");
@@ -239,11 +328,12 @@ const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {
                                     key={bf.id}
                                     onClick={() => setDifficulty(bf.id)}
                                     className={`
-                                        py-2 px-1 rounded border text-xs font-bold transition-all
+py-2 px-1 rounded border text-xs font-bold transition-all
                                         ${difficulty === bf.id
                                             ? 'bg-amber-900/60 border-amber-500 text-amber-100'
-                                            : 'bg-slate-950 border-slate-700 text-slate-500 hover:border-slate-500'}
-                                    `}
+                                            : 'bg-slate-950 border-slate-700 text-slate-500 hover:border-slate-500'
+                                        }
+`}
                                 >
                                     {bf.label}
                                 </button>
@@ -299,6 +389,7 @@ const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {
 };
 
 export default function InteractiveDND() {
+
     // State
     const [view, setView] = useState('home'); // home, modules, roster, game, mode_select
     const [gameMode, setGameMode] = useState(GAME_MODES.TRPG); // Default to TRPG
@@ -306,6 +397,7 @@ export default function InteractiveDND() {
     const [showCustomStoryModal, setShowCustomStoryModal] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState(420); // Default sidebar width (increased from ~380)
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [forceInstant, setForceInstant] = useState(false); // Controls fast-forwarding of text
     const isResizing = useRef(false);
 
     useEffect(() => {
@@ -341,6 +433,10 @@ export default function InteractiveDND() {
     // CUSTOM MODULES STATE
     const [customModules, setCustomModules] = useLocalStorage('dnd_custom_modules', []);
 
+    // RELATIONSHIP STATE
+    // Format: { [charId]: { affinity: 50, bondState: 'STRANGER' } }
+    const [relationships, setRelationships] = useLocalStorage('dnd_relationships', {});
+
 
 
     // HOTFIX: Force TRPG Mode if stuck in Novel (User Request)
@@ -350,20 +446,24 @@ export default function InteractiveDND() {
         // We just want to ensure that if we load a game, we respect the user's desire for TRPG flow.
         // But for now, let's just force the default in the state above.
     }, []);
-    const [questContext, setQuestContext] = useState(null); // { goal, worldInfo, urgentThreat }
-    // Check for Runtime Environment Variable (Cloud Run)
+    // --- AUTHENTICATION STATE ---
+    const [authMode, setAuthMode] = useLocalStorage('dnd_auth_mode', 'user'); // 'user' or 'guest'
     const runtimeApiKey = typeof window !== 'undefined' && window.ENV?.GOOGLE_API_KEY ? window.ENV.GOOGLE_API_KEY : null;
+    const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', runtimeApiKey || "");
 
-    // Priority: RuntimeEnv > LocalStorage > Default
-    const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', runtimeApiKey || "AIzaSyDlbVAeyH1uKQn2EezjiRNK0LnngBx81zQ");
+    const effectiveApiKey = apiKey?.trim() || "";
+    const aiOptions = useMemo(() => ({
+        apiKey: effectiveApiKey,
+        mode: authMode
+    }), [effectiveApiKey, authMode]);
 
-    // Ensure we use the runtime key if present, even if LS has old data (optional, but safer for deployment)
-    // Actually, useLocalStorage syncs to LS. If we want runtime to override LS, we might need an effect or just simple logic.
-    // Let's stick to simple logic: used key is runtime || stored || default.
-    const effectiveApiKey = runtimeApiKey || (apiKey?.trim() ? apiKey.trim() : "AIzaSyDlbVAeyH1uKQn2EezjiRNK0LnngBx81zQ");
+    // DM Interaction State
+    const [showDMChat, setShowDMChat] = useState(false);
+    const [isChattingWithDM, setIsChattingWithDM] = useState(false);
+    const [showPokeMenu, setShowPokeMenu] = useState(false);
 
     // Agent Initialization
-    const storyAgent = useMemo(() => new StoryAgent(effectiveApiKey), [effectiveApiKey]);
+    const storyAgent = useMemo(() => new StoryAgent(aiOptions), [aiOptions]);
 
     const handleCreateCustomModule = async (prompt, difficulty) => {
         // Use sandbox mode: No AI wait, instant module creation
@@ -434,22 +534,27 @@ export default function InteractiveDND() {
             .filter(data => data && typeof data === 'object' && data.id) // Filter out bad entries
             .map(data => {
                 try {
-                    // ROBUST HYDRATION 2.0: Restore/Update companion data (fixes broken saves & updates behaviors)
+                    // Create a shallow copy for hydration to avoid polluting the state source
+                    let hydratedData = { ...data };
+
+                    // ROBUST HYDRATION 2.0: Restore/Update companion data
                     const preset = PRESET_CHARACTERS.find(p => p.id === data.id);
                     if (preset && preset.companion) {
-                        if (!data.companion) {
-                            console.log(`[Hydration] Restoring missing companion data for ${data.name}`);
-                            data.companion = JSON.parse(JSON.stringify(preset.companion)); // Deep copy
+                        if (!hydratedData.companion) {
+                            // No log needed for routine hydration
+                            hydratedData.companion = JSON.parse(JSON.stringify(preset.companion));
                         } else {
-                            // Update existing companion with new static metadata (Tactics/Personality)
-                            // We preserve dynamic state (like HP if we tracked it, but currently companion stats are mostly static or reset)
-                            data.companion.tactics = preset.companion.tactics;
-                            data.companion.personality = preset.companion.personality;
+                            // Shallow copy companion and update tactics
+                            hydratedData.companion = {
+                                ...hydratedData.companion,
+                                tactics: preset.companion.tactics,
+                                personality: preset.companion.personality
+                            };
                         }
                     }
 
                     // Important: Scale characters to the chosen module's level for selection preview
-                    const scaledData = scaleCharacter(data, startLevel);
+                    const scaledData = scaleCharacter(hydratedData, startLevel);
                     return new CharacterAgent(scaledData);
                 } catch (e) {
                     console.error("Failed to hydrate character:", data, e);
@@ -498,6 +603,7 @@ export default function InteractiveDND() {
     const [currentLocation, setCurrentLocation] = useState(['未知區域']); // Breadcrumb path array
     // Refs
     const logContainerRef = useRef(null);
+    const logContentRef = useRef(null);
     const lastLogRef = useRef(null);
     const scrollTrigger = useRef(null);
     const portraitInputRef = useRef(null); // Hidden file input for portrait upload
@@ -506,13 +612,13 @@ export default function InteractiveDND() {
 
     // Audio Manager (Memoized Singleton)
     const audioManager = useRef(new AudioManager());
-    const characterManager = useMemo(() => new CharacterManagerAgent(apiKey), [apiKey]);
+    const characterManager = useMemo(() => new CharacterManagerAgent(aiOptions), [aiOptions]);
     const [isMuted, setIsMuted] = useState(audioManager.current.isMuted);
 
     // --- NEW SETTINGS STATE ---
     const [showSettingsModal, setShowSettingsModal] = useState(false);
-    // --- TURNING SYNC STATE ---
     const [pendingTurnUpdates, setPendingTurnUpdates] = useState(null);
+    const isExecuting = useRef(false); // Execution lock
     const [isNarrating, setIsNarrating] = useState(false);
     const [isNarrativeComplete, setIsNarrativeComplete] = useState(true);
 
@@ -571,7 +677,7 @@ export default function InteractiveDND() {
         const processAutoTurns = async () => {
             // Prevent auto-turns during prologue or generation
             const isPrologue = logs.length === 0;
-            if (isPrologue || isGenerating || isPreGenerating || isAutoProcessing) return;
+            if (isPrologue || isGenerating || isPreGenerating || isAutoProcessing || !isNarrativeComplete) return;
             if (gameMode !== GAME_MODES.TRPG) return;
 
             // Identify AUTO characters who need actions
@@ -690,47 +796,35 @@ export default function InteractiveDND() {
 
     // AI-Generate rich character details using Gemini
     const generateCharacterDetails = async (characterAgent) => {
-        if (!apiKey) {
+        if (authMode === 'user' && !apiKey) {
             alert("請先輸入 API Key");
             return;
         }
         setIsGeneratingDetails(true);
 
-        const prompt = `你是奇幻小說作家。請為以下 D&D 角色生成簡短的背景和描述。
+        const prompt = `你是奇幻小說作家。請為以下 D & D 角色生成簡短的背景和描述。
 
 角色：${characterAgent.name} (${characterAgent.race} ${characterAgent.class})
 性格：${characterAgent.personality} | 陣營：${characterAgent.alignment}
 
 請生成（繁體中文，內容要精簡）：
 
-1. 【背景故事】(80-120字)：出身、重大轉折、冒險動機。
-2. 【外觀】(40-60字)：外貌、穿著、特殊標記。
+1. 【背景故事】(80 - 120字)：出身、重大轉折、冒險動機。
+2. 【外觀】(40 - 60字)：外貌、穿著、特殊標記。
 3. 【裝備】：3件重要裝備（名稱 - 簡短描述）
 4. 【秘密】(一句話)：不為人知的秘密或弱點。
 
 JSON格式回覆：
 {
-  "backstory": "背景...",
-  "appearanceDesc": "外觀...",
-  "equipment": ["裝備1", "裝備2", "裝備3"],
-  "secret": "秘密..."
-}`;
+    "backstory": "背景...",
+        "appearanceDesc": "外觀...",
+            "equipment": ["裝備1", "裝備2", "裝備3"],
+                "secret": "秘密..."
+} `;
 
         try {
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { temperature: 0.9, maxOutputTokens: 2048 }
-                    })
-                }
-            );
-
-            const data = await response.json();
-            const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            const result = await characterManager.aiService.generate(prompt, { isJson: true });
+            const textContent = result.text;
 
             if (textContent) {
                 // Parse JSON from the response
@@ -765,6 +859,9 @@ JSON格式回覆：
         }
     };
 
+    // Loop Protection
+    const syncAttempts = useRef(0);
+
     // Initialize roster if empty or invalid
     // --- INITIALIZATION & DATA MIGRATION ---
     useEffect(() => {
@@ -777,12 +874,21 @@ JSON格式回覆：
 
         // 2. Force Sync Preset Avatars (To fix legacy DiceBear issue persistently)
         // We check if any preset character in the current roster has an avatar that DOES NOT match the fresh import.
+
+        // LOOP PROTECTION: Stop if we've tried syncing too many times in this session
+        if (syncAttempts.current > 3) {
+            // console.warn("Avatar Sync Aborted: Too many attempts. Potential loop detected.");
+            return;
+        }
+
+        let hasChanges = false;
         const updatedRoster = roster.map(char => {
             if (char.id && char.id.startsWith('preset_')) {
                 const freshPreset = PRESET_CHARACTERS.find(p => p.id === char.id);
                 if (freshPreset && freshPreset.avatar && char.avatar !== freshPreset.avatar) {
-                    // Update the avatar to the fresh import
-                    console.log(`Updating Avatar for ${char.name}`);
+                    // Debug Log to see why it keeps mismatching
+                    console.log(`[Sync] Updating Avatar for ${char.name}. Old: ${String(char.avatar).substring(0, 20)}... New: ${String(freshPreset.avatar).substring(0, 20)}...`);
+                    hasChanges = true;
                     return { ...char, avatar: freshPreset.avatar, avatarUrl: freshPreset.avatar };
                 }
             }
@@ -790,7 +896,8 @@ JSON格式回覆：
         });
 
         // If any changes were made, update state
-        if (JSON.stringify(updatedRoster) !== JSON.stringify(roster)) {
+        if (hasChanges) {
+            syncAttempts.current += 1;
             setRoster(updatedRoster);
             console.log("Roster Avatars Synced to Assets.");
         }
@@ -825,7 +932,7 @@ JSON格式回覆：
         else if (roster.some(c => c.id === 'error_char')) { shouldReset = true; resetReason = "Error Recovery"; }
 
         if (shouldReset) {
-            console.log(`[System] Roster Reset Triggered: ${resetReason}`);
+            console.log(`[System] Roster Reset Triggered: ${resetReason} `);
 
             // CRITICAL: Preserve Custom Characters!
             const customCharacters = roster.filter(c => c.id && !c.id.startsWith('preset_'));
@@ -882,18 +989,19 @@ JSON格式回覆：
             selectedModule,
             gameMode,
             apiKey,
+            authMode,
             currentAct,
             savedAt: timestamp
         };
 
         // Save to specific slot key
-        localStorage.setItem(`dnd_save_slot_${slotId}`, JSON.stringify(saveData));
+        localStorage.setItem(`dnd_save_slot_${slotId} `, JSON.stringify(saveData));
         showToast(`遊戲進度已儲存至存檔 ${slotId}！`, "success");
         setShowSaveLoadModal(null);
     };
 
     const handleLoad = (slotId) => {
-        const savedJson = localStorage.getItem(`dnd_save_slot_${slotId}`);
+        const savedJson = localStorage.getItem(`dnd_save_slot_${slotId} `);
         if (!savedJson) {
             showToast("讀取失敗：該位置無存檔", "error");
             return;
@@ -934,6 +1042,7 @@ JSON格式回覆：
             if (data.selectedModule) setSelectedModule(data.selectedModule);
             if (data.gameMode) setGameMode(data.gameMode);
             if (data.apiKey) setApiKey(data.apiKey);
+            if (data.authMode) setAuthMode(data.authMode);
             if (data.currentAct) setCurrentAct(data.currentAct);
 
 
@@ -1006,6 +1115,27 @@ JSON格式回覆：
             prevLogsLength.current = logs.length;
         }
     }, [logs]);
+
+    // Auto-scroll logic for narrative content growth (handles typewriter animation)
+    useEffect(() => {
+        if (!logContentRef.current || !logContainerRef.current) return;
+
+        const container = logContainerRef.current;
+        const content = logContentRef.current;
+
+        const observer = new ResizeObserver(() => {
+            // Only auto-scroll if we are narrating
+            if (isNarrating) {
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        observer.observe(content);
+        return () => observer.disconnect();
+    }, [isNarrating]);
 
     // Highlight Dice Rolls parser
     // Highlight Dice Rolls parser & Block Renderer
@@ -1168,16 +1298,11 @@ JSON格式回覆：
     // Old scroll logic removed to allow smart scrolling to new content start
 
 
-    /* ------------------------------------------------------------------------ */
-    /* API LOGIC (Turn-Based)                      */
-    /* ------------------------------------------------------------------------ */
-
     // --- MULTI-AGENT ORCHESTRATION ---
-
     // Agents
-    const gmAgent = useMemo(() => new GameMasterAgent(effectiveApiKey), [effectiveApiKey]);
-    const mapAgent = useMemo(() => new CartographerAgent(effectiveApiKey), [effectiveApiKey]);
-    const charAgent = useMemo(() => new CharacterManagerAgent(effectiveApiKey), [effectiveApiKey]);
+    const gmAgent = useMemo(() => new GameMasterAgent(aiOptions), [aiOptions]);
+    const mapAgent = useMemo(() => new CartographerAgent(aiOptions), [aiOptions]);
+    const charAgent = useMemo(() => new CharacterManagerAgent(aiOptions), [aiOptions]);
 
     // Memory Service - Tiered memory for story coherence
     const memoryService = useRef(getMemoryService());
@@ -1186,14 +1311,12 @@ JSON格式回覆：
     const lastApiCallTime = useRef(0);
     const MIN_API_INTERVAL = 1500; // Minimum 1.5 seconds between API calls
 
-    const executeTurn = async (forcePrologue = false) => {
-        let tempGroupOptions = null; // Declare variable to fix scope issue
-        if (!apiKey) {
-            showToast("請先設定 API Key!", "error");
+    const executeTurn = async (forcePrologue = false, forceContinue = false) => {
+        let tempGroupOptions = null; // Fix scope issue
+        if (isExecuting.current || isGenerating) {
+            console.log("[ExecuteTurn] Blocked: Already executing or generating.");
             return;
         }
-
-        if (isGenerating) return;
 
         // Throttle check - wait if called too quickly
         const now = Date.now();
@@ -1215,9 +1338,9 @@ JSON格式回覆：
         // Validations
         // Validations
         const hasActions = Object.keys(pendingActions).length > 0;
-        const isPrologue = (forcePrologue || (logs.length === 0 && !hasActions));
+        const isPrologue = (forcePrologue || (logs.length === 0 && !hasActions)) && !forceContinue;
 
-        if (!isPrologue) {
+        if (!isPrologue && !forceContinue) {
             if (Object.keys(pendingActions).length === 0) {
                 showToast("請至少為一名角色下達指令 (或輸入自定義行動)!", "warning");
                 return;
@@ -1228,7 +1351,9 @@ JSON格式回覆：
         console.log("Pending Actions:", pendingActions);
         console.log("Is Prologue:", isPrologue);
 
+        isExecuting.current = true;
         setIsGenerating(true);
+        setIsNarrativeComplete(false); // Reset completion status
         // Clear old action cache to prevent stale options showing during generation
         // New options will be generated after narrative completes
         setActionCache({});
@@ -1285,11 +1410,11 @@ JSON格式回覆：
                         const baseCharId = id.replace('_companion', '');
                         const owner = agentRoster.find(c => c.id === baseCharId);
                         const companionName = owner?.companion?.name || 'Companion';
-                        return `${companionName}: ${action}`;
+                        return `${companionName}: ${action} `;
                     }
-                    return `${agentRoster.find(c => c.id === id)?.name || id}: ${action}`;
+                    return `${agentRoster.find(c => c.id === id)?.name || id}: ${action} `;
                 })
-                .join("\n") || (forcePrologue ? "(Game Start - Prologue)" : "(No Action)");
+                .join("\n") || (forcePrologue ? "(Game Start - Prologue)" : (forceContinue ? "((The player pokes the DM to continue...))" : "(No Action)"));
 
             // Log the "Player Action" phase (using styled text)
             if (!isPrologue) {
@@ -1329,7 +1454,7 @@ JSON格式回覆：
             // Combine memory service context with recent logs
             const memoryContext = memoryService.current.getContextForAI();
             const fullContext = memoryContext
-                ? `${memoryContext}\n\n[最新發展]\n${recentLogsText}`
+                ? `${memoryContext} \n\n[最新發展]\n${recentLogsText} `
                 : recentLogsText;
 
             const narrativeContext = {
@@ -1341,6 +1466,21 @@ JSON格式回覆：
                 gmSignals: worldSignals, // Feed previous turn's signals to Story
                 mode: gameMode, // 'novel' or 'trpg'
                 party: party.map(id => agentRoster.find(c => c.id === id)?.name).filter(Boolean),
+                // RELATIONSHIP CONTEXT
+                relationships: party.reduce((acc, id) => {
+                    const charName = agentRoster.find(c => c.id === id)?.name;
+                    if (charName && relationships[id]) {
+                        acc[charName] = relationships[id]; // Pass affinity data to StoryAgent
+                    }
+                    return acc;
+                }, {}),
+                characterKeys: party.reduce((acc, id) => {
+                    const char = agentRoster.find(c => c.id === id);
+                    if (char && char.emotionalKeys) {
+                        acc[char.name] = char.emotionalKeys;
+                    }
+                    return acc;
+                }, {}),
                 // FAIRNESS: Inject detailed stats
                 partyStats: party.map(id => {
                     const char = agentRoster.find(c => c.id === id);
@@ -1348,24 +1488,24 @@ JSON格式回覆：
                     // Calculate Modifiers: (Score - 10) / 2
                     const getMod = (val) => {
                         const m = Math.floor((val - 10) / 2);
-                        return m >= 0 ? `+${m}` : `${m}`;
+                        return m >= 0 ? `+ ${m} ` : `${m} `;
                     };
                     const s = char.baseStats;
-                    return `- ${char.name} (${char.race} ${char.class}): STR${getMod(s.str)} DEX${getMod(s.dex)} CON${getMod(s.con)} INT${getMod(s.int)} WIS${getMod(s.wis)} CHA${getMod(s.cha)}`;
+                    return `- ${char.name} (${char.race} ${char.class}): STR${getMod(s.str)} DEX${getMod(s.dex)} CON${getMod(s.con)} INT${getMod(s.int)} WIS${getMod(s.wis)} CHA${getMod(s.cha)} `;
                 }).join('\n'),
                 // PHASE 2 ENHANCEMENT: Combat-relevant stats for accurate narrative
                 partyCombatInfo: party.map(id => {
                     const char = agentRoster.find(c => c.id === id);
                     if (!char) return "";
                     const actions = char.getActions ? char.getActions() : [];
-                    const actionListStr = actions.map(a => `${a.name}(${a.hitBonus >= 0 ? '+' : ''}${a.hitBonus}, ${a.damage})`).join(', ') || 'Unarmed Strike';
+                    const actionListStr = actions.map(a => `${a.name} (${a.hitBonus >= 0 ? '+' : ''}${a.hitBonus}, ${a.damage})`).join(', ') || 'Unarmed Strike';
 
                     // Companion Combat Info
                     const companionCombat = char.companion ?
                         ` | Companion: ${char.companion.name} (AC ${char.companion.ac}, Attacks: ${char.companion.attacks?.map(a => a.name).join(', ') || 'None'})`
                         : "";
 
-                    return `- ${char.name}: AC ${char.ac || 10}, DC ${char.spellSaveDC || '-'}, Actions: [${actionListStr}]${companionCombat}`;
+                    return `- ${char.name}: AC ${char.ac || 10}, DC ${char.spellSaveDC || '-'}, Actions: [${actionListStr}]${companionCombat} `;
                 }).join('\n'),
                 // CRITICAL: Inject Narrative Identity (Bio/Personality)
                 partyProfiles: party.map(id => {
@@ -1374,14 +1514,14 @@ JSON格式回覆：
 
                     // Companion Narrative Info
                     const companionInfo = char.companion ?
-                        `\n- **Companion**: ${char.companion.name} (${char.companion.type})\n  - **Personality**: ${char.companion.personality || "Loyal"}\n  - **Tactics**: ${char.companion.tactics || "Protects owner"}\n  - **Autonomy**: Acts independently unless commanded via Option D.`
+                        `\n - ** Companion **: ${char.companion.name} (${char.companion.type}) \n - ** Personality **: ${char.companion.personality || "Loyal"} \n - ** Tactics **: ${char.companion.tactics || "Protects owner"} \n - ** Autonomy **: Acts independently unless commanded via Option D.`
                         : "";
 
                     return `
 ### ${char.name} (${char.race} ${char.class})
-- **Personality**: ${char.personality || "Unknown"}
-- **Appearance**: ${char.appearance || "Generic adventurer"}
-- **Background**: ${char.bio ? char.bio.slice(0, 150) + "..." : "A mysterious traveler."}${companionInfo}
+- ** Personality **: ${char.personality || "Unknown"}
+- ** Appearance **: ${char.appearance || "Generic adventurer"}
+- ** Background **: ${char.bio ? char.bio.slice(0, 150) + "..." : "A mysterious traveler."}${companionInfo}
 `.trim();
                 }).join('\n\n'),
                 isPrologue: isPrologue,
@@ -1439,7 +1579,7 @@ JSON格式回覆：
                         showToast(`進入第 ${nextActNum} 幕`, "info");
                         setLogs(prev => [...prev, {
                             type: 'info',
-                            content: `=== 第 ${nextActNum} 幕 ===`
+                            content: `=== 第 ${nextActNum} 幕 === `
                         }]);
                     }
                 }
@@ -1493,8 +1633,8 @@ JSON格式回覆：
             const lootMatch = finalNarrative.match(/\[\[LOOT:\s*(.+?)\]\]/);
             if (lootMatch) {
                 const itemName = lootMatch[1].trim();
-                console.log(`[Game] Loot Received: ${itemName}`);
-                showToast(`🎁 獲得戰利品: ${itemName}`, "success"); // Gold color implied by success or custom? Using success for now.
+                console.log(`[Game] Loot Received: ${itemName} `);
+                showToast(`🎁 獲得戰利品: ${itemName} `, "success"); // Gold color implied by success or custom? Using success for now.
 
                 // Add to Party Leader (first active member)
                 const leaderId = party[0];
@@ -1567,7 +1707,7 @@ JSON格式回覆：
                         rosterDirty = true;
                         showToast(`🛒 ${char.name} 購買了 ${itemName.trim()} (-${price}金)`, "success");
                     } else {
-                        showToast(`❌ ${char.name} 金幣不足 (需要 ${price}金，擁有 ${currentGold}金)`, "error");
+                        showToast(`❌ ${char.name} 金幣不足(需要 ${price}金，擁有 ${currentGold}金)`, "error");
                     }
                 }
                 finalNarrative = finalNarrative.replace(fullTag, '');
@@ -1614,7 +1754,7 @@ JSON格式回覆：
                     }
                     tempRoster[charIdx] = char;
                     rosterDirty = true;
-                    showToast(`🪙 ${char.name} ${amount >= 0 ? '獲得' : '花費'} ${Math.abs(amount)}金`, amount >= 0 ? "success" : "info");
+                    showToast(`🪙 ${char.name} ${amount >= 0 ? '獲得' : '花費'} ${Math.abs(amount)} 金`, amount >= 0 ? "success" : "info");
                 }
                 finalNarrative = finalNarrative.replace(fullTag, '');
             }
@@ -1683,11 +1823,12 @@ JSON格式回覆：
             }
 
             // --- RELATIONSHIP SYSTEM ---
-            // Format: [[RELATIONSHIP: SourceName|TargetName|Amount|Reason]]
-            const relRegex = /\[\[RELATIONSHIP:\s*([^|]+)\|\s*([^|]+)\|\s*([+-]?\d+)\|\s*([^\]]+)\]\]/g;
+            // Format: [[RELATIONSHIP: SourceName|TargetName|Amount|Reason|TriggerType]]
+            const relRegex = /\[\[RELATIONSHIP:\s*([^|]+)\|\s*([^|]+)\|\s*([+-]?\d+)\|\s*([^|]+)(?:\|\s*([^\]]+))?\]\]/g;
             for (const match of finalNarrative.matchAll(relRegex)) {
-                const [fullTag, sourceName, targetName, amountStr, reason] = match;
+                const [fullTag, sourceName, targetName, amountStr, reason, triggerType] = match;
                 const change = parseInt(amountStr);
+                const trigger = triggerType ? triggerType.trim() : 'NONE'; // JOY, ANGER, WEAKNESS, NONE
 
                 // Find Agents
                 const sourceIdx = tempRoster.findIndex(c => c.name.includes(sourceName.trim()));
@@ -1696,39 +1837,46 @@ JSON格式回覆：
                 if (sourceIdx !== -1 && targetIdx !== -1) {
                     const sourceChar = tempRoster[sourceIdx];
                     const targetChar = tempRoster[targetIdx];
+                    const targetId = targetChar.id;
 
-                    // Hydrate to use method
-                    const agent = new CharacterAgent(sourceChar);
-                    agent.updateRelationship(targetChar.id, change, reason.trim());
 
-                    // Save back to tempRoster (Instance UI)
-                    tempRoster[sourceIdx] = { ...sourceChar, ...agent };
-                    rosterDirty = true;
+                    // We'll update the 'Responder' (usually the Target of the social action)
+                    const responder = targetChar;
+                    const initiator = sourceChar;
 
-                    // SAVE TO GAMESTATE (Persistence)
-                    setGameState(prev => {
-                        const targetState = prev[sourceChar.id] || {};
-                        const targetRels = targetState.relationships || {};
-                        // Note: agent.relationships is the FULL object now.
-                        // We can just overwrite it since we hydrated from consistent state?
-                        // Wait, agent.relationships comes from sourceChar (from tempRoster), which comes from roster.
-                        // If roster wasn't loaded from gameState, we risk overwriting.
-                        // Safest: Use the agent's logic which is correct for THIS turn.
+                    // ROMANCE RULE: Only allow if at least one is NOT in the player party (NPC/Auto)
+                    // If both are in party, it's Player-Player, usually disabled to avoid complex multi-roleplay.
+                    const isResponderParty = party.includes(responder.id);
+                    const isInitiatorParty = party.includes(initiator.id);
+                    const allowRomance = !(isResponderParty && isInitiatorParty);
+
+                    setRelationships(prev => {
+                        // Tracks Responder's affinity towards Initiator (targetName stores who they are bonding with)
+                        const currentRel = prev[responder.id] || {
+                            targetName: initiator.name,
+                            affinity: 50,
+                            bondState: 'STRANGER'
+                        };
+
+                        // AffinityManagerAgent.updateRelationship(currentRelation, triggerType, changeOverride, allowRomance)
+                        const nextRel = AffinityManagerAgent.updateRelationship(currentRel, trigger, change, allowRomance);
+
+                        // Notification / Log
+                        if (change !== 0) {
+                            const newStatus = nextRel.bondState;
+                            const color = change > 0 ? "success" : "error";
+                            showToast(`💞 ${responder.name} 對 ${initiator.name} 的好感變更: ${change > 0 ? '+' : ''}${change} (${newStatus})`, color);
+                            console.log(`[Affinity] ${responder.name} -> ${initiator.name}: ${change} [${trigger}] -> ${newStatus} `);
+                        }
+
                         return {
                             ...prev,
-                            [sourceChar.id]: {
-                                ...targetState,
-                                relationships: agent.relationships
-                            }
+                            [responder.id]: nextRel
                         };
                     });
-
-                    // Notification
-                    const relStatus = agent.relationships[targetChar.id]?.status || "Neutral";
-                    const color = change > 0 ? "success" : "error";
-                    showToast(`💞 關係變更: ${sourceChar.name} -> ${targetChar.name} (${change > 0 ? '+' : ''}${change}) [${relStatus}]`, color);
-                    console.log(`[Game] Relationship: ${sourceChar.name} -> ${targetChar.name} (${change})`);
                 }
+
+                // Remove tag from narrative
                 finalNarrative = finalNarrative.replace(fullTag, '');
             }
 
@@ -1737,7 +1885,7 @@ JSON格式回覆：
             if (xpMatch) {
                 const amount = parseInt(xpMatch[1]);
                 console.log(`[Game] XP Award: ${amount} to Party`);
-                showToast(`✨ 獲得經驗值: ${amount}`, "info");
+                showToast(`✨ 獲得經驗值: ${amount} `, "info");
 
                 // Add to ALL party members
                 party.forEach(id => {
@@ -1761,8 +1909,8 @@ JSON格式回覆：
             const growthMatch = finalNarrative.match(/\[\[NARRATIVE_GROWTH:\s*(.+?)\]\]/);
             if (growthMatch) {
                 const growthDesc = growthMatch[1];
-                console.log(`[Game] Narrative Growth: ${growthDesc}`);
-                showToast(`角色成長: ${growthDesc}`, "success");
+                console.log(`[Game] Narrative Growth: ${growthDesc} `);
+                showToast(`角色成長: ${growthDesc} `, "success");
 
                 // Add to ALL party members (as it's usually a group milestone if generated by StoryAgent for now,
                 // or we could parse specific names if the tag supported it, but current prompt implies generic)
@@ -1891,7 +2039,7 @@ JSON格式回覆：
 
                         // Remove dead enemies from roster
                         if (newHp <= 0) {
-                            console.log(`[HP Update] ${actor.name} defeated (HP 0), removing from Scene Actors`);
+                            console.log(`[HP Update] ${actor.name} defeated(HP 0), removing from Scene Actors`);
                             tempScenarioRoster.splice(sceneIdx, 1);
                             showToast(`💀 ${actor.name} 已被擊敗！`, "success");
                         } else {
@@ -1974,7 +2122,7 @@ JSON格式回覆：
                     };
 
                     rosterDirty = true;
-                    showToast(`${agent.name}: Death Save ${roll} -> ${msg}`, roll >= 10 ? "success" : "error");
+                    showToast(`${agent.name}: Death Save ${roll} -> ${msg} `, roll >= 10 ? "success" : "error");
                 }
             }
 
@@ -2008,7 +2156,7 @@ JSON格式回覆：
                         );
                     });
                     if (isPartyMember) {
-                        console.log(`[SceneUpdate] Skipping party member: ${cleanName}`);
+                        console.log(`[SceneUpdate] Skipping party member: ${cleanName} `);
                         continue;
                     }
 
@@ -2197,14 +2345,14 @@ JSON格式回覆：
                                     }
                                 }
                                 updatedChar.inventory = newInv;
-                                if (removed > 0) invLogs.push(`${updatedChar.name} used ${update.item}`);
+                                if (removed > 0) invLogs.push(`${updatedChar.name} used ${update.item} `);
                             }
                             // Handle Addition (Gain)
                             else if (update.change > 0) {
                                 for (let i = 0; i < update.change; i++) {
                                     updatedChar.inventory = [...(updatedChar.inventory || []), update.item];
                                 }
-                                invLogs.push(`${updatedChar.name} got ${update.item}`);
+                                invLogs.push(`${updatedChar.name} got ${update.item} `);
                             }
 
                             invRoster[charIndex] = updatedChar;
@@ -2239,17 +2387,17 @@ JSON格式回覆：
                         const charIndex = lootRoster.findIndex(c => c.id === targetChar.id);
                         if (charIndex !== -1) {
                             const updatedChar = { ...lootRoster[charIndex] };
-                            updatedChar.inventory = [...(updatedChar.inventory || []), item.isQuestItem ? `★ ${item.name}` : item.name];
+                            updatedChar.inventory = [...(updatedChar.inventory || []), item.isQuestItem ? `★ ${item.name} ` : item.name];
                             lootRoster[charIndex] = updatedChar;
                             rosterChanged = true;
-                            lootLogs.push(`${updatedChar.name} received ${item.name}`);
+                            lootLogs.push(`${updatedChar.name} received ${item.name} `);
                         }
                     }
                 });
 
                 if (rosterChanged) pendingPayload.roster = lootRoster;
                 if (lootLogs.length > 0) {
-                    setLogs(prev => [...prev, { type: 'system', content: `📦 **Loot**: ${lootLogs.join(', ')}` }]);
+                    setLogs(prev => [...prev, { type: 'system', content: `📦 ** Loot **: ${lootLogs.join(', ')} ` }]);
                 }
             } else if (rosterDirty) {
                 pendingPayload.roster = tempRoster;
@@ -2267,26 +2415,94 @@ JSON格式回覆：
             const newMapLocation = journalResult.location && Array.isArray(journalResult.location) ? journalResult.location : currentLocation;
             if (journalResult.location) setCurrentLocation(journalResult.location); // Immediate Map Update (Header)
 
+            // --- JOURNAL UPDATE ---
+            if (journalResult.journal_entry && journalResult.journal_entry.public) {
+                // Add to Quest Journal
+                addJournalEntry(
+                    "冒險日誌更新",
+                    journalResult.journal_entry.public
+                );
+                showToast("📜 冒險日誌已更新", "info");
+            }
+
+
             // --- AGENT 4 (PART 2): OPTION GENERATION ---
+            // CRITICAL FIX: FUSE ROSTER STATE for FRESH CONTEXT
+            // We must combine:
+            // 1. tempRoster (Has Regex updates like HP tag changes)
+            // 2. deferredStateChanges (Has Agent updates like new injuries/mechanics)
+            const currentTurnRoster = agentRoster.filter(c => party.includes(c.id)).map(baseChar => {
+                // 1. Find in tempRoster (Regex state)
+                const tempChar = tempRoster.find(t => t.id === baseChar.id) || baseChar;
+
+                // 2. Apply Deferred Mechanics (Agent state)
+                const deferred = deferredStateChanges[baseChar.id] || {};
+
+                // 3. Merge
+                return {
+                    ...tempChar,
+                    ...deferred, // Overwrite HP/Status if mechanic analysis changed it
+                    // Ensure vital stats are correct
+                    hp: deferred.hp !== undefined ? deferred.hp : tempChar.hp,
+                    status: deferred.status || tempChar.status || 'healthy'
+                };
+            });
+
+            // CRITICAL FIX 2: CONSTRUCT ACTIVE ENEMY LIST (Prevents Zombie Targeting)
+            // 1. Start with current scenario roster
+            let activeEnemies = [...tempScenarioRoster].filter(e => e.type === 'enemy');
+
+            // 2. Apply Deferred HP Updates (Remove Dead)
+            if (mechanicsData.hp_updates) {
+                Object.entries(mechanicsData.hp_updates).forEach(([name, change]) => {
+                    const idx = activeEnemies.findIndex(e => e.name === name || e.name.includes(name));
+                    if (idx !== -1) {
+                        const enemy = activeEnemies[idx];
+                        const newHp = (enemy.hp || 0) + change;
+                        if (newHp <= 0) {
+                            activeEnemies.splice(idx, 1); // Remove dead enemy
+                        } else {
+                            activeEnemies[idx] = { ...enemy, hp: newHp }; // Update HP
+                        }
+                    }
+                });
+            }
+
+            // 3. Apply Deferred Scene Updates (Remove/Add)
+            if (mechanicsData.scene_updates) {
+                const updates = mechanicsData.scene_updates; // Expecting { add: [], remove: [], clear: bool }
+                if (updates.clear) activeEnemies = [];
+                if (updates.remove) {
+                    updates.remove.forEach(name => {
+                        activeEnemies = activeEnemies.filter(e => !e.name.includes(name));
+                    });
+                }
+                if (updates.add) {
+                    updates.add.forEach(newActor => {
+                        if (newActor.type === 'enemy') activeEnemies.push(newActor);
+                    });
+                }
+            }
+
             // IMPORTANT: Use finalNarrative (processed with battle summary) not raw narrativeText
             if (!isPrologue || forcePrologue) {
                 setIsPreGenerating(true);
                 const { results: nextOptions, usage: charUsage } = await charAgent.generateOptions(
-                    agentRoster.filter(c => party.includes(c.id)),
+                    currentTurnRoster, // USE FUSED ROSTER
                     { location: newMapLocation.join(" > "), time: "N/A" },
-                    finalNarrative, // Use finalNarrative for complete context including battle summary
+                    finalNarrative,
                     mechanicsData.hp_updates ? "Outcome processed" : "Nothing happened",
                     newSignals,
                     selectedModule?.id || null,
                     currentAct,
-                    tempGroupOptions // Pass the extracted group options
+                    tempGroupOptions,
+                    activeEnemies // NEW: Pass Active Enemy List
                 );
                 if (charUsage) updateTokenCount(charUsage);
 
                 // Option Processing & Dedup
                 const processedOptions = [];
                 const processedCharIds = new Set();
-
                 nextOptions.forEach(opt => {
                     const charId = opt.characterId || opt.id;
                     const char = agentRoster.find(c => c.id == charId);
@@ -2350,7 +2566,9 @@ JSON格式回覆：
             setLogs(prev => [...prev, { type: 'narrative', content: `(System Error: ${error.message})` }]);
             setIsPreGenerating(false);
             setIsNarrating(false);
+            setIsNarrativeComplete(true);
         } finally {
+            isExecuting.current = false;
             setIsGenerating(false);
         }
     };
@@ -2399,7 +2617,7 @@ JSON格式回覆：
         party.forEach(id => {
             const char = roster.find(c => c.id === id);
             if (!char) {
-                console.warn(`[StartGame] Party member ID ${id} not found in Roster. Skipping.`);
+                console.warn(`[StartGame] Party member ID ${id} not found in Roster.Skipping.`);
                 return;
             }
 
@@ -2449,12 +2667,12 @@ JSON格式回覆：
                     return !(item.id === 'potion_healing' || item.name?.includes('治療藥水'));
                 });
             }
-            if (potionCount > 0) extraConsumables.push(`治療藥水 x${potionCount}`);
+            if (potionCount > 0) extraConsumables.push(`治療藥水 x${potionCount} `);
 
             // 2. Survival Gear (Rations/Torches) - Important for exploration
             if (tone !== 'relaxed') {
                 // Ensure there's enough food/light for Normal/Grim
-                extraConsumables.push(`口糧 (1日) x5`);
+                extraConsumables.push(`口糧(1日) x5`);
                 extraConsumables.push(`火把 x2`);
             }
 
@@ -2522,7 +2740,7 @@ JSON格式回覆：
 
         const partyChars = agentRoster.filter(c => party.includes(c.id));
         const adventureData = {
-            title: `${selectedModule?.title || '未名'}之傳奇 - ${new Date().toLocaleDateString()}`,
+            title: `${selectedModule?.title || '未名'} 之傳奇 - ${new Date().toLocaleDateString()} `,
             moduleName: selectedModule?.title || '自訂冒險',
             party: partyChars.map(c => ({
                 name: c.name,
@@ -2587,9 +2805,6 @@ JSON格式回覆：
                     c.id === char.id ? { ...c, innerMonologue: newOptions[0].monologue } : c
                 ));
             }
-
-            showToast("行動選項已更新", "success");
-
         } catch (e) {
             console.error("Regenerate Error:", e);
             showToast("生成失敗，請稍後再試", "error");
@@ -2633,12 +2848,12 @@ JSON格式回覆：
         setLevelUpTarget(null);
 
         // 5. Toast
-        const featureMsg = (choice.features && choice.features.length > 0) ? `獲得能力: ${choice.features.join(", ")}` : "";
-        const asiMsg = choice.type === 'feat' ? `習得專長: ${choice.value}` : (choice.type === 'asi' ? '提升了屬性' : '');
+        const featureMsg = (choice.features && choice.features.length > 0) ? `獲得能力: ${choice.features.join(", ")} ` : "";
+        const asiMsg = choice.type === 'feat' ? `習得專長: ${choice.value} ` : (choice.type === 'asi' ? '提升了屬性' : '');
 
         setLogs(prev => [...prev, {
             type: 'info',
-            content: `${levelUpTarget.name} 升級到了 Level ${agent.level}! ${featureMsg} ${asiMsg}`
+            content: `${levelUpTarget.name} 升級到了 Level ${agent.level} !${featureMsg} ${asiMsg} `
         }]);
     };
 
@@ -2664,57 +2879,79 @@ JSON格式回覆：
             </div>
 
             <div className="relative z-10 w-full max-w-md bg-slate-900/60 backdrop-blur-xl p-8 rounded-2xl border border-slate-700/50 shadow-2xl transition-all hover:border-amber-500/30">
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 ml-1">
-                    Google Gemini API Key
-                </label>
-                <p className="text-slate-600 text-xs mb-3 ml-1">
-                    免費取得：
-                    <a
-                        href="https://aistudio.google.com/apikey"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-amber-600 hover:text-amber-500 underline ml-1"
+                <div className="flex bg-slate-950/50 p-1 rounded-xl border border-slate-800 mb-6">
+                    <button
+                        onClick={() => setAuthMode('user')}
+                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ${authMode === 'user' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'} `}
                     >
-                        aistudio.google.com/apikey ↗
-                    </a>
-                </p>
-                <div className="flex gap-2 mb-4">
-                    <input
-                        type="password"
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        className="flex-1 bg-slate-950/50 border border-slate-700 text-amber-100 rounded-lg px-4 py-3 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none transition-all placeholder:text-slate-700"
-                        placeholder="貼上您的 API Key..."
-                    />
+                        使用我的 API Key
+                    </button>
+                    <button
+                        onClick={() => setAuthMode('guest')}
+                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ${authMode === 'guest' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'} `}
+                    >
+                        訪客模式 (由系統提供)
+                    </button>
                 </div>
-                {!apiKey && (
-                    <div className="text-xs text-amber-600/80 bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 mb-4">
-                        💡 API Key 會安全儲存在您的瀏覽器中，不會傳送到任何伺服器。
+
+                {authMode === 'user' ? (
+                    <>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 ml-1">
+                            Google Gemini API Key
+                        </label>
+                        <p className="text-slate-600 text-xs mb-3 ml-1">
+                            免費取得：
+                            <a
+                                href="https://aistudio.google.com/apikey"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-amber-600 hover:text-amber-500 underline ml-1"
+                            >
+                                aistudio.google.com/apikey ↗
+                            </a>
+                        </p>
+                        <div className="flex gap-2 mb-4">
+                            <input
+                                type="password"
+                                value={apiKey}
+                                onChange={(e) => setApiKey(e.target.value)}
+                                className="flex-1 bg-slate-950/50 border border-slate-700 text-amber-100 rounded-lg px-4 py-3 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none transition-all placeholder:text-slate-700"
+                                placeholder="貼上您的 API Key..."
+                            />
+                        </div>
+                        {!apiKey && (
+                            <div className="text-xs text-amber-600/80 bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 mb-4">
+                                💡 API Key 會安全儲存在您的瀏覽器中，不會傳送到任何伺服器。
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="mb-6 space-y-4">
+                        <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-lg p-4">
+                            <h4 className="text-indigo-300 font-bold flex items-center gap-2 mb-2">
+                                <Sparkles size={16} /> 訪客探索模式
+                            </h4>
+                            <p className="text-indigo-200/70 text-xs leading-relaxed">
+                                系統已由作者預設提供 Vertex AI 企業級存取權限。
+                                您可以直接開始遊玩，無需輸入任何 Key。
+                            </p>
+                        </div>
                     </div>
                 )}
-                <button
-                    onClick={() => apiKey && setView('modules')}
-                    disabled={!apiKey}
-                    className="w-full bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-amber-900/50 hover:-translate-y-0.5"
-                >
-                    <span className="flex items-center justify-center gap-2">
-                        進入領域 <ChevronRight size={18} />
-                    </span>
-                </button>
 
                 <button
-                    onClick={() => setShowArchiveModal(true)}
-                    className="w-full mt-3 bg-slate-800/30 hover:bg-amber-900/20 text-slate-400 hover:text-amber-500 font-medium py-3 rounded-lg transition-all border border-slate-700/50 hover:border-amber-500/30 flex items-center justify-center gap-2"
+                    onClick={() => (authMode === 'guest' || apiKey) && setView('modules')}
+                    disabled={authMode === 'user' && !apiKey}
+                    className={`w-full font-bold py-4 rounded-lg transition-all shadow-lg hover: -translate-y-0.5 flex items-center justify-center gap-2
+                        ${authMode === 'user'
+                            ? 'bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white shadow-amber-900/20'
+                            : 'bg-gradient-to-r from-indigo-700 to-indigo-600 hover:from-indigo-600 hover:to-indigo-500 text-white shadow-indigo-900/20'
+                        } `}
                 >
-                    <BookOpen size={16} /> 冒險史詩 (THE CHRONICLES)
+                    進入領域 <ChevronRight size={18} />
                 </button>
 
-                <button
-                    onClick={loadGame}
-                    className="w-full mt-3 bg-transparent hover:bg-slate-800/50 text-slate-500 hover:text-slate-400 font-medium py-2 rounded-lg transition-colors text-xs uppercase tracking-widest"
-                >
-                    讀取存檔 (LOAD GAME)
-                </button>
+                {/* Buttons moved to Module Selection */}
             </div>
         </div>
     );
@@ -2754,16 +2991,16 @@ JSON格式回覆：
                             ${gameMode === mode.id
                                 ? 'bg-amber-900/40 border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]'
                                 : 'bg-slate-900/40 border-slate-700 hover:bg-slate-800 hover:border-slate-500'
-                            }`}
+                            } `}
                     >
-                        <div className={`p-3 rounded-full transaction-colors ${gameMode === mode.id ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-400 group-hover:text-white'}`}>
+                        <div className={`p-3 rounded-full transaction-colors ${gameMode === mode.id ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-400 group-hover:text-white'} `}>
                             {mode.icon}
                         </div>
                         <div>
-                            <div className={`font-bold font-tome-header text-lg uppercase tracking-widest ${gameMode === mode.id ? 'text-amber-100' : 'text-slate-300'}`}>
+                            <div className={`font-bold font-tome-header text-lg uppercase tracking-widest ${gameMode === mode.id ? 'text-amber-100' : 'text-slate-300'} `}>
                                 {mode.label}
                             </div>
-                            <div className={`text-xs mt-1 ${gameMode === mode.id ? 'text-amber-200' : 'text-slate-500'}`}>
+                            <div className={`text-xs mt-1 ${gameMode === mode.id ? 'text-amber-200' : 'text-slate-500'} `}>
                                 {mode.desc}
                             </div>
                         </div>
@@ -2807,13 +3044,13 @@ JSON格式回覆：
                                     ${gameOptions.pacing === opt.id
                                         ? 'bg-amber-950/40 border-amber-500/50 ring-1 ring-amber-500/20'
                                         : 'bg-slate-950/30 border-slate-800 hover:bg-slate-800 hover:border-slate-600'
-                                    }`}
+                                    } `}
                             >
-                                <div className={`shrink-0 mt-1 ${gameOptions.pacing === opt.id ? 'text-amber-400' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>
+                                <div className={`shrink-0 mt-1 ${gameOptions.pacing === opt.id ? 'text-amber-400' : 'text-slate-500 group-hover/btn:text-slate-300'} `}>
                                     {opt.icon}
                                 </div>
                                 <div>
-                                    <div className={`font-bold font-tome-header text-sm mb-1 uppercase tracking-wider ${gameOptions.pacing === opt.id ? 'text-amber-100' : 'text-slate-300'}`}>
+                                    <div className={`font-bold font-tome-header text-sm mb-1 uppercase tracking-wider ${gameOptions.pacing === opt.id ? 'text-amber-100' : 'text-slate-300'} `}>
                                         {opt.label}
                                     </div>
                                     <div className="text-xs text-slate-400 leading-relaxed font-serif opacity-80">
@@ -2886,13 +3123,13 @@ JSON格式回覆：
                                     ${gameOptions.tone === opt.id
                                         ? 'bg-indigo-950/40 border-indigo-400/50 ring-1 ring-indigo-500/20'
                                         : 'bg-slate-950/30 border-slate-800 hover:bg-slate-800 hover:border-slate-600'
-                                    }`}
+                                    } `}
                             >
-                                <div className={`shrink-0 mt-1 ${gameOptions.tone === opt.id ? 'text-indigo-400' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>
+                                <div className={`shrink-0 mt-1 ${gameOptions.tone === opt.id ? 'text-indigo-400' : 'text-slate-500 group-hover/btn:text-slate-300'} `}>
                                     {opt.icon}
                                 </div>
                                 <div>
-                                    <div className={`font-bold font-tome-header text-sm mb-1 uppercase tracking-wider ${gameOptions.tone === opt.id ? 'text-indigo-100' : 'text-slate-300'}`}>
+                                    <div className={`font-bold font-tome-header text-sm mb-1 uppercase tracking-wider ${gameOptions.tone === opt.id ? 'text-indigo-100' : 'text-slate-300'} `}>
                                         {opt.label}
                                     </div>
                                     <div className="text-xs text-slate-400 leading-relaxed font-serif opacity-80">
@@ -2947,12 +3184,30 @@ JSON格式回覆：
                 </div>
 
                 <div className="mb-8 shrink-0 relative z-10">
-                    <button
-                        onClick={() => setView('home')}
-                        className="text-slate-500 hover:text-slate-300 flex items-center gap-2 mb-6 uppercase tracking-widest text-xs font-bold transition-colors"
-                    >
-                        <ChevronRight className="rotate-180" size={14} /> 回上一頁 (BACK)
-                    </button>
+                    <div className="flex justify-between items-start mb-2 relative z-20">
+                        <button
+                            onClick={() => setView('home')}
+                            className="text-slate-500 hover:text-slate-300 flex items-center gap-2 uppercase tracking-widest text-lg font-bold transition-colors"
+                        >
+                            <ChevronRight className="rotate-180" size={20} /> 回上一頁 (BACK)
+                        </button>
+
+                        {/* Moved Controls: Archive & Load */}
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setShowArchiveModal(true)}
+                                className="bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-amber-500 px-5 py-2 rounded-md border border-slate-700 hover:border-amber-500/30 flex items-center gap-2 text-lg font-bold uppercase tracking-wider transition-all backdrop-blur-sm"
+                            >
+                                <BookOpen size={20} /> 冒險史詩
+                            </button>
+                            <button
+                                onClick={loadGame}
+                                className="bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 px-5 py-2 rounded-md border border-slate-700 hover:border-slate-500 flex items-center gap-2 text-lg font-bold uppercase tracking-wider transition-all backdrop-blur-sm"
+                            >
+                                <Save size={20} /> 讀取
+                            </button>
+                        </div>
+                    </div>
                     <h2 className="text-4xl font-serif text-amber-500 mb-2 tracking-tight">選擇你的冒險</h2>
                     <p className="text-slate-400">每一個模組都是通往混亂與榮耀的傳送門。</p>
                 </div>
@@ -2983,10 +3238,8 @@ JSON格式回覆：
                                             onClick={() => setShowCustomStoryModal(true)}
                                             className={`
                                                 relative bg-indigo-900/20 backdrop-blur-sm border border-dashed border-indigo-500/50
-                                                hover:bg-indigo-900/40 p-6 rounded-xl cursor-pointer
-                                                transition-all group duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(99,102,241,0.2)]
-                                                flex flex-col items-center justify-center text-center gap-4 min-h-[200px]
-                                            `}
+hover:bg-indigo-900/40 p-6 rounded-xl cursor-pointer
+transition-all group duration-300 hover: -translate-y-1 hover:shadow-[0_10px_30px_rgba(99, 102, 241, 0.2)]flex flex-col items-center justify-center text-center gap-4 min-h-[200px]`}
                                         >
                                             <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center group-hover:bg-indigo-500/30 transition-colors">
                                                 <Plus size={32} className="text-indigo-400" />
@@ -3008,18 +3261,17 @@ JSON格式回覆：
                                             }}
                                             className={`
                                                 relative bg-slate-900/40 backdrop-blur-sm border ${cat.border}
-                                                hover:bg-slate-800/60 p-6 rounded-xl cursor-pointer
-                                                transition-all group duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]
-                                            `}
+hover:bg-slate-800/60 p-6 rounded-xl cursor-pointer
+transition-all group duration-300 hover: -translate-y-1 hover:shadow-[0_10px_30px_rgba(0, 0, 0, 0.3)]`}
                                         >
                                             <div className="flex items-start gap-4 mb-4">
                                                 <div className={`w-12 h-12 shrink-0 rounded-lg bg-slate-800/50 border border-slate-700 flex items-center justify-center group-hover:border-opacity-100 transition-colors relative`}>
                                                     {/* Category Symbol Replaces ID */}
-                                                    {cat.id === 'intro' && <Sparkles className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
-                                                    {cat.id === 'beginner' && <MapIcon className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
-                                                    {cat.id === 'intermediate' && <Sword className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
-                                                    {cat.id === 'advanced' && <Skull className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
-                                                    {cat.id === 'custom' && <Feather className={`text-slate-500 group-hover:${cat.color}`} size={24} />}
+                                                    {cat.id === 'intro' && <Sparkles className={`text-slate-500 group-hover:${cat.color} `} size={24} />}
+                                                    {cat.id === 'beginner' && <MapIcon className={`text-slate-500 group-hover:${cat.color} `} size={24} />}
+                                                    {cat.id === 'intermediate' && <Sword className={`text-slate-500 group-hover:${cat.color} `} size={24} />}
+                                                    {cat.id === 'advanced' && <Skull className={`text-slate-500 group-hover:${cat.color} `} size={24} />}
+                                                    {cat.id === 'custom' && <Feather className={`text-slate-500 group-hover:${cat.color} `} size={24} />}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className={`text-xl font-bold text-slate-200 group-hover:${cat.color} font-serif leading-tight mt-1 truncate`}>
@@ -3146,12 +3398,12 @@ JSON格式回覆：
                                 }
                             }}
                             className={`
-                                relative p-4 rounded border cursor-pointer transition-all group flex flex-col justify-between min-h-[16rem]
-                                hover:shadow-[0_0_20px_rgba(0,0,0,0.5)] backdrop-blur-md
+                                relative p-4 rounded border cursor-pointer transition-all group flex flex-col justify-between min-h-[16rem]hover:shadow-[0_0_20px_rgba(0, 0, 0, 0.5)]backdrop-blur-md
                                 ${isSelected
-                                    ? 'bg-amber-950/20 border-amber-500/80 shadow-[0_0_15px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/50'
-                                    : 'bg-slate-900/40 border-slate-800 hover:border-amber-500/30 hover:bg-slate-800/60'}
-                            `}
+                                    ? 'bg-amber-950/20 border-amber-500/80 shadow-[0_0_15px_rgba(245,158,11,0.15)]ring-1 ring-amber-500/50'
+                                    : 'bg-slate-900/40 border-slate-800 hover:border-amber-500/30 hover:bg-slate-800/60'
+                                }
+`}
                         >
                             <div className="w-full aspect-square mb-3 rounded-lg overflow-hidden bg-slate-950 border border-slate-800 relative shadow-inner group-hover:shadow-[0_0_15px_rgba(251,191,36,0.1)] transition-all">
                                 <img
@@ -3171,7 +3423,7 @@ JSON格式回覆：
                             {/* Card Header & Controls */}
                             <div>
                                 <div className="flex justify-between items-center mb-2">
-                                    <h4 className={`font-serif font-bold truncate text-base tracking-wide ${isSelected ? 'text-amber-400' : 'text-slate-200'}`}>
+                                    <h4 className={`font-serif font-bold truncate text-base tracking-wide ${isSelected ? 'text-amber-400' : 'text-slate-200'} `}>
                                         {charData.name}
                                     </h4>
 
@@ -3192,9 +3444,10 @@ JSON格式回覆：
                                             className={`
                                                 flex items-center gap-1.5 px-2 py-1 rounded cursor-pointer transition-all border shadow-sm
                                                 ${agent.controlMode === 'auto'
-                                                    ? 'bg-amber-900/80 text-amber-500 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:bg-amber-900'
-                                                    : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white'}
-                                            `}
+                                                    ? 'bg-amber-900/80 text-amber-500 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]hover:bg-amber-900'
+                                                    : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white'
+                                                }
+`}
                                             title="點擊切換控制模式 (Click to Toggle AI)"
                                         >
                                             {agent.controlMode === 'auto' ? (
@@ -3207,7 +3460,7 @@ JSON格式回覆：
                                 </div>
 
                                 {/* Race / Class - Bigger Font */}
-                                <div className={`text-sm font-serif font-bold mb-3 truncate border-b border-slate-800/50 pb-1 ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
+                                <div className={`text-sm font-serif font-bold mb-3 truncate border-b border-slate-800/50 pb-1 ${isSelected ? 'text-slate-300' : 'text-slate-500'} `}>
                                     {charData.race} <span className="text-amber-700 mx-1">/</span> {charData.class}
                                 </div>
                             </div>
@@ -3348,7 +3601,7 @@ JSON格式回覆：
                                 <Book size={18} onClick={handleArchiveCurrentGame} className="cursor-pointer" />
                             </div>
                             <div className="flex flex-col">
-                                <span className={`text-[10px] font-bold uppercase tracking-widest text-slate-400 font-tome-header`}>
+                                <span className={`text-[10px]font-bold uppercase tracking-widest text-slate-400 font-tome-header`}>
                                     {selectedModule?.title || "Unknown Adventure"}
                                     <span className="ml-2 px-1.5 py-0.5 rounded text-amber-500 border border-amber-500/20 font-tome-body font-bold">
                                         ACT {currentAct}
@@ -3393,18 +3646,77 @@ JSON格式回覆：
                                     setIsMuted(muted);
                                 }}
                                 className={`
-                                    w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2 shrink-0
+w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2 shrink-0
                                     ${isMuted
                                         ? "text-slate-600 border-slate-700 hover:text-amber-500"
-                                        : "text-amber-500 border-amber-500/30 hover:bg-amber-500/10"}
-                                `}
+                                        : "text-amber-500 border-amber-500/30 hover:bg-amber-500/10"
+                                    }
+`}
                                 title={isMuted ? "Unmute Music" : "Mute Music"}
                             >
                                 <Music size={14} className={!isMuted ? "animate-pulse" : ""} />
                             </button>
 
 
-
+                            <div className="relative">
+                                {/* Poke Menu Toggle */}
+                                <button
+                                    onClick={() => setShowPokeMenu(!showPokeMenu)}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2 ${isGenerating ? 'border-red-500/50 text-red-400 animate-pulse' : !isNarrativeComplete ? 'border-amber-500/50 text-amber-400 animate-pulse' : 'border-slate-600 text-slate-500 hover:text-white hover:border-slate-400'} `}
+                                    title={!isNarrativeComplete ? "Speed up story (Fast-forward)" : "DM Interaction (Poke/Report)"}
+                                >
+                                    <Hand size={16} />
+                                </button>
+                                {/* Popup Menu */}
+                                <PokeMenu
+                                    isOpen={showPokeMenu}
+                                    onClose={() => setShowPokeMenu(false)}
+                                    isGenerating={isGenerating}
+                                    onAction={async (actionId) => {
+                                        if (actionId === 'continue') {
+                                            if (isNarrating) {
+                                                // If actively typing, speed it up
+                                                setForceInstant(true);
+                                                showToast("Fast forwarding...", "info");
+                                            } else if (isGenerating) {
+                                                // If waiting for AI (streaming or thinking)
+                                                // User requested: "Force speed up if generating" -> If we have text, forceInstant handles it.
+                                                // If we are waiting for tokens, we can't do much.
+                                                // DO NOT RESET. Just notify.
+                                                showToast("DM is thinking/generating...", "info");
+                                            } else {
+                                                // Idle: Proceed to next turn
+                                                executeTurn(false, true); // forceContinue
+                                                showToast("Poked DM to continue...", "info");
+                                            }
+                                        } else if (actionId === 'report') {
+                                        } else if (actionId === 'report') {
+                                            setShowDMChat(!showDMChat); // Toggle inline bar
+                                        } else if (actionId === 'review') {
+                                            // Trigger Review
+                                            setLogs(prev => [...prev, { type: 'dm_whisper', content: 'thinking...' }]); // Placeholder
+                                            showToast("DM is analyzing the matrix...", "info");
+                                            try {
+                                                const reviewText = await storyAgent.reviewGameState({
+                                                    moduleTitle: selectedModule?.title || "Unknown",
+                                                    logs: logs,
+                                                    party: party.map(id => agentRoster.find(c => c.id === id)?.name || id),
+                                                    currentAct: 1 // TODO: Track act
+                                                });
+                                                setLogs(prev => {
+                                                    const newLogs = [...prev];
+                                                    newLogs.pop(); // Remove placeholder
+                                                    newLogs.push({ type: 'dm_whisper', content: `🧠[DM Review]\n${reviewText} ` });
+                                                    return newLogs;
+                                                });
+                                            } catch (e) {
+                                                console.error(e);
+                                                showToast("Review Failed", "error");
+                                            }
+                                        }
+                                    }}
+                                />
+                            </div>
                             <button onClick={saveGame} className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 py-1.5 rounded-sm border border-slate-700 hover:border-amber-500 hover:text-amber-500 transition-colors flex items-center gap-2 font-tome-header">
                                 <Save size={14} /> Save
                             </button>
@@ -3415,154 +3727,165 @@ JSON格式回覆：
                     {/* Logs */}
                     <div
                         ref={logContainerRef}
-                        className={`flex-1 overflow-y-auto p-4 md:p-12 space-y-8 scroll-smooth overscroll-contain relative custom-scrollbar
-                        text-slate-200 ${userSettings.fontSize} ${userSettings.lineHeight}
-                        font-tome-body
-                        `}
+                        className={`flex-1 overflow-y-auto p-4 md:p-12 scroll-smooth overscroll-contain relative custom-scrollbar
+text-slate-200 ${userSettings.fontSize} ${userSettings.lineHeight}
+font-tome-body
+    `}
                     >
-                        {/* --- BREADCRUMBS (Location) --- */}
+                        <div ref={logContentRef} className="space-y-8 pb-40">
+                            {/* --- BREADCRUMBS (Location) --- */}
 
 
-                        {logs.map((log, idx) => (
-                            <div key={idx} className={`animate-in fade-in slide-in-from-bottom-2 duration-700`}>
-                                {/* Placeholder for now, I need to view code first */}
-                                {log.type === 'trpg_narrative' ? (
-                                    <SequentialLogRenderer
-                                        content={log.content}
-                                        roster={agentRoster}
-                                        renderTextWithDice={renderTextWithDice}
-                                        isNarrating={isNarrating}
-                                        onComplete={() => {
-                                            // Only handle complete for the LAST log
-                                            if (idx === logs.length - 1) {
-                                                handleNarrativeComplete();
-                                            }
-                                        }}
-                                        instant={idx !== logs.length - 1} // Old logs should be instant
-                                        textSpeed={userSettings.textSpeed}
-                                        theme={userSettings.theme}
-                                        fontSize={userSettings.fontSize}
-                                        letterSpacing={userSettings.letterSpacing}
-                                        lineHeight={userSettings.lineHeight}
-                                    />
-                                ) : log.type === 'narrative' ? (
-                                    <div className="prose prose-invert prose-p:text-slate-300 prose-lg max-w-none">
-                                        <div ref={idx === logs.length - 1 ? lastLogRef : null} className={`text-slate-200 text-xl leading-loose whitespace-pre-line font-tome-body tracking-wide`}>
-                                            {renderTextWithDice(log.content)}
+                            {logs.map((log, idx) => (
+                                <div key={idx} className={`animate -in fade -in slide -in -from-bottom-2 duration-700`}>
+                                    {/* Placeholder for now, I need to view code first */}
+                                    {log.type === 'trpg_narrative' ? (
+                                        <SequentialLogRenderer
+                                            content={log.content}
+                                            roster={agentRoster}
+                                            renderTextWithDice={renderTextWithDice}
+                                            isNarrating={isNarrating}
+                                            onComplete={() => {
+                                                // Only handle complete for the LAST log
+                                                if (idx === logs.length - 1) {
+                                                    handleNarrativeComplete();
+                                                    setForceInstant(false); // Reset speed up on completion
+                                                }
+                                            }}
+                                            instant={idx !== logs.length - 1 || (idx === logs.length - 1 && forceInstant)} // Old logs instant, or forced
+                                            textSpeed={userSettings.textSpeed}
+                                            theme={userSettings.theme}
+                                            fontSize={userSettings.fontSize}
+                                            letterSpacing={userSettings.letterSpacing}
+                                            lineHeight={userSettings.lineHeight}
+                                        />
+                                    ) : log.type === 'narrative' ? (
+                                        <div className="prose prose-invert prose-p:text-slate-300 prose-lg max-w-none">
+                                            <div ref={idx === logs.length - 1 ? lastLogRef : null} className={`text-slate-200 text-xl leading-loose whitespace-pre-line font-tome-body tracking-wide`}>
+                                                {renderTextWithDice(log.content)}
+                                            </div>
                                         </div>
-                                    </div>
 
 
-                                ) : log.type === 'image' ? (
-                                    <div className="my-8 p-2 border-2 border-[#1a1a1a]/10 bg-white/50 shadow-sm relative group animate-in fade-in zoom-in-95 duration-1000 rotate-1 transform hover:rotate-0 transition-transform">
-                                        <div className="overflow-hidden sepia-[.3] contrast-125 brightness-90 filter">
-                                            <img src={log.content} alt="Scene Visualization" className="w-full h-auto max-h-[400px] object-cover mix-blend-multiply opacity-90" />
+                                    ) : log.type === 'image' ? (
+                                        <div className="my-8 p-2 border-2 border-[#1a1a1a]/10 bg-white/50 shadow-sm relative group animate-in fade-in zoom-in-95 duration-1000 rotate-1 transform hover:rotate-0 transition-transform">
+                                            <div className="overflow-hidden sepia-[.3] contrast-125 brightness-90 filter">
+                                                <img src={log.content} alt="Scene Visualization" className="w-full h-auto max-h-[400px] object-cover mix-blend-multiply opacity-90" />
+                                            </div>
+                                            <div className="absolute bottom-2 right-2 bg-[#f4ecd8] px-2 py-1 border border-[#1a1a1a]/20 text-[10px] font-tome-header uppercase tracking-widest text-[#1a1a1a]">
+                                                <span className="flex items-center gap-1">
+                                                    <ImageIcon size={10} /> {log.location || "Plate I"}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="absolute bottom-2 right-2 bg-[#f4ecd8] px-2 py-1 border border-[#1a1a1a]/20 text-[10px] font-tome-header uppercase tracking-widest text-[#1a1a1a]">
-                                            <span className="flex items-center gap-1">
-                                                <ImageIcon size={10} /> {log.location || "Plate I"}
-                                            </span>
-                                        </div>
-                                    </div>
 
-                                ) : log.type === 'turn_batch' ? (
-                                    <div className="space-y-6 mb-8">
-                                        {/* Divider Logic */}
-                                        {(() => {
-                                            const roundCount = logs.slice(0, idx + 1).filter(l => l.type === 'turn_batch').length;
+                                    ) : log.type === 'turn_batch' ? (
+                                        <div className="space-y-6 mb-8">
+                                            {/* Divider Logic */}
+                                            {(() => {
+                                                const roundCount = logs.slice(0, idx + 1).filter(l => l.type === 'turn_batch').length;
 
-                                            return (
-                                                <div className="flex items-center justify-center gap-4 py-8 opacity-60">
-                                                    <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
-                                                    <div className="px-3 py-1 border-y border-[#1a1a1a]/40 bg-transparent">
-                                                        <span className="text-[#8a2323] font-tome-header text-sm font-bold uppercase tracking-[0.2em]">
-                                                            Chapter {roundCount}
-                                                        </span>
+                                                return (
+                                                    <div className="flex items-center justify-center gap-4 py-8 opacity-60">
+                                                        <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
+                                                        <div className="px-3 py-1 border-y border-[#1a1a1a]/40 bg-transparent">
+                                                            <span className="text-[#8a2323] font-tome-header text-sm font-bold uppercase tracking-[0.2em]">
+                                                                Chapter {roundCount}
+                                                            </span>
+                                                        </div>
+                                                        <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
                                                     </div>
-                                                    <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
-                                                </div>
-                                            );
-                                        })()}
+                                                );
+                                            })()}
 
-                                        {(Array.isArray(log.content) ? log.content : (log.content?.turns || [])).map((turn, tIdx) => {
-                                            const speakerChar = agentRoster.find(c => (turn.speaker && c.name.includes(turn.speaker)) || (turn.speaker && turn.speaker.includes(c.name.split('·')[0])));
+                                            {(Array.isArray(log.content) ? log.content : (log.content?.turns || [])).map((turn, tIdx) => {
+                                                const speakerChar = agentRoster.find(c => (turn.speaker && c.name.includes(turn.speaker)) || (turn.speaker && turn.speaker.includes(c.name.split('·')[0])));
 
-                                            // FILTER: Hide Party Member Action Blocks (as per user request 2025-12-12)
-                                            // Only show DM Narrative and Enemy/NPC turns.
-                                            if (speakerChar && party.includes(speakerChar.id)) {
-                                                return null;
-                                            }
+                                                // FILTER: Hide Party Member Action Blocks (as per user request 2025-12-12)
+                                                // Only show DM Narrative and Enemy/NPC turns.
+                                                if (speakerChar && party.includes(speakerChar.id)) {
+                                                    return null;
+                                                }
 
-                                            return gameMode === GAME_MODES.NOVEL ? (
-                                                // NOVEL RENDERER - Pure text, minimal UI
-                                                <div key={tIdx} className="relative pl-0">
-                                                    {/* Speaker Name only if Dialogue */}
-                                                    {/* Actually novel mode usually integrates speaker into text, but structured output keeps them separate. We'll simulate novel flow. */}
+                                                return gameMode === GAME_MODES.NOVEL ? (
+                                                    // NOVEL RENDERER - Pure text, minimal UI
+                                                    <div key={tIdx} className="relative pl-0">
+                                                        {/* Speaker Name only if Dialogue */}
+                                                        {/* Actually novel mode usually integrates speaker into text, but structured output keeps them separate. We'll simulate novel flow. */}
 
-                                                    <div className="space-y-6 text-[#1a1a1a]">
-                                                        {turn.narration && turn.narration.split('\n').map((para, pIdx) => (
-                                                            para.trim() && <p key={`n-${pIdx}`} className="text-xl mb-6 leading-loose tracking-wide font-tome-body">{renderTextWithDice(para)}</p>
+                                                        <div className="space-y-6 text-[#1a1a1a]">
+                                                            {turn.narration && turn.narration.split('\n').map((para, pIdx) => (
+                                                                para.trim() && <p key={`n-${pIdx}`} className="text-xl mb-6 leading-loose tracking-wide font-tome-body">{renderTextWithDice(para)}</p>
+                                                            ))}
+                                                            {turn.action && turn.action.split('\n').map((para, pIdx) => (
+                                                                para.trim() && <p key={`a-${pIdx}`} className="text-lg italic opacity-80 mb-6 leading-loose pl-4 border-l-2 border-[#8a2323]/20">*{renderTextWithDice(para)}*</p>
+                                                            ))}
+                                                            {turn.dialogue && turn.dialogue.split('\n').map((para, pIdx) => (
+                                                                para.trim() && <p key={`d-${pIdx}`} className="text-xl font-bold mb-6 leading-loose text-[#2c3e50]">
+                                                                    {turn.speaker && !turn.speaker.includes('DM') && !turn.speaker.includes('System') && <span className="text-[#8a2323] text-xs block mb-1 font-tome-header uppercase tracking-widest">{turn.speaker}</span>}
+                                                                    “{renderTextWithDice(para)}”
+                                                                </p>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    // LEFT BORDER CARD STYLE (Simplified for Ink)
+                                                    // ... (We'll simplify this to look like a book excerpt)
+                                                    <div key={tIdx} className="relative pl-4 border-l-4 border-[#1a1a1a]/10 py-2 mb-4 hover:border-[#8a2323]/40 transition-colors">
+                                                        {/* Speaker Header */}
+                                                        {turn.speaker && !turn.speaker.includes('DM') && (
+                                                            <h4 className="font-tome-header font-bold text-sm text-[#8a2323] uppercase tracking-widest mb-2">
+                                                                {turn.speaker}
+                                                            </h4>
+                                                        )}
+
+                                                        {/* Narration */}
+                                                        {turn.narration && turn.narration.split('\n').map((para, i) => para.trim() && (
+                                                            <p key={`n-${i}`} className="mb-4 text-[#1a1a1a] leading-relaxed font-tome-body text-lg">{renderTextWithDice(para)}</p>
                                                         ))}
-                                                        {turn.action && turn.action.split('\n').map((para, pIdx) => (
-                                                            para.trim() && <p key={`a-${pIdx}`} className="text-lg italic opacity-80 mb-6 leading-loose pl-4 border-l-2 border-[#8a2323]/20">*{renderTextWithDice(para)}*</p>
-                                                        ))}
-                                                        {turn.dialogue && turn.dialogue.split('\n').map((para, pIdx) => (
-                                                            para.trim() && <p key={`d-${pIdx}`} className="text-xl font-bold mb-6 leading-loose text-[#2c3e50]">
-                                                                {turn.speaker && !turn.speaker.includes('DM') && !turn.speaker.includes('System') && <span className="text-[#8a2323] text-xs block mb-1 font-tome-header uppercase tracking-widest">{turn.speaker}</span>}
+
+                                                        {/* Dialogue */}
+                                                        {turn.dialogue && turn.dialogue.split('\n').map((para, i) => para.trim() && (
+                                                            <p key={`d-${i}`} className="mb-4 text-[#2c3e50] font-bold font-tome-body text-lg pl-2">
                                                                 “{renderTextWithDice(para)}”
                                                             </p>
                                                         ))}
                                                     </div>
-                                                </div>
-                                            ) : (
-                                                // LEFT BORDER CARD STYLE (Simplified for Ink)
-                                                // ... (We'll simplify this to look like a book excerpt)
-                                                <div key={tIdx} className="relative pl-4 border-l-4 border-[#1a1a1a]/10 py-2 mb-4 hover:border-[#8a2323]/40 transition-colors">
-                                                    {/* Speaker Header */}
-                                                    {turn.speaker && !turn.speaker.includes('DM') && (
-                                                        <h4 className="font-tome-header font-bold text-sm text-[#8a2323] uppercase tracking-widest mb-2">
-                                                            {turn.speaker}
-                                                        </h4>
-                                                    )}
-
-                                                    {/* Narration */}
-                                                    {turn.narration && turn.narration.split('\n').map((para, i) => para.trim() && (
-                                                        <p key={`n-${i}`} className="mb-4 text-[#1a1a1a] leading-relaxed font-tome-body text-lg">{renderTextWithDice(para)}</p>
-                                                    ))}
-
-                                                    {/* Dialogue */}
-                                                    {turn.dialogue && turn.dialogue.split('\n').map((para, i) => para.trim() && (
-                                                        <p key={`d-${i}`} className="mb-4 text-[#2c3e50] font-bold font-tome-body text-lg pl-2">
-                                                            “{renderTextWithDice(para)}”
-                                                        </p>
-                                                    ))}
-                                                </div>
-                                            );
-                                        })}
-                                        <div ref={idx === logs.length - 1 ? lastLogRef : null} />
-                                    </div>
-                                ) : log.type === 'user' ? (
-                                    <div className="flex items-center gap-2 text-[#8a2323] text-xs font-bold uppercase tracking-[0.2em] mt-8 mb-4 justify-center border-t border-[#8a2323]/20 pt-6">
-                                        <span>{log.content}</span>
-                                    </div>
-                                ) : log.type === 'user-batch' ? (
-                                    <div className="bg-[#1a1a1a]/5 border-l-2 border-[#1a1a1a] pl-4 py-3 pr-4 text-sm text-[#1a1a1a] font-mono whitespace-pre-line mb-6 italic">
-                                        {log.content}
-                                    </div>
-                                ) : (
-                                    <div className="text-center text-red-800 text-sm py-2 border-y border-red-900/10 bg-red-900/5">
-                                        {log.content}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-
-                        {isGenerating && (
-                            <div className="flex items-center justify-center gap-3 text-amber-500/80 italic text-sm py-8 animate-pulse font-serif">
-                                <Sword size={20} className="animate-spin" /> Fates are weaving...
-                            </div>
-                        )}
-                        <div ref={scrollTrigger} className="h-16" />
+                                                );
+                                            })}
+                                            <div ref={idx === logs.length - 1 ? lastLogRef : null} />
+                                        </div>
+                                    ) : log.type === 'dm_whisper' ? (
+                                        <div className="my-6 mx-4 p-4 bg-indigo-950/30 border-l-4 border-indigo-500/50 rounded-r-lg">
+                                            <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                <MessageCircle size={12} /> DM Whisper
+                                            </h4>
+                                            <div className="text-indigo-100 font-sans text-sm leading-relaxed whitespace-pre-line">
+                                                {log.content}
+                                            </div>
+                                        </div>
+                                    ) : log.type === 'user' ? (
+                                        <div className="flex items-center gap-2 text-[#8a2323] text-xs font-bold uppercase tracking-[0.2em] mt-8 mb-4 justify-center border-t border-[#8a2323]/20 pt-6">
+                                            <span>{log.content}</span>
+                                        </div>
+                                    ) : log.type === 'user-batch' ? (
+                                        <div className="bg-[#1a1a1a]/5 border-l-2 border-[#1a1a1a] pl-4 py-3 pr-4 text-sm text-[#1a1a1a] font-mono whitespace-pre-line mb-6 italic">
+                                            {log.content}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center text-red-800 text-sm py-2 border-y border-red-900/10 bg-red-900/5">
+                                            {log.content}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                            {isGenerating && (
+                                <div className="flex items-center justify-center gap-3 text-amber-500/80 italic text-sm py-8 animate-pulse font-serif">
+                                    <Sword size={20} className="animate-spin" /> Fates are weaving...
+                                </div>
+                            )}
+                            <div ref={scrollTrigger} className="h-16" />
+                        </div>
                     </div>
 
                     {/* Execution Button Overlay (When ready) */}
@@ -3571,11 +3894,12 @@ JSON格式回覆：
                             <button
                                 onClick={() => executeTurn(false)}
                                 className={`
-              w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg flex items-center justify-center gap-3 transition-all font-tome-header uppercase tracking-widest
+w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg flex items-center justify-center gap-3 transition-all font-tome-header uppercase tracking-widest
               ${isRoundReady
-                                        ? 'bg-[#8a2323] text-[#f4ecd8] border-[#8a2323] hover:bg-[#6e1c1c] scale-105 animate-pulse'
-                                        : 'bg-[#f4ecd8] border-[#1a1a1a] text-[#1a1a1a] hover:bg-white'}
-            `}
+                                        ? 'bg-[#8a2323]text-[#f4ecd8]border-[#8a2323]hover:bg-[#6e1c1c]scale-105 animate-pulse'
+                                        : 'bg-[#f4ecd8]border-[#1a1a1a]text-[#1a1a1a]hover:bg-white'
+                                    }
+`}
                             >
                                 {isRoundReady ? (
                                     <><Sword size={22} /> Execute Turn ({pendingCount}/{aliveMembers.length})</>
@@ -3602,7 +3926,7 @@ JSON格式回覆：
 
                 {/* Right/Bottom: Controls (Resizable) */}
                 <div
-                    className="h-[40%] md:h-auto bg-slate-900/80 backdrop-blur-md border-t border-slate-700 md:border-t-0 border-slate-700 flex flex-col shadow-2xl z-20 min-h-0 relative"
+                    className="h-[40%] md:h-full bg-slate-900/80 backdrop-blur-md border-t border-slate-700 md:border-t-0 border-slate-700 flex flex-col shadow-2xl z-20 min-h-0 relative"
                     style={{ width: isMobile ? '100%' : sidebarWidth }}
                 >
 
@@ -3620,6 +3944,7 @@ JSON格式回覆：
                     <div className="p-4 border-b border-slate-700 bg-slate-900/50 text-xs font-bold text-slate-500 uppercase tracking-widest flex justify-between shrink-0 font-tome-header">
                         <span>{gameMode === GAME_MODES.NOVEL ? 'Novel Mode' : 'Tactical Mode'}</span>
                         {isPreGenerating && <span className="text-amber-500 animate-pulse flex items-center gap-1"><Brain size={14} /> Thinking...</span>}
+                        {!isNarrativeComplete && !isGenerating && !isPreGenerating && <span className="text-amber-400 animate-pulse flex items-center gap-1"><PlayCircle size={14} /> Narrating...</span>}
                     </div>
 
                     {/* Unified Scrollable Roster Area (Party + Enemies) */}
@@ -3632,19 +3957,43 @@ JSON格式回覆：
                                 const state = gameState[id] || { hp: 100, psych: "正常" };
                                 const isDead = state.hp <= 0;
                                 const hasAction = !!pendingActions[id];
+                                const hasOptions = actionCache[id]?.options?.length > 0;
+                                const isReadyToAct = hasOptions && !hasAction && !isDead;
+
 
                                 // Determine modal direction: Always Open DOWN (as requested, relying on scroll)
                                 const modalDirection = 'down';
 
-                                // Dark Tome Aesthetic Logic
-                                const cardBorder = hasAction ? 'border-amber-500 shadow-md border-2' : 'border-slate-700 border hover:border-slate-500';
-                                const cardBg = isDead ? 'opacity-50 grayscale bg-red-900/20' : hasAction ? 'bg-slate-800 shadow-[inset_0_0_20px_rgba(245,158,11,0.1)]' : 'bg-transparent';
+                                const isModalOpen = actionModalChar?.id === id;
+
+                                // Dark Tome Aesthetic Logic & Status Cues
+                                let cardBorder = 'border-slate-700 border hover:border-slate-500';
+                                let cardBg = 'bg-transparent';
+                                let zIndexClass = isModalOpen ? 'z-50' : 'z-0'; // Fix layering issue
+                                let showGlow = false;
+
+                                if (isDead) {
+                                    cardBg = 'opacity-50 grayscale bg-red-900/20';
+                                } else if (hasAction) {
+                                    // DONE / PENDING: Dimmed
+                                    cardBg = 'opacity-60 bg-slate-950/80 grayscale-[0.5] shadow-inner';
+                                    cardBorder = 'border-slate-800 border';
+                                } else if (isReadyToAct) {
+                                    // READY: Subtle Glow (微光)
+                                    // Reduced border opacity and shadow intensity
+                                    cardBorder = 'border-amber-500/50 border shadow-[0_0_8px_rgba(245,158,11,0.3)]';
+                                    cardBg = 'bg-amber-950/20';
+                                    showGlow = true;
+                                } else {
+                                    // DEFAULT
+                                    cardBg = 'bg-transparent';
+                                }
 
                                 return (
                                     <div
                                         key={id}
                                         onClick={() => {
-                                            if (isDead || isGenerating || char.controlMode === 'auto') return;
+                                            if (isDead || isGenerating || !isNarrativeComplete || char.controlMode === 'auto') return;
 
                                             // Auto-generate options if missing
                                             const cached = actionCache[char.id];
@@ -3656,9 +4005,14 @@ JSON格式回覆：
                                         }}
                                         className={`
                                             group relative p-3 rounded transition-all cursor-pointer flex flex-col gap-2
-                                            ${cardBorder} ${cardBg}
-                                        `}
+                                            ${cardBorder} ${cardBg} ${zIndexClass}
+                                            ${!isNarrativeComplete && !isGenerating ? 'opacity-60 saturate-50' : ''}
+`}
                                     >
+                                        {/* Separated Glow Overlay to prevent child flash */}
+                                        {showGlow && (
+                                            <div className="absolute inset-0 rounded border border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.2)] animate-pulse pointer-events-none z-10"></div>
+                                        )}
                                         {/* Card Header (Avatar + Info) */}
                                         <div className="flex items-center gap-4 w-full">
                                             <div className="relative">
@@ -3693,8 +4047,9 @@ JSON格式回覆：
                                                                 flex items-center gap-1.5 px-2 py-1 rounded-sm cursor-pointer transition-all border font-tome-body
                                                                 ${char.controlMode === 'auto'
                                                                     ? 'bg-slate-700 text-white border-slate-600'
-                                                                    : 'bg-transparent text-slate-400 border-slate-700 hover:border-slate-500 hover:text-white'}
-                                                            `}
+                                                                    : 'bg-transparent text-slate-400 border-slate-700 hover:border-slate-500 hover:text-white'
+                                                                }
+                                `}
                                                             title="Toggle Control Mode"
                                                         >
                                                             {char.controlMode === 'auto' ? <Bot size={10} className="shrink-0" /> : <User size={10} className="shrink-0" />}
@@ -3779,7 +4134,7 @@ JSON格式回覆：
                                                     <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
                                                         <div
                                                             className="h-full bg-amber-700"
-                                                            style={{ width: `${Math.min(100, ((char.companion.hp || 1) / (char.companion.maxHp || 1)) * 100)}%` }}
+                                                            style={{ width: `${Math.min(100, ((char.companion.hp || 1) / (char.companion.maxHp || 1)) * 100)}% ` }}
                                                         ></div>
                                                     </div>
                                                 </div>
@@ -3804,7 +4159,7 @@ JSON格式回覆：
                                                         }
                                                         setActionModalChar(null);
                                                         const cleanText = actionText.replace(/^(Uses|使用)\s*/, '');
-                                                        showToast(`已排程行動：${cleanText}`, "info");
+                                                        showToast(`已排程行動：${cleanText} `, "info");
                                                     }}
                                                     onStyleDialogue={async (c, rawText) => {
                                                         if (charAgent && styleMode) {
@@ -3828,33 +4183,56 @@ JSON格式回覆：
                         </div>
 
                         {/* Scenario Roster (Active Enemies & NPCs) - Exclude Party Members */}
-                        <ScenarioRoster roster={scenarioRoster.filter(r => {
-                            // Filter out party members by ID
-                            if (party.includes(r.id)) return false;
+                        {/* Scenario Roster (Active Enemies & NPCs) - Exclude Party Members & Deduplicate */}
+                        <ScenarioRoster roster={(() => {
+                            // Helper: Normalize name for dedup (Aggressive)
+                            // If name has Chinese, strip all non-Chinese chars (removes 'Savage', 'Cruel' prefixes)
+                            const getDedupKey = (name) => {
+                                if (!name) return '';
+                                if (/[\u4e00-\u9fa5]/.test(name)) {
+                                    return name.replace(/[^\u4e00-\u9fa5]/g, ''); // Keep ONLY Chinese
+                                }
+                                return name.toLowerCase().replace(/[^a-z0-9]/g, ''); // Standard fallback
+                            };
 
-                            // Get party names from both roster and agentRoster for comprehensive matching
-                            const partyChars = agentRoster.filter(c => party.includes(c.id));
-                            const partyNames = partyChars.map(c => c.name);
+                            // 1. Filter out party members
+                            const nonParty = scenarioRoster.filter(r => {
+                                if (party.includes(r.id)) return false;
+                                const partyChars = agentRoster.filter(c => party.includes(c.id));
+                                const partyNames = partyChars.map(c => c.name);
 
-                            // Normalize name for comparison (remove dots, lowercase)
-                            const normalizedActorName = (r.name || '').replace(/[·•．\s]/g, '').toLowerCase();
+                                const rKey = getDedupKey(r.name);
 
-                            // Check if this actor matches any party member
-                            const isPartyMember = partyNames.some(pName => {
-                                const normalizedPartyName = pName.replace(/[·•．\s]/g, '').toLowerCase();
-                                const pNameFirst = pName.split(/[·•．\s]/)[0];
-                                const actorNameFirst = (r.name || '').split(/[·•．\s]/)[0];
-                                return (
-                                    r.name === pName ||
-                                    r.name.includes(pNameFirst) ||
-                                    pName.includes(actorNameFirst) ||
-                                    normalizedActorName.includes(normalizedPartyName) ||
-                                    normalizedPartyName.includes(normalizedActorName)
-                                );
+                                // Check if this actor matches any party member (fuzzy)
+                                const isPartyMember = partyNames.some(pName => {
+                                    const pKey = getDedupKey(pName);
+                                    return rKey.includes(pKey) || pKey.includes(rKey);
+                                });
+                                return !isPartyMember;
                             });
 
-                            return !isPartyMember;
-                        })} />
+                            // 2. Deduplicate by Fuzzy Key
+                            const uniqueRoster = [];
+                            const seenKeys = new Set();
+                            const seenIds = new Set();
+
+                            nonParty.forEach(actor => {
+                                const key = getDedupKey(actor.name);
+
+                                // Priority: Prefer "Cleaner" names (shorter) if keys match?
+                                // OR: Just take the first one. 
+                                // If the new one is significantly different? 
+                                // For now, simple First-Wins dedup is safer for UI stability.
+
+                                if (!seenIds.has(actor.id) && !seenKeys.has(key)) {
+                                    uniqueRoster.push(actor);
+                                    seenIds.add(actor.id);
+                                    seenKeys.add(key);
+                                }
+                            });
+
+                            return uniqueRoster;
+                        })()} />
 
                         {/* Journal Modal (Kept - triggered from top-left) */}
                         {
@@ -3918,8 +4296,8 @@ JSON格式回覆：
                             )
                         }
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
         );
     };
 
@@ -3987,13 +4365,14 @@ JSON格式回覆：
         }
     };
 
+
     return (
-        <div className={`relative w-full min-h-screen font-serif overflow-hidden selection:bg-amber-500/20 ${getThemeClasses()}`}>
+        <div className={`relative w-full h-screen overflow-hidden font-serif selection:bg-amber-500/20 ${getThemeClasses()}`}>
             {/* Dynamic Background Layer */}
             <div
                 className="fixed inset-0 z-0 transition-opacity duration-1000 ease-in-out pointer-events-none"
                 style={{
-                    backgroundImage: `url(/assets/background/${BACKGROUND_MAP[currentBgmKey] || BACKGROUND_MAP['default']})`,
+                    backgroundImage: `url(/assets/background / ${BACKGROUND_MAP[currentBgmKey] || BACKGROUND_MAP['default']})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     opacity: 0.4,
@@ -4028,7 +4407,7 @@ JSON格式回覆：
                 onSave={handleSave}
                 onLoad={handleLoad}
                 onDelete={(slotId) => {
-                    localStorage.removeItem(`dnd_save_slot_${slotId}`);
+                    localStorage.removeItem(`dnd_save_slot_${slotId} `);
                     // Force re-render of modal? The modal manages its own "refresh" or checking localstorage?
                     // We probably need to pass a signal or just let the modal handle it internally if we refactor it.
                     showToast(`存檔 ${slotId} 已刪除`, "info");
@@ -4036,9 +4415,13 @@ JSON格式回覆：
             />
 
             {/* Character Detail Modal */}
+            {/* Character Detail Modal */}
             <CharacterModal
                 isOpen={!!activeModalChar}
                 character={activeModalChar}
+                relationships={relationships}
+                party={view === 'game' ? party : []} // Only show party relationships in Game View
+                roster={view === 'game' ? agentRoster : []} // Only show roster context in Game View
                 onClose={() => setActiveModalChar(null)}
                 onGeneratePortrait={handleRegeneratePortrait}
                 onUpdatePortrait={handleUpdatePortrait}
@@ -4078,6 +4461,58 @@ JSON格式回覆：
                 onGenerate={handleCreateCustomModule}
                 isGenerating={isGenerating}
             />
+
+            {/* Inline DM Chat Input (Replaces Modal) */}
+            {showDMChat && (
+                <div className="fixed bottom-0 left-0 w-full z-50 bg-slate-900 border-t border-slate-700 p-4 animate-in slide-in-from-bottom duration-300 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+                    <div className="max-w-4xl mx-auto flex gap-4 items-center">
+                        <div className="text-amber-500 font-bold uppercase tracking-widest text-xs whitespace-nowrap">DM Channel</div>
+                        <input
+                            autoFocus
+                            type="text"
+                            placeholder="Type your message to the DM..."
+                            className="flex-1 bg-slate-800/50 border border-slate-700 rounded px-4 py-2 text-slate-200 focus:outline-none focus:border-amber-500 transition-colors font-serif"
+                            onKeyDown={async (e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    const text = e.target.value;
+                                    if (!text.trim() || isChattingWithDM) return;
+
+                                    e.target.value = '';
+                                    setIsChattingWithDM(true);
+                                    setShowDMChat(false); // Close bar immediately or keep open? User said "cancel locked box", implies they want flow. Let's close it to act like "Input sent".
+
+                                    // 1. Add User Log
+                                    setLogs(prev => [...prev, { type: 'user', content: `(Whisper) ${text}` }]);
+
+                                    try {
+                                        // 2. Call Agent
+                                        const response = await storyAgent.chatWithDM({
+                                            moduleTitle: selectedModule?.title || "Unknown",
+                                            logs: logs,
+                                            party: party.map(id => agentRoster.find(c => c.id === id)?.name || id)
+                                        }, text);
+
+                                        // 3. Add DM Response Log
+                                        setLogs(prev => [...prev, { type: 'dm_whisper', content: response }]);
+                                    } catch (e) {
+                                        console.error(e);
+                                        showToast("Failed to reach DM", "error");
+                                    } finally {
+                                        setIsChattingWithDM(false);
+                                    }
+                                }
+                            }}
+                            disabled={isChattingWithDM}
+                        />
+                        <button
+                            onClick={() => setShowDMChat(false)}
+                            className="text-slate-500 hover:text-slate-300 font-bold px-3"
+                        >
+                            CANCEL
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Adventure Archive Library */}
             <ArchiveModal

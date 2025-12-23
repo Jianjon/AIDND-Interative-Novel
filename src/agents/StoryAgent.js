@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AIService } from "../services/AIService";
 import { formatModuleContext, getActInfo } from '../data/modules_data.js';
 
 
@@ -10,38 +10,37 @@ import { formatModuleContext, getActInfo } from '../data/modules_data.js';
  * Strictly forbidden from handling game mechanics (HP, dice, inventory).
  */
 export class StoryAgent {
-    constructor(apiKey) {
-        this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    }
+  constructor(options = {}) {
+    this.aiService = new AIService(options);
+  }
 
-    /**
-     * Generates the next segment of the story.
-     * @param {Object} context - The current state context.
-     * @param {string} context.moduleTitle - Current adventure module.
-     * @param {string} context.currentLocation - Current location string.
-     * @param {string} context.lastLog - The previous narrative log (for continuity).
-     * @param {string} context.tone - 'relaxed', 'normal', or 'grim'.
-     * @param {string} context.pacing - 'fast' or 'slow'.
-     * @param {string} context.mode - 'novel' or 'trpg'.
-     * @param {Array} context.party - Party member names for TRPG mode.
-     * @param {string} context.encounterGuidelines - CR balance guidelines.
-     * @param {string} userAction - The player's input action.
-     * @returns {Promise<string|object>} The generated narrative text (Markdown) or structured TRPG turn.
-     */
-    async generateNarrative(context, userAction) {
-        const { moduleTitle, currentLocation, lastLog, tone, pacing, gmSignals, mode = 'novel', party = [], isPrologue = false, moduleId = null, currentAct = 1, encounterGuidelines = '', difficultyTier = '初階 (Beginner)' } = context;
+  /**
+   * Generates the next segment of the story.
+   * @param {Object} context - The current state context.
+   * @param {string} context.moduleTitle - Current adventure module.
+   * @param {string} context.currentLocation - Current location string.
+   * @param {string} context.lastLog - The previous narrative log (for continuity).
+   * @param {string} context.tone - 'relaxed', 'normal', or 'grim'.
+   * @param {string} context.pacing - 'fast' or 'slow'.
+   * @param {string} context.mode - 'novel' or 'trpg'.
+   * @param {Array} context.party - Party member names for TRPG mode.
+   * @param {string} context.encounterGuidelines - CR balance guidelines.
+   * @param {string} userAction - The player's input action.
+   * @returns {Promise<string|object>} The generated narrative text (Markdown) or structured TRPG turn.
+   */
+  async generateNarrative(context, userAction) {
+    const { moduleTitle, currentLocation, lastLog, tone, pacing, gmSignals, mode = 'novel', party = [], isPrologue = false, moduleId = null, currentAct = 1, encounterGuidelines = '', difficultyTier = '初階 (Beginner)' } = context;
 
-        // Generate module plot context if available
-        const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
+    // Generate module plot context if available
+    const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
 
 
-        const TONE_PROMPTS = {
-            // ========== NOVEL MODE (敘事模式) ==========
-            // 重點: 故事品質、角色發展、文學性
-            // 核心原則: 主角是故事的靈魂，不應輕易死亡
+    const TONE_PROMPTS = {
+      // ========== NOVEL MODE (敘事模式) ==========
+      // 重點: 故事品質、角色發展、文學性
+      // 核心原則: 主角是故事的靈魂，不應輕易死亡
 
-            relaxed: `STYLE: 輕小說風格 (Casual/Light Novel)
+      relaxed: `STYLE: 輕小說風格 (Casual/Light Novel)
                 ** 敘事重點 **: 幽默、角色互動、樂觀正向、熱血動漫般的冒險
                 ** 死亡規則 **: 
                 - 主角群體 **絕對不會死亡**
@@ -52,7 +51,7 @@ export class StoryAgent {
                 - 輕快的對話、角色吐槽、誇張的情緒表現
                 - 「帥氣法則」優先於邏輯合理性
                 - 避免沉重的死亡場景，保持輕鬆愉快的氛圍`,
-            normal: `STYLE: 正統奇幻史詩 (Classic Epic Fantasy)
+      normal: `STYLE: 正統奇幻史詩 (Classic Epic Fantasy)
                 ** 敘事重點 **: 史詩格局、優美文字、嚴肅但充滿驚奇
                 ** 死亡規則 **:
                 - 主角群在故事前期 **不會死亡**
@@ -63,7 +62,7 @@ export class StoryAgent {
                 - 平衡動作與描寫，英雄主義基調
                 - 像托爾金、R.A. Salvatore 的經典奇幻
                 - 死亡場景要有重量感和情感衝擊`,
-            grim: `STYLE: 黑暗寫實 (Grimdark)
+      grim: `STYLE: 黑暗寫實 (Grimdark)
                 ** 敘事重點 **: 壓抑、危險、勝利伴隨代價
                 ** 死亡規則 **:
                 - 主角群 **可能會死**，但死亡必須服務敘事
@@ -75,8 +74,8 @@ export class StoryAgent {
                 - 魔法令人畏懼、世界古老而無情
                 - 勝利從不廉價，每一場勝利都有代價`,
 
-            // TRPG Mode DM Styles
-            guide: `DM PERSONA: 慈愛導師 (The Benevolent Guide)
+      // TRPG Mode DM Styles
+      guide: `DM PERSONA: 慈愛導師 (The Benevolent Guide)
                 Main Goal: 確保隊伍能順利體驗完整故事。
                 ** 第一角色不死規則 **:
                 - 隊伍中的第一位角色 (隊長) 永遠不會真正死亡
@@ -87,7 +86,7 @@ export class StoryAgent {
                 - 敵人不會集火、不會攻擊倒地目標
                 - 適時給予劇情提示，避免玩家卡關
                 - 「失敗前進」: 失敗不會終結故事，而是帶來新的挑戰`,
-            arbiter: `DM PERSONA: 公正裁判 (The Fair Arbiter)
+      arbiter: `DM PERSONA: 公正裁判 (The Fair Arbiter)
                 Main Goal: 中立公正的模擬，骰子決定一切。
                 ** 公正規則 **:
                 - 嚴格遵守 D&D 5e 規則，不會暗中修改結果
@@ -97,7 +96,7 @@ export class StoryAgent {
                 ** 死亡規則 **:
                 - 角色可以正常死亡 (HP 0 + 3 次死亡豁免失敗)
                 - 提供公平的復活機會 (隊友救援、神廟、NPC 等)`,
-            ruthless: `DM PERSONA: 冷酷無情 (The Ruthless Executioner)
+      ruthless: `DM PERSONA: 冷酷無情 (The Ruthless Executioner)
                 Main Goal: 極限挑戰，只有戰術卓越的玩家能生存。
                 ** 致命規則 **:
                 - 敵人使用最優策略 (集火弱者、補刀倒地目標、利用掩護)
@@ -109,24 +108,24 @@ export class StoryAgent {
                 - 僅適合熟悉 D&D 戰術的玩家
                 ** 獎勵 **:
                 - 存活下來會獲得額外獎勵 (經驗值 +20%、稀有道具)`
-        };
+    };
 
-        const PACING_PROMPTS = {
-            fast: "PACING: FAST. Focus on the main objective. Minimize travel time and minor encounters. Resolve conflicts quickly.",
-            slow: "PACING: SLOW / EXTENDED. Aim for a 1.5x longer session. Introduce complications, sub-obstacles, and unexpected twists. Do not resolve the main conflict immediately. Force the players to work for their victory."
-        };
+    const PACING_PROMPTS = {
+      fast: "PACING: FAST. Focus on the main objective. Minimize travel time and minor encounters. Resolve conflicts quickly.",
+      slow: "PACING: SLOW / EXTENDED. Aim for a 1.5x longer session. Introduce complications, sub-obstacles, and unexpected twists. Do not resolve the main conflict immediately. Force the players to work for their victory."
+    };
 
-        let modePrompt = "";
+    let modePrompt = "";
 
-        if (mode === 'trpg') {
-            // PROLOGUE: Trigger if isPrologue flag OR empty/trigger userAction
-            const isOpeningScene = isPrologue || userAction.includes('Prologue') || userAction.trim() === '' || userAction.includes('開始') || userAction.includes('Start');
-            if (isOpeningScene) {
-                // Build explicit party list for stronger AI constraint
-                const partyNameList = party.map(p => p.name || p).join('、');
-                const firstName = party[0]?.name || '角色A';
+    if (mode === 'trpg') {
+      // PROLOGUE: Trigger if isPrologue flag OR empty/trigger userAction
+      const isOpeningScene = isPrologue || userAction.includes('Prologue') || userAction.trim() === '' || userAction.includes('開始') || userAction.includes('Start');
+      if (isOpeningScene) {
+        // Build explicit party list for stronger AI constraint
+        const partyNameList = party.map(p => p.name || p).join('、');
+        const firstName = party[0]?.name || '角色A';
 
-                modePrompt = `
+        modePrompt = `
 ** THIS IS THE OPENING SCENE (序幕) - 必須包含完整結構 **
 
 === 角色限制 ===
@@ -181,8 +180,8 @@ ${party.map(p => `- ${p.name || p} (${p.race || '?'} ${p.class || '?'})`).join('
 **OUTPUT**: 必須使用【區塊標題】分隔四個部分。
                 `;
 
-            } else {
-                modePrompt = `
+      } else {
+        modePrompt = `
 ** THIS IS AN ACTIVE COMBAT / ACTION TURN (戰鬥回合) **
 Player Actions: "${userAction}"
 
@@ -208,6 +207,11 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
        - *Example*: "行動順序：貝拉 (19), 澤拉 (15), K2 (12), 卡琳 (8), 哥布林群 (6)"
 
     2. **EXECUTION LOOP**: For EACH character in the calculated order:
+       **BALANCED SPOTLIGHT RULE (重要)**:
+       - **公平分配**: 無論隊伍有多少人，每位角色的描述長度必須 **大致相等** (約 160-200 字)。
+       - **拒絕簡化**: 禁止因為角色多就簡化描述。每一位角色的回合都是他們的「高光時刻」。
+       - **深度描寫**: 必須描寫動作的細節、感官體驗(聲音、光影、氣味)以及心理活動。
+
        - **HEADER**: \`### [Character Name] (Initiative: X)\`
          - **CRITICAL**: You MUST use this header for every single character provided in the action list.
          - *Inside the Header*:
@@ -219,12 +223,12 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
                 - 技能範例: \`[[DICE:卡琳:潛行:12]]\`
               - **DO NOT ROLL THE DICE YOURSELF!** The player will click to roll.
               - **AFTER** the dice tag, write BOTH outcomes using this format:
-                - \`[[成功:成功的結果描述，如造成傷害、效果觸發等]]\`
-                - \`[[失敗:失敗的結果描述，如攻擊落空、敵人反擊等]]\`
+                - \`[[成功:成功後果描述 (約 120 字，必須包含角色心理想法或下一步打算)]]\`
+                - \`[[失敗:失敗後果描述 (約 120 字，必須包含角色心理想法或下一步打算)]]\`
               - *完整格式*: 
-                \`(生動動作描述) -> [[DICE:角色:類型:DC]] -> [[成功:成功後果]] [[失敗:失敗後果]]\`
+                \`(生動動作描述) -> [[DICE:角色:類型:DC]] -> [[成功:描述+心理]] [[失敗:描述+心理]]\`
               - **範例**:
-                貝拉揮舞短劍刺向狗頭人，銀光閃爍間劍尖直取要害。-> [[DICE:貝拉:攻擊:13]] -> [[成功:短劍深深刺入狗頭人的肩膀，造成 5 點傷害！牠痛苦地嚎叫。]] [[失敗:狗頭人靈巧地側身閃避，貝拉的劍刃只劃過空氣。]]
+                貝拉揮舞短劍刺向狗頭人，銀光閃爍間劍尖直取要害。-> [[DICE:貝拉:攻擊:13]] -> [[成功:短劍深深刺入狗頭人的肩膀，造成 5 點傷害！牠痛苦地嚎叫。貝拉心中暗喜，想趁機再補上一腳，徹底擊倒這隻怪物，她的眼神中閃爍著冷酷的光芒。]] [[失敗:狗頭人靈巧地側身閃避，貝拉的劍刃只劃過空氣。她咬緊牙關，懊惱自己的急躁，迅速調整架勢準備應對敵人的反擊，心中暗自發誓下次絕不會再失手。]]
             - **Idle Player**:
               - If NO action is provided, describe the character hesitating or observing.
               - **IMMEDIATELY** trigger an enemy reaction: "Seeing [Name] hesitate, the [Enemy] lunges!"
@@ -280,7 +284,7 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
          🔴 [敵人名] HP X/Y → 正常
 
          【📍 戰況摘要】
-         (2-3句話描述戰鬥進展)
+         (戰術與視覺摘要，約 250 字，必須使用繁體中文，總結本回合重點與下一回合的戰術契機)
          \`\`\`
        - **INCLUDE HP CHANGES**: Mark HP changes like "(-5)" for damage, "(+10)" for healing.
        - **MARK DEAD ENEMIES**: Dead enemies MUST show "💀" and "(移除)".
@@ -328,10 +332,10 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
     - **OUTPUT**: Return plain Traditional Chinese prose. NO ENGLISH. NO FORMATTING MARKERS.
     - **CRITICAL**: DO NOT WRAP YOUR RESPONSE IN \`\`\` CODE BLOCKS.
 `;
-            }
-        } else {
-            // Novel Mode
-            modePrompt = `
+      }
+    } else {
+      // Novel Mode
+      modePrompt = `
                     ** NOVEL MODE - PURE STORYTELLING:**
                         - You are writing a chapter of a novel starring SPECIFIC CHARACTERS.
                         - ** PROTAGONISTS **: You MUST write from the perspective of the characters listed in [PARTY PROFILES].
@@ -354,14 +358,15 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
                         突然，一陣陰冷的風從深處吹來，夾雜著腐朽的氣息。埃拉拉猛地倒吸一口氣：「有東西醒了。」
                                             
                                             `;
-        }
+    }
 
-        const systemPrompt = `
+    const systemPrompt = `
         You are the ** Storyteller ** (Narrative Agent) for an interactive D & D novel.
     Module: "${moduleTitle}"
 Location: "${currentLocation}"
 
-    ** CRITICAL: ALL OUTPUT MUST BE IN TRADITIONAL CHINESE(繁體中文) **
+        **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
+        **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**
     ** CRITICAL: STRICTLY FOLLOW THE 【HEADER】 FORMATTING RULES. DO NOT USE BOLD MARKDOWN FOR HEADERS. **
     
     === 段落排版規則 ===
@@ -416,12 +421,19 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
             - Boss/Milestone: 1000+ XP
         - **Loot**: "[[LOOT: <Item Name>]]" (e.g., "[[LOOT: Ancient Key]]", "[[LOOT: 50 Gold Coins]]").
 
-        === RELATIONSHIP UPDATES ===
-        - When a meaningful interaction occurs between characters (positive or negative), append a hidden tag.
+        === RELATIONSHIP UPDATES (DYNAMIC SOCIAL SYSTEM) ===
+        - **Logic**: Use the 0-100 Scale (Start=50). Hostile < 30 < Neutral < 70 < Friendly.
+        - **Trigger**: When a player or character performs a significant social or moral action.
+          - **Alignment Match**: Character acts consistent with another's ethics (e.g., Paladin likes Heroism).
+          - **Alignment Clash**: Character violates another's ethics (e.g., Rogue steals witnessed by Paladin).
+          - **Competence**: Saving a life, great success (+5 to +10).
+          - **Free Action**: If the user types a social action ("Hugs", "Praises", "Shares food"), REWARD it.
+        - **Values**: 
+          - Minor: +/- 2 (Polite/Rude)
+          - Moderate: +/- 5 (Gift/Help)
+          - Major: +/- 10 (Life Saver/Betrayal)
         - **Syntax**: "[[RELATIONSHIP: SourceName|TargetName|Amount|Reason]]"
-        - **Amount**: Integer between -10 (Minor slight) and +10 (Major bond). Default +/- 2.
-        - **Source/Target**: Use simple names (e.g., "Elara", "Garrick").
-        - **Example**: "[[RELATIONSHIP: Elara|Garrick|+5|Saved her life]]"
+        - **Example**: "[[RELATIONSHIP: Elara|Garrick|+5|Praised his swordsmanship]]"
 
         === AUDIO ATMOSPHERE (BGM) ===
         - Control the background music to match the current mood.
@@ -511,62 +523,53 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
            - ${mode === 'trpg' ? 'Strictly follow 5e rules found in system context.' : ''}
         `;
 
+    try {
+      const attemptGeneration = async (retryCount = 0) => {
         try {
-            const attemptGeneration = async (retryCount = 0) => {
-                try {
-                    const result = await this.model.generateContent(systemPrompt);
-                    return result;
-                } catch (e) {
-                    if (retryCount < 1) {
-                        console.warn("StoryAgent: 500 Error, retrying...", e);
-                        await new Promise(r => setTimeout(r, 1000)); // Wait 1s
-                        return attemptGeneration(retryCount + 1);
-                    }
-                    throw e;
-                }
-            };
-
-            const result = await attemptGeneration();
-            const response = result.response;
-            let text = response.text();
-
-            // Cleanup: Remove generic code block markers but KEEP the content if it's not JSON
-            // Only remove ```json blocks explicitly. For general ``` blocks, just strip the markers, not content?
-            // Actually, safer to just strip the markers:
-            text = text.replace(/^```json/gm, "").replace(/^```/gm, "").trim();
-
-            // For TRPG mode, return plain text (no JSON parsing) - NOW OBJECT
-            return {
-                text: text,
-                usage: response.usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0, totalTokenCount: 0 }
-            };
-        } catch (error) {
-            console.error("StoryAgent Error:", error);
-            return {
-                text: "...\n\n(Narrative generation failed. The mists of the multiverse obscure your vision. Please try again.)",
-                usage: { promptTokenCount: 0, candidatesTokenCount: 0, totalTokenCount: 0 }
-            };
+          const result = await this.aiService.generate(systemPrompt, { model: "gemini-2.0-flash-exp" });
+          return result;
+        } catch (e) {
+          if (retryCount < 1) {
+            console.warn("StoryAgent: 500 Error, retrying...", e);
+            await new Promise(r => setTimeout(r, 1000)); // Wait 1s
+            return attemptGeneration(retryCount + 1);
+          }
+          throw e;
         }
+      };
+
+      const result = await attemptGeneration();
+      return {
+        text: result.text,
+        usage: result.usage
+      };
+    } catch (error) {
+      console.error("StoryAgent Error:", error);
+      return {
+        text: "...\n\n(Narrative generation failed. The mists of the multiverse obscure your vision. Please try again.)",
+        usage: { promptTokenCount: 0, candidatesTokenCount: 0, totalTokenCount: 0 }
+      };
     }
-    /**
-     * Generates a custom game module based on user prompt.
-     * @param {string} userPrompt - User's idea or "SURPRISE_ME"
-     * @param {string} difficulty - 'beginner' (Lv3), 'intermediate' (Lv5), 'advanced' (Lv8)
-     * @returns {Promise<Object>} The generated module object.
-     */
-    async generateModuleFromPrompt(userPrompt, difficulty = 'beginner') {
-        let startLevel = 3;
-        let levels = "1-5";
+  }
+  /**
+   * Generates a custom game module based on user prompt.
+   * @param {string} userPrompt - User's idea or "SURPRISE_ME"
+   * @param {string} difficulty - 'beginner' (Lv3), 'intermediate' (Lv5), 'advanced' (Lv8)
+   * @returns {Promise<Object>} The generated module object.
+   */
+  async generateModuleFromPrompt(userPrompt, difficulty = 'beginner') {
+    let startLevel = 3;
+    let levels = "1-5";
 
-        if (difficulty === 'intermediate') { startLevel = 5; levels = "5-10"; }
-        if (difficulty === 'advanced') { startLevel = 8; levels = "8-15"; }
+    if (difficulty === 'intermediate') { startLevel = 5; levels = "5-10"; }
+    if (difficulty === 'advanced') { startLevel = 8; levels = "8-15"; }
 
-        const isSurprise = userPrompt === "SURPRISE_ME";
-        const promptContext = isSurprise
-            ? "Generate a completely random, creative, and unique D&D adventure idea."
-            : `User Idea: "${userPrompt}". Expand this into a full adventure.`;
+    const isSurprise = userPrompt === "SURPRISE_ME";
+    const promptContext = isSurprise
+      ? "Generate a completely random, creative, and unique D&D adventure idea."
+      : `User Idea: "${userPrompt}". Expand this into a full adventure.`;
 
-        const systemPrompt = `
+    const systemPrompt = `
         You are a D&D Module Designer. Your task is to generate a structured JSON game module.
         
         **INPUT CONTEXT**:
@@ -620,80 +623,78 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
         4. **Style**: ${difficulty === 'grim' ? 'Dark, gritty, lethal.' : 'Heroic fantasy.'}
         `;
 
-        try {
-            const result = await this.model.generateContent(systemPrompt);
-            const response = result.response;
-            let text = response.text();
+    try {
+      const result = await this.aiService.generate(systemPrompt, {
+        isJson: true,
+        model: "gemini-2.0-flash-exp"
+      });
+      return JSON.parse(result.text);
 
-            // Clean markdown if present
-            text = text.replace(/^```json/gm, "").replace(/^```/gm, "").trim();
+    } catch (error) {
+      console.error("StoryAgent Module Gen Error:", error);
+      throw new Error("Failed to generate module. Please try again.");
+    }
+  }
 
-            return JSON.parse(text);
-        } catch (error) {
-            console.error("StoryAgent Module Gen Error:", error);
-            throw new Error("Failed to generate module. Please try again.");
+  /**
+   * Generates a lightweight sandbox module for dynamic/freeform play.
+   * No pre-generated acts - story develops freely based on player choices.
+   * @param {string} theme - User's adventure theme (e.g., "海盜冒險", "龍族戰爭")
+   * @param {string} difficulty - 'beginner' (Lv3), 'intermediate' (Lv5), 'advanced' (Lv8)
+   * @returns {Object} Minimal sandbox module object
+   */
+  generateSandboxModule(theme, difficulty = 'beginner') {
+    let startLevel = 3;
+    let levels = "1-5";
+
+    if (difficulty === 'intermediate') { startLevel = 5; levels = "5-10"; }
+    if (difficulty === 'advanced') { startLevel = 8; levels = "8-15"; }
+
+    const isSurprise = theme === "SURPRISE_ME";
+    const surpriseThemes = [
+      "遠古龍族的復甦", "失落的精靈帝國", "深海利維坦的覺醒",
+      "異界入侵的前兆", "亡靈大軍的進軍", "機械神的遺跡",
+      "元素位面的崩潰", "時間旅行者的警告", "被遺忘的神祇"
+    ];
+
+    const finalTheme = isSurprise
+      ? surpriseThemes[Math.floor(Math.random() * surpriseThemes.length)]
+      : theme;
+
+    return {
+      id: `sandbox_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      title: finalTheme,
+      titleEn: "Custom Sandbox Adventure",
+      levels: levels,
+      desc: `一場以「${finalTheme}」為主題的自由冒險。故事將根據你的選擇動態發展。`,
+      category: "custom",
+      startLevel: startLevel,
+      sandbox: true,  // Mark as sandbox mode
+      theme: finalTheme,
+      tone: "epic",   // Default epic style
+      adventureDay: 1, // Progress tracking
+      // No acts array - story develops freely
+      acts: [
+        {
+          act: 1,
+          title: "序章",
+          titleEn: "Prologue",
+          objective: `探索「${finalTheme}」的世界，讓故事自由發展`,
+          keyEvents: ["自由探索", "角色互動", "世界發現"],
+          endCondition: "故事由你決定何時結束"
         }
-    }
+      ]
+    };
+  }
 
-    /**
-     * Generates a lightweight sandbox module for dynamic/freeform play.
-     * No pre-generated acts - story develops freely based on player choices.
-     * @param {string} theme - User's adventure theme (e.g., "海盜冒險", "龍族戰爭")
-     * @param {string} difficulty - 'beginner' (Lv3), 'intermediate' (Lv5), 'advanced' (Lv8)
-     * @returns {Object} Minimal sandbox module object
-     */
-    generateSandboxModule(theme, difficulty = 'beginner') {
-        let startLevel = 3;
-        let levels = "1-5";
-
-        if (difficulty === 'intermediate') { startLevel = 5; levels = "5-10"; }
-        if (difficulty === 'advanced') { startLevel = 8; levels = "8-15"; }
-
-        const isSurprise = theme === "SURPRISE_ME";
-        const surpriseThemes = [
-            "遠古龍族的復甦", "失落的精靈帝國", "深海利維坦的覺醒",
-            "異界入侵的前兆", "亡靈大軍的進軍", "機械神的遺跡",
-            "元素位面的崩潰", "時間旅行者的警告", "被遺忘的神祇"
-        ];
-
-        const finalTheme = isSurprise
-            ? surpriseThemes[Math.floor(Math.random() * surpriseThemes.length)]
-            : theme;
-
-        return {
-            id: `sandbox_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-            title: finalTheme,
-            titleEn: "Custom Sandbox Adventure",
-            levels: levels,
-            desc: `一場以「${finalTheme}」為主題的自由冒險。故事將根據你的選擇動態發展。`,
-            category: "custom",
-            startLevel: startLevel,
-            sandbox: true,  // Mark as sandbox mode
-            theme: finalTheme,
-            tone: "epic",   // Default epic style
-            adventureDay: 1, // Progress tracking
-            // No acts array - story develops freely
-            acts: [
-                {
-                    act: 1,
-                    title: "序章",
-                    titleEn: "Prologue",
-                    objective: `探索「${finalTheme}」的世界，讓故事自由發展`,
-                    keyEvents: ["自由探索", "角色互動", "世界發現"],
-                    endCondition: "故事由你決定何時結束"
-                }
-            ]
-        };
-    }
-
-    /**
-     * Formats sandbox context for AI prompts (used instead of module context)
-     * @param {Object} sandboxModule - The sandbox module object
-     * @param {number} adventureDay - Current adventure day
-     * @returns {string} Formatted context string
-     */
-    formatSandboxContext(sandboxModule, adventureDay = 1) {
-        return `
+  /**
+   * Formats sandbox context for AI prompts (used instead of module context)
+   * @param {Object} sandboxModule - The sandbox module object
+   * @param {number} adventureDay - Current adventure day
+   * @returns {string} Formatted context string
+   */
+  formatSandboxContext(sandboxModule, adventureDay = 1) {
+    return `
 【沙盒冒險模式】
 主題：${sandboxModule.theme}
 風格：史詩奇幻
@@ -707,5 +708,83 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
 5. 讓故事有機發展，不要強制推進
 6. 適時推進冒險天數當發生重大事件或休息時
         `.trim();
+  }
+  /**
+   * Generates a meta-response from the DM (Whisper Mode).
+   * @param {Object} context - Game context
+   * @param {string} query - Player's question or remark
+   * @returns {Promise<string>} The DM's response
+   */
+  async chatWithDM(context, query) {
+    const { moduleTitle, logs, party } = context;
+    const lastSummary = logs.slice(-3).map(l => typeof l.content === 'string' ? l.content : JSON.stringify(l.content)).join("\n");
+
+    const systemPrompt = `
+      You are the Dungeon Master (DM) for this D&D game.
+      Current Module: "${moduleTitle}"
+      Party: ${party.join(", ")}
+
+      **ROLE**: You are a helpful, fair, but firm DM. You are chatting "Out of Character" (Meta-gaming) with the player.
+      
+      **TASK**: Answer the player's whispered question or comment.
+      - **Questions**: If they ask about lore, rules, or NPC details, answer if it doesn't spoil the story. If it's a secret, give a playful hint or politely refuse.
+      - **Requests**: If they ask for advantages (e.g., "Give me 1000 gold", "Kill this enemy"), POLITELY DENY it. Explain that the story must be earned.
+      - **Bugs/Issues**: If they complain about logic, acknowledge it and suggest a workaround or Retcon in the next turn.
+      - **Tone**: Friendly, OOC (Out of Character), encouraging. Use Emoji.
+      
+      **RECENT LOGS**:
+      ${lastSummary}
+
+      **PLAYER WHISPER**: "${query}"
+      
+      **OUTPUT**: A short, direct response from the DM to the player. (Traditional Chinese 繁體中文).
+    `;
+
+    try {
+      const result = await this.aiService.generate(systemPrompt, { model: "gemini-2.0-flash-exp" });
+      return result.text;
+    } catch (error) {
+      console.error("StoryAgent DM Chat Error:", error);
     }
+  }
+
+  /**
+   * Generates a meta-review of the game state (DM Thinking).
+   * @param {Object} context - Game context
+   * @returns {Promise<string>} The DM's diagnostic report
+   */
+  async reviewGameState(context) {
+    const { moduleTitle, logs, party, currentAct } = context;
+    const lastSummary = logs.slice(-5).map(l => typeof l.content === 'string' ? l.content : JSON.stringify(l.content)).join("\n");
+
+    const systemPrompt = `
+      You are the Dungeon Master (DM) for this D&D game.
+      Current Module: "${moduleTitle}" (Act ${currentAct})
+      Party: ${party.join(", ")}
+
+      **TASK**: Analyze the recent game history and current state.
+      
+      **GOAL**: Identify any stalled plot threads, logical inconsistencies, or things the player might be missing.
+      
+      **RECENT LOGS**:
+      ${lastSummary}
+
+      **OUTPUT FORMAT**:
+      Return a concise "Internal Monologue" (Traditional Chinese):
+      - **Current Status**: Brief summary of where we are.
+      - **Plot Health**: Is the story moving? Are we stuck?
+      - **Logic Check**: Are there any weird contradictions?
+      - **Next Beat**: What should happen next?
+      
+      *Keep it short, professional, but insightful. Like a director's commentary.*
+    `;
+
+    try {
+      const result = await this.aiService.generate(systemPrompt, { model: "gemini-2.0-flash-exp" });
+      return result.text;
+    } catch (error) {
+      console.error("StoryAgent Review Error:", error);
+      return "(The DM is lost in thought...)";
+    }
+  }
 }

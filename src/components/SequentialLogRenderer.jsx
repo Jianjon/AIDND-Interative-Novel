@@ -42,7 +42,10 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
     // Persist dice roll results across re-renders (key: unique dice id, value: { base, mod, total, result })
     const [diceResults, setDiceResults] = useState({});
 
-    // THEME MAPPING (Moved to Function Scope)
+    // Watch for instant toggle to force completion
+    // Watch for instant toggle to force completion, BUT respect dice pauses
+
+
     const THEME_STYLES = {
         default: {
             border: "border-slate-700",
@@ -510,6 +513,89 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
         return newItems;
     }, [content, roster, theme]);
 
+    // Watch for instant toggle to force completion
+    // Watch for instant toggle to force completion, BUT respect dice pauses
+    useEffect(() => {
+        if (instant) {
+            // Calculate the furthest we can go without crossing an unrolled dice
+            let maxSafeIndex = 0;
+            let foundUnrolledDice = false;
+
+            for (const section of items) {
+                // Check section header
+                if (foundUnrolledDice) break;
+
+                // If section itself is a barrier (not really used yet), check children
+                for (const child of section.children) {
+                    if (child.type === 'dice_pending' || child.type === 'dice') {
+                        // Check if this dice has been rolled/handled?
+                        // Actually, for "Instant", we should just stop at the *next* interactive element
+                        // to ensure the user sees it.
+                        // For now, any interactive dice is a stop.
+                        foundUnrolledDice = true;
+                        break;
+                    }
+                    maxSafeIndex++; // Safe to show this child
+                }
+                if (!foundUnrolledDice) maxSafeIndex++; // Safe to show section header (if counted)
+            }
+
+            // If we found a dice, stop right BEFORE it (or at it, to show the button)
+            // The renderer includes the item at visibleIndex.
+            // So if child.index is X, setting visibleIndex to X shows the dice.
+            // We want to show the dice button, so we set it TO the dice index.
+
+            // Re-calc with global indices to be precise
+            let targetIndex = 0;
+            let stop = false;
+
+            // Flatten items to count total steps
+            // Logic must match the rendering loop: 
+            // Loop sections:
+            //   1. Section Header (implicitly index X)
+            //   2. Children (indices X+1, X+2...)
+
+            // Quick approach: Just find the index of the first dice item
+            let firstDiceIndex = -1;
+            let currentIndex = 0;
+
+            for (const section of items) {
+                if (currentIndex >= 99999) break;
+
+                // Section Header takes 1 "step" in the playback loop? 
+                // Looking at playback loop: 
+                //   if (counter === visibleIndex) currentType = 'header'; 
+                //   counter++
+                //   for (child) ... counter++
+
+                // So Section Header is ONE step.
+                currentIndex++; // Header
+
+                for (const child of section.children) {
+                    if (child.type === 'dice_pending' || child.type === 'dice') {
+                        if (firstDiceIndex === -1) firstDiceIndex = currentIndex;
+                    }
+                    currentIndex++;
+                }
+            }
+
+            if (firstDiceIndex !== -1) {
+                // If we haven't reached specific dice yet, jump to it
+                // BUT, only if current visibleIndex is less than it.
+                // If we are already past it (maybe it's done?), we shouldn't go back?
+                // Actually 'instant' usually means "show me everything new".
+                // So we jump to the FIRST dice.
+                console.log("[Sequential] Instant requested. Stopping at dice index:", firstDiceIndex);
+                setVisibleIndex(firstDiceIndex);
+            } else {
+                // No dice, show all
+                setVisibleIndex(99999);
+            }
+
+            setIsAnimating(false);
+        }
+    }, [instant, items]); // Re-run if items change (streaming) or instant toggled
+
     // Use Ref to access latest items without triggering effect re-runs on streaming updates
     const itemsRef = useRef(items);
     useEffect(() => { itemsRef.current = items; }, [items]);
@@ -629,321 +715,422 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                 </div>
                             </div>
                         )}
-                        <div
-                            className={`${theme === 'default' ? 'text-slate-200' : currentTheme.text} space-y-3 whitespace-pre-line font-serif ${fontSize} pl-1`}
-                            style={{ letterSpacing: `${letterSpacing}px`, lineHeight: lineHeight }}
-                        >
-                            {sec.children.map((child, cIdx) => {
-                                if (visibleIndex < child.index) return null;
 
-                                // === NEW: Illustration Block ===
-                                if (child.type === 'illustration') {
-                                    return (
-                                        <div key={cIdx} className="my-6 relative group overflow-hidden rounded-lg border-2 border-slate-700 shadow-2xl">
-                                            <div className="absolute top-0 left-0 w-full h-full bg-slate-950 animate-pulse z-10" style={{ animationDuration: '2s', display: 'none' }}></div>
-                                            <img
-                                                src={child.data.src}
-                                                alt={child.data.keyword}
-                                                className="w-full h-auto object-cover grayscale sepia-[.2] contrast-125 hover:grayscale-0 hover:sepia-0 transition-all duration-1000"
-                                            />
-                                            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent p-4 pt-12">
-                                                <span className="text-xs uppercase tracking-[0.3em] text-white/70 font-tome-header flex items-center gap-2">
-                                                    <ImageIcon size={12} />
-                                                    SCENE: {child.data.keyword}
-                                                </span>
-                                            </div>
-                                        </div>
+                        {/* Special Round Summary Handling */}
+                        {sec.headerText.includes("回合總結") || sec.headerText.includes("Round Summary") ? (
+                            <div className="space-y-4">
+                                {/* 1. Extract and Render Battle Summary (Always Visible) */}
+                                {(() => {
+                                    const summaryItems = sec.children.filter(c =>
+                                        c.content.includes("戰況摘要") ||
+                                        (!c.content.includes("傷害統計") && !c.content.includes("隊伍狀態") && !c.content.includes("敵方狀態") && c.type !== 'block_header')
                                     );
-                                }
 
-                                if (child.type === 'dice') {
-                                    if (visibleIndex === child.index && isAnimating) {
-                                        // Allow animation for ALL characters (Auto/Enemy included)
-                                        // if (sec.controlMode === 'auto') { ... } // REMOVED SKIP LOGIC
+                                    // Helper to render items
+                                    const renderItems = (items) => items.map((child, cIdx) => (
+                                        <div key={child.index} className={`${theme === 'default' ? 'text-slate-200' : currentTheme.text} whitespace-pre-line font-serif ${fontSize}`} style={{ letterSpacing: `${letterSpacing}px`, lineHeight: lineHeight }}>
+                                            {child.content}
+                                        </div>
+                                    ));
 
-                                        if (!hasStartedRoll && sec.controlMode !== 'auto') {
-                                            return (
-                                                <button
-                                                    key={cIdx}
-                                                    onClick={() => setHasStartedRoll(true)}
-                                                    className="my-3 px-6 py-3 bg-amber-600 hover:bg-amber-500 hover:scale-105 transition-all rounded-full flex items-center gap-3 font-bold text-slate-900 shadow-[0_0_15px_rgba(217,119,6,0.4)]"
-                                                >
-                                                    <Dices size={24} />
-                                                    <span>點擊擲骰 (Roll Dice)</span>
-                                                </button>
-                                            );
+                                    // 2. Sections Data via Index Parsing
+                                    // Use explicit header-based grouping instead of content filters
+                                    const damageItems = [];
+                                    const partyItems = [];
+                                    const enemyItems = [];
+                                    const textSummaryItems = [];
+
+                                    let currentSection = 'summary'; // default to battle summary
+
+                                    // Identify Header Indices
+                                    sec.children.forEach(child => {
+                                        if (child.type === 'block_header') {
+                                            if (child.variant === 'damage' || child.content.includes("傷害")) currentSection = 'damage';
+                                            else if (child.variant === 'party' || child.content.includes("隊伍")) currentSection = 'party';
+                                            else if (child.variant === 'enemy' || child.content.includes("敵方")) currentSection = 'enemy';
+                                            else if (child.content.includes("摘要") || child.content.includes("戰況")) currentSection = 'summary';
+                                            return; // Skip headers themselves
                                         }
 
-                                        return (
-                                            <DualDiceRoll
-                                                key={cIdx}
-                                                checkName={child.data.name}
-                                                playerRoll={{ base: child.data.base, mod: child.data.mod, total: child.data.total }}
-                                                target={{ dc: child.data.dc, label: child.data.label || 'DC' }}
-                                                result={child.data.result}
-                                                onComplete={handleAnimEnd}
-                                                autoPlay={sec.controlMode === 'auto'}
-                                            />
-                                        );
-                                    }
+                                        // Skip "None" or empty placeholders if desired
+                                        if (child.content.trim() === '無') return;
+
+                                        // Push to buckets
+                                        if (currentSection === 'damage') damageItems.push(child);
+                                        else if (currentSection === 'party') partyItems.push(child);
+                                        else if (currentSection === 'enemy') enemyItems.push(child);
+                                        else textSummaryItems.push(child);
+                                    });
+
+                                    const sections = [
+                                        { id: 'damage', title: '🗡️ 傷害統計', items: damageItems },
+                                        { id: 'party', title: '❤️ 隊伍狀態', items: partyItems },
+                                        { id: 'enemy', title: '💀 敵方狀態', items: enemyItems }
+                                    ];
+
                                     return (
-                                        <div key={cIdx} className="my-3 p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-sm text-cyan-300 flex items-center gap-3 w-fit shadow-sm">
-                                            <div className={`w-2.5 h-2.5 rounded-full ${child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'bg-cyan-500 shadow-[0_0_8px_cyan]' : 'bg-red-500 shadow-[0_0_8px_red]'}`} />
-                                            <span className="font-bold text-slate-400">{child.data.name}:</span>
-                                            <span>{child.data.total} <span className="text-slate-600 mx-1">vs</span> DC {child.data.dc}</span>
-                                            <span className={`uppercase font-bold tracking-wider ml-2 ${child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'text-cyan-400' : 'text-rose-500'}`}>
-                                                {child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'SUCCESS' : 'FAILURE'}
-                                            </span>
-                                        </div>
-                                    );
-                                }
-
-                                // === NEW: dice_pending Type Rendering ===
-                                if (child.type === 'dice_pending') {
-                                    const { diceId, characterName, checkType, targetDC, successOutcome, failureOutcome } = child.data;
-                                    const storedResult = diceResults[diceId];
-
-                                    // If result already calculated, show static result or animation
-                                    if (storedResult) {
-                                        // Animation phase
-                                        if (storedResult.animating) {
-                                            return (
-                                                <DualDiceRoll
-                                                    key={cIdx}
-                                                    checkName={`${characterName} ${checkType}`}
-                                                    playerRoll={{ base: storedResult.base, mod: storedResult.mod, total: storedResult.total }}
-                                                    target={{ dc: targetDC, label: 'DC' }}
-                                                    result={storedResult.success ? 'SUCCESS' : 'FAILURE'}
-                                                    onComplete={() => {
-                                                        const hasOutcome = !!(storedResult.success ? successOutcome : failureOutcome);
-
-                                                        setDiceResults(prev => ({
-                                                            ...prev,
-                                                            [diceId]: { ...prev[diceId], animating: false }
-                                                        }));
-
-                                                        // If we have outcome text, DON'T advance yet. wait for typewriter.
-                                                        // If no outcome text, advance immediately.
-                                                        if (!hasOutcome) {
-                                                            handleAnimEnd();
-                                                        }
-                                                    }}
-                                                    autoPlay={true}
-                                                />
-                                            );
-                                        }
-
-                                        // Static result display after animation - includes outcome text
-                                        const isSuccess = storedResult.success;
-                                        const outcomeText = isSuccess ? successOutcome : failureOutcome;
-
-                                        return (
-                                            <div key={cIdx} className="my-3 space-y-2">
-                                                {/* Dice result row */}
-                                                <div className="p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-sm text-cyan-300 flex items-center gap-3 w-fit shadow-sm">
-                                                    <div className={`w-2.5 h-2.5 rounded-full ${isSuccess ? 'bg-cyan-500 shadow-[0_0_8px_cyan]' : 'bg-red-500 shadow-[0_0_8px_red]'}`} />
-                                                    <span className="font-bold text-slate-400">{characterName} {checkType}:</span>
-                                                    <span>D20({storedResult.base}){storedResult.mod !== 0 ? `+${storedResult.mod}` : ''} = {storedResult.total} <span className="text-slate-600 mx-1">vs</span> DC {targetDC}</span>
-                                                    <span className={`uppercase font-bold tracking-wider ml-2 ${isSuccess ? 'text-cyan-400' : 'text-rose-500'}`}>
-                                                        {isSuccess ? 'SUCCESS' : 'FAILURE'}
-                                                    </span>
-                                                </div>
-                                                {/* Outcome description */}
-                                                {outcomeText && (
-                                                    <div className={`p-3 rounded-lg border-l-4 ${isSuccess ? 'bg-emerald-950/30 border-emerald-600 text-emerald-200' : 'bg-rose-950/30 border-rose-600 text-rose-200'} text-sm font-serif`}>
-                                                        <TypewriterText
-                                                            text={outcomeText}
-                                                            renderWithDice={renderTextWithDice}
-                                                            speed={30}
-                                                            shouldAnimate={visibleIndex === child.index}
-                                                            onComplete={() => {
-                                                                if (visibleIndex === child.index) handleAnimEnd();
-                                                            }}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    }
-
-                                    // Show Roll Dice button
-                                    return (
-                                        <button
-                                            key={cIdx}
-                                            onClick={() => {
-                                                // Calculate dice result
-                                                const base = Math.floor(Math.random() * 20) + 1;
-                                                // Try to find modifier from roster
-                                                const char = roster.find(r => (r.name || '').includes(characterName) || characterName.includes(r.name || ''));
-                                                let mod = 0;
-                                                if (char && char.baseStats) {
-                                                    const checkLower = checkType.toLowerCase();
-                                                    if (checkLower.includes('攻擊') || checkLower.includes('attack')) {
-                                                        mod = Math.floor((char.baseStats.str - 10) / 2) + 2; // Simple attack bonus
-                                                    } else if (checkLower.includes('法術') || checkLower.includes('spell')) {
-                                                        mod = Math.floor((char.baseStats.int - 10) / 2) + 2;
-                                                    } else if (checkLower.includes('敏捷') || checkLower.includes('dex')) {
-                                                        mod = Math.floor((char.baseStats.dex - 10) / 2);
-                                                    } else if (checkLower.includes('力量') || checkLower.includes('str')) {
-                                                        mod = Math.floor((char.baseStats.str - 10) / 2);
-                                                    } else {
-                                                        mod = 2; // Default proficiency bonus
-                                                    }
-                                                }
-                                                const total = base + mod;
-                                                const success = base === 20 || (base !== 1 && total >= targetDC);
-
-                                                // Store result and trigger animation
-                                                setDiceResults(prev => ({
-                                                    ...prev,
-                                                    [diceId]: { base, mod, total, success, animating: true }
-                                                }));
-                                            }}
-                                            className="my-3 px-6 py-3 bg-amber-600 hover:bg-amber-500 hover:scale-105 transition-all rounded-full flex items-center gap-3 font-bold text-slate-900 shadow-[0_0_15px_rgba(217,119,6,0.4)]"
-                                        >
-                                            <Dices size={24} />
-                                            <span>🎲 {characterName} {checkType} (DC {targetDC}) - 點擊擲骰</span>
-                                        </button>
-                                    );
-                                }
-
-                                // Initiative / Turn Order Block Rendering
-                                if (child.type === 'initiative') {
-                                    return (
-                                        <div key={cIdx} className="my-4 p-4 bg-amber-950/30 rounded-lg border border-amber-900/50 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
-                                                <span className="text-amber-400 font-bold text-sm tracking-wide">行動順序</span>
-                                            </div>
-                                            <div className="flex flex-wrap gap-2">
-                                                {child.data.order.map((entry, i) => {
-                                                    // Parse "角色名 (數值)" format
-                                                    const match = entry.match(/^(.+?)\s*\((\d+)\)$/);
-                                                    const name = match ? match[1] : entry;
-                                                    const init = match ? match[2] : '?';
+                                        <>
+                                            {/* Main Summary Text */}
+                                            <div className="mb-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                                <h5 className="text-amber-400 font-bold mb-2 flex items-center gap-2">
+                                                    <span>📍</span> 戰況摘要
+                                                </h5>
+                                                {textSummaryItems.map((child, i) => {
                                                     return (
-                                                        <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-900/60 rounded border border-slate-700/50 text-sm">
-                                                            <span className="text-slate-300 font-medium">{name}</span>
-                                                            <span className="text-amber-500 font-mono font-bold">({init})</span>
+                                                        <div key={i} className="text-slate-300 leading-relaxed">
+                                                            {child.content.replace('【📍 戰況摘要】', '').trim()}
                                                         </div>
                                                     );
                                                 })}
                                             </div>
-                                        </div>
-                                    );
-                                }
 
-                                // Block Header Rendering (DM開場/角色介紹/傷害統計/隊伍狀態/敵方狀態)
-                                if (child.type === 'block_header') {
-                                    const variantStyles = {
-                                        // Prologue Section Blocks
-                                        world_bg: { bg: 'bg-indigo-950/50', border: 'border-indigo-600/70', dot: 'bg-indigo-500', text: 'text-indigo-200', icon: '🌍' },
-                                        mission: { bg: 'bg-amber-950/50', border: 'border-amber-600/70', dot: 'bg-amber-500', text: 'text-amber-200', icon: '📋' },
-                                        character_intro: { bg: 'bg-blue-950/50', border: 'border-blue-600/70', dot: 'bg-blue-500', text: 'text-blue-200', icon: '👤' },
-                                        situation: { bg: 'bg-rose-950/50', border: 'border-rose-600/70', dot: 'bg-rose-500', text: 'text-rose-200', icon: '⚡' },
-                                        // Combat/Turn Blocks
-                                        dm_opening: { bg: 'bg-purple-950/40', border: 'border-purple-700/60', dot: 'bg-purple-500', text: 'text-purple-300', icon: '📜' },
-                                        character_action: { bg: 'bg-emerald-950/40', border: 'border-emerald-700/60', dot: 'bg-emerald-500', text: 'text-emerald-300', icon: '⚔️' },
-                                        damage: { bg: 'bg-orange-950/30', border: 'border-orange-800/50', dot: 'bg-orange-500', text: 'text-orange-400', icon: '⚔️' },
-                                        party: { bg: 'bg-cyan-950/30', border: 'border-cyan-800/50', dot: 'bg-cyan-500', text: 'text-cyan-400', icon: '❤️' },
-                                        enemy: { bg: 'bg-rose-950/30', border: 'border-rose-800/50', dot: 'bg-rose-500', text: 'text-rose-400', icon: '💀' }
-                                    };
-                                    const style = variantStyles[child.variant] || variantStyles.damage;
-                                    return (
-                                        <div key={cIdx} className={`mt-4 mb-2 px-4 py-2 ${style.bg} rounded-lg border-l-4 ${style.border}`}>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-lg">{style.icon}</span>
-                                                <span className={`${style.text} font-bold text-sm tracking-wide`}>{child.content}</span>
+                                            {/* Collapsible Sections */}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                {sections.map(section => (
+                                                    <details key={section.id} className="group bg-slate-900/30 rounded-lg border border-slate-800 open:bg-slate-900/50 transition-all">
+                                                        <summary className="cursor-pointer p-3 font-bold text-slate-400 hover:text-slate-200 flex items-center justify-between select-none">
+                                                            <div className="flex items-center gap-2">
+                                                                {section.title}
+                                                            </div>
+                                                            <span className="text-xs text-slate-600 group-open:rotate-180 transition-transform">▼</span>
+                                                        </summary>
+                                                        <div className="p-3 pt-0 border-t border-slate-800/50 mt-2 text-sm text-slate-400">
+                                                            {section.items.length > 0 ? (
+                                                                section.items.map((item, idx) => (
+                                                                    <div key={idx} className="py-1 border-b border-slate-800/30 last:border-0 lowercasefirst">
+                                                                        {item.content.replace(/【.*】/, '').trim()}
+                                                                    </div>
+                                                                ))
+                                                            ) : (
+                                                                <div className="text-slate-600 italic py-2">無數據</div>
+                                                            )}
+                                                        </div>
+                                                    </details>
+                                                ))}
                                             </div>
-                                        </div>
+                                        </>
                                     );
-                                }
+                                })()}
+                            </div>
+                        ) : (
+                            // Standard Content Rendering
+                            <div
+                                className={`${theme === 'default' ? 'text-slate-200' : currentTheme.text} space-y-3 whitespace-pre-line font-serif ${fontSize} pl-1`}
+                                style={{ letterSpacing: `${letterSpacing}px`, lineHeight: lineHeight }}
+                            >
+                                {sec.children.map((child, cIdx) => {
+                                    if (visibleIndex < child.index) return null;
 
-                                // Status Entry Rendering (❤️ Name HP X/X - Status)
-                                if (child.type === 'status_entry') {
-                                    const isEnemy = child.variant === 'enemy';
-                                    return (
-                                        <div key={cIdx} className={`flex items-center gap-2 px-4 py-1.5 ${isEnemy ? 'text-rose-300' : 'text-cyan-300'} text-sm`}>
-                                            <div className={`w-2 h-2 rounded-full ${isEnemy ? 'bg-rose-500' : 'bg-cyan-500'}`} />
-                                            <span>{child.content}</span>
-                                        </div>
-                                    );
-                                }
 
-                                // Damage Entry Rendering (角色 → 目標 (傷害))
-                                if (child.type === 'damage_entry') {
-                                    return (
-                                        <div key={cIdx} className="flex items-center gap-2 px-4 py-1.5 text-orange-200 text-sm">
-                                            <span className="text-orange-500">→</span>
-                                            <span>{child.content}</span>
-                                        </div>
-                                    );
-                                }
+                                    // === NEW: Illustration Block ===
+                                    if (child.type === 'illustration') {
+                                        return (
+                                            <div key={cIdx} className="my-6 relative group overflow-hidden rounded-lg border-2 border-slate-700 shadow-2xl">
+                                                <div className="absolute top-0 left-0 w-full h-full bg-slate-950 animate-pulse z-10" style={{ animationDuration: '2s', display: 'none' }}></div>
+                                                <img
+                                                    src={child.data.src}
+                                                    alt={child.data.keyword}
+                                                    className="w-full h-auto object-cover grayscale sepia-[.2] contrast-125 hover:grayscale-0 hover:sepia-0 transition-all duration-1000"
+                                                />
+                                                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent p-4 pt-12">
+                                                    <span className="text-xs uppercase tracking-[0.3em] text-white/70 font-tome-header flex items-center gap-2">
+                                                        <ImageIcon size={12} />
+                                                        SCENE: {child.data.keyword}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
 
-                                // Enemy Attack Action Rendering (攻擊X，處於Y)
-                                if (child.type === 'enemy_attack_action') {
-                                    return (
-                                        <div key={cIdx} className="my-2 px-4 py-2 bg-rose-950/20 rounded border-l-2 border-rose-700/50 text-rose-300 text-sm italic">
-                                            <span className="text-rose-500 mr-2">⚔</span>
-                                            {child.content}
-                                        </div>
-                                    );
-                                }
+                                    if (child.type === 'dice') {
+                                        if (visibleIndex === child.index && isAnimating) {
+                                            // Allow animation for ALL characters (Auto/Enemy included)
+                                            // if (sec.controlMode === 'auto') { ... } // REMOVED SKIP LOGIC
 
-                                // Enemy Roll Result Rendering (Roll: X vs Y)
-                                if (child.type === 'enemy_roll') {
-                                    const { roll, target, resultText, isHit } = child.data;
-                                    return (
-                                        <div key={cIdx} className="my-2 p-3 bg-slate-950/80 rounded-lg border border-slate-800 flex items-center gap-3 w-fit shadow-sm">
-                                            <div className={`w-2.5 h-2.5 rounded-full ${isHit ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]' : 'bg-slate-500'}`} />
-                                            <span className="font-mono text-sm">
-                                                <span className="text-slate-400">Roll:</span>
-                                                <span className={`mx-1 font-bold ${isHit ? 'text-rose-400' : 'text-slate-300'}`}>{roll}</span>
-                                                {target && (
-                                                    <>
-                                                        <span className="text-slate-600 mx-1">vs</span>
-                                                        <span className="text-cyan-400">{target}</span>
-                                                    </>
-                                                )}
-                                            </span>
-                                            {resultText && (
-                                                <span className={`text-sm ${isHit ? 'text-rose-400' : 'text-slate-500'}`}>
-                                                    {resultText}
+                                            if (!hasStartedRoll && sec.controlMode !== 'auto') {
+                                                return (
+                                                    <button
+                                                        key={cIdx}
+                                                        onClick={() => setHasStartedRoll(true)}
+                                                        className="my-3 px-6 py-3 bg-amber-600 hover:bg-amber-500 hover:scale-105 transition-all rounded-full flex items-center gap-3 font-bold text-slate-900 shadow-[0_0_15px_rgba(217,119,6,0.4)]"
+                                                    >
+                                                        <Dices size={24} />
+                                                        <span>點擊擲骰 (Roll Dice)</span>
+                                                    </button>
+                                                );
+                                            }
+
+                                            return (
+                                                <DualDiceRoll
+                                                    key={cIdx}
+                                                    checkName={child.data.name}
+                                                    playerRoll={{ base: child.data.base, mod: child.data.mod, total: child.data.total }}
+                                                    target={{ dc: child.data.dc, label: child.data.label || 'DC' }}
+                                                    result={child.data.result}
+                                                    onComplete={handleAnimEnd}
+                                                    autoPlay={sec.controlMode === 'auto'}
+                                                />
+                                            );
+                                        }
+                                        return (
+                                            <div key={cIdx} className="my-3 p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-sm text-cyan-300 flex items-center gap-3 w-fit shadow-sm">
+                                                <div className={`w-2.5 h-2.5 rounded-full ${child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'bg-cyan-500 shadow-[0_0_8px_cyan]' : 'bg-red-500 shadow-[0_0_8px_red]'}`} />
+                                                <span className="font-bold text-slate-400">{child.data.name}:</span>
+                                                <span>{child.data.total} <span className="text-slate-600 mx-1">vs</span> DC {child.data.dc}</span>
+                                                <span className={`uppercase font-bold tracking-wider ml-2 ${child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'text-cyan-400' : 'text-rose-500'}`}>
+                                                    {child.data.result.includes('成功') || child.data.result.includes('SUCCESS') ? 'SUCCESS' : 'FAILURE'}
                                                 </span>
-                                            )}
-                                        </div>
-                                    );
-                                }
+                                            </div>
+                                        );
+                                    }
+
+                                    // === NEW: dice_pending Type Rendering ===
+                                    if (child.type === 'dice_pending') {
+                                        const { diceId, characterName, checkType, targetDC, successOutcome, failureOutcome } = child.data;
+                                        const storedResult = diceResults[diceId];
+
+                                        // If result already calculated, show static result or animation
+                                        if (storedResult) {
+                                            // Animation phase
+                                            if (storedResult.animating) {
+                                                return (
+                                                    <DualDiceRoll
+                                                        key={cIdx}
+                                                        checkName={`${characterName} ${checkType}`}
+                                                        playerRoll={{ base: storedResult.base, mod: storedResult.mod, total: storedResult.total }}
+                                                        target={{ dc: targetDC, label: 'DC' }}
+                                                        result={storedResult.success ? 'SUCCESS' : 'FAILURE'}
+                                                        onComplete={() => {
+                                                            const hasOutcome = !!(storedResult.success ? successOutcome : failureOutcome);
+
+                                                            setDiceResults(prev => ({
+                                                                ...prev,
+                                                                [diceId]: { ...prev[diceId], animating: false }
+                                                            }));
+
+                                                            // If we have outcome text, DON'T advance yet. wait for typewriter.
+                                                            // If no outcome text, advance immediately.
+                                                            if (!hasOutcome) {
+                                                                handleAnimEnd();
+                                                            }
+                                                        }}
+                                                        autoPlay={true}
+                                                    />
+                                                );
+                                            }
+
+                                            // Static result display after animation - includes outcome text
+                                            const isSuccess = storedResult.success;
+                                            const outcomeText = isSuccess ? successOutcome : failureOutcome;
+
+                                            return (
+                                                <div key={cIdx} className="my-3 space-y-2">
+                                                    {/* Dice result row */}
+                                                    <div className="p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-sm text-cyan-300 flex items-center gap-3 w-fit shadow-sm">
+                                                        <div className={`w-2.5 h-2.5 rounded-full ${isSuccess ? 'bg-cyan-500 shadow-[0_0_8px_cyan]' : 'bg-red-500 shadow-[0_0_8px_red]'}`} />
+                                                        <span className="font-bold text-slate-400">{characterName} {checkType}:</span>
+                                                        <span>D20({storedResult.base}){storedResult.mod !== 0 ? `+${storedResult.mod}` : ''} = {storedResult.total} <span className="text-slate-600 mx-1">vs</span> DC {targetDC}</span>
+                                                        <span className={`uppercase font-bold tracking-wider ml-2 ${isSuccess ? 'text-cyan-400' : 'text-rose-500'}`}>
+                                                            {isSuccess ? 'SUCCESS' : 'FAILURE'}
+                                                        </span>
+                                                    </div>
+                                                    {/* Outcome description */}
+                                                    {outcomeText && (
+                                                        <div className={`p-4 rounded-lg border-l-4 ${isSuccess ? 'bg-emerald-950/30 border-emerald-600 text-emerald-100' : 'bg-rose-950/30 border-rose-600 text-rose-100'} text-base font-serif shadow-inner`}>
+                                                            <TypewriterText
+                                                                text={outcomeText}
+                                                                renderWithDice={renderTextWithDice}
+                                                                speed={30}
+                                                                shouldAnimate={visibleIndex === child.index}
+                                                                onComplete={() => {
+                                                                    if (visibleIndex === child.index) handleAnimEnd();
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        }
+
+                                        // Show Roll Dice button
+                                        return (
+                                            <button
+                                                key={cIdx}
+                                                onClick={() => {
+                                                    // Calculate dice result
+                                                    const base = Math.floor(Math.random() * 20) + 1;
+                                                    // Try to find modifier from roster
+                                                    const char = roster.find(r => (r.name || '').includes(characterName) || characterName.includes(r.name || ''));
+                                                    let mod = 0;
+                                                    if (char && char.baseStats) {
+                                                        const checkLower = checkType.toLowerCase();
+                                                        if (checkLower.includes('攻擊') || checkLower.includes('attack')) {
+                                                            mod = Math.floor((char.baseStats.str - 10) / 2) + 2; // Simple attack bonus
+                                                        } else if (checkLower.includes('法術') || checkLower.includes('spell')) {
+                                                            mod = Math.floor((char.baseStats.int - 10) / 2) + 2;
+                                                        } else if (checkLower.includes('敏捷') || checkLower.includes('dex')) {
+                                                            mod = Math.floor((char.baseStats.dex - 10) / 2);
+                                                        } else if (checkLower.includes('力量') || checkLower.includes('str')) {
+                                                            mod = Math.floor((char.baseStats.str - 10) / 2);
+                                                        } else {
+                                                            mod = 2; // Default proficiency bonus
+                                                        }
+                                                    }
+                                                    const total = base + mod;
+                                                    const success = base === 20 || (base !== 1 && total >= targetDC);
+
+                                                    // Store result and trigger animation
+                                                    setDiceResults(prev => ({
+                                                        ...prev,
+                                                        [diceId]: { base, mod, total, success, animating: true }
+                                                    }));
+                                                }}
+                                                className="my-3 px-6 py-3 bg-amber-600 hover:bg-amber-500 hover:scale-105 transition-all rounded-full flex items-center gap-3 font-bold text-slate-900 shadow-[0_0_15px_rgba(217,119,6,0.4)]"
+                                            >
+                                                <Dices size={24} />
+                                                <span>🎲 {characterName} {checkType} (DC {targetDC}) - 點擊擲骰</span>
+                                            </button>
+                                        );
+                                    }
+
+                                    // Initiative / Turn Order Block Rendering
+                                    if (child.type === 'initiative') {
+                                        return (
+                                            <div key={cIdx} className="my-4 p-4 bg-amber-950/30 rounded-lg border border-amber-900/50 shadow-sm">
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
+                                                    <span className="text-amber-400 font-bold text-sm tracking-wide">行動順序</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {child.data.order.map((entry, i) => {
+                                                        // Parse "角色名 (數值)" format
+                                                        const match = entry.match(/^(.+?)\s*\((\d+)\)$/);
+                                                        const name = match ? match[1] : entry;
+                                                        const init = match ? match[2] : '?';
+                                                        return (
+                                                            <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-900/60 rounded border border-slate-700/50 text-sm">
+                                                                <span className="text-slate-300 font-medium">{name}</span>
+                                                                <span className="text-amber-500 font-mono font-bold">({init})</span>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+
+                                    // Block Header Rendering (DM開場/角色介紹/傷害統計/隊伍狀態/敵方狀態)
+                                    if (child.type === 'block_header') {
+                                        const variantStyles = {
+                                            // Prologue Section Blocks
+                                            world_bg: { bg: 'bg-indigo-950/50', border: 'border-indigo-600/70', dot: 'bg-indigo-500', text: 'text-indigo-200', icon: '🌍' },
+                                            mission: { bg: 'bg-amber-950/50', border: 'border-amber-600/70', dot: 'bg-amber-500', text: 'text-amber-200', icon: '📋' },
+                                            character_intro: { bg: 'bg-blue-950/50', border: 'border-blue-600/70', dot: 'bg-blue-500', text: 'text-blue-200', icon: '👤' },
+                                            situation: { bg: 'bg-rose-950/50', border: 'border-rose-600/70', dot: 'bg-rose-500', text: 'text-rose-200', icon: '⚡' },
+                                            // Combat/Turn Blocks
+                                            dm_opening: { bg: 'bg-purple-950/40', border: 'border-purple-700/60', dot: 'bg-purple-500', text: 'text-purple-300', icon: '📜' },
+                                            character_action: { bg: 'bg-emerald-950/40', border: 'border-emerald-700/60', dot: 'bg-emerald-500', text: 'text-emerald-300', icon: '⚔️' },
+                                            damage: { bg: 'bg-orange-950/30', border: 'border-orange-800/50', dot: 'bg-orange-500', text: 'text-orange-400', icon: '⚔️' },
+                                            party: { bg: 'bg-cyan-950/30', border: 'border-cyan-800/50', dot: 'bg-cyan-500', text: 'text-cyan-400', icon: '❤️' },
+                                            enemy: { bg: 'bg-rose-950/30', border: 'border-rose-800/50', dot: 'bg-rose-500', text: 'text-rose-400', icon: '💀' }
+                                        };
+                                        const style = variantStyles[child.variant] || variantStyles.damage;
+                                        return (
+                                            <div key={cIdx} className={`mt-4 mb-2 px-4 py-2 ${style.bg} rounded-lg border-l-4 ${style.border}`}>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-lg">{style.icon}</span>
+                                                    <span className={`${style.text} font-bold text-sm tracking-wide`}>{child.content}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+
+                                    // Status Entry Rendering (❤️ Name HP X/X - Status)
+                                    if (child.type === 'status_entry') {
+                                        const isEnemy = child.variant === 'enemy';
+                                        return (
+                                            <div key={cIdx} className={`flex items-center gap-2 px-4 py-1.5 ${isEnemy ? 'text-rose-300' : 'text-cyan-300'} text-sm`}>
+                                                <div className={`w-2 h-2 rounded-full ${isEnemy ? 'bg-rose-500' : 'bg-cyan-500'}`} />
+                                                <span>{child.content}</span>
+                                            </div>
+                                        );
+                                    }
+
+                                    // Damage Entry Rendering (角色 → 目標 (傷害))
+                                    if (child.type === 'damage_entry') {
+                                        return (
+                                            <div key={cIdx} className="flex items-center gap-2 px-4 py-1.5 text-orange-200 text-sm">
+                                                <span className="text-orange-500">→</span>
+                                                <span>{child.content}</span>
+                                            </div>
+                                        );
+                                    }
+
+                                    // Enemy Attack Action Rendering (攻擊X，處於Y)
+                                    if (child.type === 'enemy_attack_action') {
+                                        return (
+                                            <div key={cIdx} className="my-2 px-4 py-2 bg-rose-950/20 rounded border-l-2 border-rose-700/50 text-rose-300 text-sm italic">
+                                                <span className="text-rose-500 mr-2">⚔</span>
+                                                {child.content}
+                                            </div>
+                                        );
+                                    }
+
+                                    // Enemy Roll Result Rendering (Roll: X vs Y)
+                                    if (child.type === 'enemy_roll') {
+                                        const { roll, target, resultText, isHit } = child.data;
+                                        return (
+                                            <div key={cIdx} className="my-2 p-3 bg-slate-950/80 rounded-lg border border-slate-800 flex items-center gap-3 w-fit shadow-sm">
+                                                <div className={`w-2.5 h-2.5 rounded-full ${isHit ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]' : 'bg-slate-500'}`} />
+                                                <span className="font-mono text-sm">
+                                                    <span className="text-slate-400">Roll:</span>
+                                                    <span className={`mx-1 font-bold ${isHit ? 'text-rose-400' : 'text-slate-300'}`}>{roll}</span>
+                                                    {target && (
+                                                        <>
+                                                            <span className="text-slate-600 mx-1">vs</span>
+                                                            <span className="text-cyan-400">{target}</span>
+                                                        </>
+                                                    )}
+                                                </span>
+                                                {resultText && (
+                                                    <span className={`text-sm ${isHit ? 'text-rose-400' : 'text-slate-500'}`}>
+                                                        {resultText}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        );
+                                    }
 
 
-                                // Only use Typewriter if it's the CURRENTLY revealing item to reduce churn on old items
-                                // Actually, old items should stay fully visible.
-                                // If we re-render Typewriter with full text, it might re-type?
-                                // No, Typewriter resets only on text change.
-                                // But if visibleIndex changes, this component re-renders.
-                                // We should only use Typewriter for the item at `visibleIndex`.
-                                // For items < visibleIndex, just show text.
+                                    // Only use Typewriter if it's the CURRENTLY revealing item to reduce churn on old items
+                                    // Actually, old items should stay fully visible.
+                                    // If we re-render Typewriter with full text, it might re-type?
+                                    // No, Typewriter resets only on text change.
+                                    // But if visibleIndex changes, this component re-renders.
+                                    // We should only use Typewriter for the item at `visibleIndex`.
+                                    // For items < visibleIndex, just show text.
 
-                                // Use Typewriter for the active item, static for completed items
-                                if (visibleIndex === child.index && !instant) {
+                                    // Use Typewriter for the active item, static for completed items
+                                    if (visibleIndex === child.index && !instant) {
+                                        return (
+                                            <div key={cIdx} className="mb-2">
+                                                <TypewriterText
+                                                    text={child.content}
+                                                    renderWithDice={renderTextWithDice}
+                                                    speed={textSpeed}
+                                                />
+                                            </div>
+                                        );
+                                    }
+
                                     return (
                                         <div key={cIdx} className="mb-2">
-                                            <TypewriterText
-                                                text={child.content}
-                                                renderWithDice={renderTextWithDice}
-                                                speed={textSpeed}
-                                            />
+                                            {renderTextWithDice(child.content)}
                                         </div>
                                     );
-                                }
-
-                                return (
-                                    <div key={cIdx} className="mb-2">
-                                        {renderTextWithDice(child.content)}
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                })}
+                            </div>
+                        )}
                         {visibleIndex >= sec.startIndex && visibleIndex < totalSteps && !isAnimating && (
                             <span className="inline-block w-2 h-4 bg-amber-500/50 animate-pulse ml-2">_</span>
                         )}
