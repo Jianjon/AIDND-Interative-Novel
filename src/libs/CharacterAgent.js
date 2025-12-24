@@ -32,7 +32,8 @@ export class CharacterAgent {
 
         // Stats & Mechanics (Private Source of Truth)
         this.level = data.level || 1;
-        this.baseStats = data.baseStats || { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+        const defaults = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+        this.baseStats = { ...defaults, ...(data.baseStats || {}) };
         this.classFeature = data.classFeature || "None";
         this.fightingStyle = data.fightingStyle || "Standard";
 

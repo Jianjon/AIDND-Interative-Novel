@@ -105,30 +105,7 @@ import ArchiveModal from './components/ArchiveModal';
 
 
 
-const useLocalStorage = (key, initialValue) => {
-    // ... (Code continues)
-    const [storedValue, setStoredValue] = useState(() => {
-        try {
-            const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
-        } catch (error) {
-            console.error(error);
-            return initialValue;
-        }
-    });
 
-    const setValue = (value) => {
-        try {
-            const valueToStore = value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    return [storedValue, setValue];
-};
 
 /* -------------------------------------------------------------------------- */
 /* COMPONENTS                                  */
@@ -3853,9 +3830,45 @@ w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2
                                                     type: 'dm_whisper',
                                                     content: `🔍 **劇情檢核報告 (Story Audit)**:\n${result.report}\n\n${result.issues?.length ? "⚠️ 發現問題:\n" + result.issues.map(i => `- ${i.description}`).join("\n") : "✅ 本次審查未發現明顯矛盾。"}`
                                                 }]);
+
+                                                // 1. Handle Editorial Instructions (Next Turn Hints)
                                                 if (result.suggestedCorrections?.editorial_instruction) {
                                                     setEditorialHints(result.suggestedCorrections.editorial_instruction);
                                                     showToast("已注入修正指令，將於下回生效", "success");
+                                                }
+
+                                                // 2. Handle Immediate State Corrections
+                                                if (result.suggestedCorrections?.state_updates) {
+                                                    const updates = result.suggestedCorrections.state_updates;
+                                                    let appliedCount = 0;
+
+                                                    // Update GS (HP/Psych)
+                                                    setGameState(prev => {
+                                                        const next = { ...prev };
+                                                        Object.entries(updates).forEach(([id, changes]) => {
+                                                            if (changes.hp !== undefined || changes.psych !== undefined) {
+                                                                next[id] = {
+                                                                    ...(next[id] || { hp: 100, psych: "正常" }),
+                                                                    ...changes // merges hp and psych
+                                                                };
+                                                                appliedCount++;
+                                                            }
+                                                        });
+                                                        return next;
+                                                    });
+
+                                                    // Update Roster (Gold)
+                                                    setRoster(prev => prev.map(char => {
+                                                        if (updates[char.id] && updates[char.id].gold !== undefined) {
+                                                            appliedCount++;
+                                                            return { ...char, gold: updates[char.id].gold };
+                                                        }
+                                                        return char;
+                                                    }));
+
+                                                    if (appliedCount > 0) {
+                                                        showToast(`已自動修正 ${appliedCount} 項狀態異常`, "success");
+                                                    }
                                                 }
                                             });
                                         }
