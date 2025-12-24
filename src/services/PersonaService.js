@@ -1,5 +1,5 @@
 
-import { PERSONALITY_PROMPTS } from "../data/characterPersonalities";
+import { PERSONALITY_PROMPTS, MBTI_TONE_MODIFIERS } from "../data/characterPersonalities";
 
 /**
  * PersonaService
@@ -20,9 +20,10 @@ export class PersonaService {
      * Gets the full speech instruction for a character in a specific context.
      * @param {string} personality - Key from PERSONALITY_PROMPTS (e.g., "熱血衝動")
      * @param {string} contextType - "battle", "exploration", "fear", "surprise", "social"
+     * @param {string} mbti - MBTI type (e.g., "ESTP")
      * @returns {string} The constructed prompt string
      */
-    getSpeechInstruction(personality, contextType = "social") {
+    getSpeechInstruction(personality, contextType = "social", mbti = null) {
         const p = this.personaDB[personality] || this.personaDB["熱血衝動"];
 
         let instruction = `
@@ -30,6 +31,14 @@ export class PersonaService {
         [Style]: ${p.style}
         [Prefix]: "${p.prefix}"
         `;
+
+        // Apply MBTI Tone Modulation
+        if (mbti) {
+            instruction += `
+        [MBTI Tone Adjustments (${mbti})]:
+        ${this.getMBTIToneInstruction(mbti)}
+            `;
+        }
 
         // Apply Context Modulation
         if (p.emotionModulation && p.emotionModulation[contextType]) {
@@ -65,6 +74,25 @@ export class PersonaService {
         if (p.interactionStyle.tease?.includes(targetPersonality)) return "Tease";
 
         return "Neutral";
+    }
+
+    /**
+     * Constructs a tone instruction string based on MBTI dimensions.
+     * @param {string} mbti 
+     */
+    getMBTIToneInstruction(mbti) {
+        if (!mbti) return "";
+        let result = "";
+        const dimensions = mbti.substring(0, 4).toUpperCase().split(""); // Handle "ENFP_CHAOTIC" -> ["E","N","F","P"]
+
+        dimensions.forEach(dim => {
+            const mod = MBTI_TONE_MODIFIERS[dim];
+            if (mod) {
+                result += `- ${mod.desc}: ${mod.modifiers}\n`;
+            }
+        });
+
+        return result;
     }
 
     /**

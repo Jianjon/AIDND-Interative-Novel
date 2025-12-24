@@ -47,7 +47,8 @@ export class CharacterManagerAgent {
         else if (context.includes("Fear") || context.includes("Terror")) contextType = "fear";
         else if (context.includes("Surprise")) contextType = "surprise";
 
-        const styleInstruction = this.personaService.getSpeechInstruction(personalityKey, contextType);
+        const mbti = characterData.mbti || CHARACTER_MBTI[characterData.id] || "Unknown";
+        const styleInstruction = this.personaService.getSpeechInstruction(personalityKey, contextType, mbti);
 
         const prompt = `
         You are the **Character Manager** (Dialogue Stylist).
@@ -57,6 +58,10 @@ export class CharacterManagerAgent {
         種族: ${characterData.race || "人類"}
         職業: ${characterData.class}
         個性: ${characterData.personality}
+        第一印象: ${characterData.firstImpression || "無"}
+        行為習慣: ${JSON.stringify(characterData.habits || [])}
+        偏見: ${JSON.stringify(characterData.prejudices || {})}
+        喜好: ${JSON.stringify(characterData.preferences || {})}
         人際關係: ${JSON.stringify(characterData.relationships || {})}
         
         [個性指引]
@@ -153,11 +158,17 @@ export class CharacterManagerAgent {
               Name: ${c.name} (${c.race} ${c.class})
               HP: ${c.hp || "Unknown"}
               Personality: ${c.personality}
+              First Impression: ${c.firstImpression || "N/A"}
+              Habits: ${JSON.stringify(c.habits || [])}
+              Prejudices: ${JSON.stringify(c.prejudices || {})}
+              Preferences: ${JSON.stringify(c.preferences || {})}
               MBTI: ${mbti}
+              Tone Guidelines: ${this.personaService.getMBTIToneInstruction(mbti)}
               Combat Style: ${styleContext.name} (${styleContext.instruction || "Follow personality"})
               Bio: ${c.bio ? c.bio.substring(0, 150) + "..." : "Unknown"}
               Companion: ${c.companion ? JSON.stringify(c.companion) : "None"}
               Significant Bonds: ${importantBonds || "None"}
+              Combat Weakness: ${JSON.stringify(c.combatWeakness || "None")}
               Behaviors: [Instinct: ${behaviors.instinct}, Professional: ${behaviors.professional}, Team: ${behaviors.team}]
             `;
         }).join("\n");
@@ -232,6 +243,12 @@ export class CharacterManagerAgent {
           2. **Action Text**: 在括號內描述動作的遲疑或是心理負擔。例如：「(咬著牙，顫抖著向前跑) ...」
         - 如果風格相符：展現出得心應手、自信或狂熱。
         - **DEFAULT** 選項應始終反映角色的最基本本性。
+
+        **6. COMBAT WEAKNESS (戰鬥弱點)**
+        - 如果當前場景情境 (Scene Context) 觸發了角色的 [Combat Weakness] (例如：怕黑的角色在黑暗中，或是面對特定敵人)：
+          1. **Priority**: 角色應優先選擇防禦、躲避、逃跑或排除該弱點源的行動。
+          2. **Tone**: 選項的描述必須體現出該角色的心理陰影、焦慮或生理反應。
+          3. **Monologue**: 必須包含該弱點引發的具體負面自白（如「救命...我最討厭蟲子了...」）。
 
         *** 特殊狀態規則：瀕死 (DOWNED / UNCONSCIOUS) ***
         如果角色 HP = 0 或狀態為 Unconscious/Downed：
@@ -717,6 +734,13 @@ export class CharacterManagerAgent {
         - **slots**: 施法者必須包含 { "1": 2 }，非施法者留空
         - **personality**: 50-80 字個性描述
         - **monologue**: 1-2 句內心獨白
+        - **mbti**: MBTI 性格類型 (e.g. INFP, ENTJ)
+        - **firstImpression**: 20-40 字的第一印象描述 (對方第一眼看到該角色的感覺)
+        - **habits**: 2-3 個行為習慣 (陣列)
+        - **prejudices**: 該角色對特定事物的偏見 (物件格式)
+        - **preferences**: 喜好與厭惡 (物件: { likes: [], dislikes: [] })
+        - **emotionalKeys**: 情緒觸發點 (物件: { joy: [], anger: [], weakness: "內心最脆弱的一面" })
+        - **combatWeakness**: 戰鬥弱點 (物件: { triggers: [{type, target, description}], reaction: "觸發時的反應描述" })
         - **bio**: 100-150 字背景故事
         - **appearance**: **CRITICAL** English visual description (for portrait generation)
         
@@ -763,6 +787,25 @@ export class CharacterManagerAgent {
             "slots": { "1": 2 },
             "personality": "個性描述...",
             "monologue": "內心獨白...",
+            "mbti": "INTJ",
+            "firstImpression": "第一印象描述...",
+            "habits": ["習慣1", "習慣2"],
+            "prejudices": { "對特定職業": "偏見描述" },
+            "preferences": {
+                "likes": ["喜歡1", "喜歡2"],
+                "dislikes": ["討厭1", "討厭2"]
+            },
+            "emotionalKeys": {
+                "joy": ["喜悅1"],
+                "anger": ["憤怒1"],
+                "weakness": "脆弱點"
+            },
+            "combatWeakness": {
+                "triggers": [
+                    { "type": "ENEMY_TYPE", "target": "目標", "description": "描述" }
+                ],
+                "reaction": "反應描述"
+            },
             "bio": "背景故事...",
             "appearance": "English physical description...", 
             "inventory": {

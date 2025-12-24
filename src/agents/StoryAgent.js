@@ -29,7 +29,7 @@ export class StoryAgent {
    * @returns {Promise<string|object>} The generated narrative text (Markdown) or structured TRPG turn.
    */
   async generateNarrative(context, userAction) {
-    const { moduleTitle, currentLocation, lastLog, tone, pacing, gmSignals, mode = 'novel', party = [], isPrologue = false, moduleId = null, currentAct = 1, encounterGuidelines = '', difficultyTier = '初階 (Beginner)' } = context;
+    const { moduleTitle, currentLocation, lastLog, tone, pacing, gmSignals, mode = 'novel', party = [], isPrologue = false, moduleId = null, currentAct = 1, encounterGuidelines = '', difficultyTier = '初階 (Beginner)', forcePlotPush = false, editorialHints = "" } = context;
 
     // Generate module plot context if available
     const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
@@ -118,8 +118,8 @@ export class StoryAgent {
     let modePrompt = "";
 
     if (mode === 'trpg') {
-      // PROLOGUE: Trigger if isPrologue flag OR empty/trigger userAction
-      const isOpeningScene = isPrologue || userAction.includes('Prologue') || userAction.trim() === '' || userAction.includes('開始') || userAction.includes('Start');
+      // PROLOGUE: Trigger strictly based on isPrologue flag
+      const isOpeningScene = isPrologue;
       if (isOpeningScene) {
         // Build explicit party list for stronger AI constraint
         const partyNameList = party.map(p => p.name || p).join('、');
@@ -147,9 +147,15 @@ ${party.map(p => `- ${p.name || p} (${p.race || '?'} ${p.class || '?'})`).join('
 
 【角色介紹】
 - 必須介紹每一位角色：${partyNameList}
-- 描述外觀、裝備、神態
-- 展現他們的個性和職業特色
-- 描述他們在場景中的位置和狀態
+- **第一印象 (First Impression)**：描述角色給人的直覺感受與氣場特質。
+- **神態與習慣 (Habits)**：展現他們特有的動作習慣 (如拍打斧柄、推眼鏡)。
+- 描述外觀、裝備，並展現他們的個性和職業特色。
+- 描述他們在場景中的位置和狀態。
+
+【初次見面與偏見 (Prejudices)】
+- 如果角色之間是初次見面，描述他們如何根據對方的「外觀」或「職業/陣營」產生初步的判斷或偏見。
+- 這種偏見應表現為：微妙的眼神、語氣的客氣或疏離、或是內心的私下評價。
+- **注意**：人際關係會隨時間改變，但在序幕中，初始偏見是塑造性格張力的關鍵。
 
 【當前情境】
 - 隊伍現在面臨什麼處境？
@@ -211,6 +217,10 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
        - **公平分配**: 無論隊伍有多少人，每位角色的描述長度必須 **大致相等** (約 160-200 字)。
        - **拒絕簡化**: 禁止因為角色多就簡化描述。每一位角色的回合都是他們的「高光時刻」。
        - **深度描寫**: 必須描寫動作的細節、感官體驗(聲音、光影、氣味)以及心理活動。
+       - **台詞重現**: 如果角色有發言(User Action 中包含對話)，必須在敘事中生動地寫出角色的台詞，並符合其語氣特色。
+       - **行為習慣捕捉**: 適時在動作中穿插角色的 behavioral habits (如緊張時會碎碎唸、準備戰鬥前會整理儀容)。
+       - **偏見與動機**: 選項的後果描述中，應體現角色的 prejudices 如何影響其判斷。
+       - **戰鬥弱點 (Combat Weaknesses)**: 如果當前環境或敵人列表匹配角色的 [Combat Weakness] 觸發條件，你 **必須** 描繪他們的反應 (Reaction)。描述這如何影響他們的專注力、士氣或身體狀態。例如：怕黑的角色在黑暗中攻擊會顯得猶豫不決，或是在面對厭惡的蟲子時發出恐劇的叫喊。
 
        - **HEADER**: \`### [Character Name] (Initiative: X)\`
          - **CRITICAL**: You MUST use this header for every single character provided in the action list.
@@ -218,17 +228,20 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
            - **Narrative**: Write a **Cinematic Paragraph** describing the character's action. Do NOT use bullet points like "- Action:" or "- Result:".
             - **Player Action**:
               - If the player entered an action, describe it cinematically.
-              - **THEN** append the DICE PLACEHOLDER: \`[[DICE:角色名:檢定類型:DC值]]\`
-                - 攻擊範例: \`[[DICE:貝拉:攻擊:15]]\`
-                - 技能範例: \`[[DICE:卡琳:潛行:12]]\`
-              - **DO NOT ROLL THE DICE YOURSELF!** The player will click to roll.
+              - **THEN** append the DICE PLACEHOLDER: \`[[DICE:角色名:檢定類型:DC值:1-20結果值]]\`
+                - **CRITICAL: PRE-DETERMINED OUTCOME**: You must decide the d20 roll result (1-20) **BEFORE** writing the narrative.
+                - **CONSISTENCY RULE**: ALL subsequent narrative blocks (for this character AND other characters) and the final **DM SUMMARY** must be 100% consistent with the outcome of this roll.
+                - **DRAMATIC REVERSAL (Luck)**: If the plot requires it, you may allow a "Success" outcome even if the roll is low (e.g., "The arrow missed the eye but hit a chandelier that fell on the target"). However, you must describe this "Luck" clearly in the narrative and still follow the decided outcome consistently.
+                - 格式範例: \`[[DICE:貝拉:攻擊:15:18]]\` (18+Mod > 15, Success)
+                - 格式範例: \`[[DICE:卡琳:潛行:12:3]]\` (3+Mod < 12, Failure)
               - **AFTER** the dice tag, write BOTH outcomes using this format:
                 - \`[[成功:成功後果描述 (約 120 字，必須包含角色心理想法或下一步打算)]]\`
                 - \`[[失敗:失敗後果描述 (約 120 字，必須包含角色心理想法或下一步打算)]]\`
               - *完整格式*: 
-                \`(生動動作描述) -> [[DICE:角色:類型:DC]] -> [[成功:描述+心理]] [[失敗:描述+心理]]\`
+                \`(生動動作描述) -> [[DICE:角色:類型:DC:結果]] -> [[成功:描述+心理]] [[失敗:描述+心理]]\`
               - **範例**:
-                貝拉揮舞短劍刺向狗頭人，銀光閃爍間劍尖直取要害。-> [[DICE:貝拉:攻擊:13]] -> [[成功:短劍深深刺入狗頭人的肩膀，造成 5 點傷害！牠痛苦地嚎叫。貝拉心中暗喜，想趁機再補上一腳，徹底擊倒這隻怪物，她的眼神中閃爍著冷酷的光芒。]] [[失敗:狗頭人靈巧地側身閃避，貝拉的劍刃只劃過空氣。她咬緊牙關，懊惱自己的急躁，迅速調整架勢準備應對敵人的反擊，心中暗自發誓下次絕不會再失手。]]
+                貝拉揮舞短劍刺向狗頭人，銀光閃爍間劍尖直取要害。-> [[DICE:貝拉:攻擊:13:17]] -> [[成功:短劍深深刺入狗頭人的肩膀，造成 5 點傷害！牠痛苦地嚎叫。貝拉心中暗喜，想趁機再補上一腳，徹底擊倒這隻怪物。]] [[失敗:狗頭人靈巧地側身閃避，貝拉的劍刃只劃過空氣。她咬緊牙關，懊惱自己的急躁，迅速調整架勢。]]
+                *(注意：因為預設結果是 17，所以後續描述如莫琳娜的回合必須描述貝拉擊中了敵人。)*
             - **Idle Player**:
               - If NO action is provided, describe the character hesitating or observing.
               - **IMMEDIATELY** trigger an enemy reaction: "Seeing [Name] hesitate, the [Enemy] lunges!"
@@ -305,19 +318,17 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
        - **PLACEMENT**: Must be the VERY LAST element of your response.
        - **Note**: Keep options short (under 10 chars each).
 
-    7. **SECTION HEADERS (區塊格式)** - 使用中文區塊格式，不要用 Markdown:
-       - DM 開場: "=== DM 開場 (DM OPENING) ==="
-       - 角色介紹: "=== 角色介紹 ==="  
-       - 角色回合: "【角色名】的回合" 或 "=== 角色名 的行動 ==="
-       - 不要使用 ### 或 ** 等 Markdown 語法
-       - 區塊之間自然過渡，不需要分隔線
+    7. **SECTION HEADERS (區塊格式) - 必須嚴格遵守**:
+       - 每個角色的行動區塊必須以 \`###\` 開頭，這對前端渲染至關重要。
+       - 格式範例: \`### 貝拉 (先攻: 15)\`
+       - 回合總結必須使用: \`### 📊 回合總結\`
+       - 除了上述特定的 \`###\` 標題外，不要在內容中使用其他 Markdown 標題語法 (如 # 或 ##)。
 
     === CRITICAL RULES ===
     - Use D20 System (D&D 5e Rules).
     - ** FORMATTING **:
       - **NO MARKDOWN BOLD** - Do NOT use **text** syntax anywhere in output.
       - **NO ACTION OPTIONS** - Do NOT include "選擇一:", "選擇二:", "選項一:" etc. These are generated separately.
-      - **NO # HEADERS** - Do NOT use # or ## as standalone lines.
       - **NO [[BGM:]] TAGS** - Do NOT include background music tags.
       - Use emoji indicators: ✅ 成功, ❌ 失敗, ⚠️ 瀕死, 💀 死亡
       - Use 【角色名】 format for character turn headers.
@@ -329,41 +340,51 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
       - IF (Roll + Mod) >= DC, RESULT "✅ 成功" or "✅ 命中".
       - IF (Roll + Mod) < DC, RESULT "❌ 失敗" or "❌ 未命中".
       - Natural 20 = "🌟 大成功!", Natural 1 = "💥 大失敗!"
-    - **OUTPUT**: Return plain Traditional Chinese prose. NO ENGLISH. NO FORMATTING MARKERS.
+    - **OUTPUT**: Return Traditional Chinese narrative prose.
+    - **STRUCTURE**: EVERY TRPG TURN MUST INCLUDE:
+      1. DM Opening (Optional if mid-combat)
+      2. Initiative List (Once per round start)
+      3. Character Actions (One block per character using ### headers)
+      4. **### 📊 回合總結** (MANDATORY AT THE END)
     - **CRITICAL**: DO NOT WRAP YOUR RESPONSE IN \`\`\` CODE BLOCKS.
 `;
       }
     } else {
       // Novel Mode
       modePrompt = `
-                    ** NOVEL MODE - PURE STORYTELLING:**
-                        - You are writing a chapter of a novel starring SPECIFIC CHARACTERS.
-                        - ** PROTAGONISTS **: You MUST write from the perspective of the characters listed in [PARTY PROFILES].
-                            - ** CRITICAL **: Do NOT invent new protagonists. If the party is "Bella, Thorin, Kalin", the story MUST be about them.
-                            - Use their specific names, personalities, and backgrounds.
-                        - ** ABSOLUTELY NO ** game mechanic tags [🎲], stats, or bracketed headers like 【Action】 or 【Threat】.
-                        
-                        - ** FORMATTING RULES **
-                            - ** PROSE ONLY **: Integrate all actions, threats, and outcomes naturally into the descriptive text.
-                                - Instead of \`【Action】 Tavian swings his sword\`, write \`Tavian lunged forward, his sword carving a silver arc through the air.\`
-                            - ** DIALOGUE **: Weave widely. No name blocks.
-                                - Example: "多恩低聲說道：「我們走吧。」"
-                            - ** ENDINGS **: Do NOT end with a question like "What happens next?" or "What does the party do?". End with the scene's current state.
+          ** NOVEL MODE - CINEMATIC LITERARY EXPERIENCE:**
+            - You are writing a professional fantasy novel chapter.
+            - ** PROTAGONISTS **: Focus deeply on the characters in [PARTY PROFILES].
+                - ** CHARACTER VOICES **: Use each character's [Voice/Monologue] to influence their dialogue and thoughts.
+                - ** THE SPOTLIGHT **: Ensure ALL characters in the party are mentioned and given active roles or internal monologues. Do not let one character dominate the entire scene.
+                - ** EMOTIONAL DEPTH **: Integrate their [Emotional Keys]. Use "Joy" to describe their hopes, "Anger" to show their biases, and "Weakness" for internal conflict.
+                - ** DRAMATIC TENSION **: If the situation triggers a [Combat Weakness], you MUST describe the character's [Reaction] vividly. This is a moment of vulnerability that adds depth to the story.
+            
+            - ** NARRATIVE STYLE **:
+                - ** SHOW, DON'T TELL **: Instead of saying "they were scared", describe their racing hearts, trembling hands, or the cold sweat on their brow.
+                - ** SENSORY IMMERSION **: Describe the scent of damp earth, the chill of a ghostly wind, or the taste of iron-rich blood in a fight.
+                - ** ATMOSPHERE **: Use the current [Location] and [Tone] to set a consistent mood.
 
-                        ** FEW-SHOT EXAMPLE (NOVEL MODE) **:
-                        Context: Party is Elara (Mage) and Garrick (Fighter) entering a tomb.
-                        Output: 
-                        埃拉拉(Elara)舉起法杖，頂端的水晶散發出微弱的藍光，照亮了古老石牆上的苔蘚。「這裡的魔力流動很混亂，」她輕聲警告，眉頭緊鎖，「小心腳下，加里克(Garrick)。」
-                        加里克冷哼一聲，緊握著手中的巨斧，沈重的腳步聲在寂靜的走廊中迴盪。「只要能砍得到的東西，我就不怕。」他雖然嘴上這麼說，但身體卻本能地擋在了法師身前，警惕地盯著黑暗深處。
-                        突然，一陣陰冷的風從深處吹來，夾雜著腐朽的氣息。埃拉拉猛地倒吸一口氣：「有東西醒了。」
-                                            
-                                            `;
+            - ** ABSOLUTELY NO ** game mechanic tags [🎲], stats, or bracketed headers like 【Action】 or ### Headers.
+            - ** PROSE ONLY **: Integrate all actions, threats, and outcomes naturally into the descriptive text.
+            - ** DIALOGUE **: Weave widely. No name blocks. Example: "多恩低聲說道：「我們走吧。」"
+            - ** ENDINGS **: End with the scene's current state. Do NOT ask questions.
+
+            **FEW-SHOT EXAMPLE (ENHANCED NOVEL MODE)**:
+            Context: Party is Ains (Skeleton) and Elena (Medic) in a dark forest.
+            Output:
+            艾因斯(Ains)緊握著那柄生鏽的長劍，骨節在黑暗中發出細微的摩擦聲。雖然他已不再需要呼吸，但這片死寂的森林仍讓他感到一絲不安。他的眼眶中跳動著微弱的紅光，下意識地摸了摸懷中那塊破舊的手帕——那是他身為人時最後的連繫。
+            「艾因斯，你的動作太僵硬了。」埃琳娜(Elena Stern)低聲說道，她正細心地檢查著繃帶，職業性的冷靜掩蓋了內心的疲憊。
+            突然，樹叢中傳來一聲神似女孩哭泣的怪響。艾因斯的身體猛然一顫，整個人僵在原地。那聲音觸動了他最深處的痛苦，他仿佛看到了女兒在火海中掙扎的幻影。他的劍尖頹然垂下，原本威嚴的白骨戰士此時顯得無比脆弱。
+            「不...別過來...」艾因斯發出嘶啞的低語，那是靈魂深處的哀慟。
+            `;
     }
 
     const systemPrompt = `
         You are the ** Storyteller ** (Narrative Agent) for an interactive D & D novel.
     Module: "${moduleTitle}"
 Location: "${currentLocation}"
+${forcePlotPush ? "** SIGNAL: FORCE PLOT PUSH (強制推動劇情) **\n- The players or the situation demand progress NOW.\n- If the scene is stagnant or looping, IMMEDIATELY transition to a NEW location, a NEW conflict, or the NEXT Act.\n- Do NOT provide more of the same. Change the state of the world significantly." : ""}
 
         **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
         **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**
@@ -384,6 +405,8 @@ Location: "${currentLocation}"
     1. Cross - Agent Awareness
 2. Autonomous Scene Completion
 3. Dramatic Consistency
+4. **Proactive Pacing**: If the narrative feels repetitive or lacks momentum, take the initiative to introduce a new event, a sudden threat, or a plot twist. Do not wait for player permission to keep the story interesting.
+${editorialHints ? `\n[EDITORIAL INSTRUCTION]\n${editorialHints}\n- YOU MUST COMPLY WITH THIS FIX IMMEDIATELY.` : ""}
 
 [PREVIOUS CONTEXT]
         ${lastLog ? lastLog.slice(-8000) : "(Start of Adventure)"}

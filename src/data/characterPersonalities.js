@@ -266,3 +266,50 @@ export const PERSONALITY_PROMPTS = {
     }
 };
 
+/**
+ * MBTI Tone Modifiers
+ * Definitions for how each MBTI dimension affects speech patterns.
+ */
+export const MBTI_TONE_MODIFIERS = {
+    'E': {
+        desc: "外向型 (Extraverted)",
+        modifiers: "語氣強烈、充滿活動、主動發起對話。使用較多驚嘆號，詞彙量豐富且直觀。",
+        example: "「哈哈！這主意不錯，我們現在就出發吧！」"
+    },
+    'I': {
+        desc: "內向型 (Introverted)",
+        modifiers: "語氣簡潔、被動回應。傾向於觀察而非主導，語句中常包含「...」或沈思。省略非必要的主語。",
+        example: "「...方案可行。我會跟著。」"
+    },
+    'S': {
+        desc: "實感型 (Sensing)",
+        modifiers: "描述具體化。關注眼前的戰場細節、敵人的顏色、腳下的觸感。遣詞造句直白、寫實。",
+        example: "「前面路口有三個紅衣服的守衛，腳步聲很沈。」"
+    },
+    'N': {
+        desc: "直覺型 (Intuitive)",
+        modifiers: "語氣抽象。使用更多隱喻、哲理，關注事情的潛在意義與未來可能性。不拘泥於表面細節。",
+        example: "「這風中隱藏著命運的低語，事情的發展可能超出常理。」"
+    },
+    'T': {
+        desc: "思考型 (Thinking)",
+        modifiers: "語氣客觀、重邏輯。使用「分析、效率、機率、結構」等詞彙。對待問題像在解決數學題。",
+        example: "「根據戰損比分析，正面衝鋒的勝率低於 25%。」"
+    },
+    'F': {
+        desc: "情感型 (Feeling)",
+        modifiers: "語速溫和、重和諧。使用「感受、靈魂、羈絆、大家、希望」等詞彙。關注隊友的情感狀態。",
+        example: "「只要大家的心在一起，這份羈絆一定能帶我們度過難關。」"
+    },
+    'J': {
+        desc: "判斷型 (Judging)",
+        modifiers: "語氣果斷、有條理。強調計畫與目標，喜歡有結論的對話，討厭模稜兩可的情況。",
+        example: "「我們必須在十分鐘內達成目標，A 計畫開始執行。不容出錯。」"
+    },
+    'P': {
+        desc: "感知型 (Perceiving)",
+        modifiers: "語氣隨興、靈活。保留多種可能性，喜歡驚喜，說話時常帶有「也許、看看再說、視情況而定」。",
+        example: "「誰知道呢？也許轉角會有更好玩的發現。計畫趕不上變化嘛。」"
+    }
+};
+

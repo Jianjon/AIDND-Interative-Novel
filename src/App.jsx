@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     Sword, Ghost, Map as MapIcon, Settings, Send, Sparkles, Camera,
     Heart, Shield, Wand2, Clock, Users, ChevronRight, Plus,
-    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2, MessageCircle, Hand, AlertCircle, Play
+    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2, MessageCircle, Hand, AlertCircle, Play, FastForward
 } from 'lucide-react';
 import { CharacterCreator } from './components/CharacterCreator';
 import { ModuleDetailsModal } from './components/ModuleDetailsModal';
@@ -10,6 +10,7 @@ import JournalModal from './components/JournalModal';
 import SaveLoadModal from './components/SaveLoadModal';
 import DualDiceRoll from './components/DualDiceRoll'; // Import for animation
 import { useToken } from './contexts/TokenContext';
+import useLocalStorage from './hooks/useLocalStorage';
 // --- CONSTANTS & HELPERS ---
 const FLAVOR_ADJECTIVES = [
     "Savage", "Cruel", "Vicious", "Wild", "Grim", "Dark", "Fierce", "Bloodthirsty",
@@ -49,7 +50,7 @@ import CharacterModal from './components/CharacterModal';
 import CharacterCreationModal from './components/CharacterCreationModal';
 import ActionModal from './components/ActionModal';
 import SettingsModal from './components/SettingsModal';
-import { generateAIPortrait } from './utils/portrait-generator';
+import { generateAIPortrait, generateAIScene } from './utils/portrait-generator';
 import { CharacterAgent } from './libs/CharacterAgent';
 import { ErrorBoundary } from './libs/ErrorBoundary.jsx';
 import LevelUpModal from './components/LevelUpModal';
@@ -87,6 +88,7 @@ import { StoryAgent } from './agents/StoryAgent';
 import { GameMasterAgent } from './agents/GameMasterAgent';
 import { CartographerAgent } from './agents/CartographerAgent';
 import { CharacterManagerAgent } from './agents/CharacterManagerAgent';
+import { EditorAgent } from './agents/EditorAgent';
 import AffinityManagerAgent from './agents/AffinityManagerAgent';
 import { AudioManager } from './services/AudioManager';
 import { getMemoryService } from './services/MemoryService';
@@ -199,6 +201,7 @@ const PokeMenu = ({ isOpen, onClose, onAction, isGenerating }) => {
 
     const options = [
         { id: 'continue', label: '繼續 (Continue)', icon: <Play size={16} />, desc: 'Force the story to proceed', color: 'text-emerald-400', border: 'border-emerald-500/30 hover:bg-emerald-500/10' },
+        { id: 'plot_push', label: '強制推動 (Push Plot)', icon: <FastForward size={16} />, desc: 'Force a scene or act transition', color: 'text-rose-400', border: 'border-rose-500/30 hover:bg-rose-500/10' },
         { id: 'review', label: '檢視 (Review)', icon: <Brain size={16} />, desc: 'DM analyzes game state', color: 'text-amber-400', border: 'border-amber-500/30 hover:bg-amber-500/10' },
         { id: 'report', label: '回報 (Report)', icon: <MessageCircle size={16} />, desc: 'Discuss issues with DM', color: 'text-indigo-400', border: 'border-indigo-500/30 hover:bg-indigo-500/10' },
     ];
@@ -464,6 +467,10 @@ export default function InteractiveDND() {
 
     // Agent Initialization
     const storyAgent = useMemo(() => new StoryAgent(aiOptions), [aiOptions]);
+    const gmAgent = useMemo(() => new GameMasterAgent(aiOptions), [aiOptions]);
+    const mapAgent = useMemo(() => new CartographerAgent(aiOptions), [aiOptions]);
+    const charAgent = useMemo(() => new CharacterManagerAgent(aiOptions), [aiOptions]);
+    const editorAgent = useMemo(() => new EditorAgent(aiOptions), [aiOptions]);
 
     const handleCreateCustomModule = async (prompt, difficulty) => {
         // Use sandbox mode: No AI wait, instant module creation
@@ -598,6 +605,8 @@ export default function InteractiveDND() {
         pacing_signal: "Build-up",
         mechanical_opportunity: "None"
     });
+    const [pendingPlotPush, setPendingPlotPush] = useState(false); // DEFERRED FLAG
+    const [editorialHints, setEditorialHints] = useState(""); // Editorial corrections for next generation
 
     const [questLog, setQuestLog] = useState([]); // Array of strings (active quests)
     const [currentLocation, setCurrentLocation] = useState(['未知區域']); // Breadcrumb path array
@@ -647,9 +656,59 @@ export default function InteractiveDND() {
         }
     }, [userSettings.masterVolume, userSettings.bgmVolume, userSettings.sfxVolume, isMuted]);
 
+    // --- TURN SYNC EFFECT (Fix Race Condition) ---
+    useEffect(() => {
+        if (isNarrativeComplete && pendingTurnUpdates) {
+            console.log("[Sync] Apply Deferred Updates (Race Fix):", pendingTurnUpdates);
+            if (pendingTurnUpdates.gameState) setGameState(pendingTurnUpdates.gameState);
+            if (pendingTurnUpdates.scenarioRoster) setScenarioRoster(pendingTurnUpdates.scenarioRoster);
+            if (pendingTurnUpdates.roster) setRoster(pendingTurnUpdates.roster);
+            if (pendingTurnUpdates.actionCache) setActionCache(pendingTurnUpdates.actionCache);
+
+            setPendingActions({}); // Clear previous turn's actions
+            setPendingTurnUpdates(null);
+            setIsNarrating(false);
+        }
+    }, [isNarrativeComplete, pendingTurnUpdates]);
+
     // --- SETTINGS HANDLERS ---
     const handleUpdateSettings = (key, value) => {
         setUserSettings(prev => ({ ...prev, [key]: value }));
+    };
+
+    const handleGenerateScene = async () => {
+        if (isGeneratingScene) return;
+        setIsGeneratingScene(true);
+        try {
+            const locationName = currentLocation[currentLocation.length - 1] || "未知秘境";
+            const context = logs.slice(-5).map(l => l.content).join("\n");
+            const imageUrl = await generateAIScene(locationName, context);
+            if (imageUrl) {
+                setSceneImage(imageUrl);
+                showToast(`已生成 ${locationName} 的新場景圖！`, "success");
+            } else {
+                showToast("場景圖生成失敗，請稍後再試。", "error");
+            }
+        } catch (e) {
+            console.error("Generate Scene Error:", e);
+            showToast("生成的過程中發生了錯誤。", "error");
+        } finally {
+            setIsGeneratingScene(false);
+        }
+    };
+
+    const handleClearCache = () => {
+        if (confirm("確定要清除所有快取圖片嗎？這將重置場景圖並刪除已生成的頭像。")) {
+            setSceneImage('');
+            // Clear specific localStorage keys
+            localStorage.removeItem('dnd_scene_image');
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('portrait_v1_') || key.startsWith('scene_v1_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            showToast("快取已清除，部分變更將在重新載入後生效。", "success");
+        }
     };
 
 
@@ -864,88 +923,72 @@ JSON格式回覆：
 
     // Initialize roster if empty or invalid
     // --- INITIALIZATION & DATA MIGRATION ---
+    // --- INITIALIZATION & DATA MIGRATION ---
     useEffect(() => {
-        // 1. Initialize Roster if empty
+        // 1. Initialize Roster if empty (First time load or cleared storage)
         if (!roster || roster.length === 0) {
             console.log("Initializing Roster with 12 Preset Characters...");
-            setRoster(generateRoster());
+            // Use local variable to avoid dependency cycle with generateRoster which relies on nothing
+            const initialRoster = PRESET_CHARACTERS.map(data => new CharacterAgent(data));
+            // We map to plain objects for storage if needed, but CharacterAgent might serialize okay?
+            // Safer to store getData() but let's see. useLocalStorage does JSON.stringify.
+            // CharacterAgent is a Class, so JSON.stringify might strip methods but keep properties.
+            // On load, we re-hydrate using the useMemo(agentRoster).
+            // So we can just setRoster(initialRoster).
+            setRoster(initialRoster);
             return;
         }
 
         // 2. Force Sync Preset Avatars (To fix legacy DiceBear issue persistently)
-        // We check if any preset character in the current roster has an avatar that DOES NOT match the fresh import.
-
-        // LOOP PROTECTION: Stop if we've tried syncing too many times in this session
-        if (syncAttempts.current > 3) {
-            // console.warn("Avatar Sync Aborted: Too many attempts. Potential loop detected.");
-            return;
-        }
+        // Only run this once per session to avoid loops
+        if (syncAttempts.current > 0) return;
 
         let hasChanges = false;
+        // We iterate the *stored* roster (which are plain objects now likely)
         const updatedRoster = roster.map(char => {
             if (char.id && char.id.startsWith('preset_')) {
                 const freshPreset = PRESET_CHARACTERS.find(p => p.id === char.id);
                 if (freshPreset && freshPreset.avatar && char.avatar !== freshPreset.avatar) {
-                    // Debug Log to see why it keeps mismatching
-                    console.log(`[Sync] Updating Avatar for ${char.name}. Old: ${String(char.avatar).substring(0, 20)}... New: ${String(freshPreset.avatar).substring(0, 20)}...`);
+                    console.log(`[Sync] Updating Avatar for ${char.name}.`);
                     hasChanges = true;
+                    // Merge fresh avatar into existing char data
                     return { ...char, avatar: freshPreset.avatar, avatarUrl: freshPreset.avatar };
                 }
             }
             return char;
         });
 
-        // If any changes were made, update state
-        if (hasChanges) {
-            syncAttempts.current += 1;
-            setRoster(updatedRoster);
-            console.log("Roster Avatars Synced to Assets.");
-        }
-
-        // 3. Legacy / Localization Checks
-        let shouldReset = false;
-        let resetReason = "";
-
-        // Check A: Legacy DiceBear Avatars in PRESETS (Custom chars are allowed to have them)
-        // We only care if the *presets* are outdated.
-        const presetBarbarian = roster.find(c => c.id === 'preset_barbarian');
-
-        // Check B: English content in Presets
+        // 3. Legacy / Localization Checks (English detection)
+        const presetBarbarian = updatedRoster.find(c => c.id === 'preset_barbarian');
+        // Basic check for English content in what should be Chinese
         const hasEnglishPresets = presetBarbarian && (presetBarbarian.race === 'Air Genasi' || presetBarbarian.race === 'Genasi' || presetBarbarian.class === 'Barbarian');
 
-        // Check C: DiceBear in Presets
-        const hasLegacyPresetAvatars = roster.some(c =>
-            c.id &&
-            c.id.startsWith('preset_') &&
-            (
-                (typeof c.avatar === 'string' && c.avatar.includes('dicebear')) ||
-                (typeof c.avatarUrl === 'string' && c.avatarUrl.includes('dicebear'))
-            )
+        // Check for Legacy DiceBear
+        const hasLegacyPresetAvatars = updatedRoster.some(c =>
+            c.id && c.id.startsWith('preset_') &&
+            ((typeof c.avatar === 'string' && c.avatar.includes('dicebear')) ||
+                (typeof c.avatarUrl === 'string' && c.avatarUrl.includes('dicebear')))
         );
 
-        // Check D: Missing Gold/Attributes in Presets
-        const hasBrokenPresets = presetBarbarian && presetBarbarian.gold === undefined;
-
-        if (hasEnglishPresets) { shouldReset = true; resetReason = "Localization Update (English detected)"; }
-        else if (hasLegacyPresetAvatars) { shouldReset = true; resetReason = "Avatar Update (Legacy DiceBear detected in Presets)"; }
-        else if (hasBrokenPresets) { shouldReset = true; resetReason = "Schema Update (Missing attributes)"; }
-        else if (roster.some(c => c.id === 'error_char')) { shouldReset = true; resetReason = "Error Recovery"; }
+        let shouldReset = hasEnglishPresets || hasLegacyPresetAvatars;
+        let resetReason = hasEnglishPresets ? "Localization Update" : "Avatar Update";
 
         if (shouldReset) {
-            console.log(`[System] Roster Reset Triggered: ${resetReason} `);
-
-            // CRITICAL: Preserve Custom Characters!
+            console.log(`[System] Roster Reset Triggered: ${resetReason}`);
             const customCharacters = roster.filter(c => c.id && !c.id.startsWith('preset_'));
-
-            // Regenerate Presets
-            const freshPresets = generateRoster();
-
-            // Merge: New Custom + Fresh Presets (Custom usually go first or last? Let's keep existing order preference, put custom first)
+            const freshPresets = PRESET_CHARACTERS.map(data => new CharacterAgent(data));
             const newRoster = [...customCharacters, ...freshPresets];
-
             setRoster(newRoster);
-            showToast("系統更新：已刷新預設角色資料 (自創角色已保留)", "info");
+            syncAttempts.current += 1; // Mark done
+            showToast(`系統更新：已刷新預設角色資料 (${resetReason})`, "info");
+        } else if (hasChanges) {
+            setRoster(updatedRoster);
+            syncAttempts.current += 1;
+            console.log("Roster Avatars Synced to Assets.");
+        } else {
+            syncAttempts.current += 1; // Mark done even if no changes
         }
+
     }, [roster, setRoster]);
 
     const [level, setLevel] = useState(3); // Default Level: 3 (Standard Adventurer Start)
@@ -976,32 +1019,41 @@ JSON格式回覆：
     const handleSave = (slotId) => {
         const timestamp = new Date().toLocaleString('zh-TW');
 
-        // Prepare Data
-        const saveData = {
-            logs,
-            party,
-            roster: roster.map(c => c.getFullSheet ? c.getFullSheet() : c),
-            scenarioRoster,
-            gameState,
-            questJournal,
-            currentLocation,
-            questLog,
-            selectedModule,
-            gameMode,
-            apiKey,
-            authMode,
-            currentAct,
-            savedAt: timestamp
-        };
+        try {
+            // Prepare Data
+            const saveData = {
+                logs,
+                party,
+                roster: roster.map(c => c.getFullSheet ? c.getFullSheet() : c),
+                scenarioRoster,
+                gameState,
+                questJournal,
+                currentLocation,
+                questLog,
+                selectedModule,
+                gameMode,
+                apiKey,
+                authMode,
+                currentAct,
+                savedAt: timestamp
+            };
 
-        // Save to specific slot key
-        localStorage.setItem(`dnd_save_slot_${slotId} `, JSON.stringify(saveData));
-        showToast(`遊戲進度已儲存至存檔 ${slotId}！`, "success");
-        setShowSaveLoadModal(null);
+            // Save to specific slot key (Fixed: removed trailing space)
+            localStorage.setItem(`dnd_save_slot_${slotId}`, JSON.stringify(saveData));
+            showToast(`遊戲進度已儲存至存檔 ${slotId}！`, "success");
+            setShowSaveLoadModal(null);
+        } catch (e) {
+            console.error("Save failed", e);
+            if (e.name === 'QuotaExceededError' || e.code === 22) {
+                showToast("儲存失敗：瀏覽器儲存空間已滿 (5MB)。請嘗試刪除舊存檔或過長的對話紀錄。", "error");
+            } else {
+                showToast("儲存失敗：" + e.message, "error");
+            }
+        }
     };
 
     const handleLoad = (slotId) => {
-        const savedJson = localStorage.getItem(`dnd_save_slot_${slotId} `);
+        const savedJson = localStorage.getItem(`dnd_save_slot_${slotId}`);
         if (!savedJson) {
             showToast("讀取失敗：該位置無存檔", "error");
             return;
@@ -1299,10 +1351,7 @@ JSON格式回覆：
 
 
     // --- MULTI-AGENT ORCHESTRATION ---
-    // Agents
-    const gmAgent = useMemo(() => new GameMasterAgent(aiOptions), [aiOptions]);
-    const mapAgent = useMemo(() => new CartographerAgent(aiOptions), [aiOptions]);
-    const charAgent = useMemo(() => new CharacterManagerAgent(aiOptions), [aiOptions]);
+    // Agents (Now handled at top-level scope)
 
     // Memory Service - Tiered memory for story coherence
     const memoryService = useRef(getMemoryService());
@@ -1311,12 +1360,15 @@ JSON格式回覆：
     const lastApiCallTime = useRef(0);
     const MIN_API_INTERVAL = 1500; // Minimum 1.5 seconds between API calls
 
-    const executeTurn = async (forcePrologue = false, forceContinue = false) => {
+    const executeTurn = async (forcePrologue = false, forceContinue = false, forcePlotPush = false) => {
         let tempGroupOptions = null; // Fix scope issue
-        if (isExecuting.current || isGenerating) {
+        if (isExecuting.current || (isGenerating && !forceContinue)) {
             console.log("[ExecuteTurn] Blocked: Already executing or generating.");
             return;
         }
+
+        // CRITICAL: Set execution flag IMMEDIATELY to prevent race conditions during throttle/validation
+        isExecuting.current = true;
 
         // Throttle check - wait if called too quickly
         const now = Date.now();
@@ -1351,7 +1403,7 @@ JSON格式回覆：
         console.log("Pending Actions:", pendingActions);
         console.log("Is Prologue:", isPrologue);
 
-        isExecuting.current = true;
+        // isExecuting.current already set at top
         setIsGenerating(true);
         setIsNarrativeComplete(false); // Reset completion status
         // Clear old action cache to prevent stale options showing during generation
@@ -1507,24 +1559,34 @@ JSON格式回覆：
 
                     return `- ${char.name}: AC ${char.ac || 10}, DC ${char.spellSaveDC || '-'}, Actions: [${actionListStr}]${companionCombat} `;
                 }).join('\n'),
-                // CRITICAL: Inject Narrative Identity (Bio/Personality)
                 partyProfiles: party.map(id => {
                     const char = agentRoster.find(c => c.id === id);
                     if (!char) return "";
 
                     // Companion Narrative Info
                     const companionInfo = char.companion ?
-                        `\n - ** Companion **: ${char.companion.name} (${char.companion.type}) \n - ** Personality **: ${char.companion.personality || "Loyal"} \n - ** Tactics **: ${char.companion.tactics || "Protects owner"} \n - ** Autonomy **: Acts independently unless commanded via Option D.`
+                        `\n - ** Companion **: ${char.companion.name} (${char.companion.type}) \n - ** Personality **: ${char.companion.personality || "Loyal"} \n - ** Tactics **: ${char.companion.tactics || "Protects owner"}`
+                        : "";
+
+                    const emotionalKeys = char.emotionalKeys ?
+                        `\n - ** Emotional Keys **: Joy: ${char.emotionalKeys.joy?.join(', ') || '?'}, Anger: ${char.emotionalKeys.anger?.join(', ') || '?'}, Weakness: ${char.emotionalKeys.weakness || '?'}`
+                        : "";
+
+                    const combatWeakness = char.combatWeakness ?
+                        `\n - ** Combat Weakness **: ${char.combatWeakness.reaction} (Trigger: ${char.combatWeakness.triggers?.map(t => t.target).join(', ')})`
                         : "";
 
                     return `
 ### ${char.name} (${char.race} ${char.class})
 - ** Personality **: ${char.personality || "Unknown"}
+- ** Voice/Monologue **: ${char.monologue || "N/A"}${emotionalKeys}${combatWeakness}
 - ** Appearance **: ${char.appearance || "Generic adventurer"}
-- ** Background **: ${char.bio ? char.bio.slice(0, 150) + "..." : "A mysterious traveler."}${companionInfo}
+- ** Background **: ${char.bio ? char.bio.slice(0, 300) : "A mysterious traveler."}${companionInfo}
 `.trim();
                 }).join('\n\n'),
                 isPrologue: isPrologue,
+                forcePlotPush: forcePlotPush || pendingPlotPush, // Consume deferred flag
+                editorialHints: editorialHints, // Pass corrections
                 // MODULE PLOT NAVIGATION
                 moduleId: selectedModule?.id || null,
                 currentAct: currentAct,
@@ -1624,6 +1686,27 @@ JSON格式回覆：
                         }
                         memoryService.current.save();
                     }
+
+                    // --- NEW: EDITORIAL REVIEW ---
+                    // Let the EditorAgent review the output for consistency and formatting
+                    const reviewResult = await editorAgent.performReview({
+                        moduleTitle,
+                        logs: [...logs, { content: finalNarrative }],
+                        roster: tempRoster,
+                        currentAct,
+                        questJournal
+                    });
+
+                    if (reviewResult && !reviewResult.isConsistent) {
+                        console.log("[Editor] Consistency Issues Found:", reviewResult.issues);
+                        // Store instructions for the NEXT turn
+                        setEditorialHints(reviewResult.suggestedCorrections?.editorial_instruction || "");
+                        if (reviewResult.issues?.length > 0 && reviewResult.issues[0].severity === 'high') {
+                            showToast("編輯小幫手正在校對劇情...", "info");
+                        }
+                    } else {
+                        setEditorialHints(""); // Clear if consistent
+                    }
                 } catch (e) {
                     console.warn('[Memory] Summary update failed:', e);
                 }
@@ -1689,21 +1772,28 @@ JSON格式回覆：
                     const currentGold = char.inventory?.gold ?? char.gold ?? 0;
 
                     if (currentGold >= price) {
-                        // Deduct gold
-                        if (char.inventory) {
-                            char.inventory = { ...char.inventory, gold: currentGold - price };
-                        } else {
-                            char.gold = currentGold - price;
-                        }
-                        // Add item to consumables (simplified)
-                        const inv = char.inventory || { equipment: [], consumables: [], magicItems: [] };
-                        const lower = itemName.toLowerCase();
-                        let type = 'equipment';
-                        if (lower.includes('藥水') || lower.includes('卷軸') || lower.includes('口糧') || lower.includes('火把')) type = 'consumables';
-                        inv[type] = [...(inv[type] || []), itemName.trim()];
-                        char.inventory = inv;
+                        // PRERSERVE PROTOTYPE
+                        const updatedChar = Object.create(Object.getPrototypeOf(tempRoster[charIdx]));
+                        Object.assign(updatedChar, tempRoster[charIdx]);
 
-                        tempRoster[charIdx] = char;
+                        // Deduct gold
+                        updatedChar.gold = currentGold - price;
+
+                        // Add item
+                        const lower = itemName.toLowerCase();
+                        let type = 'equipment'; // Default
+                        if (lower.includes('藥水') || lower.includes('卷軸') || lower.includes('口糧') || lower.includes('火把') || lower.includes('potion') || lower.includes('scroll')) type = 'consumables';
+
+                        // Update Master List
+                        updatedChar.inventory = [...(updatedChar.inventory || []), itemName.trim()];
+                        // Update Category Lists for UI
+                        if (type === 'consumables') {
+                            updatedChar.consumables = [...(updatedChar.consumables || []), itemName.trim()];
+                        } else {
+                            updatedChar.equipment = [...(updatedChar.equipment || []), itemName.trim()];
+                        }
+
+                        tempRoster[charIdx] = updatedChar;
                         rosterDirty = true;
                         showToast(`🛒 ${char.name} 購買了 ${itemName.trim()} (-${price}金)`, "success");
                     } else {
@@ -2323,11 +2413,14 @@ JSON格式回覆：
                 const invLogs = [];
 
                 mechanicsData.inventory_updates.forEach(update => {
-                    const targetChar = invRoster.find(c => c.name.includes(update.character) || c.id === update.character);
+                    const targetChar = invRoster.find(c => (party.includes(c.id)) && (c.name.includes(update.character) || c.id === update.character));
                     if (targetChar) {
                         const charIndex = invRoster.findIndex(c => c.id === targetChar.id);
                         if (charIndex !== -1) {
-                            const updatedChar = { ...invRoster[charIndex] };
+                            // PRERSERVE PROTOTYPE
+                            const updatedChar = Object.create(Object.getPrototypeOf(invRoster[charIndex]));
+                            Object.assign(updatedChar, invRoster[charIndex]);
+
                             const currentInv = updatedChar.inventory || [];
 
                             // Handle Removal (Consumption)
@@ -2345,12 +2438,37 @@ JSON格式回覆：
                                     }
                                 }
                                 updatedChar.inventory = newInv;
+
+                                // Categorize for UI Sync
+                                const lowerItem = update.item.toLowerCase();
+                                const isConsumable = lowerItem.includes('藥水') || lowerItem.includes('卷軸') || lowerItem.includes('potion') || lowerItem.includes('scroll') || lowerItem.includes('口糧') || lowerItem.includes('火把');
+
+                                if (isConsumable) {
+                                    const newSub = []; let rem = 0;
+                                    for (const c of (updatedChar.consumables || [])) {
+                                        if (rem < removed && c.includes(update.item)) { rem++; }
+                                        else { newSub.push(c); }
+                                    }
+                                    updatedChar.consumables = newSub;
+                                } else {
+                                    const newSub = []; let rem = 0;
+                                    for (const e of (updatedChar.equipment || [])) {
+                                        if (rem < removed && e.includes(update.item)) { rem++; }
+                                        else { newSub.push(e); }
+                                    }
+                                    updatedChar.equipment = newSub;
+                                }
+
                                 if (removed > 0) invLogs.push(`${updatedChar.name} used ${update.item} `);
                             }
                             // Handle Addition (Gain)
                             else if (update.change > 0) {
                                 for (let i = 0; i < update.change; i++) {
                                     updatedChar.inventory = [...(updatedChar.inventory || []), update.item];
+                                    const lowerItem = update.item.toLowerCase();
+                                    const isConsumable = lowerItem.includes('藥水') || lowerItem.includes('卷軸') || lowerItem.includes('potion') || lowerItem.includes('scroll') || lowerItem.includes('口糧') || lowerItem.includes('火把');
+                                    if (isConsumable) updatedChar.consumables = [...(updatedChar.consumables || []), update.item];
+                                    else updatedChar.equipment = [...(updatedChar.equipment || []), update.item];
                                 }
                                 invLogs.push(`${updatedChar.name} got ${update.item} `);
                             }
@@ -2373,21 +2491,47 @@ JSON格式回覆：
 
                 mechanicsData.loot.forEach(item => {
                     let targetChar = null;
-                    if (item.isQuestItem) targetChar = lootRoster.find(c => c.id === party[0]);
-                    else if (item.targetCharacter) targetChar = lootRoster.find(c => c.name.includes(item.targetCharacter));
-                    else if (item.type === 'weapon' || item.type === 'armor') {
+                    if (item.isQuestItem) {
+                        targetChar = lootRoster.find(c => c.id === party[0]);
+                    } else if (item.targetCharacter) {
+                        targetChar = lootRoster.find(c => party.includes(c.id) && (c.name.includes(item.targetCharacter) || item.targetCharacter.includes(c.name)));
+                    } else if (item.type === 'weapon' || item.type === 'armor') {
                         targetChar = lootRoster.find(c => {
+                            if (!party.includes(c.id)) return false;
                             if (item.type === 'armor' && item.name.includes('Plate') && (c.class === 'Paladin' || c.class === 'Fighter')) return true;
+                            // Add more heuristic matching if needed
                             return false;
                         });
                     }
-                    if (!targetChar) targetChar = lootRoster[Math.floor(Math.random() * lootRoster.length)];
+
+                    if (!targetChar && party.length > 0) {
+                        const randomId = party[Math.floor(Math.random() * party.length)];
+                        targetChar = lootRoster.find(c => c.id === randomId);
+                    }
 
                     if (targetChar) {
                         const charIndex = lootRoster.findIndex(c => c.id === targetChar.id);
                         if (charIndex !== -1) {
-                            const updatedChar = { ...lootRoster[charIndex] };
+                            // PRERSERVE PROTOTYPE
+                            const updatedChar = Object.create(Object.getPrototypeOf(lootRoster[charIndex]));
+                            Object.assign(updatedChar, lootRoster[charIndex]);
+
+                            // Update Master
                             updatedChar.inventory = [...(updatedChar.inventory || []), item.isQuestItem ? `★ ${item.name} ` : item.name];
+
+                            // Update Categories (For UI)
+                            const itemName = item.name.toLowerCase();
+                            const isConsumable = itemName.includes('potion') || itemName.includes('scroll') || itemName.includes('藥水') || itemName.includes('卷軸');
+                            const isMagic = item.isQuestItem || itemName.includes('magic') || itemName.includes('傳家寶');
+
+                            if (isMagic) {
+                                updatedChar.magicItems = [...(updatedChar.magicItems || []), item.name];
+                            } else if (isConsumable) {
+                                updatedChar.consumables = [...(updatedChar.consumables || []), item.name];
+                            } else {
+                                updatedChar.equipment = [...(updatedChar.equipment || []), item.name];
+                            }
+
                             lootRoster[charIndex] = updatedChar;
                             rosterChanged = true;
                             lootLogs.push(`${updatedChar.name} received ${item.name} `);
@@ -2570,22 +2714,15 @@ JSON格式回覆：
         } finally {
             isExecuting.current = false;
             setIsGenerating(false);
+            setPendingPlotPush(false); // Reset deferred
+            setEditorialHints(""); // Reset corrections
         }
     };
 
     const handleNarrativeComplete = () => {
+        console.log("[Event] Narrative Animation Complete.");
         setIsNarrativeComplete(true);
-        if (pendingTurnUpdates) {
-            console.log("Applying Deferred Updates:", pendingTurnUpdates);
-            if (pendingTurnUpdates.gameState) setGameState(pendingTurnUpdates.gameState);
-            if (pendingTurnUpdates.scenarioRoster) setScenarioRoster(pendingTurnUpdates.scenarioRoster);
-            if (pendingTurnUpdates.roster) setRoster(pendingTurnUpdates.roster);
-            if (pendingTurnUpdates.actionCache) setActionCache(pendingTurnUpdates.actionCache);
-
-            setPendingActions({}); // Clear previous turn's actions
-            setPendingTurnUpdates(null);
-            setIsNarrating(false);
-        }
+        // Deferred updates are now handled by the Sync Effect above
     };
 
 
@@ -3663,9 +3800,9 @@ w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2
                                 <button
                                     onClick={() => setShowPokeMenu(!showPokeMenu)}
                                     className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2 ${isGenerating ? 'border-red-500/50 text-red-400 animate-pulse' : !isNarrativeComplete ? 'border-amber-500/50 text-amber-400 animate-pulse' : 'border-slate-600 text-slate-500 hover:text-white hover:border-slate-400'} `}
-                                    title={!isNarrativeComplete ? "Speed up story (Fast-forward)" : "DM Interaction (Poke/Report)"}
+                                    title={!isNarrativeComplete ? "Skip current animation (跳過動畫)" : "DM Interaction (Poke/Report)"}
                                 >
-                                    <Hand size={16} />
+                                    {!isNarrativeComplete ? <FastForward size={16} /> : <Hand size={16} />}
                                 </button>
                                 {/* Popup Menu */}
                                 <PokeMenu
@@ -3674,50 +3811,58 @@ w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2
                                     isGenerating={isGenerating}
                                     onAction={async (actionId) => {
                                         if (actionId === 'continue') {
-                                            if (isNarrating) {
+                                            if (isNarrating || !isNarrativeComplete) {
                                                 // If actively typing, speed it up
-                                                setForceInstant(true);
-                                                showToast("Fast forwarding...", "info");
+                                                if (forceInstant) {
+                                                    // Already fast-forwarding? Force it to finish.
+                                                    handleNarrativeComplete();
+                                                    showToast("Forced Narrative Completion", "warning");
+                                                } else {
+                                                    setForceInstant(true);
+                                                    showToast("Fast forwarding...", "info");
+                                                }
                                             } else if (isGenerating) {
                                                 // If waiting for AI (streaming or thinking)
-                                                // User requested: "Force speed up if generating" -> If we have text, forceInstant handles it.
-                                                // If we are waiting for tokens, we can't do much.
-                                                // DO NOT RESET. Just notify.
                                                 showToast("DM is thinking/generating...", "info");
+                                            } else if (pendingTurnUpdates) {
+                                                // Stuck state: Updates are ready but sync didn't trigger?
+                                                setPendingTurnUpdates({ ...pendingTurnUpdates }); // Kick the effect
+                                                showToast("Refreshing state sync...", "info");
                                             } else {
                                                 // Idle: Proceed to next turn
                                                 executeTurn(false, true); // forceContinue
                                                 showToast("Poked DM to continue...", "info");
                                             }
+                                        } else if (actionId === 'plot_push') {
+                                            // DEFERRED FLAG: Next turn will jump act/scene
+                                            setPendingPlotPush(true);
+                                            showToast("下一步將強制跳轉劇情 (Plot Push Flagged)", "warning");
                                         } else if (actionId === 'report') {
-                                        } else if (actionId === 'report') {
-                                            setShowDMChat(!showDMChat); // Toggle inline bar
+                                            setShowDMChat(true);
                                         } else if (actionId === 'review') {
-                                            // Trigger Review
-                                            setLogs(prev => [...prev, { type: 'dm_whisper', content: 'thinking...' }]); // Placeholder
-                                            showToast("DM is analyzing the matrix...", "info");
-                                            try {
-                                                const reviewText = await storyAgent.reviewGameState({
-                                                    moduleTitle: selectedModule?.title || "Unknown",
-                                                    logs: logs,
-                                                    party: party.map(id => agentRoster.find(c => c.id === id)?.name || id),
-                                                    currentAct: 1 // TODO: Track act
-                                                });
-                                                setLogs(prev => {
-                                                    const newLogs = [...prev];
-                                                    newLogs.pop(); // Remove placeholder
-                                                    newLogs.push({ type: 'dm_whisper', content: `🧠[DM Review]\n${reviewText} ` });
-                                                    return newLogs;
-                                                });
-                                            } catch (e) {
-                                                console.error(e);
-                                                showToast("Review Failed", "error");
-                                            }
+                                            // Trigger Editor Review
+                                            showToast("正在檢核任務與實體狀態一致性...", "info");
+                                            editorAgent.performReview({
+                                                moduleTitle: selectedModule?.title,
+                                                logs: logs,
+                                                roster: activeRoster,
+                                                currentAct: currentAct || 1,
+                                                questJournal: questJournal
+                                            }).then(result => {
+                                                setLogs(prev => [...prev, {
+                                                    type: 'dm_whisper',
+                                                    content: `🔍 **劇情檢核報告 (Story Audit)**:\n${result.report}\n\n${result.issues?.length ? "⚠️ 發現問題:\n" + result.issues.map(i => `- ${i.description}`).join("\n") : "✅ 本次審查未發現明顯矛盾。"}`
+                                                }]);
+                                                if (result.suggestedCorrections?.editorial_instruction) {
+                                                    setEditorialHints(result.suggestedCorrections.editorial_instruction);
+                                                    showToast("已注入修正指令，將於下回生效", "success");
+                                                }
+                                            });
                                         }
                                     }}
                                 />
                             </div>
-                            <button onClick={saveGame} className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 py-1.5 rounded-sm border border-slate-700 hover:border-amber-500 hover:text-amber-500 transition-colors flex items-center gap-2 font-tome-header">
+                            <button onClick={saveGame} className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 py-1.5 rounded-sm border border-slate-700 hover:border-amber-500 hover:text-amber-500 transition-colors flex items-center gap-2 font-tome-header mr-4">
                                 <Save size={14} /> Save
                             </button>
                             <Settings size={20} className="text-slate-600 hover:text-amber-500 cursor-pointer transition-colors" onClick={() => setShowSettingsModal(true)} />
@@ -3736,149 +3881,147 @@ font-tome-body
                             {/* --- BREADCRUMBS (Location) --- */}
 
 
-                            {logs.map((log, idx) => (
-                                <div key={idx} className={`animate -in fade -in slide -in -from-bottom-2 duration-700`}>
-                                    {/* Placeholder for now, I need to view code first */}
-                                    {log.type === 'trpg_narrative' ? (
-                                        <SequentialLogRenderer
-                                            content={log.content}
-                                            roster={agentRoster}
-                                            renderTextWithDice={renderTextWithDice}
-                                            isNarrating={isNarrating}
-                                            onComplete={() => {
-                                                // Only handle complete for the LAST log
-                                                if (idx === logs.length - 1) {
-                                                    handleNarrativeComplete();
-                                                    setForceInstant(false); // Reset speed up on completion
-                                                }
-                                            }}
-                                            instant={idx !== logs.length - 1 || (idx === logs.length - 1 && forceInstant)} // Old logs instant, or forced
-                                            textSpeed={userSettings.textSpeed}
-                                            theme={userSettings.theme}
-                                            fontSize={userSettings.fontSize}
-                                            letterSpacing={userSettings.letterSpacing}
-                                            lineHeight={userSettings.lineHeight}
-                                        />
-                                    ) : log.type === 'narrative' ? (
-                                        <div className="prose prose-invert prose-p:text-slate-300 prose-lg max-w-none">
-                                            <div ref={idx === logs.length - 1 ? lastLogRef : null} className={`text-slate-200 text-xl leading-loose whitespace-pre-line font-tome-body tracking-wide`}>
-                                                {renderTextWithDice(log.content)}
+                            {(() => {
+                                const lastNarrativeIdx = logs.findLastIndex(l => l.type === 'trpg_narrative' || l.type === 'narrative');
+
+                                return logs.map((log, idx) => (
+                                    <div key={idx} className={`animate-in fade-in slide-in-from-bottom-2 duration-700`}>
+                                        {(log.type === 'trpg_narrative' || log.type === 'narrative') ? (
+                                            <SequentialLogRenderer
+                                                content={log.content}
+                                                roster={agentRoster}
+                                                renderTextWithDice={renderTextWithDice}
+                                                isNarrating={isNarrating}
+                                                onComplete={() => {
+                                                    // Only handle complete for the TRULY latest narrative log
+                                                    if (idx === lastNarrativeIdx) {
+                                                        handleNarrativeComplete();
+                                                        setForceInstant(false); // Reset speed up on completion
+                                                    }
+                                                }}
+                                                // Only old narrative logs are instant. 
+                                                // If system logs are added after the latest narrative, it should STILL animate.
+                                                instant={idx < lastNarrativeIdx || (idx === lastNarrativeIdx && forceInstant)}
+                                                textSpeed={userSettings.textSpeed}
+                                                theme={userSettings.theme}
+                                                fontSize={userSettings.fontSize}
+                                                letterSpacing={userSettings.letterSpacing}
+                                                lineHeight={userSettings.lineHeight}
+                                            />
+                                        ) : log.type === 'image' ? (
+                                            <div className="my-8 p-2 border-2 border-[#1a1a1a]/10 bg-white/50 shadow-sm relative group animate-in fade-in zoom-in-95 duration-1000 rotate-1 transform hover:rotate-0 transition-transform">
+                                                <div className="overflow-hidden sepia-[.3] contrast-125 brightness-90 filter">
+                                                    <img src={log.content} alt="Scene Visualization" className="w-full h-auto max-h-[400px] object-cover mix-blend-multiply opacity-90" />
+                                                </div>
+                                                <div className="absolute bottom-2 right-2 bg-[#f4ecd8] px-2 py-1 border border-[#1a1a1a]/20 text-[10px] font-tome-header uppercase tracking-widest text-[#1a1a1a]">
+                                                    <span className="flex items-center gap-1">
+                                                        <ImageIcon size={10} /> {log.location || "Plate I"}
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
 
+                                        ) : log.type === 'turn_batch' ? (
+                                            <div className="space-y-6 mb-8">
+                                                {/* Divider Logic */}
+                                                {(() => {
+                                                    const roundCount = logs.slice(0, idx + 1).filter(l => l.type === 'turn_batch').length;
 
-                                    ) : log.type === 'image' ? (
-                                        <div className="my-8 p-2 border-2 border-[#1a1a1a]/10 bg-white/50 shadow-sm relative group animate-in fade-in zoom-in-95 duration-1000 rotate-1 transform hover:rotate-0 transition-transform">
-                                            <div className="overflow-hidden sepia-[.3] contrast-125 brightness-90 filter">
-                                                <img src={log.content} alt="Scene Visualization" className="w-full h-auto max-h-[400px] object-cover mix-blend-multiply opacity-90" />
-                                            </div>
-                                            <div className="absolute bottom-2 right-2 bg-[#f4ecd8] px-2 py-1 border border-[#1a1a1a]/20 text-[10px] font-tome-header uppercase tracking-widest text-[#1a1a1a]">
-                                                <span className="flex items-center gap-1">
-                                                    <ImageIcon size={10} /> {log.location || "Plate I"}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    ) : log.type === 'turn_batch' ? (
-                                        <div className="space-y-6 mb-8">
-                                            {/* Divider Logic */}
-                                            {(() => {
-                                                const roundCount = logs.slice(0, idx + 1).filter(l => l.type === 'turn_batch').length;
-
-                                                return (
-                                                    <div className="flex items-center justify-center gap-4 py-8 opacity-60">
-                                                        <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
-                                                        <div className="px-3 py-1 border-y border-[#1a1a1a]/40 bg-transparent">
-                                                            <span className="text-[#8a2323] font-tome-header text-sm font-bold uppercase tracking-[0.2em]">
-                                                                Chapter {roundCount}
-                                                            </span>
+                                                    return (
+                                                        <div className="flex items-center justify-center gap-4 py-8 opacity-60">
+                                                            <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
+                                                            <div className="px-3 py-1 border-y border-[#1a1a1a]/40 bg-transparent">
+                                                                <span className="text-[#8a2323] font-tome-header text-sm font-bold uppercase tracking-[0.2em]">
+                                                                    Chapter {roundCount}
+                                                                </span>
+                                                            </div>
+                                                            <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
                                                         </div>
-                                                        <div className="h-px bg-[#1a1a1a]/20 flex-1"></div>
-                                                    </div>
-                                                );
-                                            })()}
+                                                    );
+                                                })()}
 
-                                            {(Array.isArray(log.content) ? log.content : (log.content?.turns || [])).map((turn, tIdx) => {
-                                                const speakerChar = agentRoster.find(c => (turn.speaker && c.name.includes(turn.speaker)) || (turn.speaker && turn.speaker.includes(c.name.split('·')[0])));
+                                                {/* Skip turn rendering in TRPG/Novel modes to prevent redundancy with SequentialLogRenderer */}
+                                                {(gameMode === GAME_MODES.TRPG || gameMode === GAME_MODES.NOVEL) ? null : (Array.isArray(log.content) ? log.content : (log.content?.turns || [])).map((turn, tIdx) => {
+                                                    const speakerChar = agentRoster.find(c => (turn.speaker && c.name.includes(turn.speaker)) || (turn.speaker && turn.speaker.includes(c.name.split('·')[0])));
 
-                                                // FILTER: Hide Party Member Action Blocks (as per user request 2025-12-12)
-                                                // Only show DM Narrative and Enemy/NPC turns.
-                                                if (speakerChar && party.includes(speakerChar.id)) {
-                                                    return null;
-                                                }
+                                                    // FILTER: Hide Party Member Action Blocks (as per user request 2025-12-12)
+                                                    // Only show DM Narrative and Enemy/NPC turns.
+                                                    if (speakerChar && party.includes(speakerChar.id)) {
+                                                        return null;
+                                                    }
 
-                                                return gameMode === GAME_MODES.NOVEL ? (
-                                                    // NOVEL RENDERER - Pure text, minimal UI
-                                                    <div key={tIdx} className="relative pl-0">
-                                                        {/* Speaker Name only if Dialogue */}
-                                                        {/* Actually novel mode usually integrates speaker into text, but structured output keeps them separate. We'll simulate novel flow. */}
+                                                    return gameMode === GAME_MODES.NOVEL ? (
+                                                        // NOVEL RENDERER - Pure text, minimal UI
+                                                        <div key={tIdx} className="relative pl-0">
+                                                            {/* Speaker Name only if Dialogue */}
+                                                            {/* Actually novel mode usually integrates speaker into text, but structured output keeps them separate. We'll simulate novel flow. */}
 
-                                                        <div className="space-y-6 text-[#1a1a1a]">
-                                                            {turn.narration && turn.narration.split('\n').map((para, pIdx) => (
-                                                                para.trim() && <p key={`n-${pIdx}`} className="text-xl mb-6 leading-loose tracking-wide font-tome-body">{renderTextWithDice(para)}</p>
+                                                            <div className="space-y-6 text-[#1a1a1a]">
+                                                                {turn.narration && turn.narration.split('\n').map((para, pIdx) => (
+                                                                    para.trim() && <p key={`n-${pIdx}`} className="text-xl mb-6 leading-loose tracking-wide font-tome-body">{renderTextWithDice(para)}</p>
+                                                                ))}
+                                                                {turn.action && turn.action.split('\n').map((para, pIdx) => (
+                                                                    para.trim() && <p key={`a-${pIdx}`} className="text-lg italic opacity-80 mb-6 leading-loose pl-4 border-l-2 border-[#8a2323]/20">*{renderTextWithDice(para)}*</p>
+                                                                ))}
+                                                                {turn.dialogue && turn.dialogue.split('\n').map((para, pIdx) => (
+                                                                    para.trim() && <p key={`d-${pIdx}`} className="text-xl font-bold mb-6 leading-loose text-[#2c3e50]">
+                                                                        {turn.speaker && !turn.speaker.includes('DM') && !turn.speaker.includes('System') && <span className="text-[#8a2323] text-xs block mb-1 font-tome-header uppercase tracking-widest">{turn.speaker}</span>}
+                                                                        “{renderTextWithDice(para)}”
+                                                                    </p>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        // LEFT BORDER CARD STYLE (Simplified for Ink)
+                                                        // ... (We'll simplify this to look like a book excerpt)
+                                                        <div key={tIdx} className="relative pl-4 border-l-4 border-[#1a1a1a]/10 py-2 mb-4 hover:border-[#8a2323]/40 transition-colors">
+                                                            {/* Speaker Header */}
+                                                            {turn.speaker && !turn.speaker.includes('DM') && (
+                                                                <h4 className="font-tome-header font-bold text-sm text-[#8a2323] uppercase tracking-widest mb-2">
+                                                                    {turn.speaker}
+                                                                </h4>
+                                                            )}
+
+                                                            {/* Narration */}
+                                                            {turn.narration && turn.narration.split('\n').map((para, i) => para.trim() && (
+                                                                <p key={`n-${i}`} className="mb-4 text-[#1a1a1a] leading-relaxed font-tome-body text-lg">{renderTextWithDice(para)}</p>
                                                             ))}
-                                                            {turn.action && turn.action.split('\n').map((para, pIdx) => (
-                                                                para.trim() && <p key={`a-${pIdx}`} className="text-lg italic opacity-80 mb-6 leading-loose pl-4 border-l-2 border-[#8a2323]/20">*{renderTextWithDice(para)}*</p>
-                                                            ))}
-                                                            {turn.dialogue && turn.dialogue.split('\n').map((para, pIdx) => (
-                                                                para.trim() && <p key={`d-${pIdx}`} className="text-xl font-bold mb-6 leading-loose text-[#2c3e50]">
-                                                                    {turn.speaker && !turn.speaker.includes('DM') && !turn.speaker.includes('System') && <span className="text-[#8a2323] text-xs block mb-1 font-tome-header uppercase tracking-widest">{turn.speaker}</span>}
+
+                                                            {/* Dialogue */}
+                                                            {turn.dialogue && turn.dialogue.split('\n').map((para, i) => para.trim() && (
+                                                                <p key={`d-${i}`} className="mb-4 text-[#2c3e50] font-bold font-tome-body text-lg pl-2">
                                                                     “{renderTextWithDice(para)}”
                                                                 </p>
                                                             ))}
                                                         </div>
-                                                    </div>
-                                                ) : (
-                                                    // LEFT BORDER CARD STYLE (Simplified for Ink)
-                                                    // ... (We'll simplify this to look like a book excerpt)
-                                                    <div key={tIdx} className="relative pl-4 border-l-4 border-[#1a1a1a]/10 py-2 mb-4 hover:border-[#8a2323]/40 transition-colors">
-                                                        {/* Speaker Header */}
-                                                        {turn.speaker && !turn.speaker.includes('DM') && (
-                                                            <h4 className="font-tome-header font-bold text-sm text-[#8a2323] uppercase tracking-widest mb-2">
-                                                                {turn.speaker}
-                                                            </h4>
-                                                        )}
-
-                                                        {/* Narration */}
-                                                        {turn.narration && turn.narration.split('\n').map((para, i) => para.trim() && (
-                                                            <p key={`n-${i}`} className="mb-4 text-[#1a1a1a] leading-relaxed font-tome-body text-lg">{renderTextWithDice(para)}</p>
-                                                        ))}
-
-                                                        {/* Dialogue */}
-                                                        {turn.dialogue && turn.dialogue.split('\n').map((para, i) => para.trim() && (
-                                                            <p key={`d-${i}`} className="mb-4 text-[#2c3e50] font-bold font-tome-body text-lg pl-2">
-                                                                “{renderTextWithDice(para)}”
-                                                            </p>
-                                                        ))}
-                                                    </div>
-                                                );
-                                            })}
-                                            <div ref={idx === logs.length - 1 ? lastLogRef : null} />
-                                        </div>
-                                    ) : log.type === 'dm_whisper' ? (
-                                        <div className="my-6 mx-4 p-4 bg-indigo-950/30 border-l-4 border-indigo-500/50 rounded-r-lg">
-                                            <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                <MessageCircle size={12} /> DM Whisper
-                                            </h4>
-                                            <div className="text-indigo-100 font-sans text-sm leading-relaxed whitespace-pre-line">
+                                                    );
+                                                })}
+                                                <div ref={idx === logs.length - 1 ? lastLogRef : null} />
+                                            </div>
+                                        ) : log.type === 'dm_whisper' ? (
+                                            <div className="my-6 mx-4 p-4 bg-indigo-950/30 border-l-4 border-indigo-500/50 rounded-r-lg">
+                                                <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                    <MessageCircle size={12} /> DM Whisper
+                                                </h4>
+                                                <div className="text-indigo-100 font-sans text-sm leading-relaxed whitespace-pre-line">
+                                                    {log.content}
+                                                </div>
+                                            </div>
+                                        ) : log.type === 'user' ? (
+                                            <div className="flex items-center gap-2 text-[#8a2323] text-xs font-bold uppercase tracking-[0.2em] mt-8 mb-4 justify-center border-t border-[#8a2323]/20 pt-6">
+                                                <span>{log.content}</span>
+                                            </div>
+                                        ) : log.type === 'user-batch' ? (
+                                            <div className="bg-[#1a1a1a]/5 border-l-2 border-[#1a1a1a] pl-4 py-3 pr-4 text-sm text-[#1a1a1a] font-mono whitespace-pre-line mb-6 italic">
                                                 {log.content}
                                             </div>
-                                        </div>
-                                    ) : log.type === 'user' ? (
-                                        <div className="flex items-center gap-2 text-[#8a2323] text-xs font-bold uppercase tracking-[0.2em] mt-8 mb-4 justify-center border-t border-[#8a2323]/20 pt-6">
-                                            <span>{log.content}</span>
-                                        </div>
-                                    ) : log.type === 'user-batch' ? (
-                                        <div className="bg-[#1a1a1a]/5 border-l-2 border-[#1a1a1a] pl-4 py-3 pr-4 text-sm text-[#1a1a1a] font-mono whitespace-pre-line mb-6 italic">
-                                            {log.content}
-                                        </div>
-                                    ) : (
-                                        <div className="text-center text-red-800 text-sm py-2 border-y border-red-900/10 bg-red-900/5">
-                                            {log.content}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                        ) : (
+                                            <div className="text-center text-red-800 text-sm py-2 border-y border-red-900/10 bg-red-900/5">
+                                                {log.content}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            })()}
                             {isGenerating && (
                                 <div className="flex items-center justify-center gap-3 text-amber-500/80 italic text-sm py-8 animate-pulse font-serif">
                                     <Sword size={20} className="animate-spin" /> Fates are weaving...
@@ -3958,7 +4101,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                                 const isDead = state.hp <= 0;
                                 const hasAction = !!pendingActions[id];
                                 const hasOptions = actionCache[id]?.options?.length > 0;
-                                const isReadyToAct = hasOptions && !hasAction && !isDead;
+                                const isReadyToAct = hasOptions && !hasAction && !isDead && isNarrativeComplete && !isGenerating;
 
 
                                 // Determine modal direction: Always Open DOWN (as requested, relying on scroll)
@@ -4006,7 +4149,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                                         className={`
                                             group relative p-3 rounded transition-all cursor-pointer flex flex-col gap-2
                                             ${cardBorder} ${cardBg} ${zIndexClass}
-                                            ${!isNarrativeComplete && !isGenerating ? 'opacity-60 saturate-50' : ''}
+                                            ${(!isNarrativeComplete || isGenerating) && !hasAction ? 'opacity-60 saturate-50 pointer-events-none' : ''}
 `}
                                     >
                                         {/* Separated Glow Overlay to prevent child flash */}
@@ -4372,7 +4515,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
             <div
                 className="fixed inset-0 z-0 transition-opacity duration-1000 ease-in-out pointer-events-none"
                 style={{
-                    backgroundImage: `url(/assets/background / ${BACKGROUND_MAP[currentBgmKey] || BACKGROUND_MAP['default']})`,
+                    backgroundImage: sceneImage ? `url(${sceneImage})` : `url(/assets/background/${BACKGROUND_MAP[currentBgmKey] || BACKGROUND_MAP['default']})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     opacity: 0.4,
@@ -4407,7 +4550,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                 onSave={handleSave}
                 onLoad={handleLoad}
                 onDelete={(slotId) => {
-                    localStorage.removeItem(`dnd_save_slot_${slotId} `);
+                    localStorage.removeItem(`dnd_save_slot_${slotId}`);
                     // Force re-render of modal? The modal manages its own "refresh" or checking localstorage?
                     // We probably need to pass a signal or just let the modal handle it internally if we refactor it.
                     showToast(`存檔 ${slotId} 已刪除`, "info");
@@ -4434,13 +4577,14 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                 onClose={() => setShowSettingsModal(false)}
                 settings={userSettings}
                 onUpdateSettings={handleUpdateSettings}
-                // onGenerateScene={handleGenerateScene} // Disabled for Token Optimization
+                onGenerateScene={handleGenerateScene}
                 isGeneratingScene={isGeneratingScene}
                 isMuted={isMuted}
                 onToggleMute={() => {
                     const muted = audioManager.current.toggleMute();
                     setIsMuted(muted);
                 }}
+                onClearCache={handleClearCache}
             />
 
 
@@ -4485,15 +4629,52 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                                     setLogs(prev => [...prev, { type: 'user', content: `(Whisper) ${text}` }]);
 
                                     try {
-                                        // 2. Call Agent
-                                        const response = await storyAgent.chatWithDM({
+                                        // 2. Call Editor Agent for the report
+                                        const result = await editorAgent.handleUserReport({
                                             moduleTitle: selectedModule?.title || "Unknown",
                                             logs: logs,
-                                            party: party.map(id => agentRoster.find(c => c.id === id)?.name || id)
+                                            roster: activeRoster
                                         }, text);
 
                                         // 3. Add DM Response Log
-                                        setLogs(prev => [...prev, { type: 'dm_whisper', content: response }]);
+                                        setLogs(prev => [...prev, { type: 'dm_whisper', content: result.response }]);
+
+                                        // 4. Apply State Changes if approved
+                                        if (result.approval === 'approved' && result.state_changes) {
+                                            const { roster_updates, instruction } = result.state_changes;
+
+                                            if (roster_updates && roster_updates.length > 0) {
+                                                setRoster(prev => prev.map(char => {
+                                                    const update = roster_updates.find(u => u.id === char.id || u.name === char.name);
+                                                    if (update) {
+                                                        const clone = Object.create(Object.getPrototypeOf(char));
+                                                        Object.assign(clone, char, update.updates);
+
+                                                        // Handle special arrays like adding items
+                                                        if (update.updates.inventory_add) {
+                                                            clone.inventory = [...(clone.inventory || []), ...update.updates.inventory_add];
+                                                            // Also add to categories for UI
+                                                            update.updates.inventory_add.forEach(item => {
+                                                                const lower = item.toLowerCase();
+                                                                if (lower.includes('藥水') || lower.includes('卷軸') || lower.includes('potion') || lower.includes('scroll')) {
+                                                                    clone.consumables = [...(clone.consumables || []), item];
+                                                                } else {
+                                                                    clone.equipment = [...(clone.equipment || []), item];
+                                                                }
+                                                            });
+                                                        }
+                                                        return clone;
+                                                    }
+                                                    return char;
+                                                }));
+                                                showToast("DM 已更新角色狀態", "success");
+                                            }
+
+                                            if (instruction) {
+                                                setEditorialHints(instruction);
+                                                showToast("修正指令已記錄", "info");
+                                            }
+                                        }
                                     } catch (e) {
                                         console.error(e);
                                         showToast("Failed to reach DM", "error");

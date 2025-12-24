@@ -554,11 +554,38 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
                                         <span className="text-indigo-400 font-bold block mb-1">背景故事</span>
                                         {draft.bio}
                                     </div>
+                                    <div className="bg-slate-950 p-3 rounded border-l-2 border-amber-500/50">
+                                        <span className="text-amber-400 font-bold block mb-1 text-xs uppercase">第一印象</span>
+                                        <p className="text-slate-300 text-sm">{draft.firstImpression || "無預覽資料"}</p>
+                                    </div>
                                     <div className="bg-slate-950 p-3 rounded">
                                         <span className="text-purple-400 font-bold block mb-1">性格與獨白</span>
                                         <p className="italic text-slate-400">"{draft.monologue}"</p>
                                         <p className="mt-2 text-xs text-slate-500">{draft.personality}</p>
                                     </div>
+                                    {draft.habits && draft.habits.length > 0 && (
+                                        <div className="bg-slate-950 p-3 rounded">
+                                            <span className="text-emerald-400 font-bold block mb-1 text-xs uppercase">行為習慣</span>
+                                            <ul className="list-disc list-inside text-xs text-slate-400 space-y-1">
+                                                {draft.habits.map((h, i) => <li key={i}>{h}</li>)}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {draft.combatWeakness && (
+                                        <div className="bg-red-950/30 p-3 rounded border border-red-500/20">
+                                            <span className="text-red-400 font-bold block mb-1 text-xs uppercase flex items-center gap-1">
+                                                <Shield size={12} /> 戰鬥弱點
+                                            </span>
+                                            <p className="text-xs text-slate-300 mb-1">
+                                                <span className="text-red-300/70">反應：</span>{draft.combatWeakness.reaction}
+                                            </p>
+                                            {draft.combatWeakness.triggers?.map((t, i) => (
+                                                <div key={i} className="text-[10px] text-slate-500 mt-1 pl-2 border-l border-red-500/30">
+                                                    • {t.target}: {t.description}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                     <div className="grid grid-cols-3 gap-2 text-center text-xs">
                                         <div className="bg-slate-900 p-2 rounded border border-slate-800">
                                             <div className="text-slate-500">STR</div>

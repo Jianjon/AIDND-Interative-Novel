@@ -35,7 +35,7 @@ const TypewriterText = ({ text, renderWithDice, speed = 20, onComplete, shouldAn
     );
 };
 
-export default function SequentialLogRenderer({ content, roster = [], renderTextWithDice, onComplete, instant = false, textSpeed = 20, theme = 'default', fontSize = 'text-base', letterSpacing = 0, lineHeight = 1.8 }) {
+export default function SequentialLogRenderer({ content, roster = [], renderTextWithDice, onComplete, instant = false, textSpeed = 30, theme = 'default', fontSize = 'text-base', letterSpacing = 0, lineHeight = 1.8 }) {
     const [visibleIndex, setVisibleIndex] = useState(instant ? 99999 : 0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [hasStartedRoll, setHasStartedRoll] = useState(false);
@@ -43,7 +43,21 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
     const [diceResults, setDiceResults] = useState({});
 
     // Watch for instant toggle to force completion
-    // Watch for instant toggle to force completion, BUT respect dice pauses
+    useEffect(() => {
+        if (instant) {
+            setVisibleIndex(99999);
+            // We don't call onComplete here immediately to avoid render loops, 
+            // but the effect in the parent dealing with lastNarrativeIdx should handle it.
+            // Actually, verify if we need to call it. 
+            // The existing handleAnimEnd calls it. 
+            // If we jump strictly to end, we might bypass handleAnimEnd.
+            // Let's rely on the fact that the parent SETS instant=true, so parent knows it's done?
+            // No, parent sets instant=true when USER clicks skip. 
+            // Parent's onComplete logic (App.jsx) resets forceInstant=false.
+            // So we MUST call onComplete here to signal "we are done showing everything".
+            if (onComplete) onComplete();
+        }
+    }, [instant, onComplete]);
 
 
     const THEME_STYLES = {
@@ -210,9 +224,9 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     return; // Skip rendering the tag itself
                 }
 
-                // === NEW: Inline [[DICE:Name:Type:DC]] Tag Parsing ===
-                // Check if this line contains [[DICE:...]] placeholders
-                const dicePlaceholderRegex = /\[\[DICE:([^:]+):([^:]+):(\d+)\]\]/g;
+                // === NEW: Inline [[DICE:Name:Type:DC:Value]] Tag Parsing ===
+                // Check if this line contains [[DICE:...]] placeholders (Value is optional)
+                const dicePlaceholderRegex = /\[\[DICE:([^:]+):([^:]+):(\d+)(?::(\d+))?\]\]/g;
                 if (dicePlaceholderRegex.test(trimmed)) {
                     // Reset regex for actual matching
                     dicePlaceholderRegex.lastIndex = 0;
@@ -247,6 +261,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                         const characterName = match[1].trim();
                         const checkType = match[2].trim();
                         const targetDC = parseInt(match[3]);
+                        const fixedResultValue = match[4] ? parseInt(match[4]) : null;
                         const diceId = `dice_${diceCounter++}`;
 
                         segments.push({
@@ -258,7 +273,8 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                 checkType,
                                 targetDC,
                                 successOutcome,
-                                failureOutcome
+                                failureOutcome,
+                                fixedResultValue
                             },
                             index: -1
                         });
@@ -654,19 +670,44 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
         // Block progression for both dice and dice_pending until animation completes
         if ((currentType === 'dice' || currentType === 'dice_pending') && isAnimating) return;
 
-        let delay = 800;
-        if (currentType === 'text') delay = Math.max(700, contentLen * 25);
-        if (currentType === 'header') delay = 1200;
-        // Quick delays for structured blocks - they don't need typewriter animation
-        if (currentType === 'initiative') delay = 400;
-        if (currentType === 'block_header') delay = 300;
-        if (currentType === 'status_entry') delay = 200;
-        if (currentType === 'damage_entry') delay = 200;
-        if (currentType === 'enemy_attack_action') delay = 300;
-        if (currentType === 'enemy_roll') delay = 400;
+        // --- DYNAMIC DELAY CALCULATION ---
+        // We use textSpeed as the base unit for all delays to ensure overall pace is consistent.
+        const baseUnit = textSpeed;
+
+        let delay = baseUnit * 20; // Default base delay (e.g. 30ms * 20 = 600ms)
+
+        if (currentType === 'text') {
+            // Delay depends on text length + a base reading time.
+            // We want the user to have time to read the text after it's fully typed.
+            // Typewriter takes contentLen * textSpeed.
+            // We add an extra buffer proportional to textSpeed.
+            delay = (contentLen * textSpeed) + (baseUnit * 25);
+            // Minimum floor to prevent too-fast jumps for short text
+            if (delay < baseUnit * 30) delay = baseUnit * 30;
+        }
+
+        if (currentType === 'header') delay = baseUnit * 50; // Pause longer for new speaker
+
+        // Quick delays for structured blocks - they don't need typewriter animation but still need a gap
+        if (currentType === 'initiative') delay = baseUnit * 15;
+        if (currentType === 'block_header') delay = baseUnit * 10;
+        if (currentType === 'status_entry') delay = baseUnit * 8;
+        if (currentType === 'damage_entry') delay = baseUnit * 8;
+        if (currentType === 'enemy_attack_action') delay = baseUnit * 12;
+        if (currentType === 'enemy_roll') delay = baseUnit * 15;
+
+        // Limit maximum delay to prevent feeling "stuck"
+        delay = Math.min(delay, 8000);
 
         const timer = setTimeout(() => {
-            setVisibleIndex(prev => prev + 1);
+            let increment = 1;
+            // CHECK: Should we skip a whole block? (e.g. Round Summary is rendered all at once)
+            const currentSection = currentItems.find(s => visibleIndex >= s.startIndex && visibleIndex < s.startIndex + 1 + s.children.length);
+            if (currentSection && (currentSection.headerText.includes("回合總結") || currentSection.headerText.includes("Round Summary"))) {
+                // If we just showed the header, skip all children because they are rendered inside the summary block
+                increment = (currentSection.startIndex + 1 + currentSection.children.length) - visibleIndex;
+            }
+            setVisibleIndex(prev => prev + increment);
         }, delay);
         return () => clearTimeout(timer);
 
@@ -726,13 +767,6 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                         (!c.content.includes("傷害統計") && !c.content.includes("隊伍狀態") && !c.content.includes("敵方狀態") && c.type !== 'block_header')
                                     );
 
-                                    // Helper to render items
-                                    const renderItems = (items) => items.map((child, cIdx) => (
-                                        <div key={child.index} className={`${theme === 'default' ? 'text-slate-200' : currentTheme.text} whitespace-pre-line font-serif ${fontSize}`} style={{ letterSpacing: `${letterSpacing}px`, lineHeight: lineHeight }}>
-                                            {child.content}
-                                        </div>
-                                    ));
-
                                     // 2. Sections Data via Index Parsing
                                     // Use explicit header-based grouping instead of content filters
                                     const damageItems = [];
@@ -745,10 +779,10 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                     // Identify Header Indices
                                     sec.children.forEach(child => {
                                         if (child.type === 'block_header') {
-                                            if (child.variant === 'damage' || child.content.includes("傷害")) currentSection = 'damage';
-                                            else if (child.variant === 'party' || child.content.includes("隊伍")) currentSection = 'party';
-                                            else if (child.variant === 'enemy' || child.content.includes("敵方")) currentSection = 'enemy';
-                                            else if (child.content.includes("摘要") || child.content.includes("戰況")) currentSection = 'summary';
+                                            if (child.variant === 'damage' || child.content.includes("傷害") || child.content.includes("Damage")) currentSection = 'damage';
+                                            else if (child.variant === 'party' || child.content.includes("隊伍") || child.content.includes("Party")) currentSection = 'party';
+                                            else if (child.variant === 'enemy' || child.content.includes("敵方") || child.content.includes("Enemy")) currentSection = 'enemy';
+                                            else if (child.content.includes("摘要") || child.content.includes("戰況") || child.content.includes("Summary")) currentSection = 'summary';
                                             return; // Skip headers themselves
                                         }
 
@@ -768,21 +802,57 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                         { id: 'enemy', title: '💀 敵方狀態', items: enemyItems }
                                     ];
 
+                                    // Helper to render items using the same logic as standard renderer but without sequential blocking
+                                    const renderSummaryChild = (child) => {
+                                        // Simple wrapper that handles special types
+                                        if (child.type === 'dice') {
+                                            return (
+                                                <div key={child.index} className="my-1 p-2 bg-slate-950/40 rounded border border-slate-800 text-xs text-cyan-400 flex items-center gap-2">
+                                                    <span className="font-bold opacity-70">{child.data.name}:</span>
+                                                    <span>{child.data.total} vs DC {child.data.dc}</span>
+                                                    <span className={child.data.result.includes('成功') ? 'text-cyan-300' : 'text-rose-400'}>{child.data.result.includes('成功') ? 'OK' : 'FAIL'}</span>
+                                                </div>
+                                            );
+                                        }
+                                        if (child.type === 'status_entry') {
+                                            const isEnemy = child.variant === 'enemy';
+                                            return (
+                                                <div key={child.index} className={`flex items-center gap-2 py-0.5 ${isEnemy ? 'text-rose-400' : 'text-cyan-400'} text-xs`}>
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${isEnemy ? 'bg-rose-600' : 'bg-cyan-600'}`} />
+                                                    <span>{child.content}</span>
+                                                </div>
+                                            );
+                                        }
+                                        if (child.type === 'damage_entry') {
+                                            return (
+                                                <div key={child.index} className="flex items-center gap-2 py-0.5 text-orange-200/80 text-xs">
+                                                    <span className="text-orange-600">→</span>
+                                                    <span>{child.content}</span>
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <div key={child.index} className="py-0.5 text-slate-300">
+                                                {renderTextWithDice(child.content)}
+                                            </div>
+                                        );
+                                    };
+
                                     return (
                                         <>
                                             {/* Main Summary Text */}
-                                            <div className="mb-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
-                                                <h5 className="text-amber-400 font-bold mb-2 flex items-center gap-2">
-                                                    <span>📍</span> 戰況摘要
-                                                </h5>
-                                                {textSummaryItems.map((child, i) => {
-                                                    return (
-                                                        <div key={i} className="text-slate-300 leading-relaxed">
-                                                            {child.content.replace('【📍 戰況摘要】', '').trim()}
+                                            {textSummaryItems.length > 0 && (
+                                                <div className="mb-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                                    <h5 className="text-amber-400 font-bold mb-2 flex items-center gap-2">
+                                                        <span>📍</span> 戰況摘要
+                                                    </h5>
+                                                    {textSummaryItems.map((child, i) => (
+                                                        <div key={i} className="text-slate-300 leading-relaxed text-sm">
+                                                            {renderTextWithDice(child.content.replace(/【📍 戰況摘要】|戰況摘要:/, '').trim())}
                                                         </div>
-                                                    );
-                                                })}
-                                            </div>
+                                                    ))}
+                                                </div>
+                                            )}
 
                                             {/* Collapsible Sections */}
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -797,8 +867,8 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                                         <div className="p-3 pt-0 border-t border-slate-800/50 mt-2 text-sm text-slate-400">
                                                             {section.items.length > 0 ? (
                                                                 section.items.map((item, idx) => (
-                                                                    <div key={idx} className="py-1 border-b border-slate-800/30 last:border-0 lowercasefirst">
-                                                                        {item.content.replace(/【.*】/, '').trim()}
+                                                                    <div key={idx} className="border-b border-white/5 last:border-0">
+                                                                        {renderSummaryChild(item)}
                                                                     </div>
                                                                 ))
                                                             ) : (
@@ -886,7 +956,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
 
                                     // === NEW: dice_pending Type Rendering ===
                                     if (child.type === 'dice_pending') {
-                                        const { diceId, characterName, checkType, targetDC, successOutcome, failureOutcome } = child.data;
+                                        const { diceId, characterName, checkType, targetDC, successOutcome, failureOutcome, fixedResultValue } = child.data;
                                         const storedResult = diceResults[diceId];
 
                                         // If result already calculated, show static result or animation
@@ -940,7 +1010,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                                             <TypewriterText
                                                                 text={outcomeText}
                                                                 renderWithDice={renderTextWithDice}
-                                                                speed={30}
+                                                                speed={textSpeed}
                                                                 shouldAnimate={visibleIndex === child.index}
                                                                 onComplete={() => {
                                                                     if (visibleIndex === child.index) handleAnimEnd();
@@ -958,7 +1028,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                                 key={cIdx}
                                                 onClick={() => {
                                                     // Calculate dice result
-                                                    const base = Math.floor(Math.random() * 20) + 1;
+                                                    const base = fixedResultValue || (Math.floor(Math.random() * 20) + 1);
                                                     // Try to find modifier from roster
                                                     const char = roster.find(r => (r.name || '').includes(characterName) || characterName.includes(r.name || ''));
                                                     let mod = 0;

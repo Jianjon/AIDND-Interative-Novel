@@ -212,17 +212,17 @@ export const CLASS_BEHAVIORS = {
             advanced: { tactics: "覺醒的傳說村民。只要手握平底鍋，連神靈都要退避三舍。", abilities: ["因果律平底鍋", "絕對逃脫"], threats: "無心無命的機械軍團" }
         }
     },
-    "骸骨紳士": {
-        instinct: "優雅，是靈魂的裝飾。即便是戰鬥，也要保持最好的禮儀。",
-        professional: "精準地計算力量的輸出，確保不會弄髒自己的盔甲與花朵。保護弱者是騎士的基石。",
-        team: "最可靠的前線護盾。沉默但堅定地站在隊伍最前方，為隊友擋下一切風暴。",
-        combatStyle: "優雅與毀滅的雙面一體。守序但致命。",
-        signatureMoves: ["優雅劍技", "骸骨重組", "謙卑守護"],
-        roleInParty: "守護騎士/強力物理攻擊",
+    "骸骨戰士": {
+        instinct: "活下去是第一要務。保護隊友，也不要給別人添麻煩。",
+        professional: "冷靜地觀察敵人的動作，優先進行防禦與掩護。小心地出招，避免不必要的衝突。",
+        team: "默默地承受傷害。即便受了傷也會客氣地說沒關係。是一個讓人感到安心的穩定支柱。",
+        combatStyle: "沉穩且謹慎的防禦架勢。強大的力量只在絕對必要時展現。",
+        signatureMoves: ["謹慎揮砍", "骸骨重組", "卑微的道歉"],
+        roleInParty: "守護戰士/前線坦克",
         levelBehaviors: {
-            beginner: { tactics: "保持距離行禮，隨後發動迅猛的突刺。利用不死亡靈的特性吸收傷害。", abilities: ["優雅禮儀", "骸骨重組"], threats: "神聖屬性攻擊" },
-            intermediate: { tactics: "利用骸骨散開避開攻擊再重組。施展古老的王室劍技。", abilities: ["騎士意志", "多重突刺"], threats: "大範圍拆解類魔法" },
-            advanced: { tactics: "不屈的皇家守衛。他的存在本身就是一座不可逾越的堡壘。", abilities: ["王國守護者", "靈魂燃燒"], threats: "神性級別的淨化力" }
+            beginner: { tactics: "保持守勢，吸引火力。即便受傷也會優先掩護隊友。", abilities: ["謹慎架勢", "骸骨重組"], threats: "神聖屬性攻擊" },
+            intermediate: { tactics: "利用骸骨特性吸收傷害，精準打擊威脅隊友的目標。", abilities: ["家人縮影", "精準揮砍"], threats: "大範圍拆解類魔法" },
+            advanced: { tactics: "不屈的守護者。為了重回人世的願望，絕不在此倒下。", abilities: ["重回人道之願", "靈魂燃燒"], threats: "神性級別的淨化力" }
         }
     },
 

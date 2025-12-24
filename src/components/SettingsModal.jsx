@@ -9,7 +9,8 @@ const SettingsModal = ({
     onGenerateScene,
     isGeneratingScene,
     isMuted,
-    onToggleMute
+    onToggleMute,
+    onClearCache
 }) => {
     if (!isOpen) return null;
 
@@ -258,16 +259,20 @@ const SettingsModal = ({
 
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <label className="text-sm font-medium text-slate-300">文字顯示速度 (Text Speed)</label>
+                                            <label className="text-sm font-medium text-slate-300">打字字速度 (Text Speed)</label>
                                             <span className="text-xs text-amber-500 font-mono">{settings.textSpeed || 30}ms</span>
                                         </div>
                                         <input
-                                            type="range" min="5" max="100" step="5"
+                                            type="range" min="10" max="250" step="10"
                                             value={settings.textSpeed || 30}
                                             onChange={(e) => onUpdateSettings('textSpeed', parseInt(e.target.value))}
                                             className="w-full accent-amber-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
                                         />
-                                        <p className="text-[10px] text-slate-500 text-right">數值越小越快 (Lower is Faster)</p>
+                                        <div className="flex justify-between text-[10px] text-slate-500">
+                                            <span>最快 (Fast)</span>
+                                            <span>數值越大越慢 (Higher is Slower)</span>
+                                            <span>最慢 (Slow)</span>
+                                        </div>
                                     </div>
 
                                     <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-800 flex items-center justify-between mt-4">
@@ -285,12 +290,7 @@ const SettingsModal = ({
                                     </h4>
                                     <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-800">
                                         <button
-                                            onClick={() => {
-                                                if (confirm("確定要清除所有快取圖片嗎？")) {
-                                                    localStorage.removeItem('dnd_scene_image');
-                                                    alert("快取已清除");
-                                                }
-                                            }}
+                                            onClick={onClearCache}
                                             className="w-full py-2 rounded-lg border border-red-900/30 bg-red-900/10 text-red-400 hover:bg-red-900/20 text-xs font-bold transition-all"
                                         >
                                             清除快取資料 (Clear Cache)

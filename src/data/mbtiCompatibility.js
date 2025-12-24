@@ -39,7 +39,7 @@ export const CHARACTER_MBTI = {
     'preset_arthur': 'INTP',      // 亞瑟·索克 - 知識、真理尋求者
     'preset_conan': 'ISTP',       // 科南 - 戰士與意志
     'preset_sato': 'INFP',        // 佐藤 - 吐槽村民
-    'preset_ains_skeleton': 'INFJ', // 艾因斯 - 骸骨紳士
+    'preset_ains_skeleton': 'ISFJ', // 艾因斯 - 骸骨戰士 (謹慎的冒險者)
     'preset_pipi': 'ENFP_CHAOTIC', // 皮皮 - 混沌野法師
     'preset_stella': 'ENFP'        // 拉姆 (Lum) - 星詠術士
 };
