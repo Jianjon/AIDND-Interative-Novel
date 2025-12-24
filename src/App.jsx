@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     Sword, Ghost, Map as MapIcon, Settings, Send, Sparkles, Camera,
     Heart, Shield, Wand2, Clock, Users, ChevronRight, Plus,
-    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2, MessageCircle, Hand, AlertCircle, Play, FastForward
+    X, Activity, Brain, PlayCircle, Scroll, Zap, Save, Image as ImageIcon, Bot, User, BookOpen, Book, Skull, Music, Package, RefreshCw, Eye, PawPrint, Feather, Menu, Scale, Trash2, MessageCircle, Hand, AlertCircle, Play, FastForward, Home
 } from 'lucide-react';
 import { CharacterCreator } from './components/CharacterCreator';
 import { ModuleDetailsModal } from './components/ModuleDetailsModal';
@@ -500,7 +500,7 @@ export default function InteractiveDND() {
         }
     };
 
-    const [roster, setRoster] = useState([]);
+    const [roster, setRoster] = useLocalStorage('dnd_roster', []);
     const [scenarioRoster, setScenarioRoster] = useState([]); // Scene Actors (Enemies, NPCs)
 
     // Initial game state setupa into CharacterAgent instances
@@ -548,7 +548,7 @@ export default function InteractiveDND() {
             .filter(Boolean); // Remove null entries from failed hydration
     }, [roster, selectedModule]);
 
-    const [party, setParty] = useState([]); // Array of IDs
+    const [party, setParty] = useLocalStorage('dnd_party', []); // Array of IDs
     const [gameState, setGameState] = useState({}); // { id: { hp, psych, inventory } }
     const [showArchiveModal, setShowArchiveModal] = useState(false);
     const [logs, setLogs] = useState([]);
@@ -601,7 +601,10 @@ export default function InteractiveDND() {
     const characterManager = useMemo(() => new CharacterManagerAgent(aiOptions), [aiOptions]);
     const [isMuted, setIsMuted] = useState(audioManager.current.isMuted);
 
-    // --- NEW SETTINGS STATE ---
+    // Mobile Tab State
+    const [mobileTab, setMobileTab] = useState('story'); // 'story', 'party', 'menu'
+
+    // --- GAME ENGINE STATE ---
     const [showSettingsModal, setShowSettingsModal] = useState(false);
     const [pendingTurnUpdates, setPendingTurnUpdates] = useState(null);
     const isExecuting = useRef(false); // Execution lock
@@ -632,6 +635,13 @@ export default function InteractiveDND() {
             });
         }
     }, [userSettings.masterVolume, userSettings.bgmVolume, userSettings.sfxVolume, isMuted]);
+
+    // --- BGM PLAYBACK EFFECT ---
+    useEffect(() => {
+        if (!audioManager.current) return;
+        // Trigger BGM Playback
+        audioManager.current.playBgm(currentBgmKey);
+    }, [currentBgmKey, isMuted]); // Re-trigger if key changes or mute is toggled
 
     // --- TURN SYNC EFFECT (Fix Race Condition) ---
     useEffect(() => {
@@ -788,7 +798,56 @@ export default function InteractiveDND() {
         // Added `roster` to dependencies because `controlMode` is part of `roster` data.
         // `isPrologue` is commented out as it's not defined in the provided snippet.
         processAutoTurns();
-    }, [logs, gameMode, actionCache, party, roster, gameState, isGenerating, isPreGenerating, isAutoProcessing, pendingActions]); // Dependencies need to be careful
+    }, [logs, gameMode, actionCache, party, roster, gameState, isGenerating, isPreGenerating, isAutoProcessing, pendingActions]);
+
+
+    // --- AUTO SAVE LOGIC ---
+    useEffect(() => {
+        // Debounced Auto-Save
+        // Trigger only when we are NOT generating and have meaningful content
+        if (view === 'game' && !isGenerating && !isPreGenerating && logs.length > 0) {
+            const timer = setTimeout(() => {
+                const timestamp = new Date().toLocaleString('zh-TW');
+                const saveData = {
+                    logs,
+                    party,
+                    roster: roster.map(c => c.getFullSheet ? c.getFullSheet() : c),
+                    scenarioRoster,
+                    gameState,
+                    questJournal,
+                    currentLocation,
+                    questLog,
+                    selectedModule,
+                    gameMode,
+                    apiKey,
+                    authMode,
+                    currentAct,
+                    relationships,
+                    currentBgmKey,
+                    savedAt: timestamp,
+                    isAutoSave: true
+                };
+                localStorage.setItem('dnd_autosave', JSON.stringify(saveData));
+                console.log("Creating Auto-Save...", timestamp);
+            }, 2000); // 2 second debounce after state settles
+
+            return () => clearTimeout(timer);
+        }
+    }, [logs, gameState, currentLocation, currentAct, relationships, view, isGenerating, isPreGenerating]);
+
+    // --- ROSTER SYNC: Auto-Inject New Presets ---
+    useEffect(() => {
+        // Run once on mount (or when roster loads) to ensure all presets are available
+        if (!roster) return;
+
+        const existingIds = new Set(roster.map(c => c.id));
+        const missingPresets = PRESET_CHARACTERS.filter(p => !existingIds.has(p.id));
+
+        if (missingPresets.length > 0) {
+            console.log(`[Roster Sync] Found ${missingPresets.length} missing presets. Injecting...`);
+            setRoster(prev => [...prev, ...missingPresets]);
+        }
+    }, [roster?.length]); // Dependency on length is efficient enough to catch init
 
     // Helpers
     // --- Roster Logic ---
@@ -1012,6 +1071,8 @@ JSON格式回覆：
                 apiKey,
                 authMode,
                 currentAct,
+                relationships, // Fix: Save Relationships
+                currentBgmKey, // Fix: Save BGM State
                 savedAt: timestamp
             };
 
@@ -1030,7 +1091,13 @@ JSON格式回覆：
     };
 
     const handleLoad = (slotId) => {
-        const savedJson = localStorage.getItem(`dnd_save_slot_${slotId}`);
+        let savedJson;
+        if (slotId === 'autosave') {
+            savedJson = localStorage.getItem('dnd_autosave');
+        } else {
+            savedJson = localStorage.getItem(`dnd_save_slot_${slotId}`);
+        }
+
         if (!savedJson) {
             showToast("讀取失敗：該位置無存檔", "error");
             return;
@@ -1052,7 +1119,6 @@ JSON格式回覆：
             if (data.party) setParty(data.party);
             if (data.roster) {
                 // Re-hydrate characters
-                // Note: We might want to clear existing roster first or just overwrite?
                 const restoredRoster = data.roster.map(charData => new CharacterAgent(charData));
                 setRoster(restoredRoster);
             }
@@ -1073,9 +1139,18 @@ JSON格式回覆：
             if (data.apiKey) setApiKey(data.apiKey);
             if (data.authMode) setAuthMode(data.authMode);
             if (data.currentAct) setCurrentAct(data.currentAct);
+            if (data.relationships) setRelationships(data.relationships);
+            if (data.currentBgmKey) {
+                setCurrentBgmKey(data.currentBgmKey);
+            }
 
+            // Restore "Resume" capability
+            if (slotId === 'autosave') {
+                showToast("已恢復自動存檔進度", "success");
+            } else {
+                showToast("存檔讀取成功！", "success");
+            }
 
-            showToast("存檔讀取成功！", "success");
             setShowSaveLoadModal(null);
 
             // If we are pending a view switch, maybe force it?
@@ -1556,6 +1631,8 @@ JSON格式回覆：
                     return `
 ### ${char.name} (${char.race} ${char.class})
 - ** Personality **: ${char.personality || "Unknown"}
+- ** First Impression **: ${char.firstImpression || "N/A"}
+- ** Prejudices **: ${char.prejudices ? JSON.stringify(char.prejudices) : "None"}
 - ** Voice/Monologue **: ${char.monologue || "N/A"}${emotionalKeys}${combatWeakness}
 - ** Appearance **: ${char.appearance || "Generic adventurer"}
 - ** Background **: ${char.bio ? char.bio.slice(0, 300) : "A mysterious traveler."}${companionInfo}
@@ -1919,14 +1996,16 @@ JSON格式回覆：
 
                     setRelationships(prev => {
                         // Tracks Responder's affinity towards Initiator (targetName stores who they are bonding with)
-                        const currentRel = prev[responder.id] || {
+                        const responderMap = prev[responder.id] || {}; // Get existing map for this character
+
+                        const currentRel = responderMap[initiator.id] || {
                             targetName: initiator.name,
                             affinity: 50,
                             bondState: 'STRANGER'
                         };
 
-                        // AffinityManagerAgent.updateRelationship(currentRelation, triggerType, changeOverride, allowRomance)
-                        const nextRel = AffinityManagerAgent.updateRelationship(currentRel, trigger, change, allowRomance);
+                        // AffinityManagerAgent.updateRelationship(currentRelation, triggerType, changeOverride, allowRomance, newThoughts)
+                        const nextRel = AffinityManagerAgent.updateRelationship(currentRel, trigger, change, allowRomance, reason);
 
                         // Notification / Log
                         if (change !== 0) {
@@ -1938,7 +2017,10 @@ JSON格式回覆：
 
                         return {
                             ...prev,
-                            [responder.id]: nextRel
+                            [responder.id]: {
+                                ...responderMap,
+                                [initiator.id]: nextRel
+                            }
                         };
                     });
                 }
@@ -3704,7 +3786,7 @@ transition-all group duration-300 hover: -translate-y-1 hover:shadow-[0_10px_30p
                 */}
 
                 {/* Left: Story Area */}
-                <div id="game-left-panel" className={`flex-1 md:w-2/3 flex flex-col bg-transparent relative min-h-0 z-10 md:border-r-2 border-[#1a1a1a]/10`}>
+                <div id="game-left-panel" className={`${mobileTab === 'story' ? 'flex' : 'hidden'} md:flex flex-1 md:w-2/3 flex-col bg-transparent relative min-h-0 z-10 md:border-r-2 border-[#1a1a1a]/10 pb-32 md:pb-0`}>
                     {/* Header */}
                     <div className="h-16 border-b border-slate-800 flex items-center px-6 justify-between bg-slate-950/80 backdrop-blur-sm shrink-0 z-20">
                         <div className="flex items-center gap-3 overflow-hidden">
@@ -4040,31 +4122,36 @@ font-tome-body
                                     <Sword size={20} className="animate-spin" /> Fates are weaving...
                                 </div>
                             )}
+                            {/* Inline Action Prompt (Replaces Floating Overlay) */}
+                            {!isGenerating && isNarrativeComplete && !isPreGenerating && gameMode === GAME_MODES.TRPG && (
+                                <div className="mt-8 mb-12 flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                    {isRoundReady ? (
+                                        <button
+                                            onClick={() => executeTurn(false)}
+                                            className="w-full max-w-sm shadow-xl border-2 border-[#8a2323] bg-[#8a2323] text-[#f4ecd8] hover:bg-[#6e1c1c] py-4 rounded-sm font-bold text-lg flex items-center justify-center gap-3 transition-all font-tome-header uppercase tracking-widest scale-105 animate-pulse"
+                                        >
+                                            <Sword size={22} /> Execute Turn ({pendingCount}/{aliveMembers.length})
+                                        </button>
+                                    ) : (
+                                        <div className="text-center space-y-3 opacity-80 p-6 border-y border-amber-500/20 w-full max-w-md">
+                                            <div className="text-amber-500 font-tome-header font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                                                <Clock size={16} className="animate-pulse" />
+                                                Pending Orders ({pendingCount}/{aliveMembers.length})
+                                            </div>
+                                            <p className="text-slate-400 text-sm font-serif italic">
+                                                Review the situation and select actions for your party members...
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div ref={scrollTrigger} className="h-16" />
                         </div>
                     </div>
 
                     {/* Execution Button Overlay (When ready) */}
-                    {pendingCount > 0 && !isGenerating && (
-                        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-sm px-4">
-                            <button
-                                onClick={() => executeTurn(false)}
-                                className={`
-w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg flex items-center justify-center gap-3 transition-all font-tome-header uppercase tracking-widest
-              ${isRoundReady
-                                        ? 'bg-[#8a2323]text-[#f4ecd8]border-[#8a2323]hover:bg-[#6e1c1c]scale-105 animate-pulse'
-                                        : 'bg-[#f4ecd8]border-[#1a1a1a]text-[#1a1a1a]hover:bg-white'
-                                    }
-`}
-                            >
-                                {isRoundReady ? (
-                                    <><Sword size={22} /> Execute Turn ({pendingCount}/{aliveMembers.length})</>
-                                ) : (
-                                    <><Clock size={22} /> Awaiting Orders ({pendingCount}/{aliveMembers.length})</>
-                                )}
-                            </button>
-                        </div>
-                    )}
+
                 </div>
 
                 {/* Right/Bottom: Controls */}
@@ -4082,7 +4169,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
 
                 {/* Right/Bottom: Controls (Resizable) */}
                 <div
-                    className="h-[40%] md:h-full bg-slate-900/80 backdrop-blur-md border-t border-slate-700 md:border-t-0 border-slate-700 flex flex-col shadow-2xl z-20 min-h-0 relative"
+                    className={`${mobileTab === 'party' ? 'flex' : 'hidden'} md:flex h-full md:h-full bg-slate-900/80 backdrop-blur-md border-t border-slate-700 md:border-t-0 border-slate-700 flex-col shadow-2xl z-20 min-h-0 relative pb-32 md:pb-0`}
                     style={{ width: isMobile ? '100%' : sidebarWidth }}
                 >
 
@@ -4171,7 +4258,20 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                                         )}
                                         {/* Card Header (Avatar + Info) */}
                                         <div className="flex items-center gap-4 w-full">
-                                            <div className="relative">
+                                            <div
+                                                className="relative cursor-pointer pointer-events-auto transition-transform hover:scale-105 active:scale-95 z-20"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    // Sync with latest gameState before showing modal
+                                                    const charState = gameState[char.id];
+                                                    if (charState) {
+                                                        char.syncState(charState);
+                                                    }
+                                                    setActiveModalChar(char);
+                                                }}
+                                                title="View Character Details"
+                                            >
                                                 <div className="w-20 h-20 rounded-full border-2 border-[#1a1a1a] overflow-hidden shadow-sm sepia-[.3]">
                                                     <img
                                                         src={char.avatar || char.avatarUrl || ''}
@@ -4211,23 +4311,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                                                             {char.controlMode === 'auto' ? <Bot size={10} className="shrink-0" /> : <User size={10} className="shrink-0" />}
                                                             <span className="text-[9px] font-bold uppercase tracking-wider">{char.controlMode === 'auto' ? 'Auto' : 'Manual'}</span>
                                                         </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                // Sync with latest gameState before showing modal
-                                                                const charState = gameState[char.id];
-                                                                if (charState) {
-                                                                    char.syncState(charState);
-                                                                }
-                                                                setActiveModalChar(char);
-                                                            }}
-                                                            className="p-1 hover:bg-white/10 rounded-full border border-transparent hover:border-white/20 text-slate-500 hover:text-white transition-colors"
-                                                            title="View Details"
-                                                        >
-                                                            <Eye size={12} />
-                                                        </button>
+                                                        {/* Eye Button Removed as function moved to Portrait */}
                                                         <span className="text-xs uppercase text-slate-500 font-bold tracking-wider font-tome-body">{char.class}</span>
                                                     </div>
                                                 </div>
@@ -4390,6 +4474,32 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                             return uniqueRoster;
                         })()} />
 
+                        {/* Mobile-Only Inline Action Prompt (in Roster View) */}
+                        {!isGenerating && isNarrativeComplete && !isPreGenerating && (
+                            <div className="md:hidden mt-6 mb-4 px-4 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                {aliveMembers > 0 && isRoundReady ? (
+                                    <button
+                                        onClick={() => executeTurn(false)}
+                                        className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-tome-header font-bold text-lg py-4 rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-500/50 flex items-center justify-center gap-3 transition-all active:scale-95"
+                                    >
+                                        <Sword size={20} className="text-amber-200" />
+                                        <span>EXECUTE TURN</span>
+                                        <Sword size={20} className="text-amber-200 scale-x-[-1]" />
+                                    </button>
+                                ) : (
+                                    <div className="w-full bg-slate-900/80 border border-slate-700/50 rounded-lg p-3 text-center backdrop-blur-sm">
+                                        <div className="flex items-center justify-center gap-2 text-amber-500 font-bold font-tome-header mb-1">
+                                            <Clock size={16} className="animate-pulse" />
+                                            <span>PENDING ORDERS ({pendingCount}/{aliveMembers})</span>
+                                        </div>
+                                        <div className="text-xs text-slate-400 font-serif italic">
+                                            Select actions for all party members
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {/* Journal Modal (Kept - triggered from top-left) */}
                         {
                             showJournalModal && (
@@ -4423,6 +4533,7 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                                                 actionCache={actionCache}
                                                 inventory={actionModalChar.inventory || []}
                                                 direction="up" // Force UP direction logic if handled, though CSS flow will handle it
+                                                isMobile={true}
                                                 onSelectAction={(charId, actionText, isGroup) => {
                                                     if (isGroup) {
                                                         setPendingActions({ [charId]: actionText });
@@ -4452,7 +4563,33 @@ w-full shadow-xl border-2 backdrop-blur-md py-4 rounded-sm font-bold text-lg fle
                             )
                         }
                     </div>
+
                 </div >
+
+                {/* Mobile Bottom Navigation */}
+                <div className="md:hidden fixed bottom-0 left-0 w-full h-16 bg-slate-950/95 border-t border-slate-800 flex items-center justify-around z-50 px-2 safe-pb backdrop-blur-sm">
+                    <button
+                        onClick={() => setMobileTab('story')}
+                        className={`flex flex-col items-center justify-center w-20 h-full gap-1 transition-colors ${mobileTab === 'story' ? 'text-amber-500' : 'text-slate-500'}`}
+                    >
+                        <BookOpen size={20} className={mobileTab === 'story' ? 'animate-pulse' : ''} />
+                        <span className="text-[10px] uppercase font-bold tracking-widest font-tome-header">Story</span>
+                    </button>
+                    <button
+                        onClick={() => setMobileTab('party')}
+                        className={`flex flex-col items-center justify-center w-20 h-full gap-1 transition-colors ${mobileTab === 'party' ? 'text-amber-500' : 'text-slate-500'}`}
+                    >
+                        <Users size={20} className={mobileTab === 'party' ? 'animate-pulse' : ''} />
+                        <span className="text-[10px] uppercase font-bold tracking-widest font-tome-header">Party</span>
+                    </button>
+                    <button
+                        onClick={() => setShowSettingsModal(true)}
+                        className={`flex flex-col items-center justify-center w-20 h-full gap-1 transition-colors text-slate-500 hover:text-amber-500`}
+                    >
+                        <Settings size={20} />
+                        <span className="text-[10px] uppercase font-bold tracking-widest font-tome-header">Menu</span>
+                    </button>
+                </div>
             </div >
         );
     };

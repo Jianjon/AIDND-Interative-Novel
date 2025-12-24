@@ -2275,6 +2275,13 @@ export const PRESET_CHARACTERS = [
             anger: ['浪費醫療資源', '輕敵導致受傷', '英雄主義（自殺行為）', '細菌'],
             weakness: '對無法挽救的生命的麻木與自我厭惡'
         },
+        combatWeakness: {
+            triggers: [
+                { type: 'EVENT', target: '多名隊友同時重傷', description: '醫療資源分配崩潰導致的決策癱瘓' },
+                { type: 'ENEMY_TYPE', target: '帶有不可治癒毒素/詛咒的敵人', description: '對無法挽救之生命的職業性挫敗感' }
+            ],
+            reaction: '變得暴躁且過度保守，強硬要求所有人撤退，拒絕執行進攻指令。'
+        },
         // 戰場行為與決策規則
         combatBehavior: {
             priorities: ['維護行動能力', '資源優化', '規避風險'],
@@ -2701,10 +2708,10 @@ export const PRESET_CHARACTERS = [
             { name: '音爆重擊', description: '近戰重擊命中時觸發一次音爆，對周圍敌人造成聲波傷害。' }
         ]
     },
-    // --- 46. Arthur the Seeker (Male) - 知識與真理的尋求者 ---
+    // --- 46. Aldous Thorpe (Male) - 知識與真理的尋求者 ---
     {
-        id: 'preset_arthur',
-        name: '亞瑟·索克 (Arthur)',
+        id: 'preset_aldous',
+        name: '奧爾德斯·索克 (Aldous Thorpe)',
         race: '人類',
         class: '知識牧師',
         gender: 'Male',
@@ -2754,57 +2761,7 @@ export const PRESET_CHARACTERS = [
             typicalActions: ['真理分析 (降低敵方 AC)', '奧法干擾', '神聖引導']
         }
     },
-    // --- 38. Conan (Male) - 經典野蠻人 ---
-    {
-        id: 'preset_conan',
-        name: '科南 (Conan)',
-        race: '人類',
-        class: '野蠻人',
-        gender: 'Male',
-        alignment: '絕對中立',
-        background: '化外之民',
-        mbti: 'ISTP',
-        level: 1,
-        baseStats: { str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10 },
-        skills: ['運動', '生存', '察覺', '隱匿'],
-        feats: ['反應迅捷', '巨武器大師'],
-        personality: '沈默、強悍且充滿原始本能。他蔑視文明社會的虛偽與魔法的假象，只信任手中的鋼鐵與意志。他有著自己的一套榮譽準則，是荒野中不可撼動的守護者。',
-        monologue: '魔法是假象，文明是牢籠。只有鋼鐵與意志，才是這荒野中唯一的真理。',
-        firstImpression: '如山般魁梧、肌肉線條分明，赤裸上身披著獸皮，眼神銳利如狼，散發著原始而致命的威壓感。',
-        habits: ['時刻保持狩獵者的低姿態', '戰鬥前會沈默地磨亮大劍', '對魔法氣息有著野獸般的本能排斥'],
-        prejudices: {
-            towardsClasses: { '施法者': '靠著虛假力量躲在後排的人，不值得信任。' }
-        },
-        preferences: {
-            likes: ['戰鬥的榮耀', '烈酒與簡單的口糧', '重獲自由的瞬間', '與強者的直接對決'],
-            dislikes: ['被奴役', '狡詐的陷阱', '邪惡的巫術', '背信棄義的小人']
-        },
-        appearance: '身形如山般魁梧，肌肉線條如同雕刻般分明。留著一頭凌亂的棕色長髮，下巴帶著鬍渣，眼神如野獸般銳利。他赤裸著上身，只穿著皮製束帶與護脛，披著一件厚重的獸皮斗篷。他背負著巨大的長劍，手中提著一面古老的圓盾。',
-        inventory: {
-            equipment: ['精鋼大劍', '古老圓盾', '獸皮斗篷', '皮製束帶'],
-            gold: 20,
-            consumables: ['肉乾 (3日份)', '烈酒壺', '燧石與火種', '治療藥水 x2'],
-            magicItems: []
-        },
-        avatar: conanImg,
-        bio: '科南來自遙遠的北方荒野。他曾在戰火中失去家園，並在生死邊緣學會了生存。他曾是奴隸、小偷、傭兵，最終成為了傳奇。他不追求財富或權力，只追求自由與戰鬥的快感。他曾無數次擊敗那些自命不凡的施法者，證明了肉體與意志的極致，足以對抗任何禁忌的力量。',
-        emotionalKeys: {
-            joy: ['戰鬥的榮耀', '烈酒與慶功', '重獲自由', '戰勝強敵'],
-            anger: ['被奴役', '狡詐的陷阱', '邪惡的魔法', '背信棄義'],
-            weakness: '對文明社會的規律感到厭倦與迷茫'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '高階術士/大幻術師', description: '對無法用鋼鐵對抗的虛假幻象的原始懷疑與不安' },
-                { type: 'ENVIRONMENT', target: '迷宮/複雜空間', description: '對文明「建造物」陷阱的心理防備' }
-            ],
-            reaction: '變得極度暴躁且懷疑周圍的一切（包括隊友），會胡亂砍殺任何看起來「不真實」的陰影。'
-        },
-        combatBehavior: {
-            priorities: ['強力打擊', '正面突破', '威壓敵人'],
-            typicalActions: ['狂暴', '粉碎打擊', '躍擊']
-        }
-    },
+
 
     // --- 39. Sammy (Male) - 傳說級村民 ---
     {
@@ -2958,6 +2915,57 @@ export const PRESET_CHARACTERS = [
         combatBehavior: {
             priorities: ['混沌輸出', '隨機干擾', '賣萌保命'],
             typicalActions: ['皮皮亂丟火球', '反向治療(微炸裂)', '天真笑臉']
+        }
+    },
+    // --- 41. Conan (Male) - 蠻族破壞者 ---
+    {
+        id: 'preset_conan',
+        name: '柯南 (Conan)',
+        race: '人類',
+        class: '野蠻人',
+        gender: 'Male',
+        alignment: '混沌中立',
+        background: '無盡戰爭',
+        mbti: 'ISTP',
+        level: 1,
+        baseStats: { str: 18, dex: 14, con: 16, int: 8, wis: 10, cha: 10 },
+        skills: ['運動', '威嚇', '生存', '察覺'],
+        feats: ['巨武器大師', '堅韌體魄'],
+        personality: '來自北方的野蠻戰士，信奉鋼鐵與鮮血的法則。他對文明世界的法律嗤之以鼻，只相信自己手中的劍與強壯的肌肉。雖然外表粗獷，但他有著野獸般的直覺與戰鬥智慧。',
+        monologue: '文明只是虛偽的面具。只有在戰鬥的咆哮與敵人的鮮血中，男人才能找到真正的自我。克羅姆在上，若我不戰死沙場，便是對戰士之名的羞辱！',
+        firstImpression: '肌肉虯結的巨漢，赤裸上身，僅穿著獸皮戰裙。背負著一把巨大的雙手巨劍，渾身散發著令人戰慄的殺氣與野性。',
+        habits: ['擦拭巨劍', '大口喝酒', '鄙視地看著施法者唸咒'],
+        prejudices: {
+            towardsClasses: { '法師': '躲在後面唸咒的懦夫，一拳就能解決的事為什麼要那麼麻煩？' },
+            towardsLifestyles: { '文明貴族': '軟弱、虛偽，連自己的劍都拿不動的廢物。' }
+        },
+        preferences: {
+            likes: ['戰鬥', '烈酒', '美女', '掠奪'],
+            dislikes: ['魔法', '複雜的計畫', '軟弱', '文明的繁文縟節']
+        },
+        appearance: '像一座移動的山峰，渾身肌肉如鋼鐵般堅硬。深邃的眼神中燃燒著野性的火焰，黑色的長髮隨風狂舞。他身上布滿了戰鬥留下的傷疤，每一個都是榮耀的勳章。',
+        inventory: {
+            equipment: ['雙手巨劍', '獸皮戰裙', '投擲手斧'],
+            gold: 10,
+            consumables: ['烈酒 x3', '大塊燻肉 x5'],
+            magicItems: []
+        },
+        avatar: conanImg,
+        bio: '柯南出生在極北的蠻荒之地，自幼便在殘酷的環境中與野獸搏鬥。他離開故鄉遊歷世界，既是戰士、僱傭兵，也是小偷與海盜。他曾登上王座，也曾淪為階下囚，但他的意志從未被摧毀。他尋求的不是財富，而是戰鬥的榮耀與生命的激情。',
+        emotionalKeys: {
+            joy: ['擊敗強敵', '暢飲美酒', '征服'],
+            anger: ['被欺騙', '魔法的詭計', '自由被束縛'],
+            weakness: '對精細魔法的抗性較低且缺乏耐心'
+        },
+        combatWeakness: {
+            triggers: [
+                { type: 'ENEMY_TYPE', target: '控制心智的巫師', description: '對無法用肌肉解決的敵人感到極度暴躁' }
+            ],
+            reaction: '發出狂暴的怒吼，無視防禦瘋狂衝向施法者，如果無法觸及則會瘋狂破壞周圍物體。'
+        },
+        combatBehavior: {
+            priorities: ['斬首', '衝鋒', '破壞掩體'],
+            typicalActions: ['魯莽攻擊', '順勢斬', '怒火中燒']
         }
     }
 

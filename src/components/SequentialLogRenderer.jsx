@@ -42,6 +42,9 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
     // Persist dice roll results across re-renders (key: unique dice id, value: { base, mod, total, result })
     const [diceResults, setDiceResults] = useState({});
 
+    // Track if we have already fired onComplete to prevent duplicates
+    const hasCompletedRef = useRef(false);
+
     // Watch for instant toggle to force completion
     useEffect(() => {
         if (instant) {
@@ -55,7 +58,10 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
             // No, parent sets instant=true when USER clicks skip. 
             // Parent's onComplete logic (App.jsx) resets forceInstant=false.
             // So we MUST call onComplete here to signal "we are done showing everything".
-            if (onComplete) onComplete();
+            if (!hasCompletedRef.current && onComplete) {
+                hasCompletedRef.current = true;
+                onComplete();
+            }
         }
     }, [instant, onComplete]);
 
@@ -627,7 +633,10 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
         if (visibleIndex >= totalSteps) {
             // Buffer delay before completion to let user read the last typed block
             const completionTimer = setTimeout(() => {
-                if (onComplete) onComplete();
+                if (!hasCompletedRef.current && onComplete) {
+                    hasCompletedRef.current = true;
+                    onComplete();
+                }
             }, 1500);
             return () => clearTimeout(completionTimer);
         }

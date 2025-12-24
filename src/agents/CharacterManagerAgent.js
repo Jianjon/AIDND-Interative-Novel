@@ -153,6 +153,14 @@ export class CharacterManagerAgent {
                 .map(([tid, rel]) => `${rel.targetName || tid}: ${rel.bondState} (${rel.affinity})`)
                 .join(", ");
 
+            // Analyze High Stats and Skills
+            const stats = c.baseStats || {};
+            const highStats = Object.entries(stats)
+                .filter(([_, val]) => val >= 14)
+                .map(([key, val]) => `${key.toUpperCase()}: ${val}`)
+                .join(", ");
+            const skills = Array.isArray(c.skills) ? c.skills.join(", ") : (c.skills || "None");
+
             return `
             - ID: ${c.id}
               Name: ${c.name} (${c.race} ${c.class})
@@ -168,6 +176,8 @@ export class CharacterManagerAgent {
               Bio: ${c.bio ? c.bio.substring(0, 150) + "..." : "Unknown"}
               Companion: ${c.companion ? JSON.stringify(c.companion) : "None"}
               Significant Bonds: ${importantBonds || "None"}
+              Key Skills: ${skills}
+              High Stats: ${highStats || "None"}
               Combat Weakness: ${JSON.stringify(c.combatWeakness || "None")}
               Behaviors: [Instinct: ${behaviors.instinct}, Professional: ${behaviors.professional}, Team: ${behaviors.team}]
             `;
@@ -248,7 +258,14 @@ export class CharacterManagerAgent {
         - 如果當前場景情境 (Scene Context) 觸發了角色的 [Combat Weakness] (例如：怕黑的角色在黑暗中，或是面對特定敵人)：
           1. **Priority**: 角色應優先選擇防禦、躲避、逃跑或排除該弱點源的行動。
           2. **Tone**: 選項的描述必須體現出該角色的心理陰影、焦慮或生理反應。
+          2. **Tone**: 選項的描述必須體現出該角色的心理陰影、焦慮或生理反應。
           3. **Monologue**: 必須包含該弱點引發的具體負面自白（如「救命...我最討厭蟲子了...」）。
+
+        **7. SPECIALIST INTERVENTION (專家干預 - 推進劇情)**
+        - **檢測高難度阻礙**: 如果 Narrative 描述了某個需要特定能力的阻礙 (例如: "充滿古老符文的門" -> Arcana/Int, "巨大的岩石擋路" -> Athletics/Str, "隱秘的足跡" -> Survival/Wis)。
+        - **主動回應**: 如果該角色擁有對應的 **Key Skills** 或 **High Stats**，**必須** 生成一個利用該專長的「主動解決問題」選項。
+        - **堅持不懈 (Persistence)**: 如果之前的結果顯示挑戰尚未解決 (Previous Outcome !== Success)，該專家角色應繼續嘗試新的方法或更深入的檢定，直到問題解決。不要輕易放棄。
+        - **描述**: 在選項中明確描述運用該能力的方式。例如：「[專家] 研究符文結構，試圖尋找破解法」或「[專家] 用肩膀頂住巨石，嘗試將其推開」。
 
         *** 特殊狀態規則：瀕死 (DOWNED / UNCONSCIOUS) ***
         如果角色 HP = 0 或狀態為 Unconscious/Downed：
@@ -313,15 +330,18 @@ export class CharacterManagerAgent {
         For EACH character, generate:
         1. A short monologue (15-20 chars, 繁體中文) - 反映角色當下的想法
         2. 4 Action Options (A, B, C, D) - If NO companion, only 3 options (A, B, C):
-           - **Option A (本能反應)**: 根據職業本能 - 優先無消耗行動
-           - **Option B (策略選項)**: 更謹慎或策略性 - 環境/社交/技能檢定
-           - **Option C (團隊/個性)**: 隨機選擇以下之一:
-             - 🤝 合作：「和 [隊友名] 配合...」
-             - 💡 建議：「對 [隊友名] 喊道：我覺得...」
-             - 😤 抱怨：「對 [隊友] 表達不滿...」
-             - 💬 閒聊：和隊友說些輕鬆的話
-             - 🎭 個性行動：完全基於角色獨特個性
-             - ☠️ 瀕死 (僅限 HP<=0): 「(虛弱地) ...」 或 「(內心) 我不想死...」
+           - **Option A (核心風格/高優先)**: (70% 機率) 反映角色最典型的戰鬥/行為風格。
+             - 例如：和平主義者優先「防禦/治療/勸阻」；狂戰士優先「蠻力攻擊」。
+             - 這是角色「最想做」的事，符合其 Bio 和 Class。
+           - **Option B (策略變通/情境應用)**: (30% 機率) 針對戰場優勢或特殊挑戰。
+             - **MUST USE**: 必須明確引用角色的 [Skills], [Feats], 或 [Abilities]。
+             - 例如：盜賊使用 \`Cunning Action\` 躲藏；戰士使用 \`Great Weapon Master\` 猛擊；高魅力角色使用 \`Persuasion\` 勸降。
+             - **多樣性規則**: 若玩家選擇重新生成 (Regenerate)，此選項必須嘗試使用 *不同* 的技能或戰術 (例如：從攻擊改為防守，或從魔法改為物理)。
+           - **Option C (團隊協作/個性變體)**: 隨機選擇並整合以下元素:
+             - 🤝 **Teamwork**: 明確描述如何與隊友配合 (e.g., "使用 [Help] 動作協助 [隊友名]", "為 [隊友名] 製造夾擊機會").
+             - 💡 **Skill Check**: 主動提議進行檢定 (e.g., "我用 [Arcana] 分析這個法陣...", "我用 [Perception] 尋找掩體...").
+             - 😤 **Roleplay**: 展現特定的 Habits, Prejudices, 或 Monologue.
+             - ☠️ **Survival**: (HP < 30%) 尋求治療或撤退。
            - **Option D (夥伴指令)**: **ONLY IF** Character has a Companion.
              - 🐾 指揮夥伴進行偵查、協助、或攻擊。
             - **Emoji Categories (必須在 text 開頭加入適合的 Emoji)**:

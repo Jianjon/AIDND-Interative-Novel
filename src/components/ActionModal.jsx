@@ -19,7 +19,8 @@ export default function ActionModal({
     onStyleDialogue,
     onClose,
     isRegenerating = false,
-    direction = 'down' // 'down' (default) or 'up' (for bottom items)
+    direction = 'down', // 'down' (default) or 'up' (for bottom items)
+    isMobile = false // Forces relative positioning and full width
 }) {
     const [customInput, setCustomInput] = useState('');
     const [isStyling, setIsStyling] = useState(false);
@@ -65,16 +66,20 @@ export default function ActionModal({
             name.includes('書') || name.includes('信') || name.includes('卷軸') || name.includes('文件') || name.includes('筆記') || name.includes('日記') || name.includes('圖');
     };
 
-    const positionClasses = direction === 'up'
-        ? "bottom-full mb-2 slide-in-from-bottom-2 origin-bottom"
-        : "top-full mt-2 slide-in-from-top-2 origin-top";
+    const positionClasses = isMobile
+        ? "relative w-full shadow-none border-none bg-transparent" // Mobile: reset positioning
+        : direction === 'up'
+            ? "absolute left-0 z-50 w-[400px] bottom-full mb-2 slide-in-from-bottom-2 origin-bottom"
+            : "absolute left-0 z-50 w-[400px] top-full mt-2 slide-in-from-top-2 origin-top";
 
     // Dark Tome Aesthetic Classes
     // Dark Tome Aesthetic Classes
     // If Downed, use Red/Black theme
-    const containerClasses = isDowned
-        ? "bg-red-950/95 border border-red-500/50 shadow-[0_10px_40px_rgba(255,0,0,0.2)] backdrop-blur-md"
-        : "bg-slate-900/95 border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md";
+    const containerClasses = isMobile
+        ? "bg-transparent" // Mobile container already has background
+        : isDowned
+            ? "bg-red-950/95 border border-red-500/50 shadow-[0_10px_40px_rgba(255,0,0,0.2)] backdrop-blur-md"
+            : "bg-slate-900/95 border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md";
 
     const headerClasses = isDowned
         ? "bg-red-900/40 border-b border-red-500/30"
@@ -86,7 +91,7 @@ export default function ActionModal({
     const textSecondary = isDowned ? "text-red-400/80" : "text-slate-400";
 
     return (
-        <div className={`absolute left-0 z-50 w-[400px] rounded-lg flex flex-col overflow-hidden animate-in fade-in ${positionClasses} ${containerClasses} font-serif`}>
+        <div className={`rounded-lg flex flex-col overflow-hidden animate-in fade-in ${positionClasses} ${containerClasses} font-serif`}>
 
             {/* 1. Header & Mindset */}
             <div className={`${headerClasses} p-3 relative`}>

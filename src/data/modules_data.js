@@ -188,6 +188,15 @@ ${act.endCondition}
         const npcList = act.npcs.map(npc => {
             if (typeof npc === 'object') {
                 let desc = `${npc.name}（${npc.role}）：${npc.description}`;
+                if (npc.personality) {
+                    desc += `\n    - Personality: ${npc.personality}`;
+                }
+                if (npc.prejudices) {
+                    desc += `\n    - Prejudices: ${JSON.stringify(npc.prejudices)}`;
+                }
+                if (npc.secrets) {
+                    desc += `\n    - SECRET (Hidden): ${npc.secrets}`;
+                }
                 if (npc.dialogue) {
                     desc += `\n    - Key Dialogue: "${npc.dialogue}"`;
                 }
@@ -221,6 +230,70 @@ ${act.endCondition}
             context += `\n\n【本章BOSS】\n${act.boss}`;
         }
     }
+
+    /* --- Special Module Mechanics Injection --- */
+
+    // 1. Sanity Mechanics (Curse of Strahd)
+    if (module.sanity_mechanics) {
+        context += `\n\n【⚠️特殊機制：理智與恐懼 (Sanity & Fear)】\n`;
+        context += `描述：${module.sanity_mechanics.description}\n`;
+        if (module.sanity_mechanics.triggers) {
+            context += `觸發條件：\n${module.sanity_mechanics.triggers.map(t => `- ${t}`).join('\n')}\n`;
+        }
+        if (module.sanity_mechanics.effects) {
+            context += `理智喪失後果：\n${module.sanity_mechanics.effects.map(e => `- ${e}`).join('\n')}\n`;
+        }
+    }
+
+    // 2. Infernal Mechanics (Descent into Avernus)
+    if (act.infernal_mechanics) {
+        context += `\n\n【🔥特殊機制：地獄法則】\n`;
+        const im = act.infernal_mechanics;
+        if (im.environment) context += `- 環境影響：${im.environment}\n`;
+        if (im.corruption) context += `- 腐化規則：${im.corruption}\n`;
+        if (im.soul_coin) context += `- 靈魂幣用法：${im.soul_coin}\n`;
+    }
+    if (act.infernal_war_machines) {
+        context += `\n【🚗地獄戰車機制】\n`;
+        if (act.war_machine_mechanics) {
+            const wm = act.war_machine_mechanics;
+            context += `- 戰鬥：${wm.combat}\n- 燃料：${wm.fuel}\n`;
+            if (wm.modifications) {
+                context += `- 可用改裝：${wm.modifications.map(m => `${m.name} (${m.effect})`).join(', ')}\n`;
+            } else if (wm.upgrades) {
+                context += `- 改裝：${wm.upgrades}\n`;
+            }
+        }
+    }
+
+    // 3. Survival/Hex Mechanics (Tomb of Annihilation)
+    if (act.hex_mechanics) {
+        context += `\n\n【🌿特殊機制：叢林求生】\n`;
+        const hm = act.hex_mechanics;
+        if (hm.navigation) context += `- 導航：${hm.navigation}\n`;
+        if (hm.environment) context += `- 環境法則：${hm.environment}\n`;
+        if (hm.survival_crafting) context += `- 採集與製作：${hm.survival_crafting}\n`;
+        if (hm.disease) context += `- 疾病風險：${hm.disease}\n`;
+    }
+    if (act.puzzle_mechanics) {
+        context += `\n\n【🧩特殊機制：代價解謎】\n${act.puzzle_mechanics.sacrifice || ''}`;
+    }
+
+    // 4. Tarokka & Dark Gifts (Curse of Strahd)
+    if (act.tarokka_mechanics) {
+        context += `\n\n【🃏特殊機制：塔羅卡命運】\n`;
+        context += `${act.tarokka_mechanics.description}\n`;
+        if (act.tarokka_mechanics.cards) {
+            context += `牌面效果：\n${act.tarokka_mechanics.cards.map(c => `- ${c.card}: ${c.effect}`).join('\n')}`;
+        }
+    }
+
+    // 5. Dark Gifts check (simple flag or object)
+    if (act.dark_gifts) {
+        context += `\n\n【👁️特殊機制：黑暗恩賜】\n在琥珀神殿中，黑暗力量會主動與玩家交易。請根據情況提供誘人的力量交換條件（如：強大力量但外貌永久扭曲）。`;
+    }
+
+    /* ------------------------------------------- */
 
     // Add opening text if available
     if (act.opening_text) {

@@ -106,17 +106,19 @@ export default function SaveLoadModal({ isOpen, mode, onClose, onSave, onLoad, o
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => {
+                                                    if (slot.isAuto) return;
                                                     if (slot.empty || window.confirm(`確定要覆蓋【存檔 ${slot.id}】嗎？`)) {
                                                         onSave(slot.id);
                                                         refreshSlots(); // Optimistic refresh although parent usually closes modal
                                                     }
                                                 }}
-                                                className="px-4 py-2 bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-300 rounded text-xs font-bold transition-colors flex items-center gap-1.5 border border-slate-700 hover:border-amber-500"
+                                                disabled={slot.isAuto}
+                                                className={`px-4 py-2 ${slot.isAuto ? 'bg-slate-800 text-slate-600 cursor-not-allowed border-slate-700' : 'bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-300 border-slate-700 hover:border-amber-500'} rounded text-xs font-bold transition-colors flex items-center gap-1.5 border`}
                                             >
                                                 <Save size={14} />
-                                                {slot.empty ? "儲存" : "覆蓋"}
+                                                {slot.isAuto ? "自動" : (slot.empty ? "儲存" : "覆蓋")}
                                             </button>
-                                            {!slot.empty && (
+                                            {!slot.empty && !slot.isAuto && (
                                                 <button
                                                     onClick={() => {
                                                         if (window.confirm(`確定要刪除【存檔 ${slot.id}】嗎？此操作無法復原！`)) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Type, Image as ImageIcon, Music, Monitor, Moon, Sun, Coffee, Eye, Volume2, VolumeX, Settings, Cpu, HardDrive } from 'lucide-react';
+import { X, Type, Image as ImageIcon, Music, Monitor, Moon, Sun, Coffee, Eye, Volume2, VolumeX, Settings, Cpu, HardDrive, Shield, AlertCircle, RefreshCw, Trash2, Save } from 'lucide-react';
 
 const SettingsModal = ({
     isOpen,
@@ -34,6 +34,7 @@ const SettingsModal = ({
         { id: 'audio', label: '音效設定', icon: Music },
         { id: 'display', label: '顯示設定', icon: Monitor },
         { id: 'general', label: '一般設定', icon: Settings },
+        { id: 'debug', label: '系統與除錯', icon: Shield },
     ];
 
     return (
@@ -294,6 +295,96 @@ const SettingsModal = ({
                                             className="w-full py-2 rounded-lg border border-red-900/30 bg-red-900/10 text-red-400 hover:bg-red-900/20 text-xs font-bold transition-all"
                                         >
                                             清除快取資料 (Clear Cache)
+                                        </button>
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {/* === DEBUG & RESCUE SETTINGS === */}
+                        {activeTab === 'debug' && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <div className="bg-amber-900/10 border border-amber-500/20 p-4 rounded-xl flex gap-3 text-amber-500 text-sm">
+                                    <AlertCircle className="shrink-0" size={20} />
+                                    <p>
+                                        此區域包含緊急修復選項。如果您遇到畫面卡住、角色消失或 AI 無法回應的情況，請嘗試以下功能。
+                                    </p>
+                                </div>
+
+                                <section className="space-y-4">
+                                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <RefreshCw size={14} /> 緊急處理 (Emergency)
+                                    </h4>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-800 space-y-3">
+                                            <div className="flex items-center gap-2 text-slate-300 font-bold text-sm">
+                                                <RefreshCw size={16} className="text-blue-500" />
+                                                刷新介面 (Soft Reload)
+                                            </div>
+                                            <p className="text-xs text-slate-500">
+                                                如果介面顯示異常但資料可能沒問題，嘗試重新載入網頁。
+                                            </p>
+                                            <button
+                                                onClick={() => window.location.reload()}
+                                                className="w-full py-2 rounded-lg bg-blue-900/20 border border-blue-500/30 text-blue-400 hover:bg-blue-900/30 text-xs font-bold transition-all"
+                                            >
+                                                重新載入 (Reload)
+                                            </button>
+                                        </div>
+
+                                        <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-800 space-y-3">
+                                            <div className="flex items-center gap-2 text-slate-300 font-bold text-sm">
+                                                <Trash2 size={16} className="text-red-500" />
+                                                原廠重置 (Factory Reset)
+                                            </div>
+                                            <p className="text-xs text-slate-500">
+                                                <span className="text-red-400 font-bold">警告：</span>這將刪除所有存檔與自訂角色，將系統恢復到初始狀態。
+                                            </p>
+                                            <button
+                                                onClick={() => {
+                                                    if (confirm("確定要刪除所有資料並重置嗎？此操作無法復原！(Are you sure to wipe all data?)")) {
+                                                        localStorage.clear();
+                                                        window.location.reload();
+                                                    }
+                                                }}
+                                                className="w-full py-2 rounded-lg bg-red-900/20 border border-red-500/30 text-red-500 hover:bg-red-900/30 text-xs font-bold transition-all"
+                                            >
+                                                清除所有數據 (Wipe All)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section className="space-y-4">
+                                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <Save size={14} /> 資料備份 (Backup)
+                                    </h4>
+                                    <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                                        <div>
+                                            <div className="text-sm font-medium text-slate-300">下載存檔 (Download Data)</div>
+                                            <div className="text-xs text-slate-500">將當前的 LocalStorage 資料打包下載為 JSON 檔。</div>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                const data = {};
+                                                for (let i = 0; i < localStorage.length; i++) {
+                                                    const key = localStorage.key(i);
+                                                    if (key.startsWith('dnd_')) {
+                                                        data[key] = localStorage.getItem(key);
+                                                    }
+                                                }
+                                                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                                                const url = URL.createObjectURL(blob);
+                                                const a = document.createElement('a');
+                                                a.href = url;
+                                                a.download = `dnd_backup_${new Date().toISOString().slice(0, 10)}.json`;
+                                                a.click();
+                                            }}
+                                            className="px-4 py-2 rounded-lg bg-emerald-900/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/30 text-xs font-bold transition-all flex items-center gap-2"
+                                        >
+                                            <Save size={14} />
+                                            下載 (Download)
                                         </button>
                                     </div>
                                 </section>

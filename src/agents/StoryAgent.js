@@ -358,6 +358,10 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
                 - ** CHARACTER VOICES **: Use each character's [Voice/Monologue] to influence their dialogue and thoughts.
                 - ** THE SPOTLIGHT **: Ensure ALL characters in the party are mentioned and given active roles or internal monologues. Do not let one character dominate the entire scene.
                 - ** EMOTIONAL DEPTH **: Integrate their [Emotional Keys]. Use "Joy" to describe their hopes, "Anger" to show their biases, and "Weakness" for internal conflict.
+                - ** SOCIAL DYNAMICS (CRITICAL) **:
+                    - ** First Impressions **: When NPCs interact with the party, they must react to the characters' defined [First Impression]. (e.g., A bandit might sneer at a 'Noble-looking' Wizard but respect a 'Scarred' Fighter).
+                    - ** Prejudices **: Check the [Important NPC] section for specific [Prejudices]. If a PC matches a prejudice (Race/Class/Alignment), the NPC's dialogue MUST reflect this bias (coldness, fear, or hostility).
+                    - ** Relationships **: Use [RELATIONSHIP] values to color interactions. High affinity = warmth, Low = coldness.
                 - ** DRAMATIC TENSION **: If the situation triggers a [Combat Weakness], you MUST describe the character's [Reaction] vividly. This is a moment of vulnerability that adds depth to the story.
             
             - ** NARRATIVE STYLE **:
@@ -455,8 +459,8 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
           - Minor: +/- 2 (Polite/Rude)
           - Moderate: +/- 5 (Gift/Help)
           - Major: +/- 10 (Life Saver/Betrayal)
-        - **Syntax**: "[[RELATIONSHIP: SourceName|TargetName|Amount|Reason]]"
-        - **Example**: "[[RELATIONSHIP: Elara|Garrick|+5|Praised his swordsmanship]]"
+        - **Syntax**: "[[RELATIONSHIP: SourceName|TargetName|Amount|Impression]]"
+        - **Example**: "[[RELATIONSHIP: Elara|Garrick|+5|他劍術精湛，值得信賴]]"
 
         === AUDIO ATMOSPHERE (BGM) ===
         - Control the background music to match the current mood.

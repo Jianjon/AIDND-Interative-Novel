@@ -27,7 +27,8 @@ export function scaleCharacter(character, targetLevel) {
     }
 
     // Calculate CON mod
-    const con = newChar.baseStats.con || 10;
+    const baseStats = newChar.baseStats || {};
+    const con = baseStats.con || 10;
     const conMod = Math.floor((con - 10) / 2);
     const hitDie = progression.hitDie || 8;
     // Average hit die roll is (HitDie / 2) + 1
