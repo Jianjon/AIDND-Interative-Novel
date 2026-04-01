@@ -9,7 +9,7 @@
  */
 
 const STORAGE_KEY = 'dnd_memory_state';
-const MAX_IMMEDIATE_TURNS = 2;
+const MAX_IMMEDIATE_TURNS = 4; // Increased from 2 for better short-term coherence
 const MAX_LONG_TERM_EVENTS = 20;
 
 export class MemoryService {
@@ -31,7 +31,7 @@ export class MemoryService {
         if (!narrative || typeof narrative !== 'string') return;
 
         // Trim to reasonable length per turn
-        const trimmed = narrative.slice(0, 3000);
+        const trimmed = narrative.slice(0, 4000); // Increased from 3000 chars per turn
         this.immediate.push(trimmed);
 
         // Keep only last N turns
@@ -46,7 +46,7 @@ export class MemoryService {
      */
     updateWorkingSummary(summary) {
         if (summary && typeof summary === 'string') {
-            this.working = summary.slice(0, 500);
+            this.working = summary.slice(0, 800); // Increased from 500 chars for richer summaries
         }
     }
 
