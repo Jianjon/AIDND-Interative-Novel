@@ -428,7 +428,7 @@ export default function InteractiveDND() {
     }, []);
     // --- AUTHENTICATION STATE ---
     const [authMode, setAuthMode] = useLocalStorage('dnd_auth_mode', 'user'); // 'user' or 'guest'
-    const runtimeApiKey = typeof window !== 'undefined' && window.ENV?.GOOGLE_API_KEY ? window.ENV.GOOGLE_API_KEY : null;
+    const runtimeApiKey = (typeof window !== 'undefined' && window.ENV?.GOOGLE_API_KEY) ? window.ENV.GOOGLE_API_KEY : (import.meta.env.VITE_GOOGLE_API_KEY || null);
     const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', runtimeApiKey || "");
 
     const effectiveApiKey = apiKey?.trim() || "";
@@ -1436,6 +1436,7 @@ JSON格式回覆：
         if (!apiKey) {
             showToast("請先輸入有效的 API 金鑰才能開始遊戲！", "error");
             setIsSetup(false);
+            isExecuting.current = false; // CRITICAL: Reset flag before early return
             return;
         }
 
@@ -1447,6 +1448,7 @@ JSON格式回覆：
         if (!isPrologue && !forceContinue) {
             if (Object.keys(pendingActions).length === 0) {
                 showToast("請至少為一名角色下達指令 (或輸入自定義行動)!", "warning");
+                isExecuting.current = false; // CRITICAL: Reset flag before early return
                 return;
             }
         }
@@ -4477,7 +4479,7 @@ font-tome-body
                         {/* Mobile-Only Inline Action Prompt (in Roster View) */}
                         {!isGenerating && isNarrativeComplete && !isPreGenerating && (
                             <div className="md:hidden mt-6 mb-4 px-4 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                {aliveMembers > 0 && isRoundReady ? (
+                                {aliveMembers.length > 0 && isRoundReady ? (
                                     <button
                                         onClick={() => executeTurn(false)}
                                         className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-tome-header font-bold text-lg py-4 rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-500/50 flex items-center justify-center gap-3 transition-all active:scale-95"
@@ -4490,7 +4492,7 @@ font-tome-body
                                     <div className="w-full bg-slate-900/80 border border-slate-700/50 rounded-lg p-3 text-center backdrop-blur-sm">
                                         <div className="flex items-center justify-center gap-2 text-amber-500 font-bold font-tome-header mb-1">
                                             <Clock size={16} className="animate-pulse" />
-                                            <span>PENDING ORDERS ({pendingCount}/{aliveMembers})</span>
+                                            <span>PENDING ORDERS ({pendingCount}/{aliveMembers.length})</span>
                                         </div>
                                         <div className="text-xs text-slate-400 font-serif italic">
                                             Select actions for all party members

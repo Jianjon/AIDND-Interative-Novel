@@ -625,7 +625,16 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
     // Playback Logic
     useEffect(() => {
         const currentItems = itemsRef.current;
-        if (currentItems.length === 0) return;
+        if (currentItems.length === 0) {
+            // Empty content - still signal completion so game doesn't get stuck
+            const completionTimer = setTimeout(() => {
+                if (!hasCompletedRef.current && onComplete) {
+                    hasCompletedRef.current = true;
+                    onComplete();
+                }
+            }, 200);
+            return () => clearTimeout(completionTimer);
+        }
 
         let totalSteps = 0;
         currentItems.forEach(sec => totalSteps += 1 + sec.children.length);
