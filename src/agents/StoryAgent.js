@@ -29,7 +29,7 @@ export class StoryAgent {
    * @returns {Promise<string|object>} The generated narrative text (Markdown) or structured TRPG turn.
    */
   async generateNarrative(context, userAction) {
-    const { moduleTitle, currentLocation, lastLog, tone, pacing, gmSignals, mode = 'novel', party = [], isPrologue = false, moduleId = null, currentAct = 1, encounterGuidelines = '', difficultyTier = '初階 (Beginner)', forcePlotPush = false, editorialHints = "" } = context;
+    const { moduleTitle, currentLocation, lastLog, tone, pacing, gmSignals, mode = 'novel', party = [], isPrologue = false, moduleId = null, currentAct = 1, encounterGuidelines = '', difficultyTier = '初階 (Beginner)', forcePlotPush = false, editorialHints = "", storyState = "" } = context;
 
     // Generate module plot context if available
     const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
@@ -410,8 +410,9 @@ ${forcePlotPush ? "** SIGNAL: FORCE PLOT PUSH (強制推動劇情) **\n- The pla
 2. Autonomous Scene Completion
 3. Dramatic Consistency
 4. **Proactive Pacing**: If the narrative feels repetitive or lacks momentum, take the initiative to introduce a new event, a sudden threat, or a plot twist. Do not wait for player permission to keep the story interesting.
-${editorialHints ? `\n[EDITORIAL INSTRUCTION]\n${editorialHints}\n- YOU MUST COMPLY WITH THIS FIX IMMEDIATELY.` : ""}
+${editorialHints ? `\n[EDITORIAL INSTRUCTION - ACCUMULATED OVER LAST 3 TURNS]\n${editorialHints}\n- YOU MUST COMPLY WITH THESE FIXES. The most recent instruction takes priority.` : ""}
 
+${storyState ? `[STORY STATE - GROUND TRUTH]\nThis is the authoritative record of what has happened. You MUST stay consistent with it.\n${storyState}\n` : ""}
 [PREVIOUS CONTEXT]
         ${lastLog ? lastLog.slice(-8000) : "(Start of Adventure)"}
 
@@ -435,6 +436,13 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
         - If the story reaches a major structural turning point (e.g. leaving the starting town, defeating a boss, solving the mystery), append a hidden tag at the VERY END.
         - SYNTAX: "[[ACT_UPDATE: ${currentAct + 1}]]" (or "[[ACT_UPDATE: END]]" if finished).
         - Only do this when the narrative justifies a distinct new chapter.
+
+        === STORY NODE COMPLETION (CRITICAL) ===
+        - The [STORY STATE] section above lists PENDING NODES that MUST be progressed through.
+        - When the narrative resolves or passes through one of those nodes (combat won, puzzle solved, NPC spoken to, etc.), output the hidden tag at the END of your narrative:
+        - SYNTAX: "[[NODE_COMPLETE: <node_id>]]"
+        - Example: if node "1-A" (地精伏擊) is resolved, append "[[NODE_COMPLETE: 1-A]]"
+        - This is the MOST IMPORTANT tag for tracking story progress. Use it faithfully.
 
         === CHARACTER PROGRESSION REWARDS ===
         - If the player achieves a victory, solves a puzzle, or survives a danger, append a hidden reward tag at the VERY END.

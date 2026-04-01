@@ -428,7 +428,7 @@ export default function InteractiveDND() {
     }, []);
     // --- AUTHENTICATION STATE ---
     const [authMode, setAuthMode] = useLocalStorage('dnd_auth_mode', 'user'); // 'user' or 'guest'
-    const runtimeApiKey = typeof window !== 'undefined' && window.ENV?.GOOGLE_API_KEY ? window.ENV.GOOGLE_API_KEY : null;
+    const runtimeApiKey = (typeof window !== 'undefined' && window.ENV?.GOOGLE_API_KEY) ? window.ENV.GOOGLE_API_KEY : (import.meta.env.VITE_GOOGLE_API_KEY || null);
     const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', runtimeApiKey || "");
 
     const effectiveApiKey = apiKey?.trim() || "";
@@ -576,6 +576,8 @@ export default function InteractiveDND() {
     const [groupDecisionOptions, setGroupDecisionOptions] = useState([]); // Array of strings (options)
     // Quest Journal & Location
     const [questJournal, setQuestJournal] = useState([]); // [{ turn, event, details, timestamp }]
+    const [unresolvedThreads, setUnresolvedThreads] = useState([]); // [{ thread, urgency }] from CartographerAgent
+    const [activeForeshadowing, setActiveForeshadowing] = useState([]); // [{ hint, turnPlanted, resolved }]
     // Agent System 2.0: Cross-Agent Signals
     const [worldSignals, setWorldSignals] = useState({
         threat_level: "None",
@@ -583,7 +585,11 @@ export default function InteractiveDND() {
         mechanical_opportunity: "None"
     });
     const [pendingPlotPush, setPendingPlotPush] = useState(false); // DEFERRED FLAG
-    const [editorialHints, setEditorialHints] = useState(""); // Editorial corrections for next generation
+    const [stagnationCounter, setStagnationCounter] = useState(0); // Turns without significant plot events
+    const STAGNATION_THRESHOLD = 3; // Auto-inject forcePlotPush after this many stagnant turns
+    // TASK #14: Story State Engine — track completed strategic_nodes, persisted to localStorage
+    const [completedNodes, setCompletedNodes] = useLocalStorage('dnd_completed_nodes', []); // ['node_id', ...]
+    const [editorialHints, setEditorialHints] = useState([]); // Rolling array of last 3 editorial corrections
 
     const [questLog, setQuestLog] = useState([]); // Array of strings (active quests)
     const [currentLocation, setCurrentLocation] = useState(['未知區域']); // Breadcrumb path array
@@ -608,6 +614,7 @@ export default function InteractiveDND() {
     const [showSettingsModal, setShowSettingsModal] = useState(false);
     const [pendingTurnUpdates, setPendingTurnUpdates] = useState(null);
     const isExecuting = useRef(false); // Execution lock
+    const executeTurnRef = useRef(null); // Ref to latest executeTurn (for auto-submit)
     const [isNarrating, setIsNarrating] = useState(false);
     const [isNarrativeComplete, setIsNarrativeComplete] = useState(true);
 
@@ -799,6 +806,36 @@ export default function InteractiveDND() {
         // `isPrologue` is commented out as it's not defined in the provided snippet.
         processAutoTurns();
     }, [logs, gameMode, actionCache, party, roster, gameState, isGenerating, isPreGenerating, isAutoProcessing, pendingActions]);
+
+    // --- ALL-AUTO EXECUTE: If every alive party member is AUTO and all have actions → auto-submit ---
+    useEffect(() => {
+        if (gameMode !== GAME_MODES.TRPG) return;
+        if (logs.length === 0) return; // Don't auto-execute on prologue
+        if (isGenerating || isPreGenerating || isAutoProcessing || !isNarrativeComplete) return;
+        if (isExecuting.current) return;
+
+        const aliveMembers = party
+            .map(id => agentRoster.find(c => c.id === id))
+            .filter(c => c && (gameState[c.id]?.hp > 0) && gameState[c.id]?.status !== 'dead' && gameState[c.id]?.status !== 'unconscious');
+
+        if (aliveMembers.length === 0) return;
+
+        const allAreAuto = aliveMembers.every(c => c.controlMode === 'auto');
+        if (!allAreAuto) return; // Manual player present — don't auto-submit
+
+        const allHaveActions = aliveMembers.every(c => pendingActions[c.id]);
+        if (!allHaveActions) return;
+
+        // All alive members are AUTO and all have queued actions → trigger turn
+        const timer = setTimeout(() => {
+            if (!isExecuting.current && executeTurnRef.current) {
+                console.log("[AutoSubmit] All AUTO members ready — auto-executing turn.");
+                executeTurnRef.current(false);
+            }
+        }, 800); // Small delay to batch any last state updates
+
+        return () => clearTimeout(timer);
+    }, [pendingActions, party, agentRoster, gameState, gameMode, logs, isGenerating, isPreGenerating, isAutoProcessing, isNarrativeComplete]);
 
 
     // --- AUTO SAVE LOGIC ---
@@ -1436,6 +1473,7 @@ JSON格式回覆：
         if (!apiKey) {
             showToast("請先輸入有效的 API 金鑰才能開始遊戲！", "error");
             setIsSetup(false);
+            isExecuting.current = false; // CRITICAL: Reset flag before early return
             return;
         }
 
@@ -1447,6 +1485,7 @@ JSON格式回覆：
         if (!isPrologue && !forceContinue) {
             if (Object.keys(pendingActions).length === 0) {
                 showToast("請至少為一名角色下達指令 (或輸入自定義行動)!", "warning");
+                isExecuting.current = false; // CRITICAL: Reset flag before early return
                 return;
             }
         }
@@ -1464,6 +1503,45 @@ JSON格式回覆：
         // setPendingActions({}); // Don't clear yet, we need to process them
 
         try {
+            // --- TASK #6: IMMEDIATE ITEM DEDUCTION ---
+            // Scan action texts for consumable items BEFORE AI generation.
+            // Uses emoji hints (🎒🧪🩹💖) and inventory name matching.
+            if (!isPrologue) {
+                const CONSUMABLE_USE_EMOJIS = ['🎒', '🧪', '🩹', '💖', '🩸'];
+                const itemUpdates = {}; // { charId: newInventory }
+
+                for (const [id, actionText] of Object.entries(pendingActions)) {
+                    if (typeof actionText !== 'string') continue;
+                    const isCompanion = id.endsWith('_companion');
+                    if (isCompanion) continue; // Companions don't have inventory
+
+                    const char = agentRoster.find(c => c.id === id);
+                    if (!char || !char.inventory || char.inventory.length === 0) continue;
+
+                    const hasItemEmoji = CONSUMABLE_USE_EMOJIS.some(e => actionText.includes(e));
+                    if (!hasItemEmoji) continue; // Only deduct if action explicitly signals item use
+
+                    // Find matching consumable in inventory
+                    const usedItemIdx = char.inventory.findIndex(item => {
+                        const name = typeof item === 'string' ? item : item?.name || '';
+                        return name.length > 2 && actionText.includes(name);
+                    });
+
+                    if (usedItemIdx !== -1) {
+                        const newInventory = [...char.inventory];
+                        const usedItem = newInventory.splice(usedItemIdx, 1)[0];
+                        itemUpdates[id] = newInventory;
+                        console.log(`[Item Deduct] ${char.name} used ${typeof usedItem === 'string' ? usedItem : usedItem?.name}`);
+                    }
+                }
+
+                if (Object.keys(itemUpdates).length > 0) {
+                    setAgentRoster(prev => prev.map(char =>
+                        itemUpdates[char.id] ? { ...char, inventory: itemUpdates[char.id] } : char
+                    ));
+                }
+            }
+
             // 0. Style Inputs (Character Manager)
             // If styleMode is ON, we rewrite the user inputs to be in character.
             // Result is stored in 'finalActions' map.
@@ -1640,7 +1718,59 @@ JSON格式回覆：
                 }).join('\n\n'),
                 isPrologue: isPrologue,
                 forcePlotPush: forcePlotPush || pendingPlotPush, // Consume deferred flag
-                editorialHints: editorialHints, // Pass corrections
+                // STORY STATE: Structured context of journal history + memory key events
+                storyState: (() => {
+                    const parts = [];
+                    // 1. Module act objective
+                    if (selectedModule?.id) {
+                        const actList = selectedModule?.acts;
+                        const act = actList?.find(a => a.act === currentAct);
+                        if (act) parts.push(`【當前章節目標】第 ${act.act} 章「${act.title}」：${act.objective}`);
+                    }
+                    // 2. Recent quest journal entries (last 5)
+                    const recentJournal = questJournal.slice(-5);
+                    if (recentJournal.length > 0) {
+                        parts.push(`【冒險日誌（最近 ${recentJournal.length} 條）】`);
+                        recentJournal.forEach(e => parts.push(`- 回合 ${e.turn}: ${e.details || e.event}`));
+                    }
+                    // 3. Long-term memory key events
+                    const keyEvents = memoryService.current?.longTerm || [];
+                    if (keyEvents.length > 0) {
+                        parts.push(`【關鍵事件記憶】`);
+                        keyEvents.slice(-8).forEach(ev => parts.push(`- ${typeof ev === 'string' ? ev : JSON.stringify(ev)}`));
+                    }
+                    // 4. Story node completion tracking
+                    const allNodes = selectedModule?.acts?.flatMap(a => a.strategic_nodes || []) || [];
+                    if (allNodes.length > 0) {
+                        const pendingNodes = allNodes.filter(n => !completedNodes.includes(n.id));
+                        const doneNodes = allNodes.filter(n => completedNodes.includes(n.id));
+                        if (doneNodes.length > 0) {
+                            parts.push(`【已完成節點】${doneNodes.map(n => n.id + ' ' + (n.title || '')).join(', ')}`);
+                        }
+                        if (pendingNodes.length > 0) {
+                            parts.push(`【待推進節點（優先觸發以下劇情節點）】`);
+                            // Show only act-appropriate pending nodes (current act first)
+                            const currentActNodes = selectedModule?.acts?.find(a => a.act === currentAct)?.strategic_nodes || [];
+                            const activeNodes = currentActNodes.filter(n => !completedNodes.includes(n.id)).slice(0, 3);
+                            activeNodes.forEach(n => parts.push(`- [${n.id}] ${n.title || n.situation}\n  完成後請輸出: [[NODE_COMPLETE: ${n.id}]]`));
+                        }
+                    }
+
+                    // 5. Unresolved plot threads (from CartographerAgent)
+                    if (unresolvedThreads.length > 0) {
+                        parts.push(`【未解決的劇情線索】`);
+                        unresolvedThreads.slice(-5).forEach(u => parts.push(`- [${u.urgency || 'medium'}] ${u.thread}`));
+                    }
+                    // 5. Active foreshadowing (from CartographerAgent)
+                    if (activeForeshadowing.length > 0) {
+                        parts.push(`【預示與伏筆（請在適當時機呼應）】`);
+                        activeForeshadowing.slice(-5).forEach(f => parts.push(`- ${f.hint}`));
+                    }
+                    return parts.join('\n');
+                })(),
+                editorialHints: editorialHints.length > 0
+                    ? editorialHints.map((h, i) => `[Turn -${editorialHints.length - i}]: ${h}`).join('\n')
+                    : "", // Pass rolling corrections as formatted history string
                 // MODULE PLOT NAVIGATION
                 moduleId: selectedModule?.id || null,
                 currentAct: currentAct,
@@ -1681,7 +1811,7 @@ JSON格式回覆：
             }
 
             // --- AUTOMATED PLOT PROGRESSION ---
-            const actMatch = finalNarrative.match(/\[\[ACT_UPDATE:\s*(.+?)\]\]/);
+            const actMatch = finalNarrative.match(/\[\[\s*ACT_UPDATE\s*:\s*(.+?)\s*\]\]/i);
             if (actMatch) {
                 const nextActVal = actMatch[1].trim();
                 console.log("Act Update Triggered:", nextActVal);
@@ -1703,6 +1833,21 @@ JSON格式回覆：
                 finalNarrative = finalNarrative.replace(actMatch[0], '');
             }
 
+
+            // --- TASK #14: NODE COMPLETION TRACKING ---
+            const nodeCompleteRegex = /\[\[\s*NODE_COMPLETE\s*:\s*(.+?)\s*\]\]/gi;
+            const nodeCompleteMatches = [...finalNarrative.matchAll(nodeCompleteRegex)];
+            if (nodeCompleteMatches.length > 0) {
+                nodeCompleteMatches.forEach(m => {
+                    const nodeId = m[1].trim();
+                    setCompletedNodes(prev => prev.includes(nodeId) ? prev : [...prev, nodeId]);
+                    console.log(`[Story State] Node completed: ${nodeId}`);
+                    showToast(`🗺️ 劇情節點完成: ${nodeId}`, "success");
+                    // Node completion is a significant event — reset stagnation
+                    setStagnationCounter(0);
+                });
+                finalNarrative = finalNarrative.replace(nodeCompleteRegex, '');
+            }
 
             // --- PARSING & STATE UPDATES ---
             // The `finalNarrative` variable is already declared above, so we just reassign it here.
@@ -1751,15 +1896,19 @@ JSON格式回覆：
                         questJournal
                     });
 
-                    if (reviewResult && !reviewResult.isConsistent) {
-                        console.log("[Editor] Consistency Issues Found:", reviewResult.issues);
-                        // Store instructions for the NEXT turn
-                        setEditorialHints(reviewResult.suggestedCorrections?.editorial_instruction || "");
-                        if (reviewResult.issues?.length > 0 && reviewResult.issues[0].severity === 'high') {
-                            showToast("編輯小幫手正在校對劇情...", "info");
+                    if (reviewResult) {
+                        const newInstruction = reviewResult.suggestedCorrections?.editorial_instruction;
+                        if (newInstruction && newInstruction.trim()) {
+                            // Append to rolling history, keep last 3 turns
+                            setEditorialHints(prev => [...prev, newInstruction.trim()].slice(-3));
+                            if (!reviewResult.isConsistent && reviewResult.issues?.length > 0 && reviewResult.issues[0].severity === 'high') {
+                                showToast("編輯小幫手正在校對劇情...", "info");
+                            }
                         }
-                    } else {
-                        setEditorialHints(""); // Clear if consistent
+                        // Do NOT clear on isConsistent — let hints naturally age out after 3 turns
+                        if (!reviewResult.isConsistent) {
+                            console.log("[Editor] Consistency Issues Found:", reviewResult.issues);
+                        }
                     }
                 } catch (e) {
                     console.warn('[Memory] Summary update failed:', e);
@@ -1767,27 +1916,35 @@ JSON格式回覆：
             })();
 
             // --- LOOT SYSTEM ---
-            const lootMatch = finalNarrative.match(/\[\[LOOT:\s*(.+?)\]\]/);
-            if (lootMatch) {
+            // Use matchAll + global flag to capture ALL loot tags in one narrative (e.g. multi-item drops)
+            const lootRegex = /\[\[\s*LOOT\s*:\s*(.+?)\s*\]\]/gi;
+            const lootMatches = [...finalNarrative.matchAll(lootRegex)];
+            for (const lootMatch of lootMatches) {
                 const itemName = lootMatch[1].trim();
                 console.log(`[Game] Loot Received: ${itemName} `);
-                showToast(`🎁 獲得戰利品: ${itemName} `, "success"); // Gold color implied by success or custom? Using success for now.
+                showToast(`🎁 獲得戰利品: ${itemName} `, "success");
 
                 // Add to Party Leader (first active member)
                 const leaderId = party[0];
                 if (leaderId) {
+                    let type = 'equipment';
+                    const lower = itemName.toLowerCase();
+                    if (lower.includes('potion') || lower.includes('scroll') || lower.includes('藥水') || lower.includes('卷軸')) type = 'consumables';
+                    else if (lower.includes('wand') || lower.includes('staff') || lower.includes('ring') || lower.includes('amulet') || lower.includes('魔杖') || lower.includes('戒指') || lower.includes('護符')) type = 'magicItems';
+
+                    // TASK #12: Sync LOOT to agentRoster so CharacterModal shows updated inventory
+                    setAgentRoster(prev => prev.map(char => {
+                        if (char.id !== leaderId) return char;
+                        const newInventory = [...(char.inventory || []), itemName];
+                        const newConsumables = type === 'consumables' ? [...(char.consumables || []), itemName] : (char.consumables || []);
+                        const newEquipment = type === 'equipment' ? [...(char.equipment || []), itemName] : (char.equipment || []);
+                        const newMagicItems = type === 'magicItems' ? [...(char.magicItems || []), itemName] : (char.magicItems || []);
+                        return { ...char, inventory: newInventory, consumables: newConsumables, equipment: newEquipment, magicItems: newMagicItems };
+                    }));
+
                     setGameState(prev => {
                         const targetState = prev[leaderId] || {};
                         const targetInv = targetState.inventory || { equipment: [], consumables: [], magicItems: [] };
-
-                        // Simple add to 'equipment' for now, or determining type is hard.
-                        // We'll add to 'magicItems' if it sounds magical, else 'equipment'.
-                        // Heuristic: "Potion", "Scroll" -> Consumable. "Sword", "Armor" -> Equipment.
-                        // Default to Equipment.
-                        let type = 'equipment';
-                        const lower = itemName.toLowerCase();
-                        if (lower.includes('potion') || lower.includes('scroll') || lower.includes('藥水') || lower.includes('卷軸')) type = 'consumables';
-                        else if (lower.includes('wand') || lower.includes('staff') || lower.includes('ring') || lower.includes('amulet')) type = 'magicItems';
 
                         return {
                             ...prev,
@@ -1801,11 +1958,32 @@ JSON格式回覆：
                         };
                     });
                 }
-                finalNarrative = finalNarrative.replace(lootMatch[0], '');
+            }
+            // Strip all LOOT tags from narrative
+            finalNarrative = finalNarrative.replace(lootRegex, '');
+
+            // --- TASK #11: STAGNATION DETECTOR ---
+            // Track turns without significant plot events. Auto-inject forcePlotPush after threshold.
+            if (!isPrologue) {
+                const hasSignificantEvent = actMatch || lootMatches.length > 0 || nodeCompleteMatches.length > 0;
+                if (hasSignificantEvent) {
+                    setStagnationCounter(0); // Significant event → reset
+                } else {
+                    setStagnationCounter(prev => {
+                        const next = prev + 1;
+                        if (next >= STAGNATION_THRESHOLD) {
+                            console.log(`[Stagnation] ${next} stagnant turns detected — auto-injecting plot push`);
+                            setPendingPlotPush(true); // Will be consumed on next executeTurn
+                            showToast("📖 故事已停滯，劇情主動推進中...", "info");
+                            return 0; // Reset after triggering
+                        }
+                        return next;
+                    });
+                }
             }
 
             // --- AUDIO SYSTEM (BGM) ---
-            const bgmMatch = finalNarrative.match(/\[\[BGM:\s*(.+?)\]\]/);
+            const bgmMatch = finalNarrative.match(/\[\[\s*BGM\s*:\s*(.+?)\s*\]\]/i);
             if (bgmMatch) {
                 const bgmKey = bgmMatch[1].trim().toLowerCase();
                 audioManager.current.playBgm(bgmKey);
@@ -2030,7 +2208,7 @@ JSON格式回覆：
             }
 
             // --- XP REWARD SYSTEM ---
-            const xpMatch = finalNarrative.match(/\[\[REWARD_XP:\s*(\d+)\]\]/);
+            const xpMatch = finalNarrative.match(/\[\[\s*REWARD_XP\s*:\s*(\d+)\s*\]\]/i);
             if (xpMatch) {
                 const amount = parseInt(xpMatch[1]);
                 console.log(`[Game] XP Award: ${amount} to Party`);
@@ -2055,7 +2233,7 @@ JSON格式回覆：
             }
 
             // --- NARRATIVE GROWTH (Noble Mode) ---
-            const growthMatch = finalNarrative.match(/\[\[NARRATIVE_GROWTH:\s*(.+?)\]\]/);
+            const growthMatch = finalNarrative.match(/\[\[\s*NARRATIVE_GROWTH\s*:\s*(.+?)\s*\]\]/i);
             if (growthMatch) {
                 const growthDesc = growthMatch[1];
                 console.log(`[Game] Narrative Growth: ${growthDesc} `);
@@ -2351,7 +2529,7 @@ JSON格式回覆：
             finalNarrative = finalNarrative.replace(sceneUpdateRegex, '');
 
             // 3. Group Decision: [[DECISION: OpA | OpB]]
-            const decisionRegex = /\[\[DECISION:\s*(.+?)\]\]/;
+            const decisionRegex = /\[\[\s*DECISION\s*:\s*(.+?)\s*\]\]/i;
             const decisionMatch = finalNarrative.match(decisionRegex);
 
             if (decisionMatch) {
@@ -2607,10 +2785,16 @@ JSON格式回覆：
             }
 
             // --- AGENT 3: CARTOGRAPHER ---
+            // Build pending nodes list for CartographerAgent (Task #15)
+            const allModuleNodes = selectedModule?.acts?.flatMap(a => a.strategic_nodes || []) || [];
+            const currentActNodes = selectedModule?.acts?.find(a => a.act === currentAct)?.strategic_nodes || [];
+            const pendingNodesList = currentActNodes.filter(n => !completedNodes.includes(n.id));
+
             const mapContext = {
                 narrative: narrativeText, currentLocation,
                 turnCount: logs.length + 1, signals: newSignals,
-                moduleId: selectedModule?.id, currentAct
+                moduleId: selectedModule?.id, currentAct,
+                pendingNodes: pendingNodesList.slice(0, 5) // Pass up to 5 pending nodes
             };
             const { data: journalResult, usage: mapUsage } = await mapAgent.updateJournal(mapContext);
             if (mapUsage) updateTokenCount(mapUsage);
@@ -2626,6 +2810,44 @@ JSON格式回覆：
                     journalResult.journal_entry.public
                 );
                 showToast("📜 冒險日誌已更新", "info");
+            }
+
+            // --- TASK #15: CARTOGRAPHER NODE COMPLETION SIGNAL ---
+            if (journalResult.completed_node_id) {
+                const nodeId = journalResult.completed_node_id;
+                setCompletedNodes(prev => prev.includes(nodeId) ? prev : [...prev, nodeId]);
+                setStagnationCounter(0); // Node completion resets stagnation
+                const completedNode = allModuleNodes.find(n => n.id === nodeId);
+                if (completedNode) {
+                    showToast(`🗺️ 劇情節點完成: ${completedNode.title || nodeId}`, "success");
+                    addJournalEntry("節點完成", `✅ [${nodeId}] ${completedNode.title || completedNode.situation || nodeId}`);
+                }
+            }
+            if (journalResult.new_objective) {
+                addJournalEntry("新任務目標", `🎯 ${journalResult.new_objective}`);
+            }
+
+            // --- PLOT TRACKING: Store unresolved threads + foreshadowing for StoryAgent ---
+            const je = journalResult.journal_entry;
+            if (je) {
+                // Merge new unresolved threads (deduplicate by thread text)
+                if (je.unresolved && je.unresolved.length > 0) {
+                    setUnresolvedThreads(prev => {
+                        const newThreads = je.unresolved.filter(
+                            u => !prev.some(p => p.thread === u.thread)
+                        );
+                        return [...prev, ...newThreads].slice(-10); // Keep last 10
+                    });
+                }
+                // Merge new foreshadowing entries (deduplicate by hint)
+                if (je.foreshadowing && je.foreshadowing.length > 0) {
+                    setActiveForeshadowing(prev => {
+                        const newHints = je.foreshadowing.filter(
+                            f => !f.resolved && !prev.some(p => p.hint === f.hint)
+                        );
+                        return [...prev, ...newHints].slice(-15); // Keep last 15
+                    });
+                }
             }
 
 
@@ -2736,7 +2958,32 @@ JSON格式回覆：
                             processedCharIds.add(charId);
                         }
                     } else {
-                        processedOptions.push(opt);
+                        // --- TASK #10: INVENTORY FILTER ---
+                        // If option references an item emoji (🎒/🧪/🩹/💖) and mentions a specific
+                        // consumable by name, verify that item still exists in the character's inventory.
+                        const ITEM_EMOJIS = ['🎒', '🧪', '🩹', '💖'];
+                        const optText = opt.text || opt.label || '';
+                        const hasItemEmoji = ITEM_EMOJIS.some(e => optText.includes(e));
+
+                        let inventoryCheckPassed = true;
+                        if (hasItemEmoji && char.consumables && char.consumables.length === 0) {
+                            // Character has NO consumables at all — skip item-use options
+                            inventoryCheckPassed = false;
+                        } else if (hasItemEmoji && char.consumables) {
+                            // Check if at least one consumable name appears in the option text
+                            const anyConsumableFound = char.consumables.some(item => {
+                                const name = typeof item === 'string' ? item : item?.name || '';
+                                return name.length > 2 && optText.includes(name);
+                            });
+                            // Allow if consumables list is non-empty but no specific match (generic item use)
+                            if (char.consumables.length > 0) inventoryCheckPassed = true;
+                            // Only reject if the option specifically names an item that's gone
+                            // (conservative: only hard-reject on empty consumable list, handled above)
+                        }
+
+                        if (inventoryCheckPassed) {
+                            processedOptions.push(opt);
+                        }
                     }
                 });
 
@@ -2774,9 +3021,12 @@ JSON格式回覆：
             isExecuting.current = false;
             setIsGenerating(false);
             setPendingPlotPush(false); // Reset deferred
-            setEditorialHints(""); // Reset corrections
+            // Note: editorialHints array ages out naturally (3-turn rolling window); only reset on new game
         }
     };
+
+    // Keep executeTurnRef updated to latest closure (used by auto-submit)
+    executeTurnRef.current = executeTurn;
 
     const handleNarrativeComplete = () => {
         console.log("[Event] Narrative Animation Complete.");
@@ -2789,8 +3039,13 @@ JSON格式回覆：
     const generateIntro = () => {
         setLogs([]);
         setQuestJournal([]); // Clear quest journal for new game
+        setUnresolvedThreads([]); // Clear plot threads
+        setActiveForeshadowing([]); // Clear foreshadowing
+        setStagnationCounter(0); // Reset stagnation counter
+        setCompletedNodes([]); // Reset story state engine
         setScenarioRoster([]); // Clear existing enemies/NPCs
         setPendingActions({});
+        setEditorialHints([]); // Clear editorial history on new game
         if (memoryService.current) memoryService.current.reset(); // Reset persistent memory
         setTimeout(() => executeTurn(true), 100);
     };
@@ -2805,6 +3060,11 @@ JSON格式回覆：
         setCurrentAct(1); // Reset Act
         setIsPreGenerating(false);
         setPendingActions({});
+        setEditorialHints([]); // Clear editorial history on new game
+        setUnresolvedThreads([]); // Clear plot threads
+        setActiveForeshadowing([]); // Clear foreshadowing
+        setStagnationCounter(0); // Reset stagnation counter
+        setCompletedNodes([]); // Reset story state engine
         if (memoryService.current) memoryService.current.reset(); // Reset persistent memory
 
         // 2. Initialize Character State
@@ -3915,7 +4175,8 @@ w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2
 
                                                 // 1. Handle Editorial Instructions (Next Turn Hints)
                                                 if (result.suggestedCorrections?.editorial_instruction) {
-                                                    setEditorialHints(result.suggestedCorrections.editorial_instruction);
+                                                    const hint = result.suggestedCorrections.editorial_instruction.trim();
+                                                    if (hint) setEditorialHints(prev => [...prev, hint].slice(-3));
                                                     showToast("已注入修正指令，將於下回生效", "success");
                                                 }
 
@@ -4477,7 +4738,7 @@ font-tome-body
                         {/* Mobile-Only Inline Action Prompt (in Roster View) */}
                         {!isGenerating && isNarrativeComplete && !isPreGenerating && (
                             <div className="md:hidden mt-6 mb-4 px-4 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                {aliveMembers > 0 && isRoundReady ? (
+                                {aliveMembers.length > 0 && isRoundReady ? (
                                     <button
                                         onClick={() => executeTurn(false)}
                                         className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-tome-header font-bold text-lg py-4 rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-500/50 flex items-center justify-center gap-3 transition-all active:scale-95"
@@ -4490,7 +4751,7 @@ font-tome-body
                                     <div className="w-full bg-slate-900/80 border border-slate-700/50 rounded-lg p-3 text-center backdrop-blur-sm">
                                         <div className="flex items-center justify-center gap-2 text-amber-500 font-bold font-tome-header mb-1">
                                             <Clock size={16} className="animate-pulse" />
-                                            <span>PENDING ORDERS ({pendingCount}/{aliveMembers})</span>
+                                            <span>PENDING ORDERS ({pendingCount}/{aliveMembers.length})</span>
                                         </div>
                                         <div className="text-xs text-slate-400 font-serif italic">
                                             Select actions for all party members
@@ -4821,7 +5082,8 @@ font-tome-body
                                             }
 
                                             if (instruction) {
-                                                setEditorialHints(instruction);
+                                                const hint = instruction.trim();
+                                                if (hint) setEditorialHints(prev => [...prev, hint].slice(-3));
                                                 showToast("修正指令已記錄", "info");
                                             }
                                         }

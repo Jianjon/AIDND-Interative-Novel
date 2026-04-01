@@ -21,7 +21,7 @@ export class CartographerAgent {
      * @returns {Promise<Object>} JSON object with location and journal_entry.
      */
     async updateJournal(context) {
-        const { narrative, currentLocation, turnCount, signals, moduleId = null, currentAct = 1 } = context;
+        const { narrative, currentLocation, turnCount, signals, moduleId = null, currentAct = 1, pendingNodes = [] } = context;
 
         // Get module plot context for location guidance
         const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
@@ -65,10 +65,16 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
            - **questItems**: Any quest-related items mentioned (obtained, used, lost).
            - **foreshadowing**: Hints/clues for future events (mark as resolved when paid off).
            - **unresolved**: Open plot threads needing resolution (mark urgency).
+        4. **Node Completion Detection**: Compare the narrative against the pending story nodes below.
+           - If a node's situation/encounter appears resolved in this narrative, set "completed_node_id" to its id.
+           - Only mark ONE node complete per turn (the most recently resolved one).
+           ${pendingNodes.length > 0 ? `[PENDING STORY NODES]\n${pendingNodes.map(n => `- [${n.id}] ${n.title || n.situation}`).join('\n')}` : "No pending nodes to track."}
 
         [OUTPUT SCHEMA]
         {
             "location": ["Phandalin", "Town Square"],
+            "completed_node_id": null,
+            "new_objective": null,
             "journal_entry": {
                 "public": "Turn ${turnCount}: The party arrived in Phandalin...",
                 "logic": ["Met Gundren", "Gundren is anxious"],
@@ -86,6 +92,8 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
         }
 
         NOTE: questItems, foreshadowing, unresolved are OPTIONAL arrays. Only include if relevant to this turn.
+        NOTE: completed_node_id should be the node's id string if resolved this turn, or null if nothing was completed.
+        NOTE: new_objective is a brief Chinese string describing the next mission goal, or null.
         `;
 
         try {

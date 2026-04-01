@@ -180,6 +180,8 @@ export class CharacterManagerAgent {
               High Stats: ${highStats || "None"}
               Combat Weakness: ${JSON.stringify(c.combatWeakness || "None")}
               Behaviors: [Instinct: ${behaviors.instinct}, Professional: ${behaviors.professional}, Team: ${behaviors.team}]
+              Available Consumables: ${(c.consumables && c.consumables.length > 0) ? c.consumables.join(', ') : 'None — do NOT suggest using items that don\'t exist'}
+              Equipment: ${(c.equipment && c.equipment.length > 0) ? c.equipment.join(', ') : 'Standard gear'}
             `;
         }).join("\n");
 
