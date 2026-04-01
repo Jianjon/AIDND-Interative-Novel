@@ -358,6 +358,7 @@ export default function InteractiveDND() {
     const STAGNATION_THRESHOLD = 3; // Auto-inject forcePlotPush after this many stagnant turns
     // TASK #14: Story State Engine — track completed strategic_nodes, persisted to localStorage
     const [completedNodes, setCompletedNodes] = useLocalStorage('dnd_completed_nodes', []); // ['node_id', ...]
+    const [npcRegistry, setNpcRegistry] = useLocalStorage('dnd_npc_registry', {}); // { [npcName]: { status, relationship, notes, lastSeenTurn } }
     const [editorialHints, setEditorialHints] = useState([]); // Rolling array of last 3 editorial corrections
 
     const [questLog, setQuestLog] = useState([]); // Array of strings (active quests)
@@ -931,42 +932,76 @@ JSON格式回覆：
         // setPendingActions({}); // Don't clear yet, we need to process them
 
         try {
-            // --- TASK #6: IMMEDIATE ITEM DEDUCTION ---
+            // --- TASK #17: STATUS EFFECT DECAY (start of each turn) ---
+            // Decrement turnsRemaining on all weakness debuffs; remove expired ones
+            setGameState(prev => {
+                const next = { ...prev };
+                let changed = false;
+                Object.keys(next).forEach(id => {
+                    const s = next[id];
+                    if (s?.weaknessActive) {
+                        changed = true;
+                        const remaining = (s.weaknessActive.turnsRemaining || 1) - 1;
+                        if (remaining <= 0) {
+                            const newConditions = (s.conditions || []).filter(c => c !== s.weaknessActive.label);
+                            next[id] = { ...s, conditions: newConditions, weaknessActive: null };
+                        } else {
+                            next[id] = { ...s, weaknessActive: { ...s.weaknessActive, turnsRemaining: remaining } };
+                        }
+                    }
+                });
+                return changed ? next : prev;
+            });
+
+            // --- TASK #6 + TASK #18: IMMEDIATE ITEM DEDUCTION (Inventory Unified) ---
             // Scan action texts for consumable items BEFORE AI generation.
-            // Uses emoji hints (🎒🧪🩹💖) and inventory name matching.
+            // Uses emoji hints (🎒🧪🩹💖🩸) + name matching against char.consumables (canonical source).
+            // Writes back via setRoster (persists to localStorage, triggers agentRoster recompute).
             if (!isPrologue) {
                 const CONSUMABLE_USE_EMOJIS = ['🎒', '🧪', '🩹', '💖', '🩸'];
-                const itemUpdates = {}; // { charId: newInventory }
+                const consumableUpdates = {}; // { charId: newConsumables[] }
 
                 for (const [id, actionText] of Object.entries(pendingActions)) {
                     if (typeof actionText !== 'string') continue;
-                    const isCompanion = id.endsWith('_companion');
-                    if (isCompanion) continue; // Companions don't have inventory
+                    if (id.endsWith('_companion')) continue;
 
                     const char = agentRoster.find(c => c.id === id);
-                    if (!char || !char.inventory || char.inventory.length === 0) continue;
+                    if (!char || !char.consumables || char.consumables.length === 0) continue;
 
                     const hasItemEmoji = CONSUMABLE_USE_EMOJIS.some(e => actionText.includes(e));
-                    if (!hasItemEmoji) continue; // Only deduct if action explicitly signals item use
+                    if (!hasItemEmoji) continue;
 
-                    // Find matching consumable in inventory
-                    const usedItemIdx = char.inventory.findIndex(item => {
+                    // Search in char.consumables (canonical array — already normalized by CharacterAgent)
+                    const usedItemIdx = char.consumables.findIndex(item => {
                         const name = typeof item === 'string' ? item : item?.name || '';
                         return name.length > 2 && actionText.includes(name);
                     });
 
                     if (usedItemIdx !== -1) {
-                        const newInventory = [...char.inventory];
-                        const usedItem = newInventory.splice(usedItemIdx, 1)[0];
-                        itemUpdates[id] = newInventory;
-                        console.log(`[Item Deduct] ${char.name} used ${typeof usedItem === 'string' ? usedItem : usedItem?.name}`);
+                        const usedItem = char.consumables[usedItemIdx];
+                        consumableUpdates[id] = char.consumables.filter((_, i) => i !== usedItemIdx);
+                        console.log(`[Item Deduct #18] ${char.name} used: ${typeof usedItem === 'string' ? usedItem : usedItem?.name}`);
                     }
                 }
 
-                if (Object.keys(itemUpdates).length > 0) {
-                    setAgentRoster(prev => prev.map(char =>
-                        itemUpdates[char.id] ? { ...char, inventory: itemUpdates[char.id] } : char
+                if (Object.keys(consumableUpdates).length > 0) {
+                    // Update roster (plain objects → triggers agentRoster useMemo recompute)
+                    setRoster(prev => prev.map(c =>
+                        consumableUpdates[c.id]
+                            ? { ...c, consumables: consumableUpdates[c.id] }
+                            : c
                     ));
+                    // Also sync gameState[id].inventory.consumables
+                    setGameState(prev => {
+                        const next = { ...prev };
+                        Object.entries(consumableUpdates).forEach(([id, newConsumables]) => {
+                            next[id] = {
+                                ...next[id],
+                                inventory: { ...(next[id]?.inventory || {}), consumables: newConsumables }
+                            };
+                        });
+                        return next;
+                    });
                 }
             }
 
@@ -1131,7 +1166,13 @@ JSON格式回覆：
                         : "";
 
                     const combatWeakness = char.combatWeakness ?
-                        `\n - ** Combat Weakness **: ${char.combatWeakness.reaction} (Trigger: ${char.combatWeakness.triggers?.map(t => t.target).join(', ')})`
+                        `\n - ** Combat Weakness **: ${char.combatWeakness.reaction} (Trigger: ${char.combatWeakness.triggers?.map(t => t.target).join(', ')}) — When triggered, output: [[WEAKNESS_TRIGGERED: ${char.name}|reason]]`
+                        : "";
+
+                    // TASK #17: Active status conditions (e.g., 恐懼動搖 from weakness triggers)
+                    const activeConditions = gameState[char.id]?.conditions || [];
+                    const conditionsStr = activeConditions.length > 0
+                        ? `\n - ** ⚠️ Active Conditions **: ${activeConditions.join(', ')} — CHARACTER IS DEBUFFED, reflect this in narrative`
                         : "";
 
                     return `
@@ -1139,7 +1180,7 @@ JSON格式回覆：
 - ** Personality **: ${char.personality || "Unknown"}
 - ** First Impression **: ${char.firstImpression || "N/A"}
 - ** Prejudices **: ${char.prejudices ? JSON.stringify(char.prejudices) : "None"}
-- ** Voice/Monologue **: ${char.monologue || "N/A"}${emotionalKeys}${combatWeakness}
+- ** Voice/Monologue **: ${char.monologue || "N/A"}${emotionalKeys}${combatWeakness}${conditionsStr}
 - ** Appearance **: ${char.appearance || "Generic adventurer"}
 - ** Background **: ${char.bio ? char.bio.slice(0, 300) : "A mysterious traveler."}${companionInfo}
 `.trim();
@@ -1193,6 +1234,15 @@ JSON格式回覆：
                     if (activeForeshadowing.length > 0) {
                         parts.push(`【預示與伏筆（請在適當時機呼應）】`);
                         activeForeshadowing.slice(-5).forEach(f => parts.push(`- ${f.hint}`));
+                    }
+                    // 6. NPC / Enemy persistent states (Task #16)
+                    const npcEntries = Object.entries(npcRegistry);
+                    if (npcEntries.length > 0) {
+                        parts.push(`【NPC / 敵人狀態記錄（必須保持一致性）】`);
+                        npcEntries.slice(-12).forEach(([name, info]) => {
+                            const line = `- ${name}：[${info.status}] ${info.relationship ? '(' + info.relationship + ')' : ''} ${info.notes || ''}${info.lastSeenTurn ? ' (回合 ' + info.lastSeenTurn + ')' : ''}`;
+                            parts.push(line.trim());
+                        });
                     }
                     return parts.join('\n');
                 })(),
@@ -1360,13 +1410,19 @@ JSON格式回覆：
                     if (lower.includes('potion') || lower.includes('scroll') || lower.includes('藥水') || lower.includes('卷軸')) type = 'consumables';
                     else if (lower.includes('wand') || lower.includes('staff') || lower.includes('ring') || lower.includes('amulet') || lower.includes('魔杖') || lower.includes('戒指') || lower.includes('護符')) type = 'magicItems';
 
-                    // TASK #12: Sync LOOT to agentRoster so CharacterModal shows updated inventory
-                    setAgentRoster(prev => prev.map(char => {
+                    // TASK #12 + TASK #18: Sync LOOT to roster (single source of truth)
+                    // Uses setRoster (not setAgentRoster) → agentRoster recomputed via useMemo
+                    setRoster(prev => prev.map(char => {
                         if (char.id !== leaderId) return char;
-                        const newInventory = [...(char.inventory || []), itemName];
+                        // Update categorized arrays (canonical source)
                         const newConsumables = type === 'consumables' ? [...(char.consumables || []), itemName] : (char.consumables || []);
                         const newEquipment = type === 'equipment' ? [...(char.equipment || []), itemName] : (char.equipment || []);
                         const newMagicItems = type === 'magicItems' ? [...(char.magicItems || []), itemName] : (char.magicItems || []);
+                        // Update inventory in whichever form it's stored
+                        const existingInv = char.inventory;
+                        const newInventory = (existingInv && !Array.isArray(existingInv) && typeof existingInv === 'object')
+                            ? { ...existingInv, [type]: [...(existingInv[type] || []), itemName] }
+                            : [...(Array.isArray(existingInv) ? existingInv : []), itemName];
                         return { ...char, inventory: newInventory, consumables: newConsumables, equipment: newEquipment, magicItems: newMagicItems };
                     }));
 
@@ -1632,6 +1688,42 @@ JSON格式回覆：
                 }
 
                 // Remove tag from narrative
+                finalNarrative = finalNarrative.replace(fullTag, '');
+            }
+
+            // --- TASK #17: COMBAT WEAKNESS TRIGGERED (numerical debuff) ---
+            // Format: [[WEAKNESS_TRIGGERED: CharacterName|TriggerReason]]
+            const weaknessRegex = /\[\[\s*WEAKNESS_TRIGGERED\s*:\s*([^|]+)\|([^\]]+)\]\]/gi;
+            for (const match of finalNarrative.matchAll(weaknessRegex)) {
+                const [fullTag, charNameRaw, reasonRaw] = match;
+                const charName = charNameRaw.trim();
+                const reason = reasonRaw.trim();
+                const charIdx = tempRoster.findIndex(c => c.name.includes(charName));
+                if (charIdx !== -1) {
+                    const char = tempRoster[charIdx];
+                    const maxHp = char.maxHp || char.hp || 20;
+                    const damage = Math.max(1, Math.floor(maxHp * 0.15)); // 15% max HP as psychic/fear damage
+                    const newHp = Math.max(0, (char.hp || maxHp) - damage);
+                    tempRoster[charIdx] = { ...char, hp: newHp };
+                    rosterDirty = true;
+                    const conditionLabel = '恐懼動搖';
+                    showToast(`⚠️ ${char.name} 的弱點被觸發！-${damage} HP（${reason}）`, "error");
+                    console.log(`[Weakness] ${char.name} triggered: "${reason}", dealt ${damage} psychic damage`);
+                    setGameState(prev => ({
+                        ...prev,
+                        [char.id]: {
+                            ...prev[char.id],
+                            hp: newHp,
+                            conditions: [...new Set([...(prev[char.id]?.conditions || []), conditionLabel])],
+                            weaknessActive: {
+                                label: conditionLabel,
+                                reason,
+                                hpDealt: damage,
+                                turnsRemaining: 2 // Lasts 2 more turns
+                            }
+                        }
+                    }));
+                }
                 finalNarrative = finalNarrative.replace(fullTag, '');
             }
 
@@ -2227,7 +2319,8 @@ JSON格式回覆：
                 narrative: narrativeText, currentLocation,
                 turnCount: logs.length + 1, signals: newSignals,
                 moduleId: selectedModule?.id, currentAct,
-                pendingNodes: pendingNodesList.slice(0, 5) // Pass up to 5 pending nodes
+                pendingNodes: pendingNodesList.slice(0, 5), // Pass up to 5 pending nodes
+                existingNpcStates: npcRegistry // Task #16: Pass persisted NPC states
             };
             const { data: journalResult, usage: mapUsage } = await mapAgent.updateJournal(mapContext);
             if (mapUsage) updateTokenCount(mapUsage);
@@ -2281,6 +2374,23 @@ JSON格式回覆：
                         return [...prev, ...newHints].slice(-15); // Keep last 15
                     });
                 }
+            }
+            // --- TASK #16: MERGE NPC STATES FROM CARTOGRAPHER ---
+            if (journalResult.npc_states && Array.isArray(journalResult.npc_states)) {
+                setNpcRegistry(prev => {
+                    const updated = { ...prev };
+                    journalResult.npc_states.forEach(npc => {
+                        if (npc.name) {
+                            updated[npc.name] = {
+                                status: npc.status || updated[npc.name]?.status || 'unknown',
+                                relationship: npc.relationship || updated[npc.name]?.relationship || '',
+                                notes: npc.notes || updated[npc.name]?.notes || '',
+                                lastSeenTurn: logs.length + 1
+                            };
+                        }
+                    });
+                    return updated;
+                });
             }
 
 
@@ -2476,6 +2586,7 @@ JSON格式回覆：
         setActiveForeshadowing([]); // Clear foreshadowing
         setStagnationCounter(0); // Reset stagnation counter
         setCompletedNodes([]); // Reset story state engine
+        setNpcRegistry({}); // Reset NPC state persistence (Task #16)
         setScenarioRoster([]); // Clear existing enemies/NPCs
         setPendingActions({});
         setEditorialHints([]); // Clear editorial history on new game
@@ -2498,6 +2609,7 @@ JSON格式回覆：
         setActiveForeshadowing([]); // Clear foreshadowing
         setStagnationCounter(0); // Reset stagnation counter
         setCompletedNodes([]); // Reset story state engine
+        setNpcRegistry({}); // Reset NPC state persistence (Task #16)
         if (memoryService.current) memoryService.current.reset(); // Reset persistent memory
 
         // 2. Initialize Character State

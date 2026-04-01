@@ -470,6 +470,15 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
             - Boss/Milestone: 1000+ XP
         - **Loot**: "[[LOOT: <Item Name>]]" (e.g., "[[LOOT: Ancient Key]]", "[[LOOT: 50 Gold Coins]]").
 
+        === COMBAT WEAKNESS SYSTEM (Task #17) ===
+        - Each character has a "Combat Weakness" listed in their [PARTY PROFILES].
+        - When the NARRATIVE places a character in their weakness trigger situation (NOT just any danger), output the tag:
+          - **Syntax**: "[[WEAKNESS_TRIGGERED: CharacterName|BriefReason]]"
+          - **Example**: If Kira (幽閉恐懼) is trapped in a cave-in, output: "[[WEAKNESS_TRIGGERED: Kira|被石塊困住，幽閉恐懼發作]]"
+        - Only trigger this ONCE per event (not every turn). The trigger causes real HP damage (-15% max HP) and a 'Debuff' condition.
+        - If a character has "⚠️ Active Conditions" listed, reflect their impaired state in the narrative (shaking hands, unfocused attacks, panic).
+        - RULE: If NO genuine weakness trigger occurs, do NOT output this tag.
+
         === RELATIONSHIP UPDATES (DYNAMIC SOCIAL SYSTEM) ===
         - **Logic**: Use the 0-100 Scale (Start=50). Hostile < 30 < Neutral < 70 < Friendly.
         - **Trigger**: When a player or character performs a significant social or moral action.

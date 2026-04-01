@@ -21,7 +21,7 @@ export class CartographerAgent {
      * @returns {Promise<Object>} JSON object with location and journal_entry.
      */
     async updateJournal(context) {
-        const { narrative, currentLocation, turnCount, signals, moduleId = null, currentAct = 1, pendingNodes = [] } = context;
+        const { narrative, currentLocation, turnCount, signals, moduleId = null, currentAct = 1, pendingNodes = [], existingNpcStates = {} } = context;
 
         // Get module plot context for location guidance
         const plotContext = moduleId ? formatModuleContext(moduleId, currentAct) : '';
@@ -69,12 +69,21 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
            - If a node's situation/encounter appears resolved in this narrative, set "completed_node_id" to its id.
            - Only mark ONE node complete per turn (the most recently resolved one).
            ${pendingNodes.length > 0 ? `[PENDING STORY NODES]\n${pendingNodes.map(n => `- [${n.id}] ${n.title || n.situation}`).join('\n')}` : "No pending nodes to track."}
+        5. **NPC State Tracking**: Track all named NPCs and enemies mentioned in this narrative.
+           - Update their status (alive/dead/missing/hostile/friendly/neutral/rescued/captured/unknown).
+           - Record their relationship to the party and any key notes.
+           - Cross-reference with existing known NPC states below and update if changed.
+           ${Object.keys(existingNpcStates).length > 0 ? `[KNOWN NPC STATES]\n${Object.entries(existingNpcStates).map(([name, info]) => `- ${name}: [${info.status}] ${info.notes || ''}`).join('\n')}` : "No NPCs tracked yet."}
 
         [OUTPUT SCHEMA]
         {
             "location": ["Phandalin", "Town Square"],
             "completed_node_id": null,
             "new_objective": null,
+            "npc_states": [
+                { "name": "Gundren Rockseeker", "status": "missing", "relationship": "雇主", "notes": "在地下礦坑被地精俘虜" },
+                { "name": "黑袍首領", "status": "hostile", "relationship": "敵人", "notes": "指揮地精的幕後黑手" }
+            ],
             "journal_entry": {
                 "public": "Turn ${turnCount}: The party arrived in Phandalin...",
                 "logic": ["Met Gundren", "Gundren is anxious"],
@@ -94,6 +103,7 @@ ${plotContext ? `[MODULE PLOT CONTEXT]\n${plotContext}\n` : ''}
         NOTE: questItems, foreshadowing, unresolved are OPTIONAL arrays. Only include if relevant to this turn.
         NOTE: completed_node_id should be the node's id string if resolved this turn, or null if nothing was completed.
         NOTE: new_objective is a brief Chinese string describing the next mission goal, or null.
+        NOTE: npc_states MUST include ALL named NPCs/enemies from this narrative with their current status. Omit only if no named characters appear.
         `;
 
         try {
