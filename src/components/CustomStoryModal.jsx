@@ -10,6 +10,7 @@ const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {
     const handleSurprise = () => {
         const difficulties = ['beginner', 'intermediate', 'advanced'];
         const randomDiff = difficulties[Math.floor(Math.random() * difficulties.length)];
+        // Trigger generation directly
         onGenerate("SURPRISE_ME", randomDiff);
     };
 
@@ -44,11 +45,12 @@ const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {
                                     key={bf.id}
                                     onClick={() => setDifficulty(bf.id)}
                                     className={`
-                                        py-2 px-1 rounded border text-xs font-bold transition-all
+py-2 px-1 rounded border text-xs font-bold transition-all
                                         ${difficulty === bf.id
                                             ? 'bg-amber-900/60 border-amber-500 text-amber-100'
-                                            : 'bg-slate-950 border-slate-700 text-slate-500 hover:border-slate-500'}
-                                    `}
+                                            : 'bg-slate-950 border-slate-700 text-slate-500 hover:border-slate-500'
+                                        }
+`}
                                 >
                                     {bf.label}
                                 </button>

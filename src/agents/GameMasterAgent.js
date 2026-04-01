@@ -136,9 +136,19 @@ ${lootGuidelines ? `${lootGuidelines}\n` : ''}
             "signals": {
                 "threat_level": "Low",
                 "pacing_signal": "Build-up",
-                "mechanical_opportunity": "None"
+                "mechanical_opportunity": "None",
+                "mechanical_opportunity": "None",
+                "stagnation_detected": false,
+                "adventure_ended": false // Set to true ONLY if the narrative explicitly states the adventure is over (e.g. "The End", "Successfully escaped", "Mission Complete")
             }
         }
+        
+        [SPECIAL END GAME RULE]
+        If "adventure_ended" is true, you MUST:
+        1. Set "threat_level" to "None".
+        2. Clear "options" and provide exactly ONE option:
+           - Option A: "🎉 完成冒險 (Finish Adventure)"
+        3. Do NOT provide combat or skill check options.
         `;
 
         try {

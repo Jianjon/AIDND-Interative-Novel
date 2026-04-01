@@ -152,10 +152,9 @@ ${party.map(p => `- ${p.name || p} (${p.race || '?'} ${p.class || '?'})`).join('
 - 描述外觀、裝備，並展現他們的個性和職業特色。
 - 描述他們在場景中的位置和狀態。
 
-【初次見面與偏見 (Prejudices)】
-- 如果角色之間是初次見面，描述他們如何根據對方的「外觀」或「職業/陣營」產生初步的判斷或偏見。
-- 這種偏見應表現為：微妙的眼神、語氣的客氣或疏離、或是內心的私下評價。
-- **注意**：人際關係會隨時間改變，但在序幕中，初始偏見是塑造性格張力的關鍵。
+【隊伍初成 (Party Formation)】
+- **組隊與接取任務 (約 200 字)**：講述這些背景迥異的角色是如何組成團隊的？是命運的安排、酒館的偶遇，還是被委託人強行湊在一起？描述他們接下這個任務的具體過程與動機。
+- **初始關係與互評 (約 200 字)**：描述團隊成員之間的初始關係動態。他們如何看待彼此？是信任、懷疑、還是單純的利益合作？包含他們對隊友外觀或職業的第一印象與內心评价。
 
 【當前情境】
 - 隊伍現在面臨什麼處境？
@@ -209,6 +208,7 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
     1. **先攻順序 (INITIATIVE)**:
        - **OUTPUT**: Provide a simple **TEXT LIST** of the turn order.
        - **CRITICAL**: Do **NOT** use [🎲] tags here. Do **NOT** roll dice for Initiative. Just list the order.
+       - **MUST INCLUDE ENEMIES**: You MUST include ALL active enemies in this list. They are not passive observers.
        - **FORMAT**: 「行動順序：角色名 (先攻值)」
        - *Example*: "行動順序：貝拉 (19), 澤拉 (15), K2 (12), 卡琳 (8), 哥布林群 (6)"
 
@@ -221,6 +221,10 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
        - **行為習慣捕捉**: 適時在動作中穿插角色的 behavioral habits (如緊張時會碎碎唸、準備戰鬥前會整理儀容)。
        - **偏見與動機**: 選項的後果描述中，應體現角色的 prejudices 如何影響其判斷。
        - **戰鬥弱點 (Combat Weaknesses)**: 如果當前環境或敵人列表匹配角色的 [Combat Weakness] 觸發條件，你 **必須** 描繪他們的反應 (Reaction)。描述這如何影響他們的專注力、士氣或身體狀態。例如：怕黑的角色在黑暗中攻擊會顯得猶豫不決，或是在面對厭惡的蟲子時發出恐劇的叫喊。
+       - **技能高光 (SKILL SPOTLIGHT)**: 當描述角色的動作時，你 **必須** 在敘述中 **點名** 至少一項該角色的 [Skills], [Feats], 或 [Spells]。
+         - **範例**: 「艾瑞克發動『猛力攻擊 (Power Attack)』，巨斧劃出弧光...」而非只寫「艾瑞克揮斧攻擊」。
+         - **範例**: 「莉雅吟唱『治療之語 (Healing Word)』，金色光芒從指尖湧出...」而非只寫「莉雅施法治療隊友」。
+         - 讓讀者感受到角色的獨特能力，而非泛泛的動作。
 
        - **HEADER**: \`### [Character Name] (Initiative: X)\`
          - **CRITICAL**: You MUST use this header for every single character provided in the action list.
@@ -248,6 +252,7 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
               - *Reasoning*: Inactivity is dangerous.
             - **Enemy Turn**:
               - described purely in prose.
+              - **ACTION REQUIRED**: Enemies MUST perform active, threatening actions (Attack, Flank, Intimidate, Cast Spell). Do NOT just describe them standing there.
               - **NO DICE TAGS**: Do NOT use [[DICE:]] or [🎲] tags for enemies. Use text like \`(擲骰: 18)\`.
 
     3. **Difficulty Guidelines**:
@@ -297,7 +302,8 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
          🔴 [敵人名] HP X/Y → 正常
 
          【📍 戰況摘要】
-         (戰術與視覺摘要，約 250 字，必須使用繁體中文，總結本回合重點與下一回合的戰術契機)
+         【📍 戰況摘要】
+         (戰術與視覺摘要，必須滿 **300字以上**。請生動描繪戰場的動態、雙方的攻防轉換、關鍵的一擊，以及戰場環境的變化。不要流水帳，要寫出戰鬥的「張力」與「故事感」。總結本回合重點與下一回合的戰術契機)
          \`\`\`
        - **INCLUDE HP CHANGES**: Mark HP changes like "(-5)" for damage, "(+10)" for healing.
        - **MARK DEAD ENEMIES**: Dead enemies MUST show "💀" and "(移除)".
@@ -388,7 +394,7 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
         You are the ** Storyteller ** (Narrative Agent) for an interactive D & D novel.
     Module: "${moduleTitle}"
 Location: "${currentLocation}"
-${forcePlotPush ? "** SIGNAL: FORCE PLOT PUSH (強制推動劇情) **\n- The players or the situation demand progress NOW.\n- If the scene is stagnant or looping, IMMEDIATELY transition to a NEW location, a NEW conflict, or the NEXT Act.\n- Do NOT provide more of the same. Change the state of the world significantly." : ""}
+${forcePlotPush ? "** CRITICAL SIGNAL: FORCE PLOT PUSH (絕對強制推進劇情) **\n- THE CURRENT SCENE IS STAGNANT OR LOOPING. YOU MUST BREAK THE LOOP NOW.\n- IMMEDIATELY transition the story to a NEW significant event, a NEW location, or the NEXT ACT.\n- DO NOT waste time on small talk or minor details. Jump ahead in time if necessary.\n- CHANGE THE WORLD STATE: A sudden attack, a discovery, an NPC betrayal, or an environmental catastrophe MUST occur to force the players forward.\n- CHARACTER PROACTIVITY: Use the characters' traits or inter-party dynamics to spark a moment of realization, a heated debate, or a decisive action that moves them forward.\n- If in doubt, skip to the next major plot point in the module act guidelines." : ""}
 
         **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
         **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**
@@ -409,11 +415,19 @@ ${forcePlotPush ? "** SIGNAL: FORCE PLOT PUSH (強制推動劇情) **\n- The pla
     1. Cross - Agent Awareness
 2. Autonomous Scene Completion
 3. Dramatic Consistency
-4. **Proactive Pacing**: If the narrative feels repetitive or lacks momentum, take the initiative to introduce a new event, a sudden threat, or a plot twist. Do not wait for player permission to keep the story interesting.
+4. **Proactive Pacing (ANTI-LOOP MECHANISM)**:
+   - Check the [PREVIOUS CONTEXT]. If the last log ended with characters hesitating, debating, or observing without action, you **MUST** trigger an external event.
+   - **DO NOT** output another paragraph of them "thinking about what to do" or "preparing to strike".
+   - **DO NOT** repeat the setting description unless it has changed.
+   - **FORCE ACTION**: Make an enemy attack, a trap trigger, or an NPC shout. Keep the game moving.
 ${editorialHints ? `\n[EDITORIAL INSTRUCTION - ACCUMULATED OVER LAST 3 TURNS]\n${editorialHints}\n- YOU MUST COMPLY WITH THESE FIXES. The most recent instruction takes priority.` : ""}
 
 ${storyState ? `[STORY STATE - GROUND TRUTH]\nThis is the authoritative record of what has happened. You MUST stay consistent with it.\n${storyState}\n` : ""}
 [PREVIOUS CONTEXT]
+        **CRITICAL INSTRUCTION**: Carefully review the [PREVIOUS CONTEXT] below.
+        1. **NO REPETITION**: Do NOT repeat events, dialogue, or descriptions that have just happened.
+        2. **CONTINUITY**: Continue the story logically from the exact point where the last log ended.
+        3. **FORWARD MOMENTUM**: If the story feels stuck, introduce a small progression or change in the environment immediately.
         ${lastLog ? lastLog.slice(-8000) : "(Start of Adventure)"}
 
 ${plotContext ? `[MODULE PLOT GUIDE]\n${plotContext}\n` : ''}

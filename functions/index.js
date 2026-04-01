@@ -10,8 +10,8 @@ exports.generateContent = onCall({
 }, async (request) => {
     logger.info("Function 'generateContent' invoked");
 
-    // FALLBACK: Hardcoded for immediate stability
-    const project = 'gen-lang-client-0763353608';
+    // Use dynamic project ID from environment
+    const project = process.env.GCLOUD_PROJECT || 'aidnd-interactive-novel';
     const location = 'us-central1';
 
     // Initialize Vertex AI

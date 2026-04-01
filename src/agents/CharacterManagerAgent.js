@@ -124,9 +124,10 @@ export class CharacterManagerAgent {
      * @param {Number} currentAct Act number
      * @param {Array} groupOptions Group options
      * @param {Array} activeEnemies List of alive enemies
+     * @param {Boolean} forcePlotPush Mandatory story advancement flag
      * @returns {Promise<{results: Object, usage: Object}>} { results, usage }
      */
-    async generateOptions(roster, worldState, lastNarrative, previousOutcome, signals = {}, moduleId = null, currentAct = 1, groupOptions = [], activeEnemies = []) {
+    async generateOptions(roster, worldState, lastNarrative, previousOutcome, signals = {}, moduleId = null, currentAct = 1, groupOptions = [], activeEnemies = [], forcePlotPush = false) {
         groupOptions = groupOptions || []; // Safety check for null
         console.log(`[CharacterManager] Generating Options for ${roster.length} chars (BATCHED)...`);
 
@@ -217,6 +218,7 @@ export class CharacterManagerAgent {
         Threat Level: ${threat_level || "Unknown"}
         Pacing: ${pacing_signal || "Normal"}
         Story So Far: ${lastNarrative.slice(-2000)}
+        Active Enemies: ${enemyListStr}
         ${plotContext ? `Plot Goal: ${plotContext}` : ''}
 
         ${groupOptionsSection}
@@ -244,6 +246,14 @@ export class CharacterManagerAgent {
         - 有些角色可能會恐慌做出非理性的選擇
         - 有些角色可能會過度自信
         - 讓選項反映這些情緒與性格特質
+
+        **4. COMBAT MANDATE (戰鬥指令 - IMPORTANT)**
+        - **CHECK**: Look at "Active Enemies" above.
+        - **IF ENEMIES EXIST (activeEnemies is NOT "None")**:
+          - **Option A MUST** be a direct physical or magical attack against an enemy from the list.
+          - **Option B MUST** be a tactical combat maneuver (Feat/Skill) against an enemy.
+          - **Option C** can be support/environment.
+          - **PROHIBITION**: Do NOT generate "Search corpses" or "Relax" options if enemies are still alive. You must FIGHT or FLEE.
 
         **4. CLASS-APPROPRIATE ACTIONS (職業相符)**
         - 牧師會關心隊友的傷勢
@@ -288,6 +298,17 @@ export class CharacterManagerAgent {
         - 若 narrative 顯示陷阱已解除/敵人已死亡/謎題已解開 -> **必須** 提供推進劇情 (移動/搜刮/進入下一區) 的選項。
         - **禁止** 針對「已解決」的威脅生成重複行動 (例如: 陷阱已解除，就不要再有「解除陷阱」的選項)。
         - 若玩家因某些原因卡關 (無效行動多次)，提供一個明確 **High Context Hint** 的選項 (例如：「仔細觀察周圍，發現...」)。
+        
+        ${forcePlotPush || signals.stagnation_detected ? `
+        **LOOP BREAKER (迴圈打破者 - 強制推進)**:
+        - 當前劇情似乎陷入停滯或迴圈。
+        - **任務**: 每個角色必須提供至少一個「打破現狀」的選項。
+        - **方式**: 
+          1. **主動聯絡/爭吵**: 與隊友發生激烈的對話、分歧或達成共識 (e.g. "我們不能再等了，[隊友名]，跟我來！")
+          2. **冒險行動**: 不顧危險地衝向新地點、觸發機關、或向 NPC 發起挑戰。
+          3. **環境破壞**: 燒掉擋路的門、炸開牆壁、或大聲呼喊引誘敵人出來。
+        - **語氣**: 選項描述應展現出「焦躁」「果斷」或「靈光一閃」的特質。
+        ` : ""}
 
         [VALID TARGETS / ALIVE ENEMIES]
         ${enemyListStr}
@@ -335,10 +356,15 @@ export class CharacterManagerAgent {
            - **Option A (核心風格/高優先)**: (70% 機率) 反映角色最典型的戰鬥/行為風格。
              - 例如：和平主義者優先「防禦/治療/勸阻」；狂戰士優先「蠻力攻擊」。
              - 這是角色「最想做」的事，符合其 Bio 和 Class。
-           - **Option B (策略變通/情境應用)**: (30% 機率) 針對戰場優勢或特殊挑戰。
-             - **MUST USE**: 必須明確引用角色的 [Skills], [Feats], 或 [Abilities]。
-             - 例如：盜賊使用 \`Cunning Action\` 躲藏；戰士使用 \`Great Weapon Master\` 猛擊；高魅力角色使用 \`Persuasion\` 勸降。
-             - **多樣性規則**: 若玩家選擇重新生成 (Regenerate)，此選項必須嘗試使用 *不同* 的技能或戰術 (例如：從攻擊改為防守，或從魔法改為物理)。
+           - **Option B (策略變通/技能應用)**: 針對戰場優勢或特殊挑戰。
+              - **MANDATORY SKILL/FEAT**: 此選項 **必須** 明確引用角色的 [Skills], [Feats], [Spells], 或 [Abilities] 中的 **一項具體能力**。
+              - **禁止泛泛而論**: 不可只寫「攻擊敵人」或「施放法術」。必須寫出能力名稱。
+              - **格式範例**:
+                - ✓ 正確：「🪄 [策略] 施放 **護盾術 (Shield)** 抵擋這波攻擊！」
+                - ✓ 正確：「👤 [狡詐] 使用 **靈巧閃避 (Cunning Action: Disengage)** 脫離戰鬥並重新定位」
+                - ✓ 正確：「⚔️ [猛擊] 發動 **巨武大師 (Great Weapon Master)** -5命中換取+10傷害！」
+                - ✗ 錯誤：「攻擊敵人」「施放法術」「使用技能」（太模糊）
+              - **多樣性規則**: 若玩家選擇重新生成 (Regenerate)，此選項必須嘗試使用 *不同* 的技能或戰術。
            - **Option C (團隊協作/個性變體)**: 隨機選擇並整合以下元素:
              - 🤝 **Teamwork**: 明確描述如何與隊友配合 (e.g., "使用 [Help] 動作協助 [隊友名]", "為 [隊友名] 製造夾擊機會").
              - 💡 **Skill Check**: 主動提議進行檢定 (e.g., "我用 [Arcana] 分析這個法陣...", "我用 [Perception] 尋找掩體...").

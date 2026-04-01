@@ -6,9 +6,9 @@ import {
 } from 'lucide-react';
 import { CharacterCreator } from './components/CharacterCreator';
 import { ModuleDetailsModal } from './components/ModuleDetailsModal';
-import JournalModal from './components/JournalModal';
+
 import SaveLoadModal from './components/SaveLoadModal';
-import DualDiceRoll from './components/DualDiceRoll'; // Import for animation
+
 import { useToken } from './contexts/TokenContext';
 import useLocalStorage from './hooks/useLocalStorage';
 // --- CONSTANTS & HELPERS ---
@@ -44,12 +44,14 @@ const getUniqueEnemyName = (baseName, existingRoster) => {
 };
 
 import Toast from './components/Toast';
-import SequentialLogRenderer from './components/SequentialLogRenderer';
+
 import { HealthBar, StatusBadges, CombatStatCompact, XpBar } from './components/CombatHUD'; // Updated Import
 import CharacterModal from './components/CharacterModal';
 import CharacterCreationModal from './components/CharacterCreationModal';
-import ActionModal from './components/ActionModal';
+
+import DMChatModal from './components/DMChatModal';
 import SettingsModal from './components/SettingsModal';
+import CustomStoryModal from './components/CustomStoryModal';
 import { generateAIPortrait, generateAIScene } from './utils/portrait-generator';
 import { CharacterAgent } from './libs/CharacterAgent';
 import { ErrorBoundary } from './libs/ErrorBoundary.jsx';
@@ -57,6 +59,15 @@ import LevelUpModal from './components/LevelUpModal';
 import LocationBreadcrumbs from './components/LocationBreadcrumbs';
 import PRESET_CHARACTERS from './data/preset_characters';
 import { scaleCharacter } from './utils/characterScaling';
+
+import { useAutoPlay } from './hooks/useAutoPlay';
+import { useSaveSystem } from './hooks/useSaveSystem';
+
+import HomeView from './views/HomeView';
+import ModeSelectView from './views/ModeSelectView';
+import RosterView from './views/RosterView';
+import ModuleSelectView from './views/ModuleSelectView';
+import GameView from './views/GameView';
 
 import GroupDecisionOptions from './components/GroupDecisionOptions'; // New Component
 
@@ -111,262 +122,13 @@ import ArchiveModal from './components/ArchiveModal';
 /* COMPONENTS                                  */
 /* -------------------------------------------------------------------------- */
 
-/* Scenario Roster Component (Sidebar) */
-const ScenarioRoster = ({ roster }) => {
-    if (!roster || roster.length === 0) return null;
 
-    return (
-        <div className="mt-2 pt-4 border-t border-slate-700 mb-2 animate-in fade-in slide-in-from-right-4 duration-500">
-            <h4 className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-widest text-amber-500 mb-3 px-1 font-tome-header border-b border-amber-500/20 pb-1">
-                <Users size={12} />
-                <span>Scene Actors</span>
-            </h4>
 
-            <div className="space-y-3">
-                {roster.map((actor, idx) => {
-                    const isEnemy = actor.type === 'Enemy' || actor.type === 'Monster' || actor.type === 'Boss';
-                    const isAlly = actor.type === 'Ally' || actor.type === 'Summon' || actor.type === 'Companion';
 
-                    // Dark Tome Aesthetic
-                    const borderColor = isAlly ? "border-emerald-500/30" : isEnemy ? "border-red-900/50" : "border-slate-700";
-                    const bgColor = isAlly ? "bg-emerald-900/10" : isEnemy ? "bg-red-900/10" : "bg-slate-900/40";
-                    const textColor = isEnemy ? "text-red-400" : isAlly ? "text-emerald-400" : "text-slate-300";
-                    const barColor = isEnemy ? "bg-red-600" : isAlly ? "bg-emerald-500" : "bg-slate-500";
-                    const icon = isEnemy ? <Sword size={12} /> : isAlly ? <PawPrint size={12} /> : <User size={12} />;
 
-                    return (
-                        <div key={`${actor.name} -${idx} `} className={`relative p-2 rounded border ${borderColor} ${bgColor} flex flex-col gap-1.5 transition-all group hover:bg-white/5`}>
-                            {/* Header */}
-                            <div className="flex justify-between items-center text-xs">
-                                <span className={`font-bold font-tome-header ${textColor} flex items-center gap-1.5 text-sm`}>
-                                    {icon}
-                                    {actor.name}
-                                </span>
-                                <span className={`text-[9px]uppercase tracking-wider font-tome-body font-bold ${isAlly ? 'text-emerald-500' : 'text-slate-500'} `}>
-                                    {isAlly ? 'Companion' : actor.type}
-                                </span>
-                            </div>
 
-                            {/* HP Bar */}
-                            {(actor.hp !== undefined && actor.maxHp > 0) && (
-                                <div className="w-full h-2 bg-slate-800 border border-slate-700 mt-1 relative rounded-sm overflow-hidden">
-                                    <div
-                                        className={`h-full ${barColor} transition-all duration-500 relative`}
-                                        style={{ width: `${Math.min(100, Math.max(0, (actor.hp / actor.maxHp) * 100))}% ` }}>
-                                        <div className="absolute inset-0 bg-white/10 opacity-30"></div>
-                                    </div>
-                                </div>
-                            )}
 
-                            {/* Stats Text */}
-                            {(actor.hp !== undefined) && (
-                                <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-0.5 font-bold">
-                                    <span>{isEnemy ? 'Status: Unknown' : `HP: ${actor.hp}${actor.maxHp ? `/${actor.maxHp}` : ''} `}</span>
-                                    {isAlly && <span className="text-emerald-500 flex items-center gap-1 cursor-pointer hover:underline"><Zap size={10} /> Command</span>}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
 
-const PokeMenu = ({ isOpen, onClose, onAction, isGenerating }) => {
-    if (!isOpen) return null;
-
-    const options = [
-        { id: 'continue', label: '繼續 (Continue)', icon: <Play size={16} />, desc: 'Force the story to proceed', color: 'text-emerald-400', border: 'border-emerald-500/30 hover:bg-emerald-500/10' },
-        { id: 'plot_push', label: '強制推動 (Push Plot)', icon: <FastForward size={16} />, desc: 'Force a scene or act transition', color: 'text-rose-400', border: 'border-rose-500/30 hover:bg-rose-500/10' },
-        { id: 'review', label: '檢視 (Review)', icon: <Brain size={16} />, desc: 'DM analyzes game state', color: 'text-amber-400', border: 'border-amber-500/30 hover:bg-amber-500/10' },
-        { id: 'report', label: '回報 (Report)', icon: <MessageCircle size={16} />, desc: 'Discuss issues with DM', color: 'text-indigo-400', border: 'border-indigo-500/30 hover:bg-indigo-500/10' },
-    ];
-
-    return (
-        <div className="absolute top-12 right-12 z-50 bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-2 w-64 animate-in fade-in zoom-in-95 duration-200">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 px-1">DM INTERACTION</div>
-            <div className="space-y-2">
-                {options.map(opt => (
-                    <button
-                        key={opt.id}
-                        onClick={() => {
-                            onClose();
-                            onAction(opt.id);
-                        }}
-                        disabled={isGenerating && opt.id !== 'continue' && opt.id !== 'report'} // Allow 'continue' to reset if generating
-                        className={`w-full text-left p-2 rounded border ${opt.border} transition-colors flex items-start gap-3 group`}
-                    >
-                        <div className={`mt-0.5 ${opt.color} `}>{opt.icon}</div>
-                        <div>
-                            <div className={`text-sm font-bold ${opt.color} `}>{opt.label}</div>
-                            <div className="text-[10px] text-slate-400 group-hover:text-slate-300">{opt.desc}</div>
-                        </div>
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-const DMChatModal = ({ isOpen, onClose, onSend, isGenerating }) => {
-    const [input, setInput] = useState("");
-    const inputRef = useRef(null);
-
-    useEffect(() => {
-        if (isOpen && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [isOpen]);
-
-    const handleSend = () => {
-        if (!input.trim()) return;
-        onSend(input);
-        setInput("");
-    };
-
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-slate-900 border border-indigo-500/50 rounded-xl max-w-md w-full p-6 shadow-2xl relative">
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 hover:text-white"><X size={20} /></button>
-                <h2 className="text-lg font-bold font-tome-header text-indigo-400 mb-4 flex items-center gap-2">
-                    <MessageCircle size={18} /> DM Communication Channel
-                </h2>
-                <textarea
-                    ref={inputRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSend();
-                        }
-                    }}
-                    placeholder="Report a bug, inconsistent logic, or discuss the game..."
-                    className="w-full h-24 bg-slate-950 border border-slate-700 rounded-lg p-3 text-slate-200 focus:border-indigo-500 outline-none resize-none mb-4"
-                    disabled={isGenerating}
-                />
-                <div className="flex justify-end gap-2">
-                    <button onClick={onClose} className="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
-                    <button
-                        onClick={handleSend}
-                        disabled={isGenerating || !input.trim()}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg flex items-center gap-2 font-bold disabled:opacity-50"
-                    >
-                        {isGenerating ? <RefreshCw className="animate-spin" size={14} /> : <Send size={14} />}
-                        Send Report
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {
-    const [prompt, setPrompt] = useState("");
-    const [difficulty, setDifficulty] = useState("beginner");
-
-    if (!isOpen) return null;
-
-    const handleSurprise = () => {
-        const difficulties = ['beginner', 'intermediate', 'advanced'];
-        const randomDiff = difficulties[Math.floor(Math.random() * difficulties.length)];
-        // Trigger generation directly
-        onGenerate("SURPRISE_ME", randomDiff);
-    };
-
-    return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-slate-900 border border-amber-500/30 rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
-                >
-                    <X size={24} />
-                </button>
-
-                <h2 className="text-2xl font-bold font-tome-header text-amber-500 mb-2 flex items-center gap-2">
-                    <Feather size={24} /> 自訂傳奇冒險
-                </h2>
-                <p className="text-slate-400 text-sm mb-6">
-                    輸入你的構想，AI 將為你編織一個獨一無二的冒險劇本。
-                </p>
-
-                {/* Input Area */}
-                <div className="space-y-4 mb-6">
-                    <div>
-                        <label className="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">冒險難度 (Difficulty)</label>
-                        <div className="grid grid-cols-3 gap-2">
-                            {[
-                                { id: 'beginner', label: '初階 (Lv 3)' },
-                                { id: 'intermediate', label: '中階 (Lv 5)' },
-                                { id: 'advanced', label: '高階 (Lv 8)' }
-                            ].map(bf => (
-                                <button
-                                    key={bf.id}
-                                    onClick={() => setDifficulty(bf.id)}
-                                    className={`
-py-2 px-1 rounded border text-xs font-bold transition-all
-                                        ${difficulty === bf.id
-                                            ? 'bg-amber-900/60 border-amber-500 text-amber-100'
-                                            : 'bg-slate-950 border-slate-700 text-slate-500 hover:border-slate-500'
-                                        }
-`}
-                                >
-                                    {bf.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">
-                            冒險大綱 (Story Idea) <span className="text-slate-600 font-normal normal-case float-right">{prompt.length}/1000</span>
-                        </label>
-                        <textarea
-                            value={prompt}
-                            onChange={(e) => setPrompt(e.target.value.slice(0, 1000))}
-                            placeholder="例如：一座被發條地精控制的地下城，裡面藏著傳說中的時間寶石..."
-                            className="w-full h-32 bg-slate-950 border border-slate-700 rounded-lg p-3 text-slate-200 placeholder:text-slate-700 focus:border-amber-500 outline-none resize-none transition-colors"
-                            disabled={isGenerating}
-                        />
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-3">
-                    <button
-                        onClick={handleSurprise}
-                        disabled={isGenerating}
-                        className="flex-1 bg-indigo-900/50 hover:bg-indigo-800/50 border border-indigo-500/30 text-indigo-300 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 group"
-                    >
-                        <Sparkles size={18} className="group-hover:text-indigo-100" />
-                        給我驚喜 (Surprise Me)
-                    </button>
-                    <button
-                        onClick={() => onGenerate(prompt, difficulty)}
-                        disabled={isGenerating || !prompt.trim()}
-                        className="flex-[2] bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white py-3 rounded-lg font-bold shadow-lg shadow-amber-900/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                        {isGenerating ? (
-                            <>
-                                <RefreshCw className="animate-spin" size={18} />
-                                建構世界中...
-                            </>
-                        ) : (
-                            <>
-                                <Wand2 size={18} />
-                                生成冒險劇本
-                            </>
-                        )}
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 export default function InteractiveDND() {
 
@@ -449,6 +211,11 @@ export default function InteractiveDND() {
     const charAgent = useMemo(() => new CharacterManagerAgent(aiOptions), [aiOptions]);
     const editorAgent = useMemo(() => new EditorAgent(aiOptions), [aiOptions]);
 
+    const showToast = (message, type = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
     const handleCreateCustomModule = async (prompt, difficulty) => {
         // Use sandbox mode: No AI wait, instant module creation
         try {
@@ -499,6 +266,8 @@ export default function InteractiveDND() {
             addUsage(usage, source);
         }
     };
+
+
 
     const [roster, setRoster] = useLocalStorage('dnd_roster', []);
     const [scenarioRoster, setScenarioRoster] = useState([]); // Scene Actors (Enemies, NPCs)
@@ -708,104 +477,25 @@ export default function InteractiveDND() {
 
 
     // --- AI Auto-Control Logic ---
-    const toggleControlMode = (charId) => {
-        setRoster(prev => prev.map(c => {
-            if (c.id === charId) {
-                const currentMode = c.controlMode || 'manual';
-                const newMode = currentMode === 'manual' ? 'auto' : 'manual';
+    // --- AI Auto-Control Logic (Hook) ---
+    const { toggleControlMode } = useAutoPlay({
+        logs,
+        isGenerating,
+        isPreGenerating,
+        isAutoProcessing,
+        setIsAutoProcessing,
+        isNarrativeComplete,
+        gameMode,
+        GAME_MODES,
+        party,
+        agentRoster,
+        gameState,
+        pendingActions,
+        setPendingActions,
+        actionCache,
+        setRoster
+    });
 
-                // CRITICAL: We must preserve the Class Prototype (methods like getCardData)
-                // Using Object.create + Object.assign creates a proper clone with the same prototype
-                const clone = Object.create(Object.getPrototypeOf(c));
-                Object.assign(clone, c);
-                clone.controlMode = newMode;
-                return clone;
-            }
-            return c;
-        }));
-    };
-
-    // Auto-Process Turn Effect
-    useEffect(() => {
-        const processAutoTurns = async () => {
-            // Prevent auto-turns during prologue or generation
-            const isPrologue = logs.length === 0;
-            if (isPrologue || isGenerating || isPreGenerating || isAutoProcessing || !isNarrativeComplete) return;
-            if (gameMode !== GAME_MODES.TRPG) return;
-
-            // Identify AUTO characters who need actions
-            const autoChars = party
-                .map(id => agentRoster.find(c => c.id === id))
-                .filter(c => c && (c.controlMode === 'auto') && !pendingActions[c.id] && (gameState[c.id]?.hp > 0) && (gameState[c.id]?.status !== 'unconscious' && gameState[c.id]?.status !== 'dead'));
-
-            if (autoChars.length === 0) return;
-
-            // Wait a moment after turn start before auto-acting (UX pacing)
-            // But we need to ensure we don't loop.
-            // This effect depends on [logs, pendingActions].
-            // If logs changed (new turn), and no pending actions...
-            // Check if latest log is a 'turn_batch'. If so, we just finished a turn.
-            // If latest log is 'trpg_narrative', it's a new round! Correct.
-
-            const lastLog = logs[logs.length - 1];
-            if (!lastLog || lastLog.type === 'turn_batch') return; // Don't act immediately after user options, wait for response.
-            // Actually, after 'turn_batch' comes 'trpg_narrative' (AI response).
-            // So if lastLog is 'turn_batch', we are waiting for AI response.
-            // If lastLog is 'trpg_narrative', it means AI finished responding. user turn!
-
-            setIsAutoProcessing(true);
-
-            // Slight delay for "Thinking" UI
-            await new Promise(r => setTimeout(r, 1000));
-
-            const newActions = {};
-
-            // Loop and select actions
-            // We reuse actionCache if available, or just create basic ones?
-            // Ideally we use CharacterManager.generateOptions, but that's complex to call here individually.
-            // HOWEVER, line 953 already calls generateOptions for EVERYONE and sets actionCache!
-            // So we just need to Pick from actionCache.
-
-            for (const char of autoChars) {
-                const cached = actionCache[char.id];
-                if (cached && cached.options && cached.options.length > 0) {
-                    // Selection Logic:
-                    // If HP < 30%, prefer Instinct (A)
-                    // Else prefer Professional (B) or Team (C) randomly
-                    const hp = gameState[char.id]?.hp || 100;
-                    const maxHp = gameState[char.id]?.maxHp || 100;
-                    const hpPercent = (hp / maxHp) * 100;
-
-                    let selectedOption;
-                    if (hpPercent < 30) {
-                        selectedOption = cached.options.find(o => o.type === 'instinct') || cached.options[0];
-                    } else {
-                        // 70% chance for Professional, 30% for Team
-                        const roll = Math.random();
-                        if (roll > 0.3) {
-                            selectedOption = cached.options.find(o => o.type === 'professional') || cached.options[1] || cached.options[0];
-                        } else {
-                            selectedOption = cached.options.find(o => o.type === 'team') || cached.options[2] || cached.options[0];
-                        }
-                    }
-
-                    if (selectedOption) {
-                        newActions[char.id] = selectedOption.text;
-                    }
-                }
-            }
-
-            if (Object.keys(newActions).length > 0) {
-                setPendingActions(prev => ({ ...prev, ...newActions }));
-            }
-
-            setIsAutoProcessing(false);
-        };
-
-        // Added `roster` to dependencies because `controlMode` is part of `roster` data.
-        // `isPrologue` is commented out as it's not defined in the provided snippet.
-        processAutoTurns();
-    }, [logs, gameMode, actionCache, party, roster, gameState, isGenerating, isPreGenerating, isAutoProcessing, pendingActions]);
 
     // --- ALL-AUTO EXECUTE: If every alive party member is AUTO and all have actions → auto-submit ---
     useEffect(() => {
@@ -970,7 +660,7 @@ JSON格式回覆：
                                 ...char,
                                 backstory: parsed.backstory || char.backstory,
                                 appearanceDesc: parsed.appearanceDesc || char.appearanceDesc,
-                                equipment: parsed.equipment || char.equipment,
+                                equipment: parsed.equipment || parsed.equipment.join(', ') || char.equipment,
                                 monologue: parsed.secret || parsed.monologue || ""
                             }
                             : char
@@ -1070,134 +760,7 @@ JSON格式回覆：
     // Default: Dark Fantasy Placeholder
     const [showJournal, setShowJournal] = useState(false); // New: Journal Modal Toggle
 
-    // --- Save & Load System (Multi-Slot) ---
 
-    // Migration Logic: Run once on mount
-    // --- Save & Load System (Multi-Slot) ---
-
-    // Migration Logic: Run once on mount - OPTIONAL: We can keep this if we want to migrate old auto-saves to a slot?
-    // For now, let's DISABLE migration to avoid confusion with the new manual system.
-    // Or we migrate it to Slot 3 as a "Legacy Auto-Save"?
-    useEffect(() => {
-        const checkMigration = () => {
-            // ... Logic disabled for strict manual save enforcement
-        };
-        // checkMigration();
-    }, []);
-
-    const showToast = (message, type = 'success') => {
-        setToast({ message, type });
-    };
-
-    const handleSave = (slotId) => {
-        const timestamp = new Date().toLocaleString('zh-TW');
-
-        try {
-            // Prepare Data
-            const saveData = {
-                logs,
-                party,
-                roster: roster.map(c => c.getFullSheet ? c.getFullSheet() : c),
-                scenarioRoster,
-                gameState,
-                questJournal,
-                currentLocation,
-                questLog,
-                selectedModule,
-                gameMode,
-                apiKey,
-                authMode,
-                currentAct,
-                relationships, // Fix: Save Relationships
-                currentBgmKey, // Fix: Save BGM State
-                savedAt: timestamp
-            };
-
-            // Save to specific slot key (Fixed: removed trailing space)
-            localStorage.setItem(`dnd_save_slot_${slotId}`, JSON.stringify(saveData));
-            showToast(`遊戲進度已儲存至存檔 ${slotId}！`, "success");
-            setShowSaveLoadModal(null);
-        } catch (e) {
-            console.error("Save failed", e);
-            if (e.name === 'QuotaExceededError' || e.code === 22) {
-                showToast("儲存失敗：瀏覽器儲存空間已滿 (5MB)。請嘗試刪除舊存檔或過長的對話紀錄。", "error");
-            } else {
-                showToast("儲存失敗：" + e.message, "error");
-            }
-        }
-    };
-
-    const handleLoad = (slotId) => {
-        let savedJson;
-        if (slotId === 'autosave') {
-            savedJson = localStorage.getItem('dnd_autosave');
-        } else {
-            savedJson = localStorage.getItem(`dnd_save_slot_${slotId}`);
-        }
-
-        if (!savedJson) {
-            showToast("讀取失敗：該位置無存檔", "error");
-            return;
-        }
-
-        try {
-            const data = JSON.parse(savedJson);
-
-            // 1. RESET TEMPORARY STATE
-            setIsGenerating(false);
-            setIsPreGenerating(false);
-            setPendingActions({});
-            setIsAutoProcessing(false);
-            setActiveModalChar(null);
-            setShowJournalModal(false);
-
-            // 2. Restore State
-            if (data.logs) setLogs(data.logs);
-            if (data.party) setParty(data.party);
-            if (data.roster) {
-                // Re-hydrate characters
-                const restoredRoster = data.roster.map(charData => new CharacterAgent(charData));
-                setRoster(restoredRoster);
-            }
-            if (data.scenarioRoster) setScenarioRoster(data.scenarioRoster);
-            if (data.gameState) setGameState(data.gameState);
-            if (data.questLog) setQuestLog(data.questLog);
-            if (data.questJournal) setQuestJournal(data.questJournal);
-
-            if (data.currentLocation) { // New standard
-                setCurrentLocation(data.currentLocation);
-            } else if (data.location) { // Legacy compat
-                if (Array.isArray(data.location)) setCurrentLocation(data.location);
-                else setCurrentLocation([data.location]);
-            }
-
-            if (data.selectedModule) setSelectedModule(data.selectedModule);
-            if (data.gameMode) setGameMode(data.gameMode);
-            if (data.apiKey) setApiKey(data.apiKey);
-            if (data.authMode) setAuthMode(data.authMode);
-            if (data.currentAct) setCurrentAct(data.currentAct);
-            if (data.relationships) setRelationships(data.relationships);
-            if (data.currentBgmKey) {
-                setCurrentBgmKey(data.currentBgmKey);
-            }
-
-            // Restore "Resume" capability
-            if (slotId === 'autosave') {
-                showToast("已恢復自動存檔進度", "success");
-            } else {
-                showToast("存檔讀取成功！", "success");
-            }
-
-            setShowSaveLoadModal(null);
-
-            // If we are pending a view switch, maybe force it?
-            if (view !== 'game') setView('game');
-
-        } catch (e) {
-            console.error("Load failed", e);
-            showToast("讀取存檔失敗: " + e.message, "error");
-        }
-    };
 
     // Auto-Save Effect
     // Auto-Save Effect - DISABLED
@@ -1280,161 +843,7 @@ JSON格式回覆：
 
     // Highlight Dice Rolls parser
     // Highlight Dice Rolls parser & Block Renderer
-    const renderTextWithDice = (text) => {
-        if (typeof text !== 'string') return null;
 
-        // 1. Header Detection (###)
-        if (text.startsWith('###')) {
-            return (
-                <div className="my-6 pl-4 border-l-4 border-amber-500 bg-gradient-to-r from-amber-900/40 to-transparent py-3 rounded-r-lg">
-                    <h3 className="text-amber-100 font-bold text-lg tracking-wide uppercase font-serif drop-shadow-md">
-                        {text.replace(/#/g, '').trim()}
-                    </h3>
-                </div>
-            );
-        }
-
-        // 1.5 Custom Bracket Headers 【...】
-        if (text.startsWith('【') && text.includes('】')) {
-            const content = text.replace(/[【】]/g, '').trim();
-            // Default Style
-            let borderColor = "border-slate-500";
-            let textColor = "text-slate-200";
-            let bgColor = "bg-slate-800/30";
-            let icon = null;
-
-            if (content.includes("行動") || content.includes("Action")) {
-                borderColor = "border-amber-500";
-                textColor = "text-amber-100";
-                bgColor = "bg-amber-950/30";
-                icon = "⚔️";
-            } else if (content.includes("檢定") || content.includes("Check")) {
-                borderColor = "border-cyan-500";
-                textColor = "text-cyan-100";
-                bgColor = "bg-cyan-950/30";
-                icon = "🎲";
-            } else if (content.includes("結果") || content.includes("Result")) {
-                borderColor = "border-emerald-500";
-                textColor = "text-emerald-100";
-                bgColor = "bg-emerald-950/30";
-                icon = "✨";
-            } else if (content.includes("威脅") || content.includes("Threat") || content.includes("警告")) {
-                borderColor = "border-rose-500";
-                textColor = "text-rose-100";
-                bgColor = "bg-rose-950/30 animate-pulse";
-                icon = "⚠️";
-            }
-
-            return (
-                <div className={`my-4 pl-3 pr-4 py-2 border-l-4 ${borderColor} ${bgColor} rounded-r flex items-center gap-2 font-bold font-serif tracking-wide shadow-sm`}>
-                    {icon && <span className="opacity-80">{icon}</span>}
-                    <span className={textColor}>{content}</span>
-                </div>
-            );
-        }
-
-        // 2. Dice Check Detection (Full Line)
-        // Supports: [🎲 Check: D20(x) + y = z | DC n -> Result] AND Unbracketed: -> Check: ...
-        const isBracketed = text.trim().startsWith('[🎲') && text.trim().endsWith(']');
-        const isLegacyFormat = text.trim().startsWith('->') && text.includes('D20') && (text.includes('DC') || text.includes('AC'));
-
-        if (isBracketed || isLegacyFormat) {
-            let rawContent = text;
-            if (isBracketed) rawContent = text.replace(/[\[\]]/g, '').replace('🎲', '').trim();
-            if (isLegacyFormat) rawContent = text.replace(/^->/, '').trim();
-
-            // Parse Components: "Stealth: D20(5) + 2 = 7 | DC 13"
-            // Regex for values.
-            // Match: Name, Base, Mod, Total, DC
-            // Regex for values.
-            // Match: Name, Base, Mod, Total, DC/AC
-            const parseRegex = /([^:]+):\s*D20\((\d+)\)\s*(?:[+-]\s*(\d+))?\s*=\s*(\d+)\s*\|\s*(?:DC|AC)\s*(\d+)/i;
-            const detailMatch = rawContent.match(parseRegex);
-
-            // Fallback for simple "Total vs DC/AC" format
-            const simpleRegex = /(\d+)\s*(?:vs|VS|對抗|\|)\s*(?:DC|AC|難度|防禦)[:\s]*(\d+)/i;
-            const simpleMatch = rawContent.match(simpleRegex);
-
-            // Determine Success/Failure from text or math
-            const resultMatch = rawContent.match(/(SUCCESS|FAILURE|PASS|FAIL|成功|失敗)$/i);
-            const resultStr = resultMatch ? resultMatch[1] : null;
-            let isSuccess = false;
-
-            if (resultStr) {
-                isSuccess = ["SUCCESS", "PASS", "成功"].includes(resultStr.toUpperCase());
-            } else if (simpleMatch) {
-                isSuccess = parseInt(simpleMatch[1]) >= parseInt(simpleMatch[2]);
-            }
-
-            // Prepare Props for DualDiceRoll
-            let playerRoll = { base: 10, mod: 0, total: 10 };
-            let target = { dc: 10, label: 'DC' };
-            let label = "Check";
-
-            const isAttack = rawContent.includes('AC') || rawContent.includes('Attack') || rawContent.includes('攻擊');
-            const targetLabel = isAttack ? 'AC' : 'DC';
-
-            if (detailMatch) {
-                label = detailMatch[1].trim();
-                playerRoll = {
-                    base: parseInt(detailMatch[2]),
-                    mod: detailMatch[3] ? parseInt(detailMatch[3]) : 0,
-                    total: parseInt(detailMatch[4])
-                };
-                target = { dc: parseInt(detailMatch[5]), label: targetLabel };
-            } else if (simpleMatch) {
-                playerRoll = { base: parseInt(simpleMatch[1]), mod: 0, total: parseInt(simpleMatch[1]) };
-                target = { dc: parseInt(simpleMatch[2]), label: targetLabel };
-            }
-
-            return (
-                <div className="my-4 mx-1">
-                    <DualDiceRoll
-                        playerRoll={playerRoll}
-                        target={target}
-                        result={isSuccess ? 'Success' : 'Failure'}
-                        checkName={label}
-                        autoPlay={true} // Force animation on mount
-                    />
-                </div>
-            );
-        }
-
-        // 2.5 Damage Dice Detection (Full Line) - [傷害: 1d6+4 = 8] or [Damage: XdY+Z = N]
-        if ((text.trim().startsWith('[傷害') || text.trim().toLowerCase().startsWith('[damage')) && text.trim().endsWith(']')) {
-            const content = text.replace(/[\[\]]/g, '').trim();
-            return (
-                <div className="my-3 mx-1 px-4 py-2 bg-rose-950/50 border border-rose-500/40 rounded-lg flex items-center gap-3 group hover:border-rose-500/70 transition-colors">
-                    <div className="w-8 h-8 rounded-full bg-rose-900/40 flex items-center justify-center border border-rose-500/30 text-xl shrink-0">
-                        ⚔️
-                    </div>
-                    <span className="text-rose-200 font-mono font-bold tracking-wide">
-                        {content}
-                    </span>
-                </div>
-            );
-        }
-
-        // 3. Inline Dice Detection (fallback) - also handles inline damage
-        const parts = text.split(/(\[🎲[^\]]+\]|\[傷害[^\]]+\]|\[Damage[^\]]+\])/gi);
-        return parts.map((part, i) => {
-            if (part.startsWith('[🎲') && part.endsWith(']')) {
-                return (
-                    <span key={i} className="bg-slate-900 text-amber-300 font-mono font-bold px-2 py-1 rounded border border-amber-500/30 mx-1 inline-block text-sm shadow-sm">
-                        {part.replace(/[\[\]]/g, '')}
-                    </span>
-                );
-            }
-            if ((part.startsWith('[傷害') || part.toLowerCase().startsWith('[damage')) && part.endsWith(']')) {
-                return (
-                    <span key={i} className="bg-rose-950/60 text-rose-300 font-mono font-bold px-2 py-1 rounded border border-rose-500/30 mx-1 inline-block text-sm shadow-sm">
-                        ⚔️ {part.replace(/[\[\]]/g, '')}
-                    </span>
-                );
-            }
-            return part;
-        });
-    };
 
     // Old scroll logic removed to allow smart scrolling to new content start
 
@@ -1444,6 +853,28 @@ JSON格式回覆：
 
     // Memory Service - Tiered memory for story coherence
     const memoryService = useRef(getMemoryService());
+
+    // --- Save & Load System (Hook) ---
+    const { checkMigration, handleSave, handleLoad } = useSaveSystem({
+        roster, setRoster,
+        logs, setLogs,
+        gameState, setGameState,
+        customModules, setCustomModules,
+        relationships, setRelationships,
+        questJournal, setQuestJournal,
+        party, setParty,
+        currentAct, setCurrentAct,
+        selectedModule, setSelectedModule,
+        gameOptions, setGameOptions,
+        level, setLevel,
+        sceneImage, setSceneImage,
+        showToast,
+        memoryService
+    });
+
+    useEffect(() => {
+        checkMigration();
+    }, []);
 
     // API Throttler - Prevents rapid consecutive API calls (429 protection)
     const lastApiCallTime = useRef(0);
@@ -1456,9 +887,6 @@ JSON格式回覆：
             return;
         }
 
-        // CRITICAL: Set execution flag IMMEDIATELY to prevent race conditions during throttle/validation
-        isExecuting.current = true;
-
         // Throttle check - wait if called too quickly
         const now = Date.now();
         const timeSinceLastCall = now - lastApiCallTime.current;
@@ -1469,7 +897,7 @@ JSON格式回覆：
         }
         lastApiCallTime.current = Date.now();
 
-        // Security / Validation
+        // 1. Validations First (Before locking)
         if (!apiKey) {
             showToast("請先輸入有效的 API 金鑰才能開始遊戲！", "error");
             setIsSetup(false);
@@ -1477,8 +905,6 @@ JSON格式回覆：
             return;
         }
 
-        // Validations
-        // Validations
         const hasActions = Object.keys(pendingActions).length > 0;
         const isPrologue = (forcePrologue || (logs.length === 0 && !hasActions)) && !forceContinue;
 
@@ -1490,6 +916,8 @@ JSON格式回覆：
             }
         }
 
+        // 2. Lock & Execute
+        isExecuting.current = true;
         console.log("=== EXECUTE TURN START ===");
         console.log("Pending Actions:", pendingActions);
         console.log("Is Prologue:", isPrologue);
@@ -2587,8 +2015,13 @@ JSON格式回覆：
             const { data: mechanicsData, usage: gmUsage } = await gmAgent.analyzeState(gmContext);
             if (gmUsage) updateTokenCount(gmUsage);
 
-            const newSignals = mechanicsData.signals || { threat_level: "None", pacing_signal: "Build-up", mechanical_opportunity: "None" };
+            const newSignals = mechanicsData.signals || { threat_level: "None", pacing_signal: "Build-up", mechanical_opportunity: "None", stagnation_detected: false };
             setWorldSignals(newSignals);
+
+            if (newSignals.stagnation_detected) {
+                setPendingPlotPush(true);
+                showToast("偵測到劇情重複，DM 已主動推動進度。", "info");
+            }
 
             // --- AGENT 4 (PART 1): HP UPDATE (DEFERRED) ---
             if (mechanicsData.hp_updates) {
@@ -2912,79 +2345,78 @@ JSON格式回覆：
             // IMPORTANT: Use finalNarrative (processed with battle summary) not raw narrativeText
             if (!isPrologue || forcePrologue) {
                 setIsPreGenerating(true);
-                const { results: nextOptions, usage: charUsage } = await charAgent.generateOptions(
-                    currentTurnRoster, // USE FUSED ROSTER
-                    { location: newMapLocation.join(" > "), time: "N/A" },
-                    finalNarrative,
-                    mechanicsData.hp_updates ? "Outcome processed" : "Nothing happened",
-                    newSignals,
-                    selectedModule?.id || null,
-                    currentAct,
-                    tempGroupOptions,
-                    activeEnemies // NEW: Pass Active Enemy List
-                );
-                if (charUsage) updateTokenCount(charUsage);
+                if (newSignals.adventure_ended) {
+                    // ADVENTURE ENDED: Override Options
+                    const leaderId = party[0];
+                    const leaderName = agentRoster.find(c => c.id === leaderId)?.name || "Player";
 
-                // Option Processing & Dedup
-                const processedOptions = [];
-                const processedCharIds = new Set();
-                nextOptions.forEach(opt => {
-                    const charId = opt.characterId || opt.id;
-                    const char = agentRoster.find(c => c.id == charId);
-                    if (!char) return;
+                    const finishOption = {
+                        id: `end-adventure-${Date.now()}`,
+                        characterId: leaderId,
+                        label: "🎉 完成冒險 (Finish Adventure)",
+                        type: "action",
+                        text: "完成了這次冒險。",
+                        monologue: "(終於結束了...)"
+                    };
 
-                    // Simple HP Check (Current State) - Approximation OK for options
-                    const hp = gameState[char.id]?.hp ?? char.hp;
-                    if (hp <= 0) {
-                        // Allow CharacterManagerAgent's generated "Downed" options to pass through
-                        // But also ensure "Death Saving Throw" is available as a mechanic fallback if not present
-                        if (!processedCharIds.has(charId)) {
-                            // Check if AI generated "Downed" options? It should have.
-                            // But adding explicit Death Save is still good for mechanics.
-                            // Let's MERGE them or PREPEND the mechanic action.
-                            const deathSaveOption = {
-                                id: `${charId}-death-save-mechanic`,
-                                label: "💀 瀕死檢定 (Death Save)",
-                                type: "action",
-                                characterId: charId,
-                                text: "makes a Death Saving Throw.",
-                                monologue: "(瀕死掙扎...)"
-                            };
-                            // Start with AI options, but ensure death save is an option or the default if AI failed
-                            // Actually, CharacterManagerAgent now generates "Downed" options.
-                            // Let's just push the AI options. The AI prompt was updated to handle this.
-                            // We don't need to force override unless AI failed.
-                            processedOptions.push(opt);
-                            processedCharIds.add(charId);
+                    // Mock specific structure for pipeline
+                    const nextOptions = [finishOption];
+
+                    updateTokenCount({ totalTokens: 0 }); // No cost for this mock
+
+                    // Continue directly to processing...
+                    // Option Processing & Dedup
+                    const processedOptions = [finishOption];
+                    const optionsMap = { [finishOption.id]: finishOption };
+
+                    // DEFER ACTION CACHE
+                    pendingPayload.actionCache = optionsMap;
+
+                } else {
+                    const { results: nextOptions, usage: charUsage } = await charAgent.generateOptions(
+                        currentTurnRoster, // USE FUSED ROSTER
+                        { location: newMapLocation.join(" > "), time: "N/A" },
+                        finalNarrative,
+                        mechanicsData.hp_updates ? "Outcome processed" : "Nothing happened",
+                        newSignals,
+                        selectedModule?.id || null,
+                        currentAct,
+                        tempGroupOptions,
+                        activeEnemies, // NEW: Pass Active Enemy List
+                        forcePlotPush || pendingPlotPush || (newSignals && newSignals.stagnation_detected)
+                    );
+                    if (charUsage) updateTokenCount(charUsage);
+
+                    // Option Processing & Dedup
+                    const processedOptions = [];
+                    // ... (rest of processing loop) ...
+                    nextOptions.forEach(opt => {
+                        const charId = opt.characterId || opt.id;
+                        const char = agentRoster.find(c => c.id == charId);
+                        if (!char) return;
+
+                        // Simple HP Check
+                        const hp = gameState[char.id]?.hp ?? char.hp;
+                        if (hp <= 0) {
+                            if (!processedCharIds.has(charId)) {
+                                processedOptions.push(opt);
+                                processedCharIds.add(charId);
+                            }
+                        } else {
+                            // --- TASK #10: INVENTORY FILTER ---
+                            const ITEM_EMOJIS = ['🎒', '🧪', '🩹', '💖'];
+                            const optText = opt.text || opt.label || '';
+                            const hasItemEmoji = ITEM_EMOJIS.some(e => optText.includes(e));
+
+                            let inventoryCheckPassed = true;
+                            if (hasItemEmoji && char.consumables && char.consumables.length === 0) {
+                                inventoryCheckPassed = false;
+                            }
+
+                            if (inventoryCheckPassed) {
+                                processedOptions.push(opt);
+                            }
                         }
-                    } else {
-                        // --- TASK #10: INVENTORY FILTER ---
-                        // If option references an item emoji (🎒/🧪/🩹/💖) and mentions a specific
-                        // consumable by name, verify that item still exists in the character's inventory.
-                        const ITEM_EMOJIS = ['🎒', '🧪', '🩹', '💖'];
-                        const optText = opt.text || opt.label || '';
-                        const hasItemEmoji = ITEM_EMOJIS.some(e => optText.includes(e));
-
-                        let inventoryCheckPassed = true;
-                        if (hasItemEmoji && char.consumables && char.consumables.length === 0) {
-                            // Character has NO consumables at all — skip item-use options
-                            inventoryCheckPassed = false;
-                        } else if (hasItemEmoji && char.consumables) {
-                            // Check if at least one consumable name appears in the option text
-                            const anyConsumableFound = char.consumables.some(item => {
-                                const name = typeof item === 'string' ? item : item?.name || '';
-                                return name.length > 2 && optText.includes(name);
-                            });
-                            // Allow if consumables list is non-empty but no specific match (generic item use)
-                            if (char.consumables.length > 0) inventoryCheckPassed = true;
-                            // Only reject if the option specifically names an item that's gone
-                            // (conservative: only hard-reject on empty consumable list, handled above)
-                        }
-
-                        if (inventoryCheckPassed) {
-                            processedOptions.push(opt);
-                        }
-                    }
                 });
 
                 const optionsMap = {};
@@ -3006,6 +2438,7 @@ JSON格式回覆：
                     });
                 }
             }
+        }
 
             // FINALIZE EXECUTE TURN
             setPendingTurnUpdates(pendingPayload);
@@ -5115,14 +4548,132 @@ font-tome-body
 
 
             {/* Main View Switching */}
-            {view === 'home' && renderSetup()}
-            {view === 'modules' && renderModuleSelection()}
-            {view === 'mode_select' && renderModeSelect()}
-            {view === 'roster' && renderRoster()}
+            {view === 'home' && (
+                <HomeView
+                    authMode={authMode}
+                    setAuthMode={setAuthMode}
+                    apiKey={apiKey}
+                    setApiKey={setApiKey}
+                    setView={setView}
+                />
+            )}
+            {view === 'modules' && (
+                <ModuleSelectView
+                    setView={setView}
+                    setSelectedModule={setSelectedModule}
+                    setLevel={setLevel}
+                    customModules={customModules}
+                    setCustomModules={setCustomModules}
+                    handleCreateCustomModule={handleCreateCustomModule}
+                    handleDeleteCustomModule={handleDeleteCustomModule}
+                    showArchiveModal={showArchiveModal}
+                    setShowArchiveModal={setShowArchiveModal}
+                    showCustomStoryModal={showCustomStoryModal}
+                    setShowCustomStoryModal={setShowCustomStoryModal}
+                    loadGame={loadGame}
+                    characterManager={characterManager}
+                />
+            )}
+            {view === 'mode_select' && (
+                <ModeSelectView
+                    setView={setView}
+                    gameMode={gameMode}
+                    setGameMode={setGameMode}
+                    GAME_MODES={GAME_MODES}
+                    gameOptions={gameOptions}
+                    setGameOptions={setGameOptions}
+                    startGame={startGame} // Added startGame prop
+                />
+            )}
+            {view === 'roster' && (
+                <RosterView
+                    party={party}
+                    setParty={setParty}
+                    setView={setView}
+                    roster={roster}
+                    setRoster={setRoster}
+                    agentRoster={agentRoster}
+                    showCreator={showCreator}
+                    setShowCreator={setShowCreator}
+                    setActiveModalChar={setActiveModalChar}
+                    toggleControlMode={toggleControlMode}
+                    gameMode={gameMode}
+                    GAME_MODES={GAME_MODES}
+                    gameState={gameState}
+                    levelUpTarget={levelUpTarget}
+                    setLevelUpTarget={setLevelUpTarget}
+                    handleLevelUpConfirm={handleLevelUpConfirm}
+                    logs={logs}
+                    characterManager={characterManager}
+                    showToast={showToast}
+                />
+            )}
             {
                 view === 'game' && (
                     <ErrorBoundary>
-                        {renderGameInterface()}
+                        <GameView
+                            party={party}
+                            gameState={gameState}
+                            setGameState={setGameState}
+                            agentRoster={agentRoster}
+                            selectedModule={selectedModule}
+                            currentAct={currentAct}
+                            currentLocation={currentLocation}
+                            setRoster={setRoster}
+                            scenarioRoster={scenarioRoster}
+                            setScenarioRoster={setScenarioRoster}
+                            logs={logs}
+                            setLogs={setLogs}
+                            isGenerating={isGenerating}
+                            isNarrating={isNarrating}
+                            isNarrativeComplete={isNarrativeComplete}
+                            handleNarrativeComplete={handleNarrativeComplete}
+                            executeTurn={executeTurn}
+                            pendingActions={pendingActions}
+                            setPendingActions={setPendingActions}
+                            actionCache={actionCache}
+                            setActionCache={setActionCache}
+                            showJournal={showJournal}
+                            setShowJournal={setShowJournal}
+                            questJournal={questJournal}
+                            handleArchiveCurrentGame={handleArchiveCurrentGame}
+                            lastLogRef={lastLogRef}
+                            logContainerRef={logContainerRef}
+                            scrollTrigger={scrollTrigger}
+                            userSettings={userSettings}
+                            forceInstant={forceInstant}
+                            setForceInstant={setForceInstant}
+                            gameMode={gameMode}
+                            GAME_MODES={GAME_MODES}
+                            isPreGenerating={isPreGenerating}
+                            setPendingTurnUpdates={setPendingTurnUpdates}
+                            showPokeMenu={showPokeMenu}
+                            setShowPokeMenu={setShowPokeMenu}
+                            pendingTurnUpdates={pendingTurnUpdates}
+                            setPendingPlotPush={setPendingPlotPush}
+                            setShowDMChat={setShowDMChat}
+                            editorAgent={editorAgent}
+                            activeRoster={agentRoster}
+                            setEditorialHints={setEditorialHints}
+                            showToast={showToast}
+                            saveGame={saveGame}
+                            setShowSettingsModal={setShowSettingsModal}
+                            mobileTab={mobileTab}
+                            setMobileTab={setMobileTab}
+                            sidebarWidth={sidebarWidth}
+                            isMobile={isMobile}
+                            isMuted={isMuted}
+                            setIsMuted={setIsMuted}
+                            audioManager={audioManager}
+                            charAgent={charAgent}
+                            styleMode={styleMode}
+                            handleRegenerateOptions={handleRegenerateOptions}
+                            toggleControlMode={toggleControlMode}
+                            setActiveModalChar={setActiveModalChar}
+                            setGroupDecisionOptions={setGroupDecisionOptions}
+                            actionModalChar={actionModalChar}
+                            setActionModalChar={setActionModalChar}
+                        />
                     </ErrorBoundary>
                 )
             }

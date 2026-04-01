@@ -29,6 +29,7 @@ import saltmarsh from './modules/saltmarsh.js';
 import frozen_sick from './modules/frozen_sick.js';
 import fallen_fortress from './modules/fallen_fortress.js';
 import potent_brew from './modules/potent_brew.js';
+import baldurs_gate from './modules/baldurs_gate.js';
 
 // Combine all modules
 export const ALL_MODULES = {
@@ -57,7 +58,8 @@ export const ALL_MODULES = {
     saltmarsh,
     frozen_sick,
     fallen_fortress,
-    potent_brew
+    potent_brew,
+    baldurs_gate
 };
 
 /**
@@ -90,7 +92,8 @@ const NUMERIC_ID_MAP = {
     23: "saltmarsh",
     24: "frozen_sick",
     25: "fallen_fortress",
-    27: "potent_brew"
+    27: "potent_brew",
+    28: "baldurs_gate"
 };
 
 /**

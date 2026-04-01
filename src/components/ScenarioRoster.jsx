@@ -25,14 +25,14 @@ const ScenarioRoster = ({ roster }) => {
                     const icon = isEnemy ? <Sword size={12} /> : isAlly ? <PawPrint size={12} /> : <User size={12} />;
 
                     return (
-                        <div key={`${actor.name}-${idx}`} className={`relative p-2 rounded border ${borderColor} ${bgColor} flex flex-col gap-1.5 transition-all group hover:bg-white/5`}>
+                        <div key={`${actor.name} -${idx} `} className={`relative p-2 rounded border ${borderColor} ${bgColor} flex flex-col gap-1.5 transition-all group hover:bg-white/5`}>
                             {/* Header */}
                             <div className="flex justify-between items-center text-xs">
                                 <span className={`font-bold font-tome-header ${textColor} flex items-center gap-1.5 text-sm`}>
                                     {icon}
                                     {actor.name}
                                 </span>
-                                <span className={`text-[9px] uppercase tracking-wider font-tome-body font-bold ${isAlly ? 'text-emerald-500' : 'text-slate-500'}`}>
+                                <span className={`text-[9px]uppercase tracking-wider font-tome-body font-bold ${isAlly ? 'text-emerald-500' : 'text-slate-500'} `}>
                                     {isAlly ? 'Companion' : actor.type}
                                 </span>
                             </div>
@@ -42,7 +42,7 @@ const ScenarioRoster = ({ roster }) => {
                                 <div className="w-full h-2 bg-slate-800 border border-slate-700 mt-1 relative rounded-sm overflow-hidden">
                                     <div
                                         className={`h-full ${barColor} transition-all duration-500 relative`}
-                                        style={{ width: `${Math.min(100, Math.max(0, (actor.hp / actor.maxHp) * 100))}%` }}>
+                                        style={{ width: `${Math.min(100, Math.max(0, (actor.hp / actor.maxHp) * 100))}% ` }}>
                                         <div className="absolute inset-0 bg-white/10 opacity-30"></div>
                                     </div>
                                 </div>
@@ -51,7 +51,7 @@ const ScenarioRoster = ({ roster }) => {
                             {/* Stats Text */}
                             {(actor.hp !== undefined) && (
                                 <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-0.5 font-bold">
-                                    <span>{isEnemy ? 'Status: Unknown' : `HP: ${actor.hp}${actor.maxHp ? `/${actor.maxHp}` : ''}`}</span>
+                                    <span>{isEnemy ? 'Status: Unknown' : `HP: ${actor.hp}${actor.maxHp ? `/${actor.maxHp}` : ''} `}</span>
                                     {isAlly && <span className="text-emerald-500 flex items-center gap-1 cursor-pointer hover:underline"><Zap size={10} /> Command</span>}
                                 </div>
                             )}
