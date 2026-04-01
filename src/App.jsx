@@ -1317,7 +1317,7 @@ JSON格式回覆：
                     // --- NEW: EDITORIAL REVIEW ---
                     // Let the EditorAgent review the output for consistency and formatting
                     const reviewResult = await editorAgent.performReview({
-                        moduleTitle,
+                        moduleTitle: selectedModule?.title || "Unknown Adventure",
                         logs: [...logs, { content: finalNarrative }],
                         roster: tempRoster,
                         currentAct,
