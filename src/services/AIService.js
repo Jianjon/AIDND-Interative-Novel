@@ -12,7 +12,9 @@ export class AIService {
         this.apiKey = options.apiKey;
         this.mode = options.mode || 'guest'; // 'guest' or 'user'
         this.generateContentFn = httpsCallable(functions, 'generateContent');
-        this.GEMINI_MODEL = "gemini-2.0-flash";
+        // AI Studio (user key) vs Vertex AI (Cloud Function) use different model name schemes
+        this.GEMINI_MODEL_AI_STUDIO = "gemini-2.0-flash-lite"; // AI Studio - works for new users
+        this.GEMINI_MODEL = this.GEMINI_MODEL_AI_STUDIO; // default fallback
     }
 
     /**
@@ -25,7 +27,7 @@ export class AIService {
      * @returns {Promise<{text: string, usage: object}>}
      */
     async generate(prompt, options = {}) {
-        const { isJson = false, maxRetries = 2, model = this.GEMINI_MODEL } = options;
+        const { isJson = false, maxRetries = 2, model = this.GEMINI_MODEL_AI_STUDIO } = options;
 
         const attempt = async (retryCount = 0) => {
             try {
@@ -64,9 +66,9 @@ export class AIService {
                     usage = data.usageMetadata || {};
                 } else {
                     // --- MODE B: Server-side Vertex AI (Guest Mode / Cloud Function) ---
+                    // NOTE: Do NOT pass model name - Cloud Function uses its own Vertex-compatible model
                     const result = await this.generateContentFn({
-                        prompt: prompt,
-                        model: model
+                        prompt: prompt
                     });
 
                     const data = result.data;

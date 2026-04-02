@@ -584,7 +584,7 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
     try {
       const attemptGeneration = async (retryCount = 0) => {
         try {
-          const result = await this.aiService.generate(systemPrompt, { model: "gemini-2.0-flash" });
+          const result = await this.aiService.generate(systemPrompt, {});
           return result;
         } catch (e) {
           if (retryCount < 1) {
@@ -683,8 +683,7 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
 
     try {
       const result = await this.aiService.generate(systemPrompt, {
-        isJson: true,
-        model: "gemini-2.0-flash"
+        isJson: true
       });
       return JSON.parse(result.text);
 
@@ -799,7 +798,7 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
     `;
 
     try {
-      const result = await this.aiService.generate(systemPrompt, { model: "gemini-2.0-flash" });
+      const result = await this.aiService.generate(systemPrompt, {});
       return result.text;
     } catch (error) {
       console.error("StoryAgent DM Chat Error:", error);
@@ -838,7 +837,7 @@ ${encounterGuidelines ? `${encounterGuidelines}\n` : ''}
     `;
 
     try {
-      const result = await this.aiService.generate(systemPrompt, { model: "gemini-2.0-flash" });
+      const result = await this.aiService.generate(systemPrompt, {});
       return result.text;
     } catch (error) {
       console.error("StoryAgent Review Error:", error);

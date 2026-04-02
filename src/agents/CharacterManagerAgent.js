@@ -18,7 +18,6 @@ export class CharacterManagerAgent {
         try {
             // AIService handles retries internally, but we can pass maxRetries if we want strictly 2
             const result = await this.aiService.generate(prompt, {
-                model: "gemini-2.0-flash",
                 maxRetries: retries,
                 isJson: isJson
             });

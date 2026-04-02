@@ -6,36 +6,24 @@ const { VertexAI } = require("@google-cloud/vertexai");
 // IMPORTANT: Please ensure this Project ID matches where your $1000 credits are located.
 exports.generateContent = onCall({
     cors: true,
-    // secrets: ["AIDND_2"] // Commented out to debug INTERNAL error
 }, async (request) => {
     logger.info("Function 'generateContent' invoked");
 
-    // Use dynamic project ID from environment
     const project = process.env.GCLOUD_PROJECT || 'aidnd-interactive-novel';
     const location = 'us-central1';
 
-    // Initialize Vertex AI
     const vertex_ai = new VertexAI({ project: project, location: location });
 
     const prompt = request.data.prompt;
-    const modelName = request.data.model;
 
-    const defaultModelName = 'gemini-2.0-flash';
-    const getModel = (name) => {
-        return vertex_ai.getGenerativeModel({
-            model: name || defaultModelName,
-            generationConfig: {
-                'maxOutputTokens': 8192,
-                'temperature': 1,
-                'topP': 0.95,
-            },
-        });
-    };
+    // IMPORTANT: Vertex AI requires versioned model names (unversioned aliases return 404).
+    // We NEVER use client-provided model names here — clients use AI Studio naming scheme.
+    const VERTEX_MODEL = 'gemini-2.0-flash-lite-001';
 
     logger.info("Generate content request received", {
         project: project,
         location: location,
-        model: modelName || defaultModelName
+        model: VERTEX_MODEL
     });
 
     if (!prompt) {
@@ -43,7 +31,15 @@ exports.generateContent = onCall({
     }
 
     try {
-        const generativeModel = getModel(modelName);
+        const generativeModel = vertex_ai.getGenerativeModel({
+            model: VERTEX_MODEL,
+            generationConfig: {
+                'maxOutputTokens': 8192,
+                'temperature': 1,
+                'topP': 0.95,
+            },
+        });
+
         const result = await generativeModel.generateContent(prompt);
         const response = await result.response;
 
@@ -58,10 +54,9 @@ exports.generateContent = onCall({
             message: error.message,
             stack: error.stack,
             project: project,
-            model: modelName || defaultModelName
+            model: VERTEX_MODEL
         });
 
-        // Use HttpsError to send detailed message to client
         throw new HttpsError('internal', `AI Generation Failed: ${error.message}. Please ensure Vertex AI API is enabled in project ${project} and Service Account has access.`);
     }
 });

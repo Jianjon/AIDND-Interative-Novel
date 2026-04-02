@@ -57,9 +57,7 @@ export default function CharacterModal({ character, relationships, party, roster
             Output (Traditional Chinese):
             `;
 
-            const result = await aiService.generate(prompt, {
-                model: "gemini-2.0-flash"
-            });
+            const result = await aiService.generate(prompt, {});
             const refinedText = result.text;
 
             if (refinedText) {

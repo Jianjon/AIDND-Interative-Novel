@@ -17,8 +17,7 @@ export class GameMasterAgent {
     async _generate(prompt) {
         try {
             const result = await this.aiService.generate(prompt, {
-                isJson: true,
-                model: "gemini-2.0-flash"
+                isJson: true
             });
 
             return {
