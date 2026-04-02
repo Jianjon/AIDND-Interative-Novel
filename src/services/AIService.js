@@ -12,7 +12,7 @@ export class AIService {
         this.apiKey = options.apiKey;
         this.mode = options.mode || 'guest'; // 'guest' or 'user'
         this.generateContentFn = httpsCallable(functions, 'generateContent');
-        this.GEMINI_MODEL = "gemini-2.0-flash-001";
+        this.GEMINI_MODEL = "gemini-2.0-flash";
     }
 
     /**

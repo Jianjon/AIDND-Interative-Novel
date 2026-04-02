@@ -20,7 +20,7 @@ exports.generateContent = onCall({
     const prompt = request.data.prompt;
     const modelName = request.data.model;
 
-    const defaultModelName = 'gemini-2.0-flash-001';
+    const defaultModelName = 'gemini-2.0-flash';
     const getModel = (name) => {
         return vertex_ai.getGenerativeModel({
             model: name || defaultModelName,
