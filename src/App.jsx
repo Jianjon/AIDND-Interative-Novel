@@ -1030,9 +1030,15 @@ JSON格式回覆：
 
                         const char = agentRoster.find(c => c.id === baseCharId);
                         if (char && !isMechanicalParams) {
-                            const styled = await charAgent.styleDialogue(char.name, char, actionText, logs.slice(-1)[0]?.content || "");
-                            // Append original action to ensure DM knows the mechanics
-                            finalActions[id] = `${styled.text} (Action: ${actionText})`;
+                            // Styling is cosmetic — never let its failure kill the whole turn
+                            try {
+                                const styled = await charAgent.styleDialogue(char.name, char, actionText, logs.slice(-1)[0]?.content || "");
+                                // Append original action to ensure DM knows the mechanics
+                                finalActions[id] = `${styled.text} (Action: ${actionText})`;
+                            } catch (styleError) {
+                                console.warn("[ExecuteTurn] styleDialogue failed, using raw action:", styleError);
+                                finalActions[id] = actionText;
+                            }
                         } else {
                             finalActions[id] = actionText;
                         }
@@ -2559,7 +2565,13 @@ JSON格式回覆：
 
         } catch (error) {
             console.error("Multi-Agent Error:", error);
-            setLogs(prev => [...prev, { type: 'narrative', content: `(System Error: ${error.message})` }]);
+            const msg = error.message || '';
+            const isQuota = /429|quota|exhausted|rate limit/i.test(msg);
+            const friendly = isQuota
+                ? '(⏳ API 額度暫時用盡 — 免費方案每分鐘請求數有限。請等待約一分鐘後，點右上角「戳 DM」→「繼續」重試，劇情進度不會遺失。)'
+                : `(System Error: ${msg} — 可點右上角「戳 DM」→「繼續」重試。)`;
+            setLogs(prev => [...prev, { type: 'narrative', content: friendly }]);
+            showToast(isQuota ? 'API 額度用盡，請稍候一分鐘再重試' : '生成失敗，可透過「戳 DM」重試', 'error');
             setIsPreGenerating(false);
             setIsNarrating(false);
             setIsNarrativeComplete(true);

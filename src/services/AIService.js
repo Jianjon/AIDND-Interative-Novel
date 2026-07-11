@@ -27,7 +27,7 @@ export class AIService {
      * @returns {Promise<{text: string, usage: object}>}
      */
     async generate(prompt, options = {}) {
-        const { isJson = false, maxRetries = 2, model = this.GEMINI_MODEL_AI_STUDIO } = options;
+        const { isJson = false, maxRetries = 3, model = this.GEMINI_MODEL_AI_STUDIO } = options;
 
         const attempt = async (retryCount = 0) => {
             try {
@@ -39,6 +39,17 @@ export class AIService {
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
 
+                    const generationConfig = {
+                        temperature: 1,
+                        maxOutputTokens: 8192,
+                        response_mime_type: isJson ? "application/json" : "text/plain"
+                    };
+                    // Gemini 2.5 models spend output tokens on hidden "thinking" by default,
+                    // which slows turns and can truncate long JSON. Disable it for gameplay.
+                    if (model.startsWith('gemini-2.5')) {
+                        generationConfig.thinkingConfig = { thinkingBudget: 0 };
+                    }
+
                     const response = await fetch(
                         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`,
                         {
@@ -46,11 +57,7 @@ export class AIService {
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 contents: [{ parts: [{ text: prompt }] }],
-                                generationConfig: {
-                                    temperature: 1,
-                                    maxOutputTokens: 8192,
-                                    response_mime_type: isJson ? "application/json" : "text/plain"
-                                }
+                                generationConfig
                             }),
                             signal: controller.signal
                         }
@@ -59,11 +66,35 @@ export class AIService {
                     const data = await response.json();
 
                     if (data.error) {
-                        throw new Error(`AI Studio Error: ${data.error.message}`);
+                        const err = new Error(`AI Studio Error: ${data.error.message}`);
+                        err.status = data.error.code || response.status;
+                        throw err;
                     }
 
-                    text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                    // Safety filter can block the whole prompt — no candidates returned
+                    if (data.promptFeedback?.blockReason) {
+                        throw new Error(`內容被安全過濾攔截 (${data.promptFeedback.blockReason})，請調整描述後重試`);
+                    }
+
+                    const candidate = data.candidates?.[0];
+                    // Join ALL parts — 2.5 models may split output across multiple parts
+                    text = (candidate?.content?.parts || [])
+                        .map(p => p.text)
+                        .filter(Boolean)
+                        .join("");
                     usage = data.usageMetadata || {};
+
+                    if (!text.trim()) {
+                        // Empty output (safety stop, or the whole budget went to thinking) —
+                        // surface as a retryable error instead of silently returning ""
+                        const reason = candidate?.finishReason || 'EMPTY';
+                        const err = new Error(`AI 回傳空內容 (${reason})`);
+                        err.status = 503; // mark retryable
+                        throw err;
+                    }
+                    if (candidate?.finishReason === 'MAX_TOKENS') {
+                        console.warn('[AIService] Output truncated at MAX_TOKENS — JSON may be incomplete');
+                    }
                 } else {
                     // --- MODE B: Server-side Vertex AI (Guest Mode / Cloud Function) ---
                     // Sign in anonymously first — the Cloud Function rejects unauthenticated calls.
@@ -119,11 +150,24 @@ export class AIService {
 
                 return { text, usage };
             } catch (error) {
-                // Retry logic for 500s
-                const isRetryable = error.status === 500 || error.message?.includes('500') || error.message?.includes('Internal Server Error');
-                if (retryCount < maxRetries && isRetryable) {
-                    console.warn(`[AIService] ${this.mode === 'user' ? 'Client' : 'Guest'} 500 Error, retrying (${retryCount + 1}/${maxRetries})...`, error);
-                    await new Promise(r => setTimeout(r, 1000 * (retryCount + 1)));
+                const msg = error.message || '';
+                const code = error.status ?? error.code; // HTTP status or Firebase HttpsError code
+
+                // Rate limit (free-tier quota) — retry with a LONG backoff so the quota window resets
+                const isRateLimited = code === 429 || code === 'resource-exhausted' ||
+                    msg.includes('429') || /quota|exhausted|rate limit/i.test(msg);
+                // Transient server-side failures — retry with a short backoff
+                const isTransient = code === 500 || code === 503 || code === 'internal' || code === 'unavailable' ||
+                    msg.includes('500') || msg.includes('503') ||
+                    /Internal Server Error|overloaded|unavailable|回傳空內容/i.test(msg) ||
+                    error.name === 'AbortError' ||           // 60s timeout
+                    (error instanceof TypeError && /fetch|network/i.test(msg)); // network drop
+
+                if (retryCount < maxRetries && (isRateLimited || isTransient)) {
+                    // 429: wait 8s/16s/24s (free tier quotas are per-minute); others: 1.5s/3s/4.5s
+                    const delay = (isRateLimited ? 8000 : 1500) * (retryCount + 1);
+                    console.warn(`[AIService] ${isRateLimited ? 'Rate limited' : 'Transient error'}, retrying in ${delay / 1000}s (${retryCount + 1}/${maxRetries})...`, msg);
+                    await new Promise(r => setTimeout(r, delay));
                     return attempt(retryCount + 1);
                 }
                 console.error("[AIService] Generation Error:", error);

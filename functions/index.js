@@ -98,6 +98,15 @@ exports.generateContent = onCall({
             model: VERTEX_MODEL
         });
 
+        // Map upstream Vertex failures to proper codes so the client's retry/backoff
+        // logic can distinguish rate limits (long wait) from transient errors (short wait)
+        const msg = error.message || '';
+        if (/429|quota|exhausted/i.test(msg)) {
+            throw new HttpsError('resource-exhausted', 'AI 服務額度暫時用盡，請稍候再試。');
+        }
+        if (/503|overloaded|unavailable/i.test(msg)) {
+            throw new HttpsError('unavailable', 'AI 模型暫時過載，請稍候再試。');
+        }
         throw new HttpsError('internal', `AI Generation Failed: ${error.message}. Please ensure Vertex AI API is enabled in project ${project} and Service Account has access.`);
     }
 });
