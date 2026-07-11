@@ -43,7 +43,7 @@ import CharacterModal from './components/CharacterModal';
 import SettingsModal from './components/SettingsModal';
 import CustomStoryModal from './components/CustomStoryModal';
 import { generateAIPortrait, generateAIScene } from './utils/portrait-generator';
-import { CharacterAgent } from './libs/CharacterAgent';
+import { CharacterAgent, NARRATIVE_PASSTHROUGH_FIELDS } from './libs/CharacterAgent';
 import { ErrorBoundary } from './libs/ErrorBoundary.jsx';
 import LevelUpModal from './components/LevelUpModal';
 import PRESET_CHARACTERS from './data/preset_characters';
@@ -277,6 +277,17 @@ export default function InteractiveDND() {
 
                     // ROBUST HYDRATION 2.0: Restore/Update companion data
                     const preset = PRESET_CHARACTERS.find(p => p.id === data.id);
+
+                    // Backfill persona-depth fields older saves lost (previous getFullSheet
+                    // write-backs stripped them) so personalities reach the story prompts again
+                    if (preset) {
+                        NARRATIVE_PASSTHROUGH_FIELDS.forEach(f => {
+                            if (hydratedData[f] === undefined && preset[f] !== undefined) {
+                                hydratedData[f] = preset[f];
+                            }
+                        });
+                    }
+
                     if (preset && preset.companion) {
                         if (!hydratedData.companion) {
                             // No log needed for routine hydration

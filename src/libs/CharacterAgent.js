@@ -13,11 +13,25 @@ import { WEAPON_DATABASE } from '../data/rules/items';
 
 /**
  * CharacterAgent.js (Hybrid Architecture)
- * 
+ *
  * The "Body" of the character.
  * Handles deterministic calculations (AC, Attacks, Saves) based on 5E Rules.
  * AI ("The Brain") should query this agent for layout, not hallucinate stats.
  */
+
+// Persona-depth fields that must survive hydration into an agent AND the
+// getFullSheet() write-back. They don't affect rules math, but they drive the
+// StoryAgent / persona prompts (partyProfiles) — dropping them turns every
+// character into a "Generic adventurer" in the narrative.
+export const NARRATIVE_PASSTHROUGH_FIELDS = [
+    'gender', 'mbti', 'firstImpression', 'habits', 'prejudices', 'preferences',
+    'appearance', 'organization', 'emotionalKeys', 'combatWeakness',
+    'combatBehavior', 'tacticalAbilities', 'abilities', 'techniques',
+    'combatRole', 'battleStyle', 'innerMonologue',
+    // Runtime meta (generation limits)
+    'portraitGenCount', 'aiRefineCount'
+];
+
 export class CharacterAgent {
     constructor(data) {
         // Core Identity
@@ -103,6 +117,12 @@ export class CharacterAgent {
         // Relationship System (v2)
         // { [targetId]: { value: 50, history: [], status: "Neutral" } }
         this.relationships = data.relationships || {};
+
+        // Persona depth (firstImpression / prejudices / emotionalKeys / combatWeakness ...)
+        // — pass through untouched so the story prompts can see them
+        NARRATIVE_PASSTHROUGH_FIELDS.forEach(field => {
+            if (data[field] !== undefined) this[field] = data[field];
+        });
     }
 
     /**
@@ -452,7 +472,13 @@ export class CharacterAgent {
             bio: this.bio,
             // Relationship System
             relationships: this.relationships,
-            decisionBias: this.decisionBias
+            decisionBias: this.decisionBias,
+            // Persona depth fields — omit from the sheet only if the agent never had them
+            ...Object.fromEntries(
+                NARRATIVE_PASSTHROUGH_FIELDS
+                    .filter(field => this[field] !== undefined)
+                    .map(field => [field, this[field]])
+            )
         };
     }
 }
