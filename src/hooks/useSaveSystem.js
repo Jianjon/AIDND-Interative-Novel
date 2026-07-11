@@ -135,7 +135,21 @@ export const useSaveSystem = ({
                 memoryState: memoryService?.current?.export ? memoryService.current.export() : null,
             };
 
-            localStorage.setItem(key, JSON.stringify(saveData));
+            try {
+                localStorage.setItem(key, JSON.stringify(saveData));
+            } catch (quotaError) {
+                // localStorage quota (~5MB) exceeded — base64 scene images are the usual
+                // culprit. Retry once without image payloads rather than losing the save.
+                console.warn("Save exceeded storage quota, retrying without images:", quotaError);
+                const slimData = {
+                    ...saveData,
+                    sceneImage: null,
+                    logs: (saveData.logs || []).filter(l => !(l.type === 'image' && typeof l.content === 'string' && l.content.startsWith('data:'))),
+                };
+                localStorage.setItem(key, JSON.stringify(slimData));
+                showToast(`存檔空間不足，已略過場景圖片後完成儲存 (Slot ${slotId})`, 'warning');
+                return true;
+            }
             showToast(`Game Saved to Slot ${slotId}`, 'success');
             return true;
         } catch (e) {

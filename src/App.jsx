@@ -783,19 +783,19 @@ JSON格式回覆：
 
 
     useEffect(() => {
-        // Pre-game preview seeding only. While no game is running (no logs) keep the
-        // preview HP in sync with the module-scaled roster; startGame / save-load
-        // own gameState once a session is active.
-        if (party.length > 0 && logs.length === 0) {
+        // Pre-game preview seeding only. Outside the game view, keep the preview HP
+        // in sync with the module-scaled roster; startGame / save-load own gameState
+        // once a session is active (never clobber it here — it carries maxHp/gold/inventory).
+        if (party.length > 0 && view !== 'game') {
             const initial = {};
             party.forEach(id => {
                 const char = agentRoster.find(c => c.id === id);
                 // Use the character's rule-derived HP, not a hardcoded value
-                initial[id] = { hp: char?.hp ?? char?.maxHp ?? 10, psych: "正常", inventory: [] };
+                initial[id] = { hp: char?.hp ?? char?.maxHp ?? 10, maxHp: char?.maxHp, psych: "正常", inventory: [] };
             });
             setGameState(initial);
         }
-    }, [party, agentRoster, logs.length]);
+    }, [party, agentRoster, view]);
 
     // Track previous log length to detect new messages
     const prevLogsLength = useRef(0);
@@ -883,6 +883,9 @@ JSON格式回覆：
             console.log("[ExecuteTurn] Blocked: Already executing or generating.");
             return;
         }
+        // Acquire the lock BEFORE any await — otherwise a second click during the
+        // throttle wait passes the check above and the turn executes twice.
+        isExecuting.current = true;
 
         // Throttle check - wait if called too quickly
         const now = Date.now();
@@ -913,8 +916,7 @@ JSON格式回覆：
             }
         }
 
-        // 2. Lock & Execute
-        isExecuting.current = true;
+        // 2. Execute (lock already held from the top of the function)
         console.log("=== EXECUTE TURN START ===");
         console.log("Pending Actions:", pendingActions);
         console.log("Is Prologue:", isPrologue);
@@ -1800,12 +1802,14 @@ JSON格式回覆：
 
                 if (hpValue.includes('/')) {
                     // Format: current/max (e.g., "2/9")
-                    const [current, max] = hpValue.split('/').map(s => parseInt(s.trim()));
+                    const [current, max] = hpValue.split('/').map(s => parseInt(s.trim(), 10));
+                    if (Number.isNaN(current)) continue; // Malformed tag (e.g. non-numeric text) — skip
                     absoluteHp = current;
-                    maxHpUpdate = max;
+                    maxHpUpdate = Number.isNaN(max) ? null : max;
                 } else {
                     // Format: change amount (e.g., "+5" or "-3")
-                    amount = parseInt(hpValue);
+                    amount = parseInt(hpValue, 10);
+                    if (Number.isNaN(amount)) continue; // Malformed tag — skip
                 }
 
                 // Try Player Roster first
@@ -2131,13 +2135,17 @@ JSON格式回覆：
 
                     // 2. Apply Agent Updates
                     Object.entries(updates).forEach(([name, change]) => {
+                        // AI may return the delta as a string ("-5") — coerce or hp becomes NaN
+                        const delta = Number(change);
+                        if (Number.isNaN(delta)) return;
                         const targetId = Object.keys(nextState).find(key => {
                             const charName = agentRoster.find(c => c.id === key)?.name;
                             return charName && (charName === name || charName.includes(name));
                         });
 
                         if (targetId && nextState[targetId]) {
-                            let newHp = Math.max(0, Math.min(nextState[targetId].maxHp, nextState[targetId].hp + change));
+                            const cap = nextState[targetId].maxHp ?? Infinity;
+                            let newHp = Math.max(0, Math.min(cap, (Number(nextState[targetId].hp) || 0) + delta));
                             nextState[targetId] = {
                                 ...nextState[targetId],
                                 hp: newHp,
@@ -2150,12 +2158,13 @@ JSON格式回覆：
 
                 // Defer Scenario Roster Update
                 pendingPayload.scenarioRoster = tempScenarioRoster.map(actor => {
-                    const updateEntry = Object.entries(updates).find(([name, change]) =>
+                    const updateEntry = Object.entries(updates).find(([name]) =>
                         actor.name === name || actor.name.includes(name) || name.includes(actor.name)
                     );
                     if (updateEntry) {
-                        const change = updateEntry[1];
-                        return { ...actor, hp: Math.max(0, (actor.hp || 0) + change) };
+                        const change = Number(updateEntry[1]);
+                        if (Number.isNaN(change)) return actor;
+                        return { ...actor, hp: Math.max(0, (Number(actor.hp) || 0) + change) };
                     }
                     return actor;
                 });
@@ -2171,6 +2180,8 @@ JSON格式回覆：
                 const invLogs = [];
 
                 mechanicsData.inventory_updates.forEach(update => {
+                    // AI output guard: skip malformed entries (missing item/character fields crash below)
+                    if (!update || typeof update.item !== 'string' || !update.character) return;
                     const targetChar = invRoster.find(c => (party.includes(c.id)) && (c.name.includes(update.character) || c.id === update.character));
                     if (targetChar) {
                         const charIndex = invRoster.findIndex(c => c.id === targetChar.id);
@@ -2188,7 +2199,7 @@ JSON格式回覆：
                                 let removed = 0;
                                 // Simple string match removal
                                 for (const item of currentInv) {
-                                    const itemName = typeof item === 'string' ? item : item.name;
+                                    const itemName = (typeof item === 'string' ? item : item?.name) || '';
                                     if (removed < removeCount && itemName.includes(update.item)) {
                                         removed++;
                                     } else {
@@ -2419,10 +2430,12 @@ JSON格式回覆：
             // 2. Apply Deferred HP Updates (Remove Dead)
             if (mechanicsData.hp_updates) {
                 Object.entries(mechanicsData.hp_updates).forEach(([name, change]) => {
-                    const idx = activeEnemies.findIndex(e => e.name === name || e.name.includes(name));
+                    const delta = Number(change);
+                    if (Number.isNaN(delta)) return;
+                    const idx = activeEnemies.findIndex(e => e.name && (e.name === name || e.name.includes(name)));
                     if (idx !== -1) {
                         const enemy = activeEnemies[idx];
-                        const newHp = (enemy.hp || 0) + change;
+                        const newHp = (Number(enemy.hp) || 0) + delta;
                         if (newHp <= 0) {
                             activeEnemies.splice(idx, 1); // Remove dead enemy
                         } else {
@@ -2436,14 +2449,15 @@ JSON格式回覆：
             if (mechanicsData.scene_updates) {
                 const updates = mechanicsData.scene_updates; // Expecting { add: [], remove: [], clear: bool }
                 if (updates.clear) activeEnemies = [];
-                if (updates.remove) {
+                if (Array.isArray(updates.remove)) {
                     updates.remove.forEach(name => {
-                        activeEnemies = activeEnemies.filter(e => !e.name.includes(name));
+                        activeEnemies = activeEnemies.filter(e => !(e.name && e.name.includes(name)));
                     });
                 }
-                if (updates.add) {
+                if (Array.isArray(updates.add)) {
                     updates.add.forEach(newActor => {
-                        if (newActor.type === 'enemy') activeEnemies.push(newActor);
+                        // Nameless actors break every name-based lookup downstream
+                        if (newActor && newActor.type === 'enemy' && newActor.name) activeEnemies.push(newActor);
                     });
                 }
             }
@@ -3063,13 +3077,14 @@ JSON格式回覆：
                                                     const update = roster_updates.find(u => u.id === char.id || u.name === char.name);
                                                     if (update) {
                                                         const clone = Object.create(Object.getPrototypeOf(char));
-                                                        Object.assign(clone, char, update.updates);
+                                                        Object.assign(clone, char, update.updates || {});
 
                                                         // Handle special arrays like adding items
-                                                        if (update.updates.inventory_add) {
+                                                        if (Array.isArray(update.updates?.inventory_add)) {
                                                             clone.inventory = [...(clone.inventory || []), ...update.updates.inventory_add];
                                                             // Also add to categories for UI
                                                             update.updates.inventory_add.forEach(item => {
+                                                                if (typeof item !== 'string') return;
                                                                 const lower = item.toLowerCase();
                                                                 if (lower.includes('藥水') || lower.includes('卷軸') || lower.includes('potion') || lower.includes('scroll')) {
                                                                     clone.consumables = [...(clone.consumables || []), item];
