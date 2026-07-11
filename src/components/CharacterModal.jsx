@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { X, Sword, Shield, Map as MapIcon, Ghost, Heart, Star, BookOpen, Scroll, Skull, Package, Sparkles, Settings, Save } from 'lucide-react';
-import { BondRadar } from './BondRadar';
+import  { useState } from 'react';
+import { X, Sword,   Ghost, Heart,  BookOpen,   Package, Sparkles } from 'lucide-react';
 
 /**
  * CharacterModal.jsx
@@ -9,12 +8,13 @@ import { BondRadar } from './BondRadar';
  * Shows strict derived stats (AC, DC) alongside narrative fluff.
  */
 export default function CharacterModal({ character, relationships, party, roster, onClose, onGeneratePortrait, onLevelUp, onUpdatePortrait, onUpdateCharacter, isGenerating }) {
-    if (!character) return null;
-
     const [activeTab, setActiveTab] = useState('stats'); // stats, inventory, backstory, companion
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({});
     const [isRefining, setIsRefining] = useState(false);
+    const [lightboxSrc, setLightboxSrc] = useState(null);
+
+    if (!character) return null;
 
     // Use the new getFullSheet() if available, otherwise fallback
     const data = character.getFullSheet ? character.getFullSheet() : character;
@@ -112,10 +112,6 @@ export default function CharacterModal({ character, relationships, party, roster
         { value: 'TACTICAL', label: '精準戰術 (Tactical) - 強調控場與弱點' },
         { value: 'MERCIFUL', label: '仁慈不殺 (Merciful) - 追求和平，非致命' },
     ];
-
-    // Lightbox state
-    // Lightbox state
-    const [lightboxSrc, setLightboxSrc] = useState(null);
 
     // Helper to check if avatar is AI generated (starts with data:image)
     const isGenerated = data.avatar && data.avatar.startsWith('data:');
@@ -630,7 +626,7 @@ export default function CharacterModal({ character, relationships, party, roster
                                                                         Impression
                                                                     </span>
                                                                     <p className="text-sm text-slate-400 italic leading-relaxed font-serif">
-                                                                        "{rel.thoughts || '......'}"
+                                                                        &quot;{rel.thoughts || '......'}&quot;
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -648,7 +644,7 @@ export default function CharacterModal({ character, relationships, party, roster
                             <div className="space-y-6">
                                 <div>
                                     <h4 className="text-green-500 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">性格特質 (Personality)</h4>
-                                    <p className="text-slate-300 text-sm leading-relaxed italic">"{data.personality}"</p>
+                                    <p className="text-slate-300 text-sm leading-relaxed italic">&quot;{data.personality}&quot;</p>
                                 </div>
 
                                 {/* Relationship Radar moved to dedicated tab */}
@@ -657,7 +653,7 @@ export default function CharacterModal({ character, relationships, party, roster
                                 <div>
                                     <h4 className="text-purple-400 text-sm font-bold uppercase mb-2 border-b border-slate-800 pb-1">秘密與內心獨白 (Secrets)</h4>
                                     <p className="text-purple-300/80 text-sm leading-relaxed italic font-serif">
-                                        "{data.monologue || "尚未揭曉內心深處的想法..."}"
+                                        &quot;{data.monologue || "尚未揭曉內心深處的想法..."}&quot;
                                     </p>
                                 </div>
 

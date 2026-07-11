@@ -1,6 +1,6 @@
-import forestImg from '../assets/scenes/forest.png';
-import tavernImg from '../assets/scenes/tavern.png';
-import dungeonImg from '../assets/scenes/dungeon.png';
+import forestImg from '../assets/scenes/forest.webp';
+import tavernImg from '../assets/scenes/tavern.webp';
+import dungeonImg from '../assets/scenes/dungeon.webp';
 
 export const SCENE_IMAGES = {
     'forest': forestImg,

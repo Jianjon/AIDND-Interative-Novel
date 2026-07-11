@@ -1,4 +1,3 @@
-import React from 'react';
 import { Skull, Zap, Shield, Eye, Heart, Wind, Flame, Snowflake, Moon, Sun, AlertTriangle } from 'lucide-react';
 
 /**

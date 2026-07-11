@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import  { useState, useEffect, useMemo, useRef } from 'react';
 import DualDiceRoll from './DualDiceRoll';
-import { Sword, Shield, Zap, Skull, Crown, Ghost, User, Dices, ImageIcon } from 'lucide-react';
-import { getSceneImage } from '../data/SceneImageMap';
+import { Sword, Shield, Zap, Skull, Crown, Ghost,  Dices, ImageIcon } from 'lucide-react';
 
 const TypewriterText = ({ text, renderWithDice, speed = 20, onComplete, shouldAnimate = true }) => {
     const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
@@ -202,7 +201,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     trimmed.startsWith('---') && trimmed.length < 5) return;
 
                 // 5. Empty formatted lines like just "**" or "=="
-                if (/^[\*\=\-\#]+$/.test(trimmed)) return;
+                if (/^[*=#-]+$/.test(trimmed)) return;
 
                 // 6. PART labels (PART 1:, PART 2:, etc.)
                 if (trimmed.match(/^PART\s*\d+:/i) || trimmed.match(/^第[一二三四五六七八九十]+部分/)) return;
@@ -307,7 +306,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
 
                 if (isBracketed || isLegacy) {
                     let cleanText = trimmed;
-                    if (isBracketed) cleanText = trimmed.replace(/[\[\]]/g, '').replace('🎲', '').trim();
+                    if (isBracketed) cleanText = trimmed.replace(/[[\]]/g, '').replace('🎲', '').trim();
                     if (isLegacy) cleanText = trimmed.replace(/^->/, '').trim();
 
                     // Regex: Name, Base, Mod, Total, Target(DC/AC)
@@ -433,7 +432,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     sectionItems.push({
                         type: 'block_header',
                         variant: 'character_action',
-                        content: trimmed.replace(/[【】\[\]]/g, ''),
+                        content: trimmed.replace(/[【】[\]]/g, ''),
                         index: -1
                     });
                     // Damage Statistics Block
@@ -441,7 +440,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     sectionItems.push({
                         type: 'block_header',
                         variant: 'damage',
-                        content: trimmed.replace(/[⚔️🗡️]/g, '').trim(),
+                        content: trimmed.replace(/⚔️|🗡️/g, '').trim(),
                         index: -1
                     });
                     // Party Status Block
@@ -449,7 +448,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     sectionItems.push({
                         type: 'block_header',
                         variant: 'party',
-                        content: trimmed.replace(/[❤️💚]/g, '').trim(),
+                        content: trimmed.replace(/❤️|💚/g, '').trim(),
                         index: -1
                     });
                     // Enemy Status Block
@@ -457,7 +456,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     sectionItems.push({
                         type: 'block_header',
                         variant: 'enemy',
-                        content: trimmed.replace(/[💀☠️]/g, '').trim(),
+                        content: trimmed.replace(/💀|☠️/g, '').trim(),
                         index: -1
                     });
                     // Status entry lines (❤️ or 🔴 prefixed)
@@ -466,7 +465,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                     sectionItems.push({
                         type: 'status_entry',
                         variant: isEnemy ? 'enemy' : 'party',
-                        content: trimmed.replace(/^[❤️🔴💚💀]\s*/, ''),
+                        content: trimmed.replace(/^(?:❤️|🔴|💚|💀)\s*/, ''),
                         index: -1
                     });
                     // Damage entry lines (- prefixed attack descriptions)
@@ -768,7 +767,7 @@ export default function SequentialLogRenderer({ content, roster = [], renderText
                                 {/* Name & Info */}
                                 <div className="flex flex-col">
                                     <h4 className={`font-serif font-bold ${sec.titleColor} text-lg tracking-wide leading-none`}>
-                                        {sec.headerText.replace(/[\(\[\)\]]/g, ' ')}
+                                        {sec.headerText.replace(/[([)\]]/g, ' ')}
                                     </h4>
                                     {/* Action Status (Optional, can add later) */}
                                 </div>

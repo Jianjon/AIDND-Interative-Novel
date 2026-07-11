@@ -1,11 +1,11 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AIService } from "../services/AIService";
 import { PersonaService } from "../services/PersonaService";
 import { CLASS_BEHAVIORS } from "../data/classBehaviors";
 import { formatModuleContext } from "../data/modules_data.js";
-import { CHARACTER_MBTI, getInteractionPhrase } from "../data/mbtiCompatibility.js";
+import { CHARACTER_MBTI } from "../data/mbtiCompatibility.js";
 import { COMBAT_STYLES } from "../data/combatStyles.js";
+import { CLASS_PROGRESSION } from "../data/rules/class_progression.js";
 
 
 export class CharacterManagerAgent {

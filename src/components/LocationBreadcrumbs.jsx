@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Navigation } from 'lucide-react';
+import {  Navigation } from 'lucide-react';
 
 /**
  * LocationBreadcrumbs

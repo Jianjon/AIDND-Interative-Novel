@@ -20,7 +20,6 @@ const raceToEnglish = {
     '艾羽人': 'Mwangi Human',
     '天狗': 'Tengu',
     '巨人裔': 'Giant-kin',
-    '龍裔': 'Dragon-kin',
     'Nephilim 人類': 'Nephilim',
     '提夫林': 'Tiefling',
     '半精靈': 'Half-Elf',
@@ -63,7 +62,11 @@ const classToEnglish = (chineseClass) => {
 };
 
 const getApiKey = () => {
-    return import.meta.env.VITE_GOOGLE_AI_KEY || localStorage.getItem('gemini_api_key');
+    let key = localStorage.getItem('gemini_api_key');
+    if (key) {
+        try { key = JSON.parse(key); } catch { /* raw (unquoted) key — use as-is */ }
+    }
+    return import.meta.env.VITE_GOOGLE_API_KEY || import.meta.env.VITE_GOOGLE_AI_KEY || key;
 };
 
 // Simple hash function for cache keys
@@ -168,11 +171,11 @@ export const generateAIPortrait = async (character, forceRegenerate = false) => 
 
         console.log("Generating portrait with prompt:", prompt);
 
-        // Priority 1: Gemini 2.0 Flash Experimental (supports image generation)
+        // Priority 1: Gemini 2.5 Flash Image (supports image generation)
         try {
-            console.log("Attempting generation with gemini-2.0-flash...");
+            console.log("Attempting generation with gemini-2.5-flash-image...");
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -329,10 +332,10 @@ No text, no UI overlay.`;
 
         console.log("Generating Scene for:", locationName);
 
-        // Priority 1: Gemini 2.5 Flash (Nano Banana)
+        // Priority 1: Gemini 2.5 Flash Image
         try {
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

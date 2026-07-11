@@ -76,7 +76,8 @@ export class CharacterAgent {
 
         // Dynamic State (Mutable via API)
         this.maxHp = this._calculateMaxHp(); // Enforce rule calculation
-        this.hp = data.hp !== undefined ? data.hp : this.maxHp;
+        // Clamp to the recalculated max — stale saves may carry hp from older rules (e.g. 100/14)
+        this.hp = data.hp !== undefined ? Math.min(data.hp, this.maxHp) : this.maxHp;
         this.xp = data.xp || 0;
         this.maxXp = this._calculateNextLevelXp();
 
@@ -110,8 +111,8 @@ export class CharacterAgent {
      */
     syncState(state) {
         if (!state) return;
-        if (state.hp !== undefined) this.hp = state.hp;
         if (state.maxHp !== undefined) this.maxHp = state.maxHp;
+        if (state.hp !== undefined) this.hp = Math.min(state.hp, this.maxHp);
         if (state.gold !== undefined) this.gold = state.gold;
         if (state.psych !== undefined) this.psych = state.psych;
         if (state.inventory) {

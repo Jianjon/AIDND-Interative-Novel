@@ -1,5 +1,5 @@
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../firebase'; // Import initialized functions instance
+import { functions, ensureAnonymousAuth } from '../firebase'; // Import initialized functions instance
 
 /**
  * AIService: Centralized handler for all AI model interactions.
@@ -13,7 +13,7 @@ export class AIService {
         this.mode = options.mode || 'guest'; // 'guest' or 'user'
         this.generateContentFn = httpsCallable(functions, 'generateContent');
         // AI Studio (user key) vs Vertex AI (Cloud Function) use different model name schemes
-        this.GEMINI_MODEL_AI_STUDIO = "gemini-2.0-flash-lite"; // AI Studio - works for new users
+        this.GEMINI_MODEL_AI_STUDIO = "gemini-2.5-flash"; // AI Studio - active model
         this.GEMINI_MODEL = this.GEMINI_MODEL_AI_STUDIO; // default fallback
     }
 
@@ -66,6 +66,8 @@ export class AIService {
                     usage = data.usageMetadata || {};
                 } else {
                     // --- MODE B: Server-side Vertex AI (Guest Mode / Cloud Function) ---
+                    // Sign in anonymously first — the Cloud Function rejects unauthenticated calls.
+                    await ensureAnonymousAuth();
                     // NOTE: Do NOT pass model name - Cloud Function uses its own Vertex-compatible model
                     const result = await this.generateContentFn({
                         prompt: prompt

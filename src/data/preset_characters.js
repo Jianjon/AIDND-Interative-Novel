@@ -1,67 +1,66 @@
-import barbarianImg from '../assets/characters/Barbarian.png';
-import bardImg from '../assets/characters/Bard.png';
-import clericImg from '../assets/characters/Cleric.png';
-import druidImg from '../assets/characters/Druid.png';
-import fighterImg from '../assets/characters/Fighter.png';
-import monkImg from '../assets/characters/Monk.png';
-import paladinImg from '../assets/characters/Paladin.png';
-import rangerImg from '../assets/characters/Ranger.png';
-import rogueImg from '../assets/characters/Rogue.png';
-import sorcererImg from '../assets/characters/Sorcerer.png';
-import warlockImg from '../assets/characters/Warlock.png';
-import wizardImg from '../assets/characters/Wizard.png';
+import barbarianImg from '../assets/characters/Barbarian.webp';
+import bardImg from '../assets/characters/Bard.webp';
+import clericImg from '../assets/characters/Cleric.webp';
+import druidImg from '../assets/characters/Druid.webp';
+import fighterImg from '../assets/characters/Fighter.webp';
+import monkImg from '../assets/characters/Monk.webp';
+import paladinImg from '../assets/characters/Paladin.webp';
+import rangerImg from '../assets/characters/Ranger.webp';
+import rogueImg from '../assets/characters/Rogue.webp';
+import sorcererImg from '../assets/characters/Sorcerer.webp';
+import warlockImg from '../assets/characters/Warlock.webp';
+import wizardImg from '../assets/characters/Wizard.webp';
 // Extended class images
-import artificerImg from '../assets/characters/artificer.png';
-import necromancerImg from '../assets/characters/necromancer.png';
-import bloodhunterImg from '../assets/characters/bloodhunter.png';
-import shamanImg from '../assets/characters/shaman.png';
-import witchImg from '../assets/characters/witch.png';
-import duelistImg from '../assets/characters/duelist.png';
-import summonerImg from '../assets/characters/summoner.png';
-import magusImg from '../assets/characters/magus.png';
-import oracleImg from '../assets/characters/oracle.png';
-import investigatorImg from '../assets/characters/investigator.png';
-import deathknightImg from '../assets/characters/deathknight.png';
-import psionImg from '../assets/characters/psion.png';
-import eldritchknightImg from '../assets/characters/eldritchknight.png';
-import alchemistImg from '../assets/characters/alchemist.png';
-import championImg from '../assets/characters/champion.png';
-import chronomancerImg from '../assets/characters/chronomancer.png';
+import artificerImg from '../assets/characters/artificer.webp';
+import necromancerImg from '../assets/characters/necromancer.webp';
+import bloodhunterImg from '../assets/characters/bloodhunter.webp';
+import shamanImg from '../assets/characters/shaman.webp';
+import witchImg from '../assets/characters/witch.webp';
+import duelistImg from '../assets/characters/duelist.webp';
+import summonerImg from '../assets/characters/summoner.webp';
+import magusImg from '../assets/characters/magus.webp';
+import oracleImg from '../assets/characters/oracle.webp';
+import investigatorImg from '../assets/characters/investigator.webp';
+import deathknightImg from '../assets/characters/deathknight.webp';
+import psionImg from '../assets/characters/psion.webp';
+import eldritchknightImg from '../assets/characters/eldritchknight.webp';
+import alchemistImg from '../assets/characters/alchemist.webp';
+import championImg from '../assets/characters/champion.webp';
+import chronomancerImg from '../assets/characters/chronomancer.webp';
 // New Heroic characters (10 Legendary Heroes)
-import knightImg from '../assets/characters/Knight.png';
-import bladedancerImg from '../assets/characters/bladedancer.png';
-import scoutImg from '../assets/characters/scout.png';
-import axesingerImg from '../assets/characters/axesinger.png';
-import elfmagusImg from '../assets/characters/elfmagus.png';
-import hunterImg from '../assets/characters/hunter.png';
-import assassinImg from '../assets/characters/assassin.png';
-import weaponmasterImg from '../assets/characters/weaponmaster.png';
-import runemasterImg from '../assets/characters/runemaster.png';
-import fieldmedicImg from '../assets/characters/fieldmedic.png';
-import lumImg from '../assets/characters/lum_star_sorcerer.png';
-import isabellaImg from '../assets/characters/isabella_pirate.png';
-import morrinaImg from '../assets/characters/morrina_witch.png';
-import dianaImg from '../assets/characters/diana_archer.png';
-import fenelaImg from '../assets/characters/fenela_bloodlord.png';
-import kikiImg from '../assets/characters/kiki_lucky.png';
-import anthraxeImg from '../assets/characters/anthraxe.jpg';
+import knightImg from '../assets/characters/Knight.webp';
+import bladedancerImg from '../assets/characters/bladedancer.webp';
+import scoutImg from '../assets/characters/scout.webp';
+import axesingerImg from '../assets/characters/axesinger.webp';
+import elfmagusImg from '../assets/characters/elfmagus.webp';
+import hunterImg from '../assets/characters/hunter.webp';
+import assassinImg from '../assets/characters/assassin.webp';
+import weaponmasterImg from '../assets/characters/weaponmaster.webp';
+import runemasterImg from '../assets/characters/runemaster.webp';
+import fieldmedicImg from '../assets/characters/fieldmedic.webp';
+import lumImg from '../assets/characters/lum_star_sorcerer.webp';
+import isabellaImg from '../assets/characters/isabella_pirate.webp';
+import morrinaImg from '../assets/characters/morrina_witch.webp';
+import dianaImg from '../assets/characters/diana_archer.webp';
+import fenelaImg from '../assets/characters/fenela_bloodlord.webp';
+import kikiImg from '../assets/characters/kiki_lucky.webp';
+import anthraxeImg from '../assets/characters/anthraxe.webp';
 // Companion portraits
-import shadowfangImg from '../assets/characters/shadowfang.png';
-import swiftwindImg from '../assets/characters/swiftwind.png';
-import inkwellImg from '../assets/characters/inkwell.png';
-import shunImg from '../assets/characters/Steam Cat-dnd-portrait.png';
-import babyOwlbearImg from '../assets/characters/baby_owlbear.jpg';
-import steamyImg from '../assets/characters/steamy.jpg';
-import crowImg from '../assets/characters/crow.png';
-import silkshadeImg from '../assets/characters/silkshade.png';
-import sevenImg from '../assets/characters/seven.png';
-import swordghostImg from '../assets/characters/swordghost.jpg';
-import lunaImg from '../assets/characters/phantomwhitewolf-dnd-portrait.png';
-import arthurImg from '../assets/characters/arthur_seeker.png';
-import conanImg from '../assets/characters/conan_barbarian.png';
-import villagerImg from '../assets/characters/villager_mob.png';
-import skeletonImg from '../assets/characters/skeleton_knight.png';
-import pipiImg from '../assets/characters/pipi_wild_mage.png';
+import swiftwindImg from '../assets/characters/swiftwind.webp';
+import inkwellImg from '../assets/characters/inkwell.webp';
+import shunImg from '../assets/characters/Steam Cat-dnd-portrait.webp';
+import babyOwlbearImg from '../assets/characters/baby_owlbear.webp';
+import steamyImg from '../assets/characters/steamy.webp';
+import crowImg from '../assets/characters/crow.webp';
+import silkshadeImg from '../assets/characters/silkshade.webp';
+import sevenImg from '../assets/characters/seven.webp';
+import swordghostImg from '../assets/characters/swordghost.webp';
+import lunaImg from '../assets/characters/phantomwhitewolf-dnd-portrait.webp';
+import arthurImg from '../assets/characters/arthur_seeker.webp';
+import conanImg from '../assets/characters/conan_barbarian.webp';
+import villagerImg from '../assets/characters/villager_mob.webp';
+import skeletonImg from '../assets/characters/skeleton_knight.webp';
+import pipiImg from '../assets/characters/pipi_wild_mage.webp';
 
 /**
  * Preset Playable Characters (The Iconic 12)
@@ -1354,7 +1353,7 @@ export const PRESET_CHARACTERS = [
     },
     // --- 23. Inquisitor/審判者 (Female) - 魅魔裔異端獵人 ---
     {
-        id: 'preset_deathknight', // ID kept for file consistency, user to replace 'deathknight.png'
+        id: 'preset_deathknight', // ID kept for file consistency, user to replace 'deathknight.webp'
         name: '維斯帕·夜歌 (Vesper)',
         race: '魅魔裔',
         class: '審判者',

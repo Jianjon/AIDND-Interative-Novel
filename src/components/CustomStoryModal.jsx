@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { X, Feather, Sparkles, RefreshCw, Wand2 } from 'lucide-react';
 
 const CustomStoryModal = ({ isOpen, onClose, onGenerate, isGenerating }) => {

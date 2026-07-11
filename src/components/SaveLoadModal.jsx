@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Save, FolderOpen, Trash2, Clock, MapPin, User, ChevronRight, FileX } from 'lucide-react';
+import  { useState, useEffect } from 'react';
+import { Save, FolderOpen, Trash2, Clock, MapPin,  ChevronRight, FileX } from 'lucide-react';
 
 export default function SaveLoadModal({ isOpen, mode, onClose, onSave, onLoad, onDelete }) {
     const [slots, setSlots] = useState([

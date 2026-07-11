@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import {
     CLASS_DATA, ALIGNMENTS,
     ARCHETYPES_CN, PERSONALITIES
 } from '../libs/GameData';
 import { RACE_TRAITS } from '../data/rules/race_traits';
 import { BACKGROUNDS } from '../data/rules/backgrounds';
-import { X, Upload, Dice5, User, Shield, Zap, Book } from 'lucide-react';
+import { X,  Dice5, User, Shield } from 'lucide-react';
 import { CharacterAgent } from '../libs/CharacterAgent';
 
 export const CharacterCreator = ({ onClose, onCreate }) => {

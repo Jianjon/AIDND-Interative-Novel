@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { X, Sparkles, User, Sword, Shield, Zap, BookOpen, Dice5, RefreshCw, Upload, Image as ImageIcon, Move, ZoomIn } from 'lucide-react';
+import  { useState, useEffect, useRef } from 'react';
+import { X, Sparkles,  Sword, Shield, Zap,  Dice5, RefreshCw, Upload,  Move, ZoomIn } from 'lucide-react';
 import { CHARACTER_PROMPTS } from '../data/character_prompts';
 
 /**
@@ -560,7 +560,7 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
                                     </div>
                                     <div className="bg-slate-950 p-3 rounded">
                                         <span className="text-purple-400 font-bold block mb-1">性格與獨白</span>
-                                        <p className="italic text-slate-400">"{draft.monologue}"</p>
+                                        <p className="italic text-slate-400">&quot;{draft.monologue}&quot;</p>
                                         <p className="mt-2 text-xs text-slate-500">{draft.personality}</p>
                                     </div>
                                     {draft.habits && draft.habits.length > 0 && (
@@ -632,7 +632,7 @@ export default function CharacterCreationModal({ onClose, onConfirm, characterMa
                                                 </h4>
                                                 {selectedAbility?.id === ability.id && <Zap className="text-amber-500 animate-pulse" />}
                                             </div>
-                                            <p className="text-slate-400 text-sm mb-3 italic">"{ability.description}"</p>
+                                            <p className="text-slate-400 text-sm mb-3 italic">&quot;{ability.description}&quot;</p>
                                             <div className="bg-slate-950/50 p-3 rounded text-sm text-indigo-200 border border-indigo-900/30">
                                                 <span className="font-bold text-indigo-400 text-xs uppercase tracking-wider block mb-1">Effect</span>
                                                 {ability.effect}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Sword, Sparkles, Package, Zap, Send, RefreshCw, Terminal, ChevronDown, Eye, Scroll, Feather } from 'lucide-react';
+import  { useState } from 'react';
+import { X,   Package,  Send, RefreshCw,   Eye,  Feather } from 'lucide-react';
 
 /**
  * ActionModal.jsx (Dark Tome Style)
@@ -103,12 +103,12 @@ export default function ActionModal({
                 </button>
 
                 <h3 className={`${accentColor} font-bold text-xs uppercase tracking-[0.2em] mb-2 flex items-center gap-2 font-tome-header`}>
-                    <Feather size={12} fill="currentColor" /> {character.name}'s Turn {isDowned && <span className="text-red-500 animate-pulse font-extrabold ml-2">[濒死 - DOWNED]</span>}
+                    <Feather size={12} fill="currentColor" /> {character.name}&apos;s Turn {isDowned && <span className="text-red-500 animate-pulse font-extrabold ml-2">[濒死 - DOWNED]</span>}
                 </h3>
 
                 {monologue ? (
                     <p className="text-indigo-200/90 text-sm italic border-l-2 border-indigo-500/50 pl-3 py-1 bg-indigo-500/10 rounded-r font-tome-script leading-relaxed">
-                        "{monologue}"
+                        &quot;{monologue}&quot;
                     </p>
                 ) : (
                     <p className={`${textSecondary} text-xs italic`}>Considering options...</p>

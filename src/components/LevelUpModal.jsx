@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Shield, Sparkles, Zap, BookOpen, Crown, ChevronRight, Check, Brain, Loader2, ArrowRight } from 'lucide-react';
+import  { useState, useEffect } from 'react';
+import {  Sparkles, Zap,  Crown,  Check, Brain, Loader2, ArrowRight } from 'lucide-react';
 import { FEATS_DATA } from '../libs/GameData';
 
 export default function LevelUpModal({ isOpen, character, narrativeHistory, agent, onConfirm, onClose }) {
@@ -52,7 +52,7 @@ export default function LevelUpModal({ isOpen, character, narrativeHistory, agen
                 <div className="text-center">
                     <Loader2 size={64} className="text-amber-500 animate-spin mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-white mb-2">Consulting the Dungeon Master...</h2>
-                    <p className="text-slate-400">Analyzing {character.name}'s journey to determine their path.</p>
+                    <p className="text-slate-400">Analyzing {character.name}&apos;s journey to determine their path.</p>
                 </div>
             </div>
         );
@@ -96,7 +96,7 @@ export default function LevelUpModal({ isOpen, character, narrativeHistory, agen
                                         {aiPlan.type === 'feat' ? `Feat: ${aiPlan.value}` : `Stats: ${JSON.stringify(aiPlan.value).replace(/["{}]/g, '').replace(':', ' +')}`}
                                     </span>
                                 </div>
-                                <p className="text-sm text-slate-300 mt-2 italic">"{aiPlan.reason}"</p>
+                                <p className="text-sm text-slate-300 mt-2 italic">&quot;{aiPlan.reason}&quot;</p>
                             </div>
                         )}
 

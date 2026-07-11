@@ -1,5 +1,4 @@
-import React from 'react';
-import { Heart, Shield, Zap, Skull, Activity, Droplets, Eye, Brain } from 'lucide-react';
+import { Heart,  Zap, Skull, Activity, Droplets, Eye, Brain } from 'lucide-react';
 
 /**
  * HealthBar Component

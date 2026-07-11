@@ -1,4 +1,3 @@
-import React from 'react';
 import { Scroll, X } from 'lucide-react';
 
 export default function JournalModal({ journal, onClose }) {

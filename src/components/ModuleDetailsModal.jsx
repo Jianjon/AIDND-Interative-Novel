@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { X, Clock, Skull, Zap, BookOpen, Coffee, Sword } from 'lucide-react';
 
 export function ModuleDetailsModal({ module, onClose, onStartGame }) {
-    if (!module) return null;
-
     // Default State
-    const [startLevel, setStartLevel] = useState(module.levels[0]);
+    const [startLevel, setStartLevel] = useState(module?.levels?.[0]);
     const [pacing, setPacing] = useState('fast'); // fast | slow
     const [tone, setTone] = useState('normal'); // relaxed | normal | grim
 
     // Reset when module changes
     useEffect(() => {
+        if (!module) return;
         setStartLevel(module.levels[0]);
         setPacing('fast');
         setTone('normal');
     }, [module]);
+
+    if (!module) return null;
 
     const handleStart = () => {
         onStartGame(module, {

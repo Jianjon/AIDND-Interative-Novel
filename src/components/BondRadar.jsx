@@ -1,4 +1,3 @@
-import React from 'react';
 import { Heart, Shield, Skull, Zap } from 'lucide-react';
 
 /**
@@ -71,7 +70,7 @@ export const BondRadar = ({ affinity = 0, bondState = 'STRANGER', history = [] }
                     <div className="text-[10px] text-gray-500 uppercase">Recent Interactions</div>
                     {history.slice(-2).reverse().map((evt, idx) => (
                         <div key={idx} className="text-xs flex justify-between text-gray-400">
-                            <span className="truncate max-w-[70%] text-gray-300">"{evt.reason}"</span>
+                            <span className="truncate max-w-[70%] text-gray-300">&quot;{evt.reason}&quot;</span>
                             <span className={evt.change > 0 ? "text-green-400 gap-1 flex" : "text-red-400 gap-1 flex"}>
                                 {evt.change > 0 ? '+' : ''}{evt.change}
                                 {evt.trigger && evt.trigger !== 'NONE' && (

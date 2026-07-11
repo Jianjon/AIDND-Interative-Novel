@@ -199,6 +199,20 @@ export class MemoryService {
             stats: this.getStats()
         };
     }
+
+    /**
+     * Restore memory from an exported state (save slot load)
+     * @param {Object} state - Object previously produced by export()
+     */
+    restore(state) {
+        if (!state || typeof state !== 'object') return;
+        this.immediate = Array.isArray(state.immediate) ? state.immediate : [];
+        this.working = typeof state.working === 'string' ? state.working : "";
+        this.longTerm = Array.isArray(state.longTerm) ? state.longTerm : [];
+        this.characterStates = state.characterStates || {};
+        this.save(); // Keep localStorage mirror in sync
+        console.log('[MemoryService] State restored from save slot');
+    }
 }
 
 // Singleton instance

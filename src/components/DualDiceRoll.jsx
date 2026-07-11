@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Sword, Shield, Skull, Zap, X, Check } from 'lucide-react';
+import {   Skull } from 'lucide-react';
 
 const DualDiceRoll = ({
     playerRoll = { base: 10, mod: 0, total: 10 },

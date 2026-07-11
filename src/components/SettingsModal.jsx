@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { X, Type, Image as ImageIcon, Music, Monitor, Moon, Sun, Coffee, Eye, Volume2, VolumeX, Settings, Cpu, HardDrive, Shield, AlertCircle, RefreshCw, Trash2, Save } from 'lucide-react';
 
 const SettingsModal = ({
@@ -12,9 +12,9 @@ const SettingsModal = ({
     onToggleMute,
     onClearCache
 }) => {
-    if (!isOpen) return null;
-
     const [activeTab, setActiveTab] = useState('audio');
+
+    if (!isOpen) return null;
 
     const themes = [
         { id: 'default', name: '暗黑模式 (Dark)', bg: 'bg-slate-950', text: 'text-slate-200', icon: Moon },

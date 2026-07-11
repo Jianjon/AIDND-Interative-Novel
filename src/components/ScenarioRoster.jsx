@@ -1,4 +1,3 @@
-import React from 'react';
 import { Users, Sword, PawPrint, User, Zap } from 'lucide-react';
 
 /* Scenario Roster Component (Sidebar) */

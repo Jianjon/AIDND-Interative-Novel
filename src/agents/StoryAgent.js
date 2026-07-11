@@ -1,5 +1,5 @@
 import { AIService } from "../services/AIService";
-import { formatModuleContext, getActInfo } from '../data/modules_data.js';
+import { formatModuleContext } from '../data/modules_data.js';
 
 
 // LOCKED BY USER REQUEST (2025-12-10). DO NOT EDIT WITHOUT EXPLICIT PERMISSION.

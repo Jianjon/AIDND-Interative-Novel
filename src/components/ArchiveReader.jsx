@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Sword, Shield, Zap, Skull, Crown, Ghost, User, Book } from 'lucide-react';
+import  { useMemo } from 'react';
+import {        Book } from 'lucide-react';
 
 export default function ArchiveReader({ logs, party = [], fontSize = 'text-base', theme = 'sepia' }) {
 
