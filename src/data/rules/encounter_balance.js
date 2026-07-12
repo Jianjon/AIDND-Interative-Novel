@@ -199,10 +199,15 @@ export const getDifficultyFromDMPersona = (tone) => {
         guide: 'Easy',      // 友善 DM - 容易遭遇
         arbiter: 'Medium',  // 公平 DM - 標準遭遇
         ruthless: 'Deadly', // 嚴苛 DM - 致命遭遇
+        // ModeSelectView UI ids (aliases)
+        pulpy: 'Easy',        // 爽快英雄 - Rule of Cool
+        murderhobo: 'Deadly', // 極限殺戮
         // Novel Mode Tones (fallback)
         relaxed: 'Easy',
         normal: 'Medium',
-        grim: 'Hard'
+        grim: 'Hard',
+        dark: 'Hard',       // 黑暗冷酷 (UI id)
+        humorous: 'Easy'    // 輕鬆幽默 (UI id)
     };
     return mapping[tone] || 'Medium';
 };
@@ -233,6 +238,11 @@ export const getDeathProtectionRules = (tone) => {
 - ⚠️ 角色死亡是真實可能的結局
 - ⚠️ 敵人使用最佳戰術 (集火、控制、分割)`
     };
+    // ModeSelectView UI id aliases
+    rules.pulpy = rules.guide;         // 爽快英雄 → 友善保護
+    rules.murderhobo = rules.ruthless; // 極限殺戮 → 嚴苛規則
+    rules.dark = rules.ruthless;       // 黑暗冷酷 (Novel)
+    rules.humorous = rules.guide;      // 輕鬆幽默 (Novel)
     return rules[tone] || rules.arbiter;
 };
 

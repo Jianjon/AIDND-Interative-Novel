@@ -117,8 +117,13 @@ const ModuleSelectView = ({
                                     <div
                                         key={mod.id}
                                         onClick={() => {
-                                            setSelectedModule(mod);
-                                            setLevel(mod.startLevel || 3);
+                                            // Modules don't carry startLevel themselves — stamp the
+                                            // category's advertised level (Lv.1/3/5/8) so preview
+                                            // scaling and startGame both honor it
+                                            const startLevel = mod.startLevel || cat.startLevel ||
+                                                (Array.isArray(mod.levels) ? mod.levels[0] : 3);
+                                            setSelectedModule({ ...mod, startLevel });
+                                            setLevel(startLevel);
                                             setView('roster');
                                         }}
                                         className={`

@@ -110,6 +110,24 @@ export class StoryAgent {
                 - 存活下來會獲得額外獎勵 (經驗值 +20%、稀有道具)`
     };
 
+    // --- UI ID ALIASES ---
+    // ModeSelectView emits these ids; without aliases they silently fell back
+    // to 'normal', making 4 of the 6 style options no-ops.
+    TONE_PROMPTS.dark = TONE_PROMPTS.grim;           // 黑暗冷酷 (Novel)
+    TONE_PROMPTS.humorous = TONE_PROMPTS.relaxed;    // 輕鬆幽默 (Novel)
+    TONE_PROMPTS.murderhobo = TONE_PROMPTS.ruthless; // 極限殺戮 (TRPG)
+    TONE_PROMPTS.pulpy = `DM PERSONA: 爽快英雄 (Rule of Cool)
+                Main Goal: 帥氣優先，讓玩家體驗英雄式的爽快冒險。
+                ** 酷炫法則 **:
+                - 只要玩家的行動描述夠帥、夠有創意，就給予成功或優勢
+                - 規則為輔助，不為阻礙 — 數值可以為了戲劇性讓步
+                - 鼓勵誇張的特技動作、連招與一擊必殺的演出
+                ** 死亡規則 **:
+                - 主角群幾乎不會死亡，倒下也會以帥氣的方式重新站起
+                - 敵人是襯托英雄的舞台裝置，該倒就倒
+                ** 寫作風格 **:
+                - 動作場面電影化、節奏明快、臺詞有梗`;
+
     const PACING_PROMPTS = {
       fast: "PACING: FAST. Focus on the main objective. Minimize travel time and minor encounters. Resolve conflicts quickly.",
       slow: "PACING: SLOW / EXTENDED. Aim for a 1.5x longer session. Introduce complications, sub-obstacles, and unexpected twists. Do not resolve the main conflict immediately. Force the players to work for their victory."
@@ -390,11 +408,21 @@ FIRST, describe the current scene/environment BEFORE resolving player actions.
             `;
     }
 
+    // FINALE: the player accepted the "完成冒險" option — write a proper ending
+    const epilogueBlock = context.isEpilogue ? `
+** FINALE — THIS IS THE EPILOGUE TURN (終章收尾，最高優先) **
+- 冒險已經結束，本回合請撰寫完整的【終章】，不要再拋出新的衝突或懸念。
+- 結構建議：高潮餘波 → 任務結算（委託人反應、報酬）→ 每位角色的後日談（各 1 段，呼應其個性與成長）→ 收束所有未解伏線 → 餘韻結尾。
+- 語氣依照文風設定收斂，給讀者「故事完結」的滿足感。
+- 在敘事的最後一行輸出 [[ACT_UPDATE: END]]。
+` : "";
+
     const systemPrompt = `
         You are the ** Storyteller ** (Narrative Agent) for an interactive D & D novel.
     Module: "${moduleTitle}"
 Location: "${currentLocation}"
-${forcePlotPush ? "** CRITICAL SIGNAL: FORCE PLOT PUSH (絕對強制推進劇情) **\n- THE CURRENT SCENE IS STAGNANT OR LOOPING. YOU MUST BREAK THE LOOP NOW.\n- IMMEDIATELY transition the story to a NEW significant event, a NEW location, or the NEXT ACT.\n- DO NOT waste time on small talk or minor details. Jump ahead in time if necessary.\n- CHANGE THE WORLD STATE: A sudden attack, a discovery, an NPC betrayal, or an environmental catastrophe MUST occur to force the players forward.\n- CHARACTER PROACTIVITY: Use the characters' traits or inter-party dynamics to spark a moment of realization, a heated debate, or a decisive action that moves them forward.\n- If in doubt, skip to the next major plot point in the module act guidelines." : ""}
+${epilogueBlock}
+${forcePlotPush && !context.isEpilogue ? "** CRITICAL SIGNAL: FORCE PLOT PUSH (絕對強制推進劇情) **\n- THE CURRENT SCENE IS STAGNANT OR LOOPING. YOU MUST BREAK THE LOOP NOW.\n- IMMEDIATELY transition the story to a NEW significant event, a NEW location, or the NEXT ACT.\n- DO NOT waste time on small talk or minor details. Jump ahead in time if necessary.\n- CHANGE THE WORLD STATE: A sudden attack, a discovery, an NPC betrayal, or an environmental catastrophe MUST occur to force the players forward.\n- CHARACTER PROACTIVITY: Use the characters' traits or inter-party dynamics to spark a moment of realization, a heated debate, or a decisive action that moves them forward.\n- If in doubt, skip to the next major plot point in the module act guidelines." : ""}
 
         **CRITICAL: ALL TEXT OUTPUT MUST BE IN TRADITIONAL CHINESE (繁體中文 - 台灣正體). NO SIMPLIFIED CHINESE. NO ENGLISH.**
         **嚴格遵守：所有輸出內容必須使用繁體中文（台灣習慣）。絕對禁止出現簡體中文。**

@@ -1076,6 +1076,10 @@ JSON格式回覆：
                 })
                 .join("\n") || (forcePrologue ? "(Game Start - Prologue)" : (forceContinue ? "((The player pokes the DM to continue...))" : "(No Action)"));
 
+            // FINALE DETECTION: The GM's adventure_ended override injects a
+            // "完成冒險" action — this turn should be written as an epilogue.
+            const isEpilogueTurn = /完成冒險|完成了這次冒險/.test(userActionText);
+
             // Log the "Player Action" phase (using styled text)
             if (!isPrologue) {
                 const actionLog = {
@@ -1123,6 +1127,7 @@ JSON格式回覆：
                 lastLog: fullContext,
                 tone: gameOptions.tone,
                 pacing: gameOptions.pacing,
+                isEpilogue: isEpilogueTurn,
                 gmSignals: worldSignals, // Feed previous turn's signals to Story
                 mode: gameMode, // 'novel' or 'trpg'
                 party: party.map(id => agentRoster.find(c => c.id === id)?.name).filter(Boolean),
@@ -2093,6 +2098,12 @@ JSON格式回覆：
                 : { type: 'narrative', content: finalNarrative };
             setLogs(prev => [...prev, narrativeLog]);
 
+            // FINALE: the epilogue just concluded the story — preserve it in the library
+            if (isEpilogueTurn) {
+                handleArchiveCurrentGame([...logs, narrativeLog]);
+                showToast("🏁 冒險完結！史詩已自動寫入圖書館", "success");
+            }
+
             // Initialize Deferred Payload (Moved Up)
 
 
@@ -2480,7 +2491,8 @@ JSON格式回覆：
             }
 
             // IMPORTANT: Use finalNarrative (processed with battle summary) not raw narrativeText
-            if (!isPrologue || forcePrologue) {
+            // Epilogue turn = the story is over; don't generate further options
+            if ((!isPrologue || forcePrologue) && !isEpilogueTurn) {
                 setIsPreGenerating(true);
                 if (newSignals.adventure_ended) {
                     // ADVENTURE ENDED: Override Options
@@ -2759,8 +2771,9 @@ JSON格式回覆：
     /**
      * Archive the current game session as a permanent story.
      */
-    const handleArchiveCurrentGame = () => {
-        if (logs.length < 5) {
+    const handleArchiveCurrentGame = (logsOverride = null) => {
+        const logList = Array.isArray(logsOverride) ? logsOverride : logs;
+        if (logList.length < 5) {
             showToast("冒險還太短，不值得寫入史詩...", "info");
             return;
         }
@@ -2775,10 +2788,12 @@ JSON格式回覆：
                 class: c.class,
                 race: c.race
             })),
-            logs: logs.filter(l => l.type === 'narration' || l.type === 'dialogue'), // Only story logs
+            // Story logs only — the app emits 'trpg_narrative'/'narrative'
+            // (the old 'narration'/'dialogue' filter matched nothing → empty archives)
+            logs: logList.filter(l => l.type === 'trpg_narrative' || l.type === 'narrative'),
             date: new Date().toLocaleDateString(),
             stats: {
-                turns: logs.length,
+                turns: logList.length,
                 level: partyChars[0]?.level || 3
             }
         };
