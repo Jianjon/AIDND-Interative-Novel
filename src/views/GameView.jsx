@@ -278,7 +278,7 @@ w-8 h-8 flex items-center justify-center rounded-full border transition-all mr-2
                 <div
                     ref={logContainerRef}
                     className={`flex-1 overflow-y-auto p-4 lg:p-12 scroll-smooth overscroll-contain relative custom-scrollbar
-text-slate-200 ${userSettings.fontSize} ${userSettings.lineHeight}
+text-slate-200 ${userSettings.fontSize}
 font-tome-body
 `}
                 >
@@ -311,7 +311,7 @@ font-tome-body
                                             theme={userSettings.theme}
                                             fontSize={userSettings.fontSize}
                                             letterSpacing={userSettings.letterSpacing}
-                                            lineHeight={userSettings.lineHeight}
+                                            lineHeight={Number(userSettings.lineHeight) || 1.8}
                                         />
                                     ) : log.type === 'image' ? (
                                         <div className="my-8 p-2 border-2 border-[#1a1a1a]/10 bg-white/50 shadow-sm relative group animate-in fade-in zoom-in-95 duration-1000 rotate-1 transform hover:rotate-0 transition-transform">

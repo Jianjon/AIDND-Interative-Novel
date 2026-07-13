@@ -387,7 +387,7 @@ export default function InteractiveDND() {
     const [userSettings, setUserSettings] = useLocalStorage('dnd_user_settings', {
         theme: 'default',
         fontSize: 'text-base',
-        lineHeight: 'leading-relaxed',
+        lineHeight: 1.8, // numeric CSS line-height (slider range 1.4–2.4); NOT a Tailwind class
         masterVolume: 80,
         bgmVolume: 60,
         sfxVolume: 80,

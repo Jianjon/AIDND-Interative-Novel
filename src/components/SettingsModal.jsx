@@ -212,12 +212,12 @@ const SettingsModal = ({
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between">
                                             <span className="text-xs text-slate-400">緊密</span>
-                                            <span className="text-xs text-amber-500 font-mono">{settings.lineHeight || 1.8}</span>
+                                            <span className="text-xs text-amber-500 font-mono">{Number(settings.lineHeight) || 1.8}</span>
                                             <span className="text-xs text-slate-400">寬鬆</span>
                                         </div>
                                         <input
                                             type="range" min="1.4" max="2.4" step="0.1"
-                                            value={settings.lineHeight || 1.8}
+                                            value={Number(settings.lineHeight) || 1.8}
                                             onChange={(e) => onUpdateSettings('lineHeight', parseFloat(e.target.value))}
                                             className="w-full accent-amber-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
                                         />
@@ -279,7 +279,7 @@ const SettingsModal = ({
                                     <div className="bg-slate-950/30 p-4 rounded-xl border border-slate-800 flex items-center justify-between mt-4">
                                         <div>
                                             <div className="text-sm font-medium text-slate-300">AI 模型 (Model)</div>
-                                            <div className="text-xs text-slate-500">Currently running on Gemini 2.0 Flash Exp</div>
+                                            <div className="text-xs text-slate-500">Currently running on Gemini 2.5 Flash</div>
                                         </div>
                                         <Cpu size={20} className="text-slate-600" />
                                     </div>
