@@ -51,9 +51,10 @@ exports.generateContent = onCall({
 
     const prompt = request.data.prompt;
 
-    // IMPORTANT: Vertex AI requires versioned model names (unversioned aliases return 404).
     // We NEVER use client-provided model names here — clients use AI Studio naming scheme.
-    const VERTEX_MODEL = 'gemini-2.0-flash-lite-001';
+    // NOTE: gemini-2.0-flash-lite-001 was retired in us-central1 (returns 404 NOT_FOUND).
+    // gemini-2.5-flash is current and available on Vertex AI in this region.
+    const VERTEX_MODEL = 'gemini-2.5-flash';
 
     logger.info("Generate content request received", {
         uid: uid,
