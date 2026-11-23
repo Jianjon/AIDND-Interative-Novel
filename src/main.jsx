@@ -75,7 +75,6 @@ if (typeof window !== 'undefined') {
 }
 
 const ArtifactGame = lazy(() => import('./ArtifactGame.jsx'));
-const prototypeMode = new URLSearchParams(window.location.search).get('prototype');
 const Tactical3DArena = lazy(() => import('./tactical3d/Tactical3DArena.jsx'));
 const searchParams = new URLSearchParams(window.location.search);
 const prototypeMode = searchParams.get('prototype');

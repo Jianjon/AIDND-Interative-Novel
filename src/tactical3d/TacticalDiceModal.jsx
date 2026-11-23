@@ -37,40 +37,32 @@ export default function TacticalDiceModal({ roll, onComplete }) {
       const tReveal = setTimeout(() => {
         setDmgRolling(false);
         setPhase("outcome");
-      }, 720);
-      const tDone = setTimeout(() => onComplete?.(), 2050);
+      }, 820);
       return () => {
         clearTimeout(tReveal);
-        clearTimeout(tDone);
       };
     }
 
     const tReveal = setTimeout(() => {
       setPhase("reveal");
-    }, 680);
+    }, 780);
 
     const tOutcome = setTimeout(() => {
       setPhase("outcome");
       if ((roll.role === "attack" || roll.role === "enemy_attack") && roll.hit && hasDmgDice) {
         setDmgRolling(true);
       }
-    }, 1020);
+    }, 1120);
 
     const tDmgSettle =
       (roll.role === "attack" || roll.role === "enemy_attack") && roll.hit && hasDmgDice
-        ? setTimeout(() => setDmgRolling(false), 1520)
+        ? setTimeout(() => setDmgRolling(false), 1720)
         : null;
-
-    const holdMs = (roll.role === "attack" || roll.role === "enemy_attack") && roll.hit && hasDmgDice ? 2650 : roll.dmg > 0 ? 2150 : 1850;
-    const tDone = setTimeout(() => {
-      onComplete?.();
-    }, holdMs);
 
     return () => {
       clearTimeout(tReveal);
       clearTimeout(tOutcome);
       if (tDmgSettle) clearTimeout(tDmgSettle);
-      clearTimeout(tDone);
     };
   }, [roll, onComplete, isMultiOnly, hasDmgDice]);
 
@@ -417,9 +409,35 @@ export default function TacticalDiceModal({ roll, onComplete }) {
           </div>
         )}
 
-        <div style={{ marginTop: 8, textAlign: "center", fontSize: 10, color: "#64748b" }}>
-          點擊卡片或按空白鍵可跳過
-        </div>
+        {phase === "outcome" && !dmgRolling ? (
+          <div style={{ marginTop: 10, display: "flex", justifyContent: "center" }}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onComplete?.();
+              }}
+              style={{
+                padding: "6px 22px",
+                borderRadius: 8,
+                border: `1.5px solid ${accentColor}`,
+                background: isEnemyAttack ? "rgba(190, 18, 60, 0.35)" : "rgba(14, 116, 144, 0.35)",
+                color: "#f8fafc",
+                fontSize: 12.5,
+                fontWeight: 800,
+                letterSpacing: "0.08em",
+                cursor: "pointer",
+                boxShadow: `0 0 14px ${accentColor}33`,
+              }}
+            >
+              ✓ 確認繼續（空白鍵 / 點擊）
+            </button>
+          </div>
+        ) : (
+          <div style={{ marginTop: 8, textAlign: "center", fontSize: 10, color: "#64748b" }}>
+            骰子滾動中…（點擊或按空白鍵可跳過）
+          </div>
+        )}
       </div>
     </div>
   );
