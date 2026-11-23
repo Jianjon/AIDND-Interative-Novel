@@ -1,9 +1,97 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
 import { TokenProvider } from './contexts/TokenContext'
+
+const APP_VERSION = import.meta.env.VITE_APP_VERSION || 'dev';
+const VERSION_RELOAD_KEY = 'aidnd_version_reload_at';
+
+async function clearClientCaches() {
+    try {
+        if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map((r) => r.unregister()));
+        }
+        if ('caches' in window) {
+            const keys = await window.caches.keys();
+            await Promise.all(keys.map((k) => window.caches.delete(k)));
+        }
+    } catch { /* ignore */ }
+}
+
+function reloadForNewVersion(version) {
+    try {
+        const last = Number(sessionStorage.getItem(VERSION_RELOAD_KEY) || 0);
+        if (Date.now() - last < 8000) return;
+        sessionStorage.setItem(VERSION_RELOAD_KEY, String(Date.now()));
+    } catch { /* ignore */ }
+    clearClientCaches().finally(() => {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('_v', String(version || Date.now()).replace(/[^a-zA-Z0-9_-]/g, ''));
+            window.location.replace(url.toString());
+        } catch {
+            window.location.reload();
+        }
+    });
+}
+
+async function checkAppVersion() {
+    if (typeof window === 'undefined' || APP_VERSION === 'dev') return;
+    try {
+        const res = await fetch(`/version.json?t=${Date.now()}`, {
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                Pragma: 'no-cache',
+            },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data?.version && data.version !== APP_VERSION) {
+            reloadForNewVersion(data.version);
+        } else {
+            try {
+                const url = new URL(window.location.href);
+                if (url.searchParams.has('_v')) {
+                    url.searchParams.delete('_v');
+                    window.history.replaceState(null, '', url.toString());
+                }
+            } catch { /* ignore */ }
+        }
+    } catch { /* ignore */ }
+}
+
+if (typeof window !== 'undefined') {
+    checkAppVersion();
+    window.addEventListener('pageshow', (e) => {
+        if (e.persisted) checkAppVersion();
+    });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') checkAppVersion();
+    });
+}
+
+const ArtifactGame = lazy(() => import('./ArtifactGame.jsx'));
+const prototypeMode = new URLSearchParams(window.location.search).get('prototype');
+const Tactical3DArena = lazy(() => import('./tactical3d/Tactical3DArena.jsx'));
+const searchParams = new URLSearchParams(window.location.search);
+const prototypeMode = searchParams.get('prototype');
+const showTactics3d = searchParams.get('mode') === 'tactics3d' || prototypeMode === 'tactics3d';
+const showArtifact = prototypeMode !== 'novel';
+
+function exitStandaloneTactics() {
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('mode');
+        url.searchParams.delete('prototype');
+        window.location.replace(url.toString());
+    } catch {
+        window.location.reload();
+    }
+}
 
 class GlobalErrorBoundary extends React.Component {
     constructor(props) {
@@ -58,7 +146,22 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <GlobalErrorBoundary>
             <TokenProvider>
-                <App />
+                <Suspense
+                    fallback={
+                        <div style={{ padding: '40px', background: '#111b24', color: '#e5decc', minHeight: '100vh' }}>
+                            正在點亮酒館的燈火…
+                        </div>
+                    }
+                >
+                    {showArtifact ? <ArtifactGame /> : <App />}
+                    {showTactics3d ? (
+                        <Tactical3DArena onExit={exitStandaloneTactics} />
+                    ) : showArtifact ? (
+                        <ArtifactGame />
+                    ) : (
+                        <App />
+                    )}
+                </Suspense>
             </TokenProvider>
         </GlobalErrorBoundary>
     </React.StrictMode>,

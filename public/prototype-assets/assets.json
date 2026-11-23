@@ -1,0 +1,230 @@
+{
+  "pack": "Tiny Dungeon 1.0",
+  "author": "Kenney",
+  "sourceUrl": "https://kenney.nl/assets/tiny-dungeon",
+  "license": "CC0-1.0",
+  "licenseFile": "/prototype-assets/kenney-tiny-dungeon/License.txt",
+  "retrievedDate": "2026-11-12",
+  "tileSize": 16,
+  "atlas": {
+    "url": "/prototype-assets/kenney-tiny-dungeon/Tilemap/tilemap_packed.png",
+    "width": 192,
+    "height": 176,
+    "columns": 12,
+    "rows": 11,
+    "margin": 0,
+    "spacing": 0,
+    "tileCount": 132
+  },
+  "assets": {
+    "floor": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0048.png",
+      "tileIndex": 48,
+      "width": 16,
+      "height": 16,
+      "description": "乾淨沙色地板，可作酒館暖色底"
+    },
+    "floorVariant": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0049.png",
+      "tileIndex": 49,
+      "width": 16,
+      "height": 16,
+      "description": "少量碎屑的地板"
+    },
+    "floorStone": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0042.png",
+      "tileIndex": 42,
+      "width": 16,
+      "height": 16,
+      "description": "石板地面"
+    },
+    "wall": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0014.png",
+      "tileIndex": 14,
+      "width": 16,
+      "height": 16,
+      "description": "橫向磚牆"
+    },
+    "wallVariant": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0040.png",
+      "tileIndex": 40,
+      "width": 16,
+      "height": 16,
+      "description": "磚牆變體"
+    },
+    "wallVertical": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0057.png",
+      "tileIndex": 57,
+      "width": 16,
+      "height": 16,
+      "description": "窄直向磚牆"
+    },
+    "doorClosed": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0045.png",
+      "tileIndex": 45,
+      "width": 16,
+      "height": 16,
+      "description": "門"
+    },
+    "doorCenter": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0046.png",
+      "tileIndex": 46,
+      "width": 16,
+      "height": 16,
+      "description": "寬門中央"
+    },
+    "doorSide": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0047.png",
+      "tileIndex": 47,
+      "width": 16,
+      "height": 16,
+      "description": "寬門右側"
+    },
+    "stairs": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0037.png",
+      "tileIndex": 37,
+      "width": 16,
+      "height": 16,
+      "description": "階梯"
+    },
+    "barrel": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0063.png",
+      "tileIndex": 63,
+      "width": 16,
+      "height": 16,
+      "description": "木桶/木製容器"
+    },
+    "barrelTall": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0075.png",
+      "tileIndex": 75,
+      "width": 16,
+      "height": 16,
+      "description": "較高木桶/木製容器"
+    },
+    "barrelRound": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0082.png",
+      "tileIndex": 82,
+      "width": 16,
+      "height": 16,
+      "description": "圓木桶"
+    },
+    "crate": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0089.png",
+      "tileIndex": 89,
+      "width": 16,
+      "height": 16,
+      "description": "箱子"
+    },
+    "chest": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0090.png",
+      "tileIndex": 90,
+      "width": 16,
+      "height": 16,
+      "description": "有鎖箱子"
+    },
+    "warrior": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0096.png",
+      "tileIndex": 96,
+      "width": 16,
+      "height": 16,
+      "description": "戴盔甲近戰英雄"
+    },
+    "ranger": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0112.png",
+      "tileIndex": 112,
+      "width": 16,
+      "height": 16,
+      "description": "綠衣遊俠英雄"
+    },
+    "mage": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0084.png",
+      "tileIndex": 84,
+      "width": 16,
+      "height": 16,
+      "description": "紫色帽法師英雄"
+    },
+    "bartender": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0085.png",
+      "tileIndex": 85,
+      "width": 16,
+      "height": 16,
+      "description": "酒保/旅人NPC"
+    },
+    "npc": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0098.png",
+      "tileIndex": 98,
+      "width": 16,
+      "height": 16,
+      "description": "棕髮NPC"
+    },
+    "slime": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0108.png",
+      "tileIndex": 108,
+      "width": 16,
+      "height": 16,
+      "description": "綠色史萊姆"
+    },
+    "spider": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0120.png",
+      "tileIndex": 120,
+      "width": 16,
+      "height": 16,
+      "description": "棕色小蜘蛛"
+    },
+    "spiderBoss": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0122.png",
+      "tileIndex": 122,
+      "width": 16,
+      "height": 16,
+      "description": "棕色大蜘蛛"
+    },
+    "skeleton": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0121.png",
+      "tileIndex": 121,
+      "width": 16,
+      "height": 16,
+      "description": "骷髏"
+    },
+    "monsterBrown": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0123.png",
+      "tileIndex": 123,
+      "width": 16,
+      "height": 16,
+      "description": "棕色怪物"
+    },
+    "potion": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0116.png",
+      "tileIndex": 116,
+      "width": 16,
+      "height": 16,
+      "description": "藍色藥水/任務藥劑"
+    },
+    "questVial": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0128.png",
+      "tileIndex": 128,
+      "width": 16,
+      "height": 16,
+      "description": "藍色小藥瓶"
+    },
+    "torch": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0130.png",
+      "tileIndex": 130,
+      "width": 16,
+      "height": 16,
+      "description": "火把"
+    },
+    "sword": {
+      "url": "/prototype-assets/kenney-tiny-dungeon/Tiles/tile_0104.png",
+      "tileIndex": 104,
+      "width": 16,
+      "height": 16,
+      "description": "劍"
+    }
+  },
+  "notes": [
+    "Individual PNG files are static 16x16 tiles, not animation strips.",
+    "Use nearest-neighbor/pixelArt rendering when enlarging.",
+    "Tile naming and atlas index match for all 132 entries.",
+    "No explicit rat sprite was found; slime/spider/skeleton are suitable prototype enemies."
+  ]
+}

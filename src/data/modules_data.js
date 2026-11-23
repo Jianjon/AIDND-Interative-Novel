@@ -30,6 +30,21 @@ import frozen_sick from './modules/frozen_sick.js';
 import fallen_fortress from './modules/fallen_fortress.js';
 import potent_brew from './modules/potent_brew.js';
 import baldurs_gate from './modules/baldurs_gate.js';
+import saga_01_cassomir from './modules/saga_01_cassomir.js';
+import saga_02_swift_jester from './modules/saga_02_swift_jester.js';
+import saga_03_delirium_gambit from './modules/saga_03_delirium_gambit.js';
+import saga_04_twofold_city from './modules/saga_04_twofold_city.js';
+import saga_05_everwar_echoes from './modules/saga_05_everwar_echoes.js';
+import pfs_01_silent_tide from './modules/pfs_01_silent_tide.js';
+import pfs_02_black_waters from './modules/pfs_02_black_waters.js';
+import pfs_03_slave_pits from './modules/pfs_03_slave_pits.js';
+import pfs_04_silken_caravan from './modules/pfs_04_silken_caravan.js';
+import pfs_05_grandmaster_torch from './modules/pfs_05_grandmaster_torch.js';
+import pfs_06_citadel_of_flame from './modules/pfs_06_citadel_of_flame.js';
+import pfs_07_fingerprints_fiend from './modules/pfs_07_fingerprints_fiend.js';
+import pfs_08_fury_fiend from './modules/pfs_08_fury_fiend.js';
+import pfs_11_hydras_fang from './modules/pfs_11_hydras_fang.js';
+import pfs_12_frozen_fingers from './modules/pfs_12_frozen_fingers.js';
 
 // Combine all modules
 export const ALL_MODULES = {
@@ -59,7 +74,22 @@ export const ALL_MODULES = {
     frozen_sick,
     fallen_fortress,
     potent_brew,
-    baldurs_gate
+    baldurs_gate,
+    saga_01_cassomir,
+    saga_02_swift_jester,
+    saga_03_delirium_gambit,
+    saga_04_twofold_city,
+    saga_05_everwar_echoes,
+    pfs_01_silent_tide,
+    pfs_02_black_waters,
+    pfs_03_slave_pits,
+    pfs_04_silken_caravan,
+    pfs_05_grandmaster_torch,
+    pfs_06_citadel_of_flame,
+    pfs_07_fingerprints_fiend,
+    pfs_08_fury_fiend,
+    pfs_11_hydras_fang,
+    pfs_12_frozen_fingers
 };
 
 /**
@@ -93,7 +123,22 @@ const NUMERIC_ID_MAP = {
     24: "frozen_sick",
     25: "fallen_fortress",
     27: "potent_brew",
-    28: "baldurs_gate"
+    28: "baldurs_gate",
+    29: "saga_01_cassomir",
+    30: "saga_02_swift_jester",
+    31: "saga_03_delirium_gambit",
+    32: "saga_04_twofold_city",
+    33: "saga_05_everwar_echoes",
+    34: "pfs_01_silent_tide",
+    35: "pfs_02_black_waters",
+    36: "pfs_03_slave_pits",
+    37: "pfs_04_silken_caravan",
+    38: "pfs_05_grandmaster_torch",
+    39: "pfs_06_citadel_of_flame",
+    40: "pfs_07_fingerprints_fiend",
+    41: "pfs_08_fury_fiend",
+    42: "pfs_11_hydras_fang",
+    43: "pfs_12_frozen_fingers"
 };
 
 /**

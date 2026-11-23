@@ -1,0 +1,410 @@
+/* 2.5D Interactive Tactical Grid & Combat Action Choreography */
+
+.tactical-grid-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.tac-grid-lines line {
+  stroke: rgba(246, 229, 186, 0.14);
+  stroke-width: 0.14;
+  vector-effect: non-scaling-stroke;
+}
+
+.tactical-grid-overlay.has-painted-grid .tac-grid-lines line {
+  stroke: rgba(246, 229, 186, 0.055);
+  stroke-dasharray: 0.6 1.4;
+}
+
+.tac-cell {
+  fill: transparent;
+  stroke: transparent;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.tac-cell.is-impassable {
+  stroke: rgba(248, 113, 113, 0.36);
+  stroke-width: 0.18;
+}
+
+.tac-cell.is-difficult {
+  fill: rgba(245, 158, 11, 0.14);
+  stroke: rgba(245, 158, 11, 0.32);
+  stroke-width: 0.14;
+  stroke-dasharray: 0.45 0.35;
+}
+
+.tac-cell.is-hazard {
+  fill: rgba(239, 68, 68, 0.18);
+  stroke: rgba(248, 113, 113, 0.55);
+  stroke-width: 0.2;
+}
+
+.tac-cell.is-concealment {
+  fill: rgba(56, 189, 248, 0.14);
+  stroke: rgba(125, 211, 252, 0.32);
+  stroke-width: 0.15;
+}
+
+.tac-cell.is-reachable {
+  pointer-events: auto;
+  cursor: pointer;
+  fill: rgba(56, 189, 248, 0.13);
+  stroke: rgba(125, 211, 252, 0.34);
+  stroke-width: 0.16;
+}
+
+.tac-cell.is-reachable.is-cover {
+  fill: rgba(52, 211, 153, 0.15);
+  stroke: rgba(110, 231, 183, 0.44);
+}
+
+.tac-cell.is-reachable.is-difficult {
+  fill: rgba(251, 191, 36, 0.17);
+  stroke: rgba(251, 191, 36, 0.48);
+}
+
+.tac-cell.is-reachable.is-hazard {
+  fill: rgba(239, 68, 68, 0.2);
+  stroke: rgba(248, 113, 113, 0.62);
+}
+
+.tac-cell.is-reachable:hover {
+  fill: rgba(251, 191, 36, 0.34);
+  stroke: rgba(253, 224, 71, 0.92);
+  stroke-width: 0.26;
+}
+
+.tac-cell.is-reachable.is-pinned {
+  fill: rgba(251, 191, 36, 0.36);
+  stroke: #fde047;
+  stroke-width: 0.3;
+}
+
+.tac-preview-group {
+  opacity: 0.48;
+  pointer-events: none;
+}
+
+.tac-preview-group.is-focused {
+  opacity: 0.98;
+}
+
+.tac-path-line {
+  fill: none;
+  stroke: #38bdf8;
+  stroke-width: 0.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 0.9 0.75;
+  animation: tac-dash-flow 1.2s linear infinite;
+}
+
+.tac-path-line.is-active-playback {
+  stroke: #fde047;
+  stroke-width: 0.56;
+}
+
+.tac-path-line.tac-path-foe {
+  stroke: #f87171;
+  stroke-width: 0.56;
+}
+
+.tac-step-dot {
+  fill: #bae6fd;
+}
+
+.tac-step-dot.is-foe {
+  fill: #fecaca;
+}
+
+.tac-dest-cell {
+  fill: rgba(56, 189, 248, 0.22);
+  stroke: rgba(186, 230, 253, 0.75);
+  stroke-width: 0.24;
+}
+
+.tac-dest-ring {
+  fill: rgba(56, 189, 248, 0.14);
+  stroke: #7dd3fc;
+  stroke-width: 0.32;
+  animation: tac-dest-pulse 1.5s ease-in-out infinite;
+}
+
+.tac-dest-ring.is-foe {
+  fill: rgba(248, 113, 113, 0.18);
+  stroke: #fca5a5;
+}
+
+@keyframes tac-dash-flow {
+  from {
+    stroke-dashoffset: 3.3;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tac-dest-pulse {
+  0%,
+  100% {
+    opacity: 0.9;
+    stroke-width: 0.32;
+  }
+  50% {
+    opacity: 0.48;
+    stroke-width: 0.18;
+  }
+}
+
+/* Sidebar two-step move selector */
+.tactical-move-box {
+  margin-bottom: 8px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+.tactical-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.tactical-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7dd3fc;
+  letter-spacing: 0.02em;
+}
+
+.tactical-move-badge {
+  font-size: 10.5px;
+  color: #fde68a;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.tactical-clear-pin {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(248, 113, 113, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.36);
+  color: #fecaca;
+  cursor: pointer;
+}
+
+.tactical-move-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.hero-ideas .tactical-move-grid > button.tactical-move-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 5px;
+  min-height: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 5px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  color: #e2e8f0;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.hero-ideas .tactical-move-grid > button.tactical-move-btn:hover {
+  border-color: rgba(125, 211, 252, 0.72);
+  background: rgba(14, 116, 144, 0.35);
+}
+
+.hero-ideas .tactical-move-grid > button.tactical-move-btn[data-on="true"] {
+  background: rgba(14, 116, 144, 0.56);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45);
+}
+
+.tac-btn-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tac-btn-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tactical-move-hint {
+  margin: 5px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #bae6fd;
+}
+
+.tactical-move-hint.is-muted {
+  color: #94a3b8;
+}
+
+.tactical-step-divider {
+  margin-top: 7px;
+  padding-top: 5px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.28);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.idea-move-chip {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  color: #7dd3fc;
+}
+
+/* Standee stepping & physical action choreography */
+.standee.is-stepping {
+  transition: left 0.21s linear, top 0.21s linear, filter 0.2s ease !important;
+}
+
+.standee.is-stepping > i {
+  animation: standee-step-hop 0.22s ease-in-out infinite;
+}
+
+@keyframes standee-step-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.standee.action-lunge > i {
+  animation: standee-lunge-anim 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes standee-lunge-anim {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  38% {
+    transform: translate(var(--lunge-x, 18px), var(--lunge-y, -10px)) scale(1.1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.standee.action-cast > i {
+  animation: standee-cast-anim 0.56s ease-out;
+}
+
+@keyframes standee-cast-anim {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-10px) scale(1.08);
+    filter: brightness(1.25) drop-shadow(0 0 10px rgba(251, 191, 36, 0.85));
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.standee.action-guard > i {
+  animation: standee-guard-anim 0.52s ease-out;
+}
+
+@keyframes standee-guard-anim {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.9));
+  }
+}
+
+.standee.action-interact > i {
+  animation: standee-interact-anim 0.48s ease-out;
+}
+
+@keyframes standee-interact-anim {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: translateY(-4px) rotate(-6deg);
+  }
+  70% {
+    transform: translateY(-2px) rotate(4deg);
+  }
+}
+
+.standee.stance-stealth > i {
+  opacity: 0.68;
+  filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.85)) brightness(0.92);
+}
+
+.standee.stance-cover::after,
+.standee.stance-guard::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 82%;
+  height: 16%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 2px solid rgba(110, 231, 183, 0.72);
+  pointer-events: none;
+}
+
+.standee.stance-guard::after {
+  border-color: rgba(56, 189, 248, 0.88);
+}
+
+.standee-stance-tag {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(125, 211, 252, 0.65);
+  color: #bae6fd;
+  pointer-events: none;
+  z-index: 6;
+}

@@ -1,0 +1,4006 @@
+[
+  {
+    "key": "preset_barbarian",
+    "name": "嵐·風行者",
+    "sub": "血怒者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/64-barbarian.png"
+  },
+  {
+    "key": "preset_bard",
+    "name": "貝兒·巧舌",
+    "sub": "吟遊詩人",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/65-bard.png"
+  },
+  {
+    "key": "preset_cleric",
+    "name": "索林·鐵盾",
+    "sub": "牧師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/66-cleric.png"
+  },
+  {
+    "key": "preset_druid",
+    "name": "卡琳·灰燼",
+    "sub": "德魯伊",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/67-druid.png"
+  },
+  {
+    "key": "preset_fighter",
+    "name": "艾瑞克",
+    "sub": "戰士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/68-fighter.png"
+  },
+  {
+    "key": "preset_monk",
+    "name": "澤拉",
+    "sub": "武僧",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/70-monk.png"
+  },
+  {
+    "key": "preset_paladin",
+    "name": "奧瑞恩",
+    "sub": "Omdura",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/71-paladin.png"
+  },
+  {
+    "key": "preset_ranger",
+    "name": "米洛",
+    "sub": "遊俠",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/72-ranger.png"
+  },
+  {
+    "key": "preset_rogue",
+    "name": "薇拉·幽影",
+    "sub": "遊蕩者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/73-rogue.png"
+  },
+  {
+    "key": "preset_sorcerer",
+    "name": "伊莉絲",
+    "sub": "術士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/74-sorcerer.png"
+  },
+  {
+    "key": "preset_warlock",
+    "name": "莫德",
+    "sub": "邪術師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/75-warlock.png"
+  },
+  {
+    "key": "preset_wizard",
+    "name": "娜茲",
+    "sub": "法師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/76-naz.png"
+  },
+  {
+    "key": "preset_artificer",
+    "name": "可可·齒輪心",
+    "sub": "奇械師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/78-artificer.png"
+  },
+  {
+    "key": "preset_necromancer",
+    "name": "希洛·闇之書",
+    "sub": "死靈法師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/94-necromancer.png"
+  },
+  {
+    "key": "preset_bloodhunter",
+    "name": "威廉·緋月",
+    "sub": "血獵手",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/84-bloodhunter.png"
+  },
+  {
+    "key": "preset_shaman",
+    "name": "靈·千語",
+    "sub": "薩滿",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/99-shaman.png"
+  },
+  {
+    "key": "preset_witch",
+    "name": "莉莉絲·暮影",
+    "sub": "咒術師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/110-witch.png"
+  },
+  {
+    "key": "preset_duelist",
+    "name": "李少白",
+    "sub": "劍客",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/89-duelist.png"
+  },
+  {
+    "key": "preset_summoner",
+    "name": "田中誠一",
+    "sub": "召喚師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/100-summoner.png"
+  },
+  {
+    "key": "preset_magus",
+    "name": "葛拉蒂亞",
+    "sub": "拳師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/93-magus.png"
+  },
+  {
+    "key": "preset_oracle",
+    "name": "白瑞恩·星落",
+    "sub": "先知",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/95-oracle.png"
+  },
+  {
+    "key": "preset_investigator",
+    "name": "艾德蒙·乾坤",
+    "sub": "調查員",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/92-edmund.png"
+  },
+  {
+    "key": "preset_deathknight",
+    "name": "維斯帕·夜歌",
+    "sub": "審判者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/87-vesper.png"
+  },
+  {
+    "key": "preset_psion",
+    "name": "冬雪·寂靜",
+    "sub": "靈能者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/96-psion.png"
+  },
+  {
+    "key": "preset_eldritchknight",
+    "name": "小麥·穗波",
+    "sub": "魔劍士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-character-avatars/frame-90.png"
+  },
+  {
+    "key": "preset_alchemist",
+    "name": "乒乒·爆破博士",
+    "sub": "鍊金術士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/77-ping.png"
+  },
+  {
+    "key": "preset_champion",
+    "name": "卡菈·緋紅",
+    "sub": "冠軍勇士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/85-champion.png"
+  },
+  {
+    "key": "preset_chronomancer",
+    "name": "芙莉蓮·千年",
+    "sub": "時空術士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/88-chronomancer.png"
+  },
+  {
+    "key": "preset_knight",
+    "name": "亞瑟·鋼心",
+    "sub": "守約騎士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/69-knight.png"
+  },
+  {
+    "key": "preset_bladedancer",
+    "name": "凱里恩·夜舞",
+    "sub": "劍刃舞者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/83-bladedancer.png"
+  },
+  {
+    "key": "preset_scout",
+    "name": "傑克森·衛恩",
+    "sub": "偵察兵",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-character-avatars/frame-98.png"
+  },
+  {
+    "key": "preset_axesinger",
+    "name": "沃加·血歌",
+    "sub": "戰鬥祭師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-character-avatars/frame-82.png"
+  },
+  {
+    "key": "preset_elfmagus",
+    "name": "薩拉里昂",
+    "sub": "奧法騎士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/91-elfmagus.png"
+  },
+  {
+    "key": "preset_hunter",
+    "name": "柯斯",
+    "sub": "獵人",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-character-avatars/frame-128.png"
+  },
+  {
+    "key": "preset_assassin",
+    "name": "瑪法斯",
+    "sub": "刺客",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-character-avatars/frame-81.png"
+  },
+  {
+    "key": "preset_weaponmaster",
+    "name": "葛蕾西亞·鋼步",
+    "sub": "戰術大師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/101-weaponmaster.png"
+  },
+  {
+    "key": "preset_qiphysician",
+    "name": "沈藥衡",
+    "sub": "氣脈醫者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/97-qiphysician.png"
+  },
+  {
+    "key": "preset_fieldmedic",
+    "name": "艾蕾娜·史特恩",
+    "sub": "戰地醫師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/102-fieldmedic.png"
+  },
+  {
+    "key": "preset_morrina",
+    "name": "莫琳娜·荊棘心",
+    "sub": "荒野女巫",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/108-morrina.png"
+  },
+  {
+    "key": "preset_isabella",
+    "name": "伊莎貝拉·緋浪",
+    "sub": "海盜女王",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/103-isabella.png"
+  },
+  {
+    "key": "preset_diana",
+    "name": "黛安娜·銀弦",
+    "sub": "遠程弓箭手",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/104-diana.png"
+  },
+  {
+    "key": "preset_stella",
+    "name": "拉姆",
+    "sub": "操念使",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/107-star-sorcerer.png"
+  },
+  {
+    "key": "preset_fenela",
+    "name": "緋涅拉·血鱗",
+    "sub": "血族領主",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-character-avatars/frame-105.png"
+  },
+  {
+    "key": "preset_kiki",
+    "name": "琪琪·金幣",
+    "sub": "幸運兒",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/79-kiki.png"
+  },
+  {
+    "key": "preset_anthraxe",
+    "name": "安瑟瑞克斯",
+    "sub": "戰吼主唱",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/106-anthraxe.png"
+  },
+  {
+    "key": "preset_aldous",
+    "name": "奧爾德斯·索克",
+    "sub": "博學者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/80-aldous.png"
+  },
+  {
+    "key": "preset_sammy",
+    "name": "薩米",
+    "sub": "傳說級村民",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/111-sammy.png"
+  },
+  {
+    "key": "preset_ains_skeleton",
+    "name": "艾因斯",
+    "sub": "骸骨戰士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/114-ains_skeleton.png"
+  },
+  {
+    "key": "preset_pipi",
+    "name": "皮皮",
+    "sub": "混沌野法師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/109-pipi.png"
+  },
+  {
+    "key": "preset_conan",
+    "name": "柯南",
+    "sub": "野蠻人",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/86-conan.png"
+  },
+  {
+    "key": "preset_barghrim",
+    "name": "巴格林·鐵砧",
+    "sub": "殺手",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/129-barghrim.png"
+  },
+  {
+    "key": "preset_liefeng",
+    "name": "烈風",
+    "sub": "武士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/130-liefeng.png"
+  },
+  {
+    "key": "preset_perrin",
+    "name": "佩林·金鱗",
+    "sub": "聖騎士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/131-perrin.png"
+  },
+  {
+    "key": "preset_vaelra",
+    "name": "希里亞·凡勒斯",
+    "sub": "魔劍士",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/132-vaelra.png"
+  },
+  {
+    "key": "preset_blade",
+    "name": "佈雷德",
+    "sub": "精修盜賊",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/133-blade.png"
+  },
+  {
+    "key": "preset_freya",
+    "name": "芙蕾雅·霜鬃",
+    "sub": "德魯伊",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/134-freya.png"
+  },
+  {
+    "key": "preset_marcus",
+    "name": "馬庫斯",
+    "sub": "審判者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/135-marcus.png"
+  },
+  {
+    "key": "preset_shenlian",
+    "name": "沈煉",
+    "sub": "錦衣衛",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/136-shenlian.png"
+  },
+  {
+    "key": "preset_fire_kineticist",
+    "name": "燼司·赫斯",
+    "sub": "操念使",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/139-fire_kineticist.png"
+  },
+  {
+    "key": "preset_water_singer",
+    "name": "瀾音·瑪琳",
+    "sub": "吟遊詩人",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/140-water_singer.png"
+  },
+  {
+    "key": "preset_earth_carver",
+    "name": "磐銘·洛克",
+    "sub": "秘術師",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/141-earth_carver.png"
+  },
+  {
+    "key": "preset_peri_inquisitor",
+    "name": "曦裁·維斯珀",
+    "sub": "審判者",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/142-peri_inquisitor.png"
+  },
+  {
+    "key": "preset_tiefling_advocate",
+    "name": "路西恩·法契",
+    "sub": "調查員",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/143-tiefling_advocate.png"
+  },
+  {
+    "key": "preset_shadowblade_duelist",
+    "name": "諾倫·影誓",
+    "sub": "幻刃靈使",
+    "category": "heroes",
+    "image": "/prototype-assets/lego-token-fixes-v1/144-shadowblade_duelist.png"
+  },
+  {
+    "key": "comp_preset_druid",
+    "name": "泡芙",
+    "sub": "卡琳·灰燼 的 梟熊幼崽 (中小型)",
+    "category": "companions",
+    "image": "/prototype-assets/lego-token-fixes-v1/121-baby-owlbear.png"
+  },
+  {
+    "key": "comp_preset_ranger",
+    "name": "疾風",
+    "sub": "米洛 的 獵鷹",
+    "category": "companions",
+    "image": "/prototype-assets/lego-token-fixes-v1/127-swiftwind.png"
+  },
+  {
+    "key": "comp_preset_sorcerer",
+    "name": "格蕾絲",
+    "sub": "伊莉絲 的 光輝蝴蝶 (Fey)",
+    "category": "companions",
+    "image": ""
+  },
+  {
+    "key": "comp_preset_wizard",
+    "name": "墨井",
+    "sub": "娜茲 的 魔寵 (貓頭鷹)",
+    "category": "companions",
+    "image": "/prototype-assets/familiars/inkwell.png"
+  },
+  {
+    "key": "comp_preset_artificer",
+    "name": "斯蒂米",
+    "sub": "可可·齒輪心 的 蒸汽獸 (獨立戰鬥構裝生物)",
+    "category": "companions",
+    "image": "/prototype-assets/lego-token-fixes-v1/113-steamy.png"
+  },
+  {
+    "key": "comp_preset_witch",
+    "name": "漆夜",
+    "sub": "莉莉絲·暮影 的 黑鴉 (魔寵)",
+    "category": "companions",
+    "image": "/prototype-assets/lego-character-avatars/frame-124.png"
+  },
+  {
+    "key": "comp_preset_eldritchknight",
+    "name": "劍聖·無名",
+    "sub": "小麥·穗波 的 劍靈（封印在劍中）",
+    "category": "companions",
+    "image": "/prototype-assets/lego-character-avatars/frame-125.png"
+  },
+  {
+    "key": "comp_preset_hunter",
+    "name": "露娜",
+    "sub": "柯斯 的 幻影白狼 (Lv3)",
+    "category": "companions",
+    "image": "/prototype-assets/familiars/silkshade.png"
+  },
+  {
+    "key": "comp_preset_morrina",
+    "name": "夜羽",
+    "sub": "莫琳娜·荊棘心 的 烏鴉使魔 (Raven Familiar)",
+    "category": "companions",
+    "image": ""
+  },
+  {
+    "key": "comp_preset_freya",
+    "name": "極北獅鷲獸「雷翼」",
+    "sub": "芙蕾雅·霜鬃 的 無翅獅鷲獸 (陸行猛獸)",
+    "category": "companions",
+    "image": "/prototype-assets/lego-token-fixes-v1/137-stormwing-griffon.png"
+  },
+  {
+    "key": "comp_preset_marcus",
+    "name": "戰狼「掠影」",
+    "sub": "馬庫斯 的 戰狼",
+    "category": "companions",
+    "image": "/prototype-assets/lego-token-fixes-v1/138-marcus-luying.png"
+  },
+  {
+    "key": "giant_rat",
+    "name": "巨鼠",
+    "sub": "giant_rat",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_rat.png"
+  },
+  {
+    "key": "brown_bear",
+    "name": "棕熊",
+    "sub": "brown_bear",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/brown_bear.png"
+  },
+  {
+    "key": "polar_bear",
+    "name": "北極熊",
+    "sub": "polar_bear",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/polar_bear.png"
+  },
+  {
+    "key": "boar",
+    "name": "野豬",
+    "sub": "boar",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/boar.png"
+  },
+  {
+    "key": "horse",
+    "name": "馬",
+    "sub": "horse",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/horse.png"
+  },
+  {
+    "key": "dog",
+    "name": "狗",
+    "sub": "dog",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/dog.png"
+  },
+  {
+    "key": "snake",
+    "name": "蛇",
+    "sub": "snake",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/snake.png"
+  },
+  {
+    "key": "bat",
+    "name": "蝙蝠",
+    "sub": "bat",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/bat.png"
+  },
+  {
+    "key": "crocodile",
+    "name": "鱷魚",
+    "sub": "crocodile",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/crocodile.png"
+  },
+  {
+    "key": "giant_centipede",
+    "name": "巨蜈蚣",
+    "sub": "giant_centipede",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_centipede.png"
+  },
+  {
+    "key": "ice_toad",
+    "name": "冰蟾蜍",
+    "sub": "ice_toad",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/ice_toad.png"
+  },
+  {
+    "key": "cat",
+    "name": "家貓",
+    "sub": "cat",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/cat.png"
+  },
+  {
+    "key": "goblin",
+    "name": "地精",
+    "sub": "goblin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin.png"
+  },
+  {
+    "key": "kobold",
+    "name": "狗頭人",
+    "sub": "kobold",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/kobold.png"
+  },
+  {
+    "key": "orc",
+    "name": "獸人",
+    "sub": "orc",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc.png"
+  },
+  {
+    "key": "gnoll",
+    "name": "豺狼人",
+    "sub": "gnoll",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/gnoll.png"
+  },
+  {
+    "key": "bugbear",
+    "name": "熊地精",
+    "sub": "bugbear",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/bugbear.png"
+  },
+  {
+    "key": "skeleton",
+    "name": "骷髏戰士",
+    "sub": "skeleton",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/skeleton.png"
+  },
+  {
+    "key": "zombie",
+    "name": "殭屍",
+    "sub": "zombie",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/zombie.png"
+  },
+  {
+    "key": "ghost",
+    "name": "幽靈",
+    "sub": "ghost",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ghost.png"
+  },
+  {
+    "key": "mimic",
+    "name": "寶箱怪",
+    "sub": "mimic",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mimic.png"
+  },
+  {
+    "key": "gelatinous_cube",
+    "name": "膠質方塊",
+    "sub": "gelatinous_cube",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gelatinous_cube.png"
+  },
+  {
+    "key": "owlbear",
+    "name": "梟熊",
+    "sub": "owlbear",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/owlbear.png"
+  },
+  {
+    "key": "stone_golem",
+    "name": "石魔像",
+    "sub": "stone_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/stone_golem.png"
+  },
+  {
+    "key": "red_wyrmling",
+    "name": "紅龍雛龍",
+    "sub": "red_wyrmling",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/red_wyrmling.png"
+  },
+  {
+    "key": "hobgoblin",
+    "name": "重裝大地精",
+    "sub": "hobgoblin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/hobgoblin.png"
+  },
+  {
+    "key": "basilisk",
+    "name": "石化蜥蜴",
+    "sub": "basilisk",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/basilisk.png"
+  },
+  {
+    "key": "wyvern",
+    "name": "雙足飛龍",
+    "sub": "wyvern",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/wyvern.png"
+  },
+  {
+    "key": "ghoul",
+    "name": "食屍鬼",
+    "sub": "ghoul",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ghoul.png"
+  },
+  {
+    "key": "frost_giant",
+    "name": "冰霜巨人",
+    "sub": "frost_giant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/frost_giant.png"
+  },
+  {
+    "key": "gundren_dwarf",
+    "name": "矮人勘探家",
+    "sub": "gundren_dwarf",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gundren_dwarf.png"
+  },
+  {
+    "key": "redbeard_dwarf_king",
+    "name": "紅鬚矮人王",
+    "sub": "redbeard_dwarf_king",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/redbeard_dwarf_king.png"
+  },
+  {
+    "key": "dwarf_miner",
+    "name": "矮人礦工",
+    "sub": "dwarf_miner",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_miner.png"
+  },
+  {
+    "key": "female_dwarf_scout",
+    "name": "女盾矮人斥候",
+    "sub": "female_dwarf_scout",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/female_dwarf_scout.png"
+  },
+  {
+    "key": "valeria_commander",
+    "name": "女騎士指揮官",
+    "sub": "valeria_commander",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/valeria_commander.png"
+  },
+  {
+    "key": "clerk_klaus",
+    "name": "書記官學者",
+    "sub": "clerk_klaus",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/clerk_klaus.png"
+  },
+  {
+    "key": "thomas_sailor",
+    "name": "老練水手木匠",
+    "sub": "thomas_sailor",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/thomas_sailor.png"
+  },
+  {
+    "key": "sister_garaele",
+    "name": "神殿修女",
+    "sub": "sister_garaele",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sister_garaele.png"
+  },
+  {
+    "key": "redhead_witch_scholar",
+    "name": "紅髮魔法書學者",
+    "sub": "redhead_witch_scholar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/redhead_witch_scholar.png"
+  },
+  {
+    "key": "kuotoa_priest",
+    "name": "深海魚人祭司",
+    "sub": "kuotoa_priest",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/kuotoa_priest.png"
+  },
+  {
+    "key": "night_king_wight",
+    "name": "寒冰屍妖",
+    "sub": "night_king_wight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/night_king_wight.png"
+  },
+  {
+    "key": "ice_elemental_pure",
+    "name": "純淨寒冰元素",
+    "sub": "ice_elemental_pure",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ice_elemental_pure.png"
+  },
+  {
+    "key": "crossbow_soldier",
+    "name": "重弩衛兵",
+    "sub": "crossbow_soldier",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crossbow_soldier.png"
+  },
+  {
+    "key": "leather_crossbow_scout",
+    "name": "輕甲弩手斥候",
+    "sub": "leather_crossbow_scout",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/leather_crossbow_scout.png"
+  },
+  {
+    "key": "gladiator_guard",
+    "name": "角鬥士盾衛",
+    "sub": "gladiator_guard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gladiator_guard.png"
+  },
+  {
+    "key": "lion_shield_soldier",
+    "name": "獅徽王國士兵",
+    "sub": "lion_shield_soldier",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/lion_shield_soldier.png"
+  },
+  {
+    "key": "sun_shield_hoplite",
+    "name": "太陽聖殿衛兵",
+    "sub": "sun_shield_hoplite",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sun_shield_hoplite.png"
+  },
+  {
+    "key": "masked_bandit_duelist",
+    "name": "蒙面強盜決鬥者",
+    "sub": "masked_bandit_duelist",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/masked_bandit_duelist.png"
+  },
+  {
+    "key": "deckhand_pirate",
+    "name": "甲板海盜水手",
+    "sub": "deckhand_pirate",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/deckhand_pirate.png"
+  },
+  {
+    "key": "tentacle_pirate_captain",
+    "name": "深海觸手船長",
+    "sub": "tentacle_pirate_captain",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/tentacle_pirate_captain.png"
+  },
+  {
+    "key": "skull_mask_cultist",
+    "name": "骨面具邪教祭司",
+    "sub": "skull_mask_cultist",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/skull_mask_cultist.png"
+  },
+  {
+    "key": "dark_horn_sorceress",
+    "name": "黑角暗黑女巫",
+    "sub": "dark_horn_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_horn_sorceress.png"
+  },
+  {
+    "key": "crimson_chaos_knight",
+    "name": "猩紅混沌騎士",
+    "sub": "crimson_chaos_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_chaos_knight.png"
+  },
+  {
+    "key": "blue_warpaint_barbarian",
+    "name": "藍紋戰嚎蠻人",
+    "sub": "blue_warpaint_barbarian",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/blue_warpaint_barbarian.png"
+  },
+  {
+    "key": "nordic_twin_axe_raider",
+    "name": "北境雙斧劫掠者",
+    "sub": "nordic_twin_axe_raider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/nordic_twin_axe_raider.png"
+  },
+  {
+    "key": "wild_orc_berserker",
+    "name": "荒野獸皮狂戰士",
+    "sub": "wild_orc_berserker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wild_orc_berserker.png"
+  },
+  {
+    "key": "armored_orc_warlord",
+    "name": "重甲獸人督軍",
+    "sub": "armored_orc_warlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/armored_orc_warlord.png"
+  },
+  {
+    "key": "medusa_gorgon",
+    "name": "蛇髮女妖梅杜莎",
+    "sub": "medusa_gorgon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/medusa_gorgon.png"
+  },
+  {
+    "key": "centaur_warrior",
+    "name": "半人馬戰士",
+    "sub": "centaur_warrior",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/centaur_warrior.png"
+  },
+  {
+    "key": "classic_sheet_ghost",
+    "name": "白色幽靈",
+    "sub": "classic_sheet_ghost",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/classic_sheet_ghost.png"
+  },
+  {
+    "key": "classic_perched_gargoyle",
+    "name": "石像鬼",
+    "sub": "classic_perched_gargoyle",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/classic_perched_gargoyle.png"
+  },
+  {
+    "key": "greataxe_black_knight",
+    "name": "巨斧黑騎士",
+    "sub": "greataxe_black_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/greataxe_black_knight.png"
+  },
+  {
+    "key": "elven_lute_bard",
+    "name": "精靈詩人",
+    "sub": "elven_lute_bard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/elven_lute_bard.png"
+  },
+  {
+    "key": "white_archmage",
+    "name": "白袍大法師",
+    "sub": "white_archmage",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_archmage.png"
+  },
+  {
+    "key": "kenku_raven_warrior",
+    "name": "鴉人戰士",
+    "sub": "kenku_raven_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/kenku_raven_warrior.png"
+  },
+  {
+    "key": "mermaid_siren",
+    "name": "人魚賽蓮",
+    "sub": "mermaid_siren",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mermaid_siren.png"
+  },
+  {
+    "key": "skeletor_lich_lord",
+    "name": "骸骨巫妖領主",
+    "sub": "skeletor_lich_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/skeletor_lich_lord.png"
+  },
+  {
+    "key": "elemental_monk",
+    "name": "元素武僧",
+    "sub": "elemental_monk",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/elemental_monk.png"
+  },
+  {
+    "key": "mushroom_girl_myconid",
+    "name": "蕈菇精靈",
+    "sub": "mushroom_girl_myconid",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mushroom_girl_myconid.png"
+  },
+  {
+    "key": "anubis_jackal_guard",
+    "name": "胡狼神殿衛兵",
+    "sub": "anubis_jackal_guard",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/anubis_jackal_guard.png"
+  },
+  {
+    "key": "heavy_armored_goblin",
+    "name": "重甲哥布林精銳",
+    "sub": "heavy_armored_goblin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/heavy_armored_goblin.png"
+  },
+  {
+    "key": "satyr_faun_bard",
+    "name": "羊蹄牧神樂手",
+    "sub": "satyr_faun_bard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/satyr_faun_bard.png"
+  },
+  {
+    "key": "dark_lantern_angel",
+    "name": "提燈墮落天使",
+    "sub": "dark_lantern_angel",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_lantern_angel.png"
+  },
+  {
+    "key": "academy_mage_apprentice",
+    "name": "學院法師學徒",
+    "sub": "academy_mage_apprentice",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/academy_mage_apprentice.png"
+  },
+  {
+    "key": "bastet_catfolk_priest",
+    "name": "貓人神殿祭司",
+    "sub": "bastet_catfolk_priest",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/bastet_catfolk_priest.png"
+  },
+  {
+    "key": "wild_blossom_brawler",
+    "name": "花冠狂野鬥士",
+    "sub": "wild_blossom_brawler",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wild_blossom_brawler.png"
+  },
+  {
+    "key": "dark_dwarf_duergar",
+    "name": "灰矮人杜爾加",
+    "sub": "dark_dwarf_duergar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_dwarf_duergar.png"
+  },
+  {
+    "key": "bandit_raider",
+    "name": "蒙面強盜",
+    "sub": "bandit_raider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bandit_raider.png"
+  },
+  {
+    "key": "bandit_marksman",
+    "name": "強盜弓手",
+    "sub": "bandit_marksman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bandit_marksman.png"
+  },
+  {
+    "key": "goblin_shaman",
+    "name": "哥布林薩滿",
+    "sub": "goblin_shaman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_shaman.png"
+  },
+  {
+    "key": "goblin_warchief",
+    "name": "哥布林酋長",
+    "sub": "goblin_warchief",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_warchief.png"
+  },
+  {
+    "key": "goblin_scout",
+    "name": "哥布林斥候",
+    "sub": "goblin_scout",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_scout.png"
+  },
+  {
+    "key": "clockwork_automaton",
+    "name": "發條士兵",
+    "sub": "clockwork_automaton",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/clockwork_automaton.png"
+  },
+  {
+    "key": "magma_titan",
+    "name": "熔岩巨人",
+    "sub": "magma_titan",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/magma_titan.png"
+  },
+  {
+    "key": "earth_giant",
+    "name": "大地巨人",
+    "sub": "earth_giant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/earth_giant.png"
+  },
+  {
+    "key": "orc_red_berserker",
+    "name": "半獸人狂戰士",
+    "sub": "orc_red_berserker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_red_berserker.png"
+  },
+  {
+    "key": "orc_war_banner",
+    "name": "獸人戰旗兵",
+    "sub": "orc_war_banner",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_war_banner.png"
+  },
+  {
+    "key": "dwarf_scholar_npc",
+    "name": "矮人學者",
+    "sub": "dwarf_scholar_npc",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_scholar_npc.png"
+  },
+  {
+    "key": "dwarf_thane",
+    "name": "矮人領主",
+    "sub": "dwarf_thane",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_thane.png"
+  },
+  {
+    "key": "green_scholar",
+    "name": "綠袍學者",
+    "sub": "green_scholar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/green_scholar.png"
+  },
+  {
+    "key": "wolf_guard",
+    "name": "狼徽守衛",
+    "sub": "wolf_guard",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/wolf_guard.png"
+  },
+  {
+    "key": "lion_knight",
+    "name": "獅徽騎士",
+    "sub": "lion_knight",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/lion_knight.png"
+  },
+  {
+    "key": "pirate_duelist",
+    "name": "海盜決鬥者",
+    "sub": "pirate_duelist",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/pirate_duelist.png"
+  },
+  {
+    "key": "reaper_assassin",
+    "name": "怨靈刺客",
+    "sub": "reaper_assassin",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/reaper_assassin.png"
+  },
+  {
+    "key": "green_wyrm",
+    "name": "雙足飛龍",
+    "sub": "green_wyrm",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/green_wyrm.png"
+  },
+  {
+    "key": "demon_warlord",
+    "name": "角魔領主",
+    "sub": "demon_warlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/demon_warlord.png"
+  },
+  {
+    "key": "tiefling_warlock_npc",
+    "name": "邪教狂熱者",
+    "sub": "tiefling_warlock_npc",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tiefling_warlock_npc.png"
+  },
+  {
+    "key": "noble_mayor",
+    "name": "城鎮領主／市長",
+    "sub": "noble_mayor",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/noble_mayor.png"
+  },
+  {
+    "key": "villager_merchant",
+    "name": "平民旅人／商販",
+    "sub": "villager_merchant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/villager_merchant.png"
+  },
+  {
+    "key": "cult_priestess",
+    "name": "黑暗女祭司／女巫",
+    "sub": "cult_priestess",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/cult_priestess.png"
+  },
+  {
+    "key": "vampire_lord",
+    "name": "吸血鬼領主",
+    "sub": "vampire_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/vampire_lord.png"
+  },
+  {
+    "key": "lizardfolk_yuanti",
+    "name": "蜥蜴人／蛇人戰士",
+    "sub": "lizardfolk_yuanti",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/lizardfolk_yuanti.png"
+  },
+  {
+    "key": "red_dragon",
+    "name": "成年紅龍",
+    "sub": "red_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/red_dragon.png"
+  },
+  {
+    "key": "black_dragon",
+    "name": "黑龍",
+    "sub": "black_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/black_dragon.png"
+  },
+  {
+    "key": "blue_dragon",
+    "name": "藍龍",
+    "sub": "blue_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/blue_dragon.png"
+  },
+  {
+    "key": "gargoyle_stone",
+    "name": "石像鬼",
+    "sub": "gargoyle_stone",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gargoyle_stone.png"
+  },
+  {
+    "key": "cockatrice_beast",
+    "name": "雞蛇怪",
+    "sub": "cockatrice_beast",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/cockatrice_beast.png"
+  },
+  {
+    "key": "mummy_guardian",
+    "name": "古墓木乃伊",
+    "sub": "mummy_guardian",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mummy_guardian.png"
+  },
+  {
+    "key": "fire_elemental",
+    "name": "烈焰元素魔像",
+    "sub": "fire_elemental",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/fire_elemental.png"
+  },
+  {
+    "key": "black_knight",
+    "name": "黑騎士",
+    "sub": "black_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/black_knight.png"
+  },
+  {
+    "key": "bone_druid",
+    "name": "白骨德魯伊",
+    "sub": "bone_druid",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bone_druid.png"
+  },
+  {
+    "key": "witch_hunter",
+    "name": "怪物獵人",
+    "sub": "witch_hunter",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/witch_hunter.png"
+  },
+  {
+    "key": "shieldmaiden",
+    "name": "北境盾妹女戰士",
+    "sub": "shieldmaiden",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/shieldmaiden.png"
+  },
+  {
+    "key": "wood_elf_archer",
+    "name": "林地精靈弓手",
+    "sub": "wood_elf_archer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wood_elf_archer.png"
+  },
+  {
+    "key": "gladiator_champion",
+    "name": "競技場角鬥士",
+    "sub": "gladiator_champion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gladiator_champion.png"
+  },
+  {
+    "key": "heavy_mace_knight",
+    "name": "重裝狼徽騎士",
+    "sub": "heavy_mace_knight",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/heavy_mace_knight.png"
+  },
+  {
+    "key": "fire_salamander",
+    "name": "火蜥蜴炎魔戰士",
+    "sub": "fire_salamander",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/fire_salamander.png"
+  },
+  {
+    "key": "water_elemental",
+    "name": "水元素巨人",
+    "sub": "water_elemental",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/water_elemental.png"
+  },
+  {
+    "key": "crimson_cult_high_priest",
+    "name": "猩紅教派大祭司",
+    "sub": "crimson_cult_high_priest",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_cult_high_priest.png"
+  },
+  {
+    "key": "mad_jester",
+    "name": "瘋狂小丑",
+    "sub": "mad_jester",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mad_jester.png"
+  },
+  {
+    "key": "frost_elemental",
+    "name": "寒冰元素巨人",
+    "sub": "frost_elemental",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/frost_elemental.png"
+  },
+  {
+    "key": "elder_noble_lord",
+    "name": "白鬚老領主",
+    "sub": "elder_noble_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/elder_noble_lord.png"
+  },
+  {
+    "key": "tabaxi_cheetah",
+    "name": "獵豹貓人",
+    "sub": "tabaxi_cheetah",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/tabaxi_cheetah.png"
+  },
+  {
+    "key": "behemoth_tusk_brute",
+    "name": "巨牙野獸人",
+    "sub": "behemoth_tusk_brute",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/behemoth_tusk_brute.png"
+  },
+  {
+    "key": "brown_wizard_hermit",
+    "name": "褐袍隱士法師",
+    "sub": "brown_wizard_hermit",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/brown_wizard_hermit.png"
+  },
+  {
+    "key": "winged_frost_fiend",
+    "name": "霜翼魔怪",
+    "sub": "winged_frost_fiend",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/winged_frost_fiend.png"
+  },
+  {
+    "key": "magma_ember_golem",
+    "name": "熔核火靈",
+    "sub": "magma_ember_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/magma_ember_golem.png"
+  },
+  {
+    "key": "shadow_shinobi",
+    "name": "黑衣忍者刺客",
+    "sub": "shadow_shinobi",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/shadow_shinobi.png"
+  },
+  {
+    "key": "aarakocra_eagle",
+    "name": "鷹人弓手",
+    "sub": "aarakocra_eagle",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/aarakocra_eagle.png"
+  },
+  {
+    "key": "dwarf_royal_lord",
+    "name": "矮人王族領主",
+    "sub": "dwarf_royal_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_royal_lord.png"
+  },
+  {
+    "key": "dark_fairy_queen",
+    "name": "黑翼魔女",
+    "sub": "dark_fairy_queen",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_fairy_queen.png"
+  },
+  {
+    "key": "star_spawn_cthulhu",
+    "name": "深淵觸手魔神",
+    "sub": "star_spawn_cthulhu",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/star_spawn_cthulhu.png"
+  },
+  {
+    "key": "grey_archwizard",
+    "name": "灰袍大法師",
+    "sub": "grey_archwizard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/grey_archwizard.png"
+  },
+  {
+    "key": "spiked_dark_overlord",
+    "name": "棘刺暗黑領主",
+    "sub": "spiked_dark_overlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/spiked_dark_overlord.png"
+  },
+  {
+    "key": "giant_green_ogre",
+    "name": "巨型綠食人魔",
+    "sub": "giant_green_ogre",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/giant_green_ogre.png"
+  },
+  {
+    "key": "pirate_first_mate",
+    "name": "海盜大副",
+    "sub": "pirate_first_mate",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/pirate_first_mate.png"
+  },
+  {
+    "key": "forest_druid_owl",
+    "name": "林地德魯伊",
+    "sub": "forest_druid_owl",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/forest_druid_owl.png"
+  },
+  {
+    "key": "elven_noble_lady",
+    "name": "精靈女領主",
+    "sub": "elven_noble_lady",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/elven_noble_lady.png"
+  },
+  {
+    "key": "house_goblin_servant",
+    "name": "精怪僕從",
+    "sub": "house_goblin_servant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/house_goblin_servant.png"
+  },
+  {
+    "key": "illithid_cult_mage",
+    "name": "海妖章魚法師",
+    "sub": "illithid_cult_mage",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/illithid_cult_mage.png"
+  },
+  {
+    "key": "clay_stone_golem",
+    "name": "赤岩土魔像",
+    "sub": "clay_stone_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/clay_stone_golem.png"
+  },
+  {
+    "key": "orc_axe_raider",
+    "name": "綠皮獸人斧手",
+    "sub": "orc_axe_raider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_axe_raider.png"
+  },
+  {
+    "key": "hooded_peasant",
+    "name": "兜帽平民旅人",
+    "sub": "hooded_peasant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/hooded_peasant.png"
+  },
+  {
+    "key": "deep_sahuagin",
+    "name": "深海魚人戰士",
+    "sub": "deep_sahuagin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/deep_sahuagin.png"
+  },
+  {
+    "key": "classic_green_witch",
+    "name": "經典綠臉女巫",
+    "sub": "classic_green_witch",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/classic_green_witch.png"
+  },
+  {
+    "key": "white_hair_sorceress",
+    "name": "白髮秘法女祭司",
+    "sub": "white_hair_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_hair_sorceress.png"
+  },
+  {
+    "key": "phoenix_guardian",
+    "name": "烈焰鳳凰戰士",
+    "sub": "phoenix_guardian",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/phoenix_guardian.png"
+  },
+  {
+    "key": "shadow_dragon_knight",
+    "name": "暗影龍翼騎士",
+    "sub": "shadow_dragon_knight",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/shadow_dragon_knight.png"
+  },
+  {
+    "key": "raven_kenku_warrior",
+    "name": "烏鴉人戰士",
+    "sub": "raven_kenku_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/raven_kenku_warrior.png"
+  },
+  {
+    "key": "ice_wisp_avatar",
+    "name": "寒冰精魄",
+    "sub": "ice_wisp_avatar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ice_wisp_avatar.png"
+  },
+  {
+    "key": "desert_brawler",
+    "name": "沙漠狂戰士",
+    "sub": "desert_brawler",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/desert_brawler.png"
+  },
+  {
+    "key": "crimson_beholder_crab",
+    "name": "深紅甲殼異怪",
+    "sub": "crimson_beholder_crab",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_beholder_crab.png"
+  },
+  {
+    "key": "abyssal_necromancer",
+    "name": "深淵骨杖死靈師",
+    "sub": "abyssal_necromancer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/abyssal_necromancer.png"
+  },
+  {
+    "key": "horned_magma_brute",
+    "name": "雙角熔岩巨獸",
+    "sub": "horned_magma_brute",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/horned_magma_brute.png"
+  },
+  {
+    "key": "azure_genie",
+    "name": "藍燈神精靈",
+    "sub": "azure_genie",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/azure_genie.png"
+  },
+  {
+    "key": "ranger_strider",
+    "name": "流浪劍客遊俠",
+    "sub": "ranger_strider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ranger_strider.png"
+  },
+  {
+    "key": "gargoyle_demon_lord",
+    "name": "紫翼石像魔王",
+    "sub": "gargoyle_demon_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gargoyle_demon_lord.png"
+  },
+  {
+    "key": "cyclops_brute",
+    "name": "獨眼巨人",
+    "sub": "cyclops_brute",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/cyclops_brute.png"
+  },
+  {
+    "key": "orc_heavy_grunt",
+    "name": "重裝獸人步兵",
+    "sub": "orc_heavy_grunt",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_heavy_grunt.png"
+  },
+  {
+    "key": "treant_sprout",
+    "name": "樹人精靈",
+    "sub": "treant_sprout",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/treant_sprout.png"
+  },
+  {
+    "key": "pirate_captain_jack",
+    "name": "海盜船長",
+    "sub": "pirate_captain_jack",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/pirate_captain_jack.png"
+  },
+  {
+    "key": "frost_construct_head",
+    "name": "寒冰構裝體",
+    "sub": "frost_construct_head",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/frost_construct_head.png"
+  },
+  {
+    "key": "ghost_gentleman",
+    "name": "幽靈紳士",
+    "sub": "ghost_gentleman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ghost_gentleman.png"
+  },
+  {
+    "key": "leonin_lion_warrior",
+    "name": "獅人戰士",
+    "sub": "leonin_lion_warrior",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/leonin_lion_warrior.png"
+  },
+  {
+    "key": "green_serpent_yuanti",
+    "name": "綠鱗蛇人戰士",
+    "sub": "green_serpent_yuanti",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/green_serpent_yuanti.png"
+  },
+  {
+    "key": "yeti_abominable",
+    "name": "雪地雪人",
+    "sub": "yeti_abominable",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/yeti_abominable.png"
+  },
+  {
+    "key": "amazon_spear_maiden",
+    "name": "亞馬遜長矛女戰士",
+    "sub": "amazon_spear_maiden",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/amazon_spear_maiden.png"
+  },
+  {
+    "key": "white_serpent_witch",
+    "name": "白蛇妖女巫",
+    "sub": "white_serpent_witch",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/white_serpent_witch.png"
+  },
+  {
+    "key": "sasquatch_ape",
+    "name": "叢林巨猿怪",
+    "sub": "sasquatch_ape",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/sasquatch_ape.png"
+  },
+  {
+    "key": "moss_iron_golem",
+    "name": "苔蘚鐵魔像",
+    "sub": "moss_iron_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/moss_iron_golem.png"
+  },
+  {
+    "key": "green_slime_ghost",
+    "name": "貪吃綠史萊姆幽靈",
+    "sub": "green_slime_ghost",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/green_slime_ghost.png"
+  },
+  {
+    "key": "arena_hulk_gladiator",
+    "name": "綠膚角鬥巨人",
+    "sub": "arena_hulk_gladiator",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/arena_hulk_gladiator.png"
+  },
+  {
+    "key": "orc_shield_champion",
+    "name": "盾牌獸人勇士",
+    "sub": "orc_shield_champion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_shield_champion.png"
+  },
+  {
+    "key": "iron_lava_golem",
+    "name": "黑鐵熔岩魔像",
+    "sub": "iron_lava_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/iron_lava_golem.png"
+  },
+  {
+    "key": "bone_armored_skeleton",
+    "name": "骨甲骷髏領主",
+    "sub": "bone_armored_skeleton",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bone_armored_skeleton.png"
+  },
+  {
+    "key": "stone_imp_gargoyle",
+    "name": "灰岩小石像鬼",
+    "sub": "stone_imp_gargoyle",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/stone_imp_gargoyle.png"
+  },
+  {
+    "key": "viking_elder_warrior",
+    "name": "維京白鬚戰士",
+    "sub": "viking_elder_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/viking_elder_warrior.png"
+  },
+  {
+    "key": "fey_green_elf",
+    "name": "森林妖精精怪",
+    "sub": "fey_green_elf",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/fey_green_elf.png"
+  },
+  {
+    "key": "high_elf_warrior",
+    "name": "高等精靈金甲戰士",
+    "sub": "high_elf_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/high_elf_warrior.png"
+  },
+  {
+    "key": "voodoo_witch_doctor",
+    "name": "巫毒暗影術士",
+    "sub": "voodoo_witch_doctor",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/voodoo_witch_doctor.png"
+  },
+  {
+    "key": "crimson_lich_queen",
+    "name": "猩紅亡靈女祭司",
+    "sub": "crimson_lich_queen",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_lich_queen.png"
+  },
+  {
+    "key": "town_commoner_boy",
+    "name": "鎮民少年",
+    "sub": "town_commoner_boy",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/town_commoner_boy.png"
+  },
+  {
+    "key": "dragonborn_paladin_gold",
+    "name": "金鱗龍裔聖武士",
+    "sub": "dragonborn_paladin_gold",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/dragonborn_paladin_gold.png"
+  },
+  {
+    "key": "wolfman_berserker",
+    "name": "灰毛狼人狂戰士",
+    "sub": "wolfman_berserker",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/wolfman_berserker.png"
+  },
+  {
+    "key": "dwarf_axe_champion",
+    "name": "矮人巨斧勇士",
+    "sub": "dwarf_axe_champion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_axe_champion.png"
+  },
+  {
+    "key": "dwarf_green_noble",
+    "name": "矮人綠袍長老",
+    "sub": "dwarf_green_noble",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_green_noble.png"
+  },
+  {
+    "key": "myconid_mushroom_folk",
+    "name": "蕈人小精靈",
+    "sub": "myconid_mushroom_folk",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/myconid_mushroom_folk.png"
+  },
+  {
+    "key": "void_shadow_wraith",
+    "name": "虛空暗影怨靈",
+    "sub": "void_shadow_wraith",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/void_shadow_wraith.png"
+  },
+  {
+    "key": "paladin_shield_maiden",
+    "name": "金髮聖盾女武士",
+    "sub": "paladin_shield_maiden",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/paladin_shield_maiden.png"
+  },
+  {
+    "key": "amber_fire_titan",
+    "name": "琥珀炎魔巨人",
+    "sub": "amber_fire_titan",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/amber_fire_titan.png"
+  },
+  {
+    "key": "desert_grand_vizier",
+    "name": "沙漠蛇杖大巫師",
+    "sub": "desert_grand_vizier",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/desert_grand_vizier.png"
+  },
+  {
+    "key": "thorn_vine_dryad",
+    "name": "荊棘樹精女妖",
+    "sub": "thorn_vine_dryad",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/thorn_vine_dryad.png"
+  },
+  {
+    "key": "clockwork_minotaur",
+    "name": "發條牛頭人機甲",
+    "sub": "clockwork_minotaur",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/clockwork_minotaur.png"
+  },
+  {
+    "key": "vampire_rock_countess",
+    "name": "蒼白吸血鬼女伯爵",
+    "sub": "vampire_rock_countess",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/vampire_rock_countess.png"
+  },
+  {
+    "key": "flesh_golem_monster",
+    "name": "縫合科學怪人",
+    "sub": "flesh_golem_monster",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/flesh_golem_monster.png"
+  },
+  {
+    "key": "archer_dwarven_ranger",
+    "name": "矮人長弓遊俠",
+    "sub": "archer_dwarven_ranger",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/archer_dwarven_ranger.png"
+  },
+  {
+    "key": "arcane_eye_warlock",
+    "name": "魔眼法杖術士",
+    "sub": "arcane_eye_warlock",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/arcane_eye_warlock.png"
+  },
+  {
+    "key": "shadow_void_vessel",
+    "name": "暗影虛空行者",
+    "sub": "shadow_void_vessel",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/shadow_void_vessel.png"
+  },
+  {
+    "key": "frost_giant_troll",
+    "name": "藍皮巨魔巨人",
+    "sub": "frost_giant_troll",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/frost_giant_troll.png"
+  },
+  {
+    "key": "white_bandage_mummy",
+    "name": "白繃帶木乃伊",
+    "sub": "white_bandage_mummy",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_bandage_mummy.png"
+  },
+  {
+    "key": "pale_orc_marauder",
+    "name": "蒼白獸人掠奪者",
+    "sub": "pale_orc_marauder",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pale_orc_marauder.png"
+  },
+  {
+    "key": "elven_king_royal",
+    "name": "精靈紅袍王者",
+    "sub": "elven_king_royal",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/elven_king_royal.png"
+  },
+  {
+    "key": "falconer_knight_lady",
+    "name": "獵鷹女騎士",
+    "sub": "falconer_knight_lady",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/falconer_knight_lady.png"
+  },
+  {
+    "key": "goblin_bag_thief",
+    "name": "哥布林盜賊",
+    "sub": "goblin_bag_thief",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_bag_thief.png"
+  },
+  {
+    "key": "skeleton_jester",
+    "name": "骷髏小丑",
+    "sub": "skeleton_jester",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/skeleton_jester.png"
+  },
+  {
+    "key": "gnoll_cave_goblin",
+    "name": "洞穴地精怪",
+    "sub": "gnoll_cave_goblin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gnoll_cave_goblin.png"
+  },
+  {
+    "key": "crimson_imp_gremlin",
+    "name": "紅皮小惡魔",
+    "sub": "crimson_imp_gremlin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_imp_gremlin.png"
+  },
+  {
+    "key": "banshee_green_specter",
+    "name": "碧焰女妖怨靈",
+    "sub": "banshee_green_specter",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/banshee_green_specter.png"
+  },
+  {
+    "key": "desert_monster_hunter",
+    "name": "荒野怪物獵手",
+    "sub": "desert_monster_hunter",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/desert_monster_hunter.png"
+  },
+  {
+    "key": "village_farmer_pitchfork",
+    "name": "村莊農夫",
+    "sub": "village_farmer_pitchfork",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/village_farmer_pitchfork.png"
+  },
+  {
+    "key": "village_smith_craftsman",
+    "name": "村莊木匠工頭",
+    "sub": "village_smith_craftsman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/village_smith_craftsman.png"
+  },
+  {
+    "key": "village_hermit_beggar",
+    "name": "老隱士旅人",
+    "sub": "village_hermit_beggar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/village_hermit_beggar.png"
+  },
+  {
+    "key": "village_inn_maid",
+    "name": "旅店女僕村婦",
+    "sub": "village_inn_maid",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/village_inn_maid.png"
+  },
+  {
+    "key": "scavenger_jawa",
+    "name": "發光眼拾荒矮人",
+    "sub": "scavenger_jawa",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/scavenger_jawa.png"
+  },
+  {
+    "key": "furry_beastman",
+    "name": "長毛熊面亞人",
+    "sub": "furry_beastman",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/furry_beastman.png"
+  },
+  {
+    "key": "white_robe_maiden",
+    "name": "白袍見習女劍士",
+    "sub": "white_robe_maiden",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_robe_maiden.png"
+  },
+  {
+    "key": "tiefling_demon_blademaster",
+    "name": "雙角紅黑紋惡魔劍客",
+    "sub": "tiefling_demon_blademaster",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tiefling_demon_blademaster.png"
+  },
+  {
+    "key": "red_feather_avian",
+    "name": "赤羽翼人祭司",
+    "sub": "red_feather_avian",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/red_feather_avian.png"
+  },
+  {
+    "key": "pink_hair_sorceress",
+    "name": "粉髮星界女術士",
+    "sub": "pink_hair_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pink_hair_sorceress.png"
+  },
+  {
+    "key": "forest_bearling",
+    "name": "森林毛毛小熊怪",
+    "sub": "forest_bearling",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/forest_bearling.png"
+  },
+  {
+    "key": "illithid_tentacle_elder",
+    "name": "克蘇魯章魚頭長老",
+    "sub": "illithid_tentacle_elder",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/illithid_tentacle_elder.png"
+  },
+  {
+    "key": "deep_gnome_ears",
+    "name": "長耳地底侏儒",
+    "sub": "deep_gnome_ears",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/deep_gnome_ears.png"
+  },
+  {
+    "key": "swamp_hermit_master",
+    "name": "長耳綠皮沼澤長老",
+    "sub": "swamp_hermit_master",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/swamp_hermit_master.png"
+  },
+  {
+    "key": "sith_blood_inquisitor",
+    "name": "血印兜帽死靈審判官",
+    "sub": "sith_blood_inquisitor",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sith_blood_inquisitor.png"
+  },
+  {
+    "key": "frost_wraith_specter",
+    "name": "透明幽藍霜魂",
+    "sub": "frost_wraith_specter",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/frost_wraith_specter.png"
+  },
+  {
+    "key": "chitin_claw_stalker",
+    "name": "硬甲異怪潛伏者",
+    "sub": "chitin_claw_stalker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/chitin_claw_stalker.png"
+  },
+  {
+    "key": "white_gown_noble_maiden",
+    "name": "白袍高貴聖女",
+    "sub": "white_gown_noble_maiden",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_gown_noble_maiden.png"
+  },
+  {
+    "key": "blue_djinn_genie",
+    "name": "藍膚神燈巨靈",
+    "sub": "blue_djinn_genie",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/blue_djinn_genie.png"
+  },
+  {
+    "key": "gothic_vampire_lord",
+    "name": "黑髮哥德吸血鬼伯爵",
+    "sub": "gothic_vampire_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gothic_vampire_lord.png"
+  },
+  {
+    "key": "magma_colossus_golem",
+    "name": "熔岩黑曜巨像",
+    "sub": "magma_colossus_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/magma_colossus_golem.png"
+  },
+  {
+    "key": "harpy_dark_matron",
+    "name": "黑羽鷹身女妖首領",
+    "sub": "harpy_dark_matron",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/harpy_dark_matron.png"
+  },
+  {
+    "key": "dark_iron_warlord",
+    "name": "黑鐵面具帝國戰閥",
+    "sub": "dark_iron_warlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_iron_warlord.png"
+  },
+  {
+    "key": "samurai_ronin",
+    "name": "東方浪人武士",
+    "sub": "samurai_ronin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/samurai_ronin.png"
+  },
+  {
+    "key": "earth_mud_golem",
+    "name": "泥石魔像守衛",
+    "sub": "earth_mud_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/earth_mud_golem.png"
+  },
+  {
+    "key": "blue_druid_shaman",
+    "name": "藍膚鹿角薩滿",
+    "sub": "blue_druid_shaman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/blue_druid_shaman.png"
+  },
+  {
+    "key": "barbarian_berserker_sword",
+    "name": "赤膊野蠻人劍士",
+    "sub": "barbarian_berserker_sword",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/barbarian_berserker_sword.png"
+  },
+  {
+    "key": "arena_brawler_knife",
+    "name": "角鬥匕首格鬥家",
+    "sub": "arena_brawler_knife",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/arena_brawler_knife.png"
+  },
+  {
+    "key": "caveman_club_thug",
+    "name": "粗獷野人狼牙棒手",
+    "sub": "caveman_club_thug",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/caveman_club_thug.png"
+  },
+  {
+    "key": "militia_shield_swordsman",
+    "name": "圓盾民兵步兵",
+    "sub": "militia_shield_swordsman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/militia_shield_swordsman.png"
+  },
+  {
+    "key": "shadow_warlock_hood",
+    "name": "黑袍暗影術士",
+    "sub": "shadow_warlock_hood",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/shadow_warlock_hood.png"
+  },
+  {
+    "key": "gladiator_blade_champion",
+    "name": "赤身角鬥士劍客",
+    "sub": "gladiator_blade_champion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gladiator_blade_champion.png"
+  },
+  {
+    "key": "stone_rock_golem_large",
+    "name": "大型碎石巨魔像",
+    "sub": "stone_rock_golem_large",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/stone_rock_golem_large.png"
+  },
+  {
+    "key": "camo_forest_stalker",
+    "name": "林地潛行迷彩刺客",
+    "sub": "camo_forest_stalker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/camo_forest_stalker.png"
+  },
+  {
+    "key": "spiked_hell_knight",
+    "name": "棘角地獄重裝騎士",
+    "sub": "spiked_hell_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/spiked_hell_knight.png"
+  },
+  {
+    "key": "adventurer_iron_swordsman",
+    "name": "重裝冒險者劍士",
+    "sub": "adventurer_iron_swordsman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png"
+  },
+  {
+    "key": "white_elf_bladedancer",
+    "name": "白髮精靈劍舞者",
+    "sub": "white_elf_bladedancer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_elf_bladedancer.png"
+  },
+  {
+    "key": "tiefling_blood_rogue",
+    "name": "赤紅提夫林雙匕刺客",
+    "sub": "tiefling_blood_rogue",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tiefling_blood_rogue.png"
+  },
+  {
+    "key": "robin_hood_ranger",
+    "name": "經典綠衣林地神射手",
+    "sub": "robin_hood_ranger",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/robin_hood_ranger.png"
+  },
+  {
+    "key": "valkyrie_gold_warrior",
+    "name": "黃金鎧甲女武神",
+    "sub": "valkyrie_gold_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/valkyrie_gold_warrior.png"
+  },
+  {
+    "key": "roman_centurion_legion",
+    "name": "百夫長軍團重步兵",
+    "sub": "roman_centurion_legion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/roman_centurion_legion.png"
+  },
+  {
+    "key": "goblin_dagger_thief",
+    "name": "尖耳綠皮哥布林匕首刺客",
+    "sub": "goblin_dagger_thief",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_dagger_thief.png"
+  },
+  {
+    "key": "iron_helm_infantry",
+    "name": "鐵盔王國步兵",
+    "sub": "iron_helm_infantry",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/iron_helm_infantry.png"
+  },
+  {
+    "key": "spartan_hoplite_hero",
+    "name": "斯巴達長矛盾衛英雄",
+    "sub": "spartan_hoplite_hero",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/spartan_hoplite_hero.png"
+  },
+  {
+    "key": "mercenary_hooded_scout",
+    "name": "兜帽重盾傭兵",
+    "sub": "mercenary_hooded_scout",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mercenary_hooded_scout.png"
+  },
+  {
+    "key": "steampunk_armor_mech",
+    "name": "發條動力蒸氣裝甲魔像",
+    "sub": "steampunk_armor_mech",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/steampunk_armor_mech.png"
+  },
+  {
+    "key": "black_armor_general",
+    "name": "黑甲帝國將軍",
+    "sub": "black_armor_general",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/black_armor_general.png"
+  },
+  {
+    "key": "undead_bone_horror",
+    "name": "原生骸骨骷髏怪",
+    "sub": "undead_bone_horror",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/undead_bone_horror.png"
+  },
+  {
+    "key": "amazon_warrior_princess",
+    "name": "亞馬遜環刃女戰士",
+    "sub": "amazon_warrior_princess",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/amazon_warrior_princess.png"
+  },
+  {
+    "key": "red_hair_shieldmaiden",
+    "name": "紅髮圓盾女蠻族",
+    "sub": "red_hair_shieldmaiden",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/red_hair_shieldmaiden.png"
+  },
+  {
+    "key": "shogun_armor_lord",
+    "name": "黃金兜盔幕府大將軍",
+    "sub": "shogun_armor_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/shogun_armor_lord.png"
+  },
+  {
+    "key": "conquistador_duelist",
+    "name": "羽飾征服者火槍劍士",
+    "sub": "conquistador_duelist",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/conquistador_duelist.png"
+  },
+  {
+    "key": "native_scout_tracker",
+    "name": "荒野羽飾追蹤者",
+    "sub": "native_scout_tracker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/native_scout_tracker.png"
+  },
+  {
+    "key": "dwarf_dual_axe_berserker",
+    "name": "雙斧矮人狂戰士",
+    "sub": "dwarf_dual_axe_berserker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarf_dual_axe_berserker.png"
+  },
+  {
+    "key": "tribal_war_chief",
+    "name": "戰冠部落首領",
+    "sub": "tribal_war_chief",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tribal_war_chief.png"
+  },
+  {
+    "key": "purple_lich_sorceress",
+    "name": "紫袍幽暗巫妖女王",
+    "sub": "purple_lich_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/purple_lich_sorceress.png"
+  },
+  {
+    "key": "orc_tribal_brawler",
+    "name": "獸人格鬥蠻人",
+    "sub": "orc_tribal_brawler",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_tribal_brawler.png"
+  },
+  {
+    "key": "pharaoh_gold_priest",
+    "name": "黃金法老王神官",
+    "sub": "pharaoh_gold_priest",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pharaoh_gold_priest.png"
+  },
+  {
+    "key": "dual_dagger_assassin",
+    "name": "雙短劍蒙面刺客",
+    "sub": "dual_dagger_assassin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dual_dagger_assassin.png"
+  },
+  {
+    "key": "voodoo_skull_witch_doctor",
+    "name": "骷髏面具巫毒術士",
+    "sub": "voodoo_skull_witch_doctor",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/voodoo_skull_witch_doctor.png"
+  },
+  {
+    "key": "chained_shadow_fiend",
+    "name": "鎖鏈狂魔",
+    "sub": "chained_shadow_fiend",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/chained_shadow_fiend.png"
+  },
+  {
+    "key": "wrapped_ancient_mummy",
+    "name": "白布木乃伊守衛",
+    "sub": "wrapped_ancient_mummy",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wrapped_ancient_mummy.png"
+  },
+  {
+    "key": "giant_dire_rat",
+    "name": "巨型變異地城老鼠",
+    "sub": "giant_dire_rat",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_dire_rat.png"
+  },
+  {
+    "key": "stone_golem_large_brute",
+    "name": "巨石魔像",
+    "sub": "stone_golem_large_brute",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/stone_golem_large_brute.png"
+  },
+  {
+    "key": "clockwork_spider_tank",
+    "name": "發條機關蜘蛛",
+    "sub": "clockwork_spider_tank",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/clockwork_spider_tank.png"
+  },
+  {
+    "key": "paladin_golden_crusader",
+    "name": "金徽神殿聖武士",
+    "sub": "paladin_golden_crusader",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/paladin_golden_crusader.png"
+  },
+  {
+    "key": "abyssal_winged_overlord",
+    "name": "漆黑翼魔領主",
+    "sub": "abyssal_winged_overlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/abyssal_winged_overlord.png"
+  },
+  {
+    "key": "green_wyrm_drake",
+    "name": "蒼翠雙足飛龍",
+    "sub": "green_wyrm_drake",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/green_wyrm_drake.png"
+  },
+  {
+    "key": "black_plate_dread_knight",
+    "name": "黑鋼恐懼騎士",
+    "sub": "black_plate_dread_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/black_plate_dread_knight.png"
+  },
+  {
+    "key": "antler_wild_druid",
+    "name": "鹿角荒野德魯伊",
+    "sub": "antler_wild_druid",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/antler_wild_druid.png"
+  },
+  {
+    "key": "dwarven_hammer_smith",
+    "name": "矮人戰錘鍛造師",
+    "sub": "dwarven_hammer_smith",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarven_hammer_smith.png"
+  },
+  {
+    "key": "celestial_winged_paladin",
+    "name": "天界翼盔聖騎士",
+    "sub": "celestial_winged_paladin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/celestial_winged_paladin.png"
+  },
+  {
+    "key": "marsh_drake_mount",
+    "name": "沼澤毒蜥幼龍",
+    "sub": "marsh_drake_mount",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/marsh_drake_mount.png"
+  },
+  {
+    "key": "dual_scimitar_skeleton",
+    "name": "雙刀骷髏死士",
+    "sub": "dual_scimitar_skeleton",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dual_scimitar_skeleton.png"
+  },
+  {
+    "key": "dark_hood_necromancer",
+    "name": "暗影死靈宗師",
+    "sub": "dark_hood_necromancer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_hood_necromancer.png"
+  },
+  {
+    "key": "blue_robe_archmage",
+    "name": "湛藍奧術大法師",
+    "sub": "blue_robe_archmage",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/blue_robe_archmage.png"
+  },
+  {
+    "key": "monk_unarmed_master",
+    "name": "行僧苦修大師",
+    "sub": "monk_unarmed_master",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/monk_unarmed_master.png"
+  },
+  {
+    "key": "ancient_skeletal_lich",
+    "name": "遠古持杖巫妖",
+    "sub": "ancient_skeletal_lich",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ancient_skeletal_lich.png"
+  },
+  {
+    "key": "orc_dual_axe_warlord",
+    "name": "雙斧獸人軍閥",
+    "sub": "orc_dual_axe_warlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_dual_axe_warlord.png"
+  },
+  {
+    "key": "dire_worg_mount",
+    "name": "座狼鞍具戰獸",
+    "sub": "dire_worg_mount",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/dire_worg_mount.png"
+  },
+  {
+    "key": "monkey_trickster",
+    "name": "香蕉頑猴人",
+    "sub": "monkey_trickster",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/monkey_trickster.png"
+  },
+  {
+    "key": "sand_scorpion_golem",
+    "name": "沙蠍魔像",
+    "sub": "sand_scorpion_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sand_scorpion_golem.png"
+  },
+  {
+    "key": "giant_silverback_ape",
+    "name": "巨型銀背大猩猩",
+    "sub": "giant_silverback_ape",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_silverback_ape.png"
+  },
+  {
+    "key": "star_void_commander",
+    "name": "星界觸手指揮官",
+    "sub": "star_void_commander",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/star_void_commander.png"
+  },
+  {
+    "key": "red_iron_crab_golem",
+    "name": "紅鋼巨蟹魔像",
+    "sub": "red_iron_crab_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/red_iron_crab_golem.png"
+  },
+  {
+    "key": "floating_flame_grimoire",
+    "name": "懸浮烈焰魔導書",
+    "sub": "floating_flame_grimoire",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/floating_flame_grimoire.png"
+  },
+  {
+    "key": "sahuagin_sea_priestess",
+    "name": "海妖三叉戟祭司",
+    "sub": "sahuagin_sea_priestess",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sahuagin_sea_priestess.png"
+  },
+  {
+    "key": "white_bone_bat_fiend",
+    "name": "白骨巨翼蝙蝠",
+    "sub": "white_bone_bat_fiend",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/white_bone_bat_fiend.png"
+  },
+  {
+    "key": "dark_winged_erinyes",
+    "name": "暗羽復仇女妖",
+    "sub": "dark_winged_erinyes",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dark_winged_erinyes.png"
+  },
+  {
+    "key": "golden_jade_warlord",
+    "name": "金甲武士領主",
+    "sub": "golden_jade_warlord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/golden_jade_warlord.png"
+  },
+  {
+    "key": "giant_winged_beetle",
+    "name": "巨型飛翼甲蟲",
+    "sub": "giant_winged_beetle",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_winged_beetle.png"
+  },
+  {
+    "key": "flame_elemental_spirit",
+    "name": "烈焰元素魔靈",
+    "sub": "flame_elemental_spirit",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/flame_elemental_spirit.png"
+  },
+  {
+    "key": "crimson_skull_reaver",
+    "name": "血甲骸骨掠奪者",
+    "sub": "crimson_skull_reaver",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_skull_reaver.png"
+  },
+  {
+    "key": "myconid_spore_witch",
+    "name": "蕈冠孢子巫師",
+    "sub": "myconid_spore_witch",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/myconid_spore_witch.png"
+  },
+  {
+    "key": "mantis_blade_stalker",
+    "name": "螳螂鐮刃潛獵者",
+    "sub": "mantis_blade_stalker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/mantis_blade_stalker.png"
+  },
+  {
+    "key": "cobalt_mech_scorpion",
+    "name": "鈷藍機關巨蠍",
+    "sub": "cobalt_mech_scorpion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/cobalt_mech_scorpion.png"
+  },
+  {
+    "key": "osirian_mummy_priest",
+    "name": "聖眼木乃伊祭司",
+    "sub": "osirian_mummy_priest",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/osirian_mummy_priest.png"
+  },
+  {
+    "key": "void_acolyte_mystic",
+    "name": "星界紫膚秘術師",
+    "sub": "void_acolyte_mystic",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/void_acolyte_mystic.png"
+  },
+  {
+    "key": "serpent_mummy_pharaoh",
+    "name": "繃帶蛇首法老",
+    "sub": "serpent_mummy_pharaoh",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/serpent_mummy_pharaoh.png"
+  },
+  {
+    "key": "ember_serpent_champion",
+    "name": "焰鱗蛇人戰將",
+    "sub": "ember_serpent_champion",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/ember_serpent_champion.png"
+  },
+  {
+    "key": "iron_hull_shark_beast",
+    "name": "鐵甲巨鯊怪獸",
+    "sub": "iron_hull_shark_beast",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/iron_hull_shark_beast.png"
+  },
+  {
+    "key": "scarab_carapace_guard",
+    "name": "甲蟲殼衛士",
+    "sub": "scarab_carapace_guard",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/scarab_carapace_guard.png"
+  },
+  {
+    "key": "abyssal_deep_stalker",
+    "name": "深淵多眼潛伏者",
+    "sub": "abyssal_deep_stalker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/abyssal_deep_stalker.png"
+  },
+  {
+    "key": "violet_harpy_raider",
+    "name": "紫翼鷹身女妖",
+    "sub": "violet_harpy_raider",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/violet_harpy_raider.png"
+  },
+  {
+    "key": "crimson_kraken_spawn",
+    "name": "猩紅觸手魔怪",
+    "sub": "crimson_kraken_spawn",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_kraken_spawn.png"
+  },
+  {
+    "key": "desert_queen_sorceress",
+    "name": "砂漠女王祭司",
+    "sub": "desert_queen_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/desert_queen_sorceress.png"
+  },
+  {
+    "key": "golden_pharaoh_guardian",
+    "name": "黃金法老衛士",
+    "sub": "golden_pharaoh_guardian",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/golden_pharaoh_guardian.png"
+  },
+  {
+    "key": "scarab_temple_priestess",
+    "name": "聖甲蟲神殿祭司",
+    "sub": "scarab_temple_priestess",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/scarab_temple_priestess.png"
+  },
+  {
+    "key": "horned_chaos_champion",
+    "name": "雙角混沌戰將",
+    "sub": "horned_chaos_champion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/horned_chaos_champion.png"
+  },
+  {
+    "key": "armored_sea_predator",
+    "name": "鐵顎深海巨魚",
+    "sub": "armored_sea_predator",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/armored_sea_predator.png"
+  },
+  {
+    "key": "sahuagin_green_raider",
+    "name": "深海魚人戰士",
+    "sub": "sahuagin_green_raider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sahuagin_green_raider.png"
+  },
+  {
+    "key": "two_headed_void_ogre",
+    "name": "雙首紫膚魔巫",
+    "sub": "two_headed_void_ogre",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/two_headed_void_ogre.png"
+  },
+  {
+    "key": "scarlet_shell_crab_golem",
+    "name": "赤殼巨蟹魔像",
+    "sub": "scarlet_shell_crab_golem",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/scarlet_shell_crab_golem.png"
+  },
+  {
+    "key": "manta_deep_merfolk",
+    "name": "深藍海魔戰士",
+    "sub": "manta_deep_merfolk",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/manta_deep_merfolk.png"
+  },
+  {
+    "key": "clockwork_ape_scout",
+    "name": "機巧猿猴偵察兵",
+    "sub": "clockwork_ape_scout",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/clockwork_ape_scout.png"
+  },
+  {
+    "key": "shadow_tophat_wraith",
+    "name": "高帽暗影幽魂",
+    "sub": "shadow_tophat_wraith",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/shadow_tophat_wraith.png"
+  },
+  {
+    "key": "crimson_ronin_assassin",
+    "name": "白髮紅甲浪人",
+    "sub": "crimson_ronin_assassin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_ronin_assassin.png"
+  },
+  {
+    "key": "giant_storm_eagle",
+    "name": "黑羽巨鷹",
+    "sub": "giant_storm_eagle",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_storm_eagle.png"
+  },
+  {
+    "key": "dragon_staff_necro_lord",
+    "name": "骨杖死靈領主",
+    "sub": "dragon_staff_necro_lord",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/dragon_staff_necro_lord.png"
+  },
+  {
+    "key": "golden_brick_lion",
+    "name": "金毛石獅獸",
+    "sub": "golden_brick_lion",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/golden_brick_lion.png"
+  },
+  {
+    "key": "frost_cloak_veteran",
+    "name": "霜領老練劍士",
+    "sub": "frost_cloak_veteran",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/frost_cloak_veteran.png"
+  },
+  {
+    "key": "iron_gryphon_rider",
+    "name": "銀翼鷹馬騎士",
+    "sub": "iron_gryphon_rider",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/iron_gryphon_rider.png"
+  },
+  {
+    "key": "emerald_serpent_warrior",
+    "name": "翠鱗蛇人戰士",
+    "sub": "emerald_serpent_warrior",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/emerald_serpent_warrior.png"
+  },
+  {
+    "key": "brain_void_seer",
+    "name": "紫袍異界腦魔",
+    "sub": "brain_void_seer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/brain_void_seer.png"
+  },
+  {
+    "key": "snow_owl_shaman",
+    "name": "雪鴞北境薩滿",
+    "sub": "snow_owl_shaman",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/snow_owl_shaman.png"
+  },
+  {
+    "key": "nordic_twin_axe_berserker",
+    "name": "雙斧北境狂戰士",
+    "sub": "nordic_twin_axe_berserker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/nordic_twin_axe_berserker.png"
+  },
+  {
+    "key": "panther_folk_rogue",
+    "name": "黑豹盜賊斥候",
+    "sub": "panther_folk_rogue",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/panther_folk_rogue.png"
+  },
+  {
+    "key": "blue_dragonborn_crossbow",
+    "name": "藍鱗龍裔弩手",
+    "sub": "blue_dragonborn_crossbow",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/blue_dragonborn_crossbow.png"
+  },
+  {
+    "key": "pale_vampire_pyromancer",
+    "name": "蒼白血族火法師",
+    "sub": "pale_vampire_pyromancer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pale_vampire_pyromancer.png"
+  },
+  {
+    "key": "bone_shield_hellknight",
+    "name": "骨盾煉獄騎士",
+    "sub": "bone_shield_hellknight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bone_shield_hellknight.png"
+  },
+  {
+    "key": "lantern_dusk_cleric",
+    "name": "提燈暮光牧師",
+    "sub": "lantern_dusk_cleric",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/lantern_dusk_cleric.png"
+  },
+  {
+    "key": "amber_cape_duelist",
+    "name": "琥珀披風女劍客",
+    "sub": "amber_cape_duelist",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/amber_cape_duelist.png"
+  },
+  {
+    "key": "four_armed_bone_horror",
+    "name": "四臂綠瞳骸骨魔",
+    "sub": "four_armed_bone_horror",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/four_armed_bone_horror.png"
+  },
+  {
+    "key": "pale_elf_twin_blade",
+    "name": "白髮精靈雙劍士",
+    "sub": "pale_elf_twin_blade",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pale_elf_twin_blade.png"
+  },
+  {
+    "key": "dwarven_gunner_captain",
+    "name": "矮人火槍船長",
+    "sub": "dwarven_gunner_captain",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/dwarven_gunner_captain.png"
+  },
+  {
+    "key": "sunburst_flame_sorceress",
+    "name": "熾焰女術士",
+    "sub": "sunburst_flame_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/sunburst_flame_sorceress.png"
+  },
+  {
+    "key": "emerald_twin_saber_ranger",
+    "name": "雙刀荒野遊俠",
+    "sub": "emerald_twin_saber_ranger",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/emerald_twin_saber_ranger.png"
+  },
+  {
+    "key": "silver_plate_commander",
+    "name": "銀甲指揮官",
+    "sub": "silver_plate_commander",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/silver_plate_commander.png"
+  },
+  {
+    "key": "golden_shield_warden",
+    "name": "金甲弓盾衛士",
+    "sub": "golden_shield_warden",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/golden_shield_warden.png"
+  },
+  {
+    "key": "venom_blade_skeleton",
+    "name": "毒刃白骨骷髏",
+    "sub": "venom_blade_skeleton",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/venom_blade_skeleton.png"
+  },
+  {
+    "key": "azure_eye_sentinel",
+    "name": "藍焰魔眼哨衛",
+    "sub": "azure_eye_sentinel",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/azure_eye_sentinel.png"
+  },
+  {
+    "key": "azure_tome_mimic",
+    "name": "藍焰魔導書怪",
+    "sub": "azure_tome_mimic",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/azure_tome_mimic.png"
+  },
+  {
+    "key": "plum_gnome_rogue_girl",
+    "name": "紫甲尖耳女盜賊",
+    "sub": "plum_gnome_rogue_girl",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/plum_gnome_rogue_girl.png"
+  },
+  {
+    "key": "silver_elf_wood_archer",
+    "name": "白髮精靈女弓手",
+    "sub": "silver_elf_wood_archer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/silver_elf_wood_archer.png"
+  },
+  {
+    "key": "crimson_imperial_legionary",
+    "name": "黑甲帝國軍官",
+    "sub": "crimson_imperial_legionary",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_imperial_legionary.png"
+  },
+  {
+    "key": "trench_coat_greatsword",
+    "name": "皮衣大劍傭兵",
+    "sub": "trench_coat_greatsword",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/trench_coat_greatsword.png"
+  },
+  {
+    "key": "buckler_club_orc_raider",
+    "name": "圓盾木棒獸人",
+    "sub": "buckler_club_orc_raider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/buckler_club_orc_raider.png"
+  },
+  {
+    "key": "bucket_helm_iron_knight",
+    "name": "鐵桶盔重裝騎士",
+    "sub": "bucket_helm_iron_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bucket_helm_iron_knight.png"
+  },
+  {
+    "key": "skull_mask_blue_assassin",
+    "name": "骷髏面罩刺客",
+    "sub": "skull_mask_blue_assassin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/skull_mask_blue_assassin.png"
+  },
+  {
+    "key": "red_eye_hood_cutthroat",
+    "name": "紅眼兜帽暗影刀客",
+    "sub": "red_eye_hood_cutthroat",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/red_eye_hood_cutthroat.png"
+  },
+  {
+    "key": "gladiator_shield_fighter",
+    "name": "競技場盾劍角鬥士",
+    "sub": "gladiator_shield_fighter",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/gladiator_shield_fighter.png"
+  },
+  {
+    "key": "desert_raven_assassin",
+    "name": "群鴉沙漠刺客",
+    "sub": "desert_raven_assassin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/desert_raven_assassin.png"
+  },
+  {
+    "key": "long_coat_wand_scholar",
+    "name": "長風衣魔杖學者",
+    "sub": "long_coat_wand_scholar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/long_coat_wand_scholar.png"
+  },
+  {
+    "key": "ash_winged_ghoul_gargoyle",
+    "name": "灰白翼魔石像鬼",
+    "sub": "ash_winged_ghoul_gargoyle",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ash_winged_ghoul_gargoyle.png"
+  },
+  {
+    "key": "bone_skull_dragon",
+    "name": "骸骨巨龍",
+    "sub": "bone_skull_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/bone_skull_dragon.png"
+  },
+  {
+    "key": "white_ice_dragon",
+    "name": "白龍・冰霜巨龍",
+    "sub": "white_ice_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/white_ice_dragon.png"
+  },
+  {
+    "key": "golden_ultra_dragon",
+    "name": "四頭黃金巨龍",
+    "sub": "golden_ultra_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/golden_ultra_dragon.png"
+  },
+  {
+    "key": "azure_water_dragon",
+    "name": "深海海龍",
+    "sub": "azure_water_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/azure_water_dragon.png"
+  },
+  {
+    "key": "phantom_morro_dragon",
+    "name": "幽靈魔龍",
+    "sub": "phantom_morro_dragon",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/phantom_morro_dragon.png"
+  },
+  {
+    "key": "displacer_beast",
+    "name": "移位獸",
+    "sub": "displacer_beast",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/displacer_beast.png"
+  },
+  {
+    "key": "ancient_treant",
+    "name": "成年樹人",
+    "sub": "ancient_treant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ancient_treant.png"
+  },
+  {
+    "key": "balrog_fire_demon",
+    "name": "炎魔・深淵魔王",
+    "sub": "balrog_fire_demon",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/balrog_fire_demon.png"
+  },
+  {
+    "key": "manticore_winged_beast",
+    "name": "獅尾蠍",
+    "sub": "manticore_winged_beast",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/manticore_winged_beast.png"
+  },
+  {
+    "key": "kraken_giant_octopus",
+    "name": "巨型章魚海怪",
+    "sub": "kraken_giant_octopus",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/kraken_giant_octopus.png"
+  },
+  {
+    "key": "wolfpack_hooded_knight",
+    "name": "黑帽狼盾騎士",
+    "sub": "wolfpack_hooded_knight",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/wolfpack_hooded_knight.png"
+  },
+  {
+    "key": "tan_club_ogre",
+    "name": "巨型食人魔戰士",
+    "sub": "tan_club_ogre",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tan_club_ogre.png"
+  },
+  {
+    "key": "snow_fur_noblewoman",
+    "name": "雪領毛皮披風女劍士",
+    "sub": "snow_fur_noblewoman",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/snow_fur_noblewoman.png"
+  },
+  {
+    "key": "goblin_king_illusionist",
+    "name": "幻術師／宮廷術士",
+    "sub": "goblin_king_illusionist",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_king_illusionist.png"
+  },
+  {
+    "key": "ratfolk_monk_master",
+    "name": "鼠人武僧大師",
+    "sub": "ratfolk_monk_master",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/ratfolk_monk_master.png"
+  },
+  {
+    "key": "young_crowned_king",
+    "name": "年輕金冠國王",
+    "sub": "young_crowned_king",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/young_crowned_king.png"
+  },
+  {
+    "key": "desert_gold_queen",
+    "name": "沙漠黃金女王",
+    "sub": "desert_gold_queen",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/desert_gold_queen.png"
+  },
+  {
+    "key": "emerald_lizard_brute",
+    "name": "綠鱗蜥蜴人巨漢",
+    "sub": "emerald_lizard_brute",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/emerald_lizard_brute.png"
+  },
+  {
+    "key": "hooded_elf_crossbow",
+    "name": "兜帽精靈弩手",
+    "sub": "hooded_elf_crossbow",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/hooded_elf_crossbow.png"
+  },
+  {
+    "key": "white_archwizard_gandalf",
+    "name": "白袍大法師",
+    "sub": "white_archwizard_gandalf",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_archwizard_gandalf.png"
+  },
+  {
+    "key": "goblin_sword_grunt",
+    "name": "綠皮哥布林劍士",
+    "sub": "goblin_sword_grunt",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/goblin_sword_grunt.png"
+  },
+  {
+    "key": "white_hair_crimson_lord",
+    "name": "白髮紅披風領主",
+    "sub": "white_hair_crimson_lord",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/white_hair_crimson_lord.png"
+  },
+  {
+    "key": "spiky_greatsword_merc",
+    "name": "金髮大劍傭兵",
+    "sub": "spiky_greatsword_merc",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/spiky_greatsword_merc.png"
+  },
+  {
+    "key": "swamp_gremlin_imp",
+    "name": "綠皮小惡鬼",
+    "sub": "swamp_gremlin_imp",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/swamp_gremlin_imp.png"
+  },
+  {
+    "key": "astral_spirit_summoner",
+    "name": "星界靈體召喚師",
+    "sub": "astral_spirit_summoner",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/astral_spirit_summoner.png"
+  },
+  {
+    "key": "wilderness_bow_huntress",
+    "name": "荒野女弓手",
+    "sub": "wilderness_bow_huntress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wilderness_bow_huntress.png"
+  },
+  {
+    "key": "bronze_shield_champion",
+    "name": "青銅圓盾英雄",
+    "sub": "bronze_shield_champion",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bronze_shield_champion.png"
+  },
+  {
+    "key": "iron_mech_construct",
+    "name": "黑鐵機關魔像",
+    "sub": "iron_mech_construct",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/iron_mech_construct.png"
+  },
+  {
+    "key": "wind_monk_nomad",
+    "name": "御風武僧",
+    "sub": "wind_monk_nomad",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wind_monk_nomad.png"
+  },
+  {
+    "key": "giant_brown_hawk",
+    "name": "巨鷹",
+    "sub": "giant_brown_hawk",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_brown_hawk.png"
+  },
+  {
+    "key": "crimson_chaos_sorceress",
+    "name": "猩紅混沌女巫",
+    "sub": "crimson_chaos_sorceress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_chaos_sorceress.png"
+  },
+  {
+    "key": "broom_green_witch",
+    "name": "掃帚綠臉女巫",
+    "sub": "broom_green_witch",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/broom_green_witch.png"
+  },
+  {
+    "key": "croc_scaled_brawler",
+    "name": "鱷魚人戰士",
+    "sub": "croc_scaled_brawler",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/croc_scaled_brawler.png"
+  },
+  {
+    "key": "ash_tattoo_berserker",
+    "name": "灰膚戰紋狂戰士",
+    "sub": "ash_tattoo_berserker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/ash_tattoo_berserker.png"
+  },
+  {
+    "key": "swamp_moss_lurker",
+    "name": "沼澤苔蘚怪人",
+    "sub": "swamp_moss_lurker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/swamp_moss_lurker.png"
+  },
+  {
+    "key": "pale_golden_oracle",
+    "name": "蒼白金袍神官",
+    "sub": "pale_golden_oracle",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pale_golden_oracle.png"
+  },
+  {
+    "key": "masked_rapier_duelist",
+    "name": "蒙面黑衣劍客",
+    "sub": "masked_rapier_duelist",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/masked_rapier_duelist.png"
+  },
+  {
+    "key": "three_headed_cerberus",
+    "name": "三頭地獄犬",
+    "sub": "three_headed_cerberus",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/three_headed_cerberus.png"
+  },
+  {
+    "key": "triton_sea_king",
+    "name": "海神三叉戟王者",
+    "sub": "triton_sea_king",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/triton_sea_king.png"
+  },
+  {
+    "key": "eagle_helm_barbarian",
+    "name": "鷹盔戰紋蠻族",
+    "sub": "eagle_helm_barbarian",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/eagle_helm_barbarian.png"
+  },
+  {
+    "key": "spartan_spear_warrior",
+    "name": "斯巴達長矛戰士",
+    "sub": "spartan_spear_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/spartan_spear_warrior.png"
+  },
+  {
+    "key": "swamp_green_hag",
+    "name": "綠膚沼澤女巫",
+    "sub": "swamp_green_hag",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/swamp_green_hag.png"
+  },
+  {
+    "key": "green_tunic_elf_knight",
+    "name": "綠衣精靈盾劍士",
+    "sub": "green_tunic_elf_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/green_tunic_elf_knight.png"
+  },
+  {
+    "key": "crimson_undead_lady",
+    "name": "紅衣亡靈貴婦",
+    "sub": "crimson_undead_lady",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_undead_lady.png"
+  },
+  {
+    "key": "stone_construct_hound",
+    "name": "灰岩機關獵犬",
+    "sub": "stone_construct_hound",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/stone_construct_hound.png"
+  },
+  {
+    "key": "silver_plate_king",
+    "name": "銀甲紅披風國王",
+    "sub": "silver_plate_king",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/silver_plate_king.png"
+  },
+  {
+    "key": "bronze_clockwork_goblin",
+    "name": "青銅機關小妖",
+    "sub": "bronze_clockwork_goblin",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/bronze_clockwork_goblin.png"
+  },
+  {
+    "key": "crimson_wing_vampire",
+    "name": "紅翼血族女魔",
+    "sub": "crimson_wing_vampire",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_wing_vampire.png"
+  },
+  {
+    "key": "giant_croc_behemoth",
+    "name": "巨型鱷魚人巨獸",
+    "sub": "giant_croc_behemoth",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/giant_croc_behemoth.png"
+  },
+  {
+    "key": "orc_banner_construct",
+    "name": "獸人戰旗機關兵",
+    "sub": "orc_banner_construct",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/orc_banner_construct.png"
+  },
+  {
+    "key": "violin_minstrel_bard",
+    "name": "長髮小提琴吟遊詩人",
+    "sub": "violin_minstrel_bard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/violin_minstrel_bard.png"
+  },
+  {
+    "key": "red_cap_goblin_raider",
+    "name": "紅帽哥布林彎刀手",
+    "sub": "red_cap_goblin_raider",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/red_cap_goblin_raider.png"
+  },
+  {
+    "key": "tophat_noble_merchant",
+    "name": "高帽紳士商人",
+    "sub": "tophat_noble_merchant",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tophat_noble_merchant.png"
+  },
+  {
+    "key": "tribal_redhair_huntress",
+    "name": "部落紅髮女獵手",
+    "sub": "tribal_redhair_huntress",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/tribal_redhair_huntress.png"
+  },
+  {
+    "key": "centaur_female_warrior",
+    "name": "半人馬女戰士",
+    "sub": "centaur_female_warrior",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/centaur_female_warrior.png"
+  },
+  {
+    "key": "white_beard_monk_elder",
+    "name": "白鬚武道宗師",
+    "sub": "white_beard_monk_elder",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/white_beard_monk_elder.png"
+  },
+  {
+    "key": "pale_raven_necromancer",
+    "name": "蒼白烏鴉死靈師",
+    "sub": "pale_raven_necromancer",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/pale_raven_necromancer.png"
+  },
+  {
+    "key": "swamp_gillman_monster",
+    "name": "沼澤魚人怪",
+    "sub": "swamp_gillman_monster",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/swamp_gillman_monster.png"
+  },
+  {
+    "key": "kraken_tentacle_captain",
+    "name": "章魚鬚海盜船長",
+    "sub": "kraken_tentacle_captain",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/kraken_tentacle_captain.png"
+  },
+  {
+    "key": "silver_hair_ranger_girl",
+    "name": "銀髮女遊俠",
+    "sub": "silver_hair_ranger_girl",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/silver_hair_ranger_girl.png"
+  },
+  {
+    "key": "purple_wing_abyss_demon",
+    "name": "紫翼深淵惡魔",
+    "sub": "purple_wing_abyss_demon",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/purple_wing_abyss_demon.png"
+  },
+  {
+    "key": "halberd_palace_guard",
+    "name": "彩衣戟兵衛士",
+    "sub": "halberd_palace_guard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/halberd_palace_guard.png"
+  },
+  {
+    "key": "green_coat_skull_scholar",
+    "name": "綠衣持骨學者",
+    "sub": "green_coat_skull_scholar",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/green_coat_skull_scholar.png"
+  },
+  {
+    "key": "golden_tiara_valkyrie",
+    "name": "金冠聖劍女武神",
+    "sub": "golden_tiara_valkyrie",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/golden_tiara_valkyrie.png"
+  },
+  {
+    "key": "fur_hat_beast_warrior",
+    "name": "毛帽野人戰士",
+    "sub": "fur_hat_beast_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/fur_hat_beast_warrior.png"
+  },
+  {
+    "key": "centaur_male_axeman",
+    "name": "半人馬斧手",
+    "sub": "centaur_male_axeman",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/centaur_male_axeman.png"
+  },
+  {
+    "key": "wasteland_leather_warrior",
+    "name": "荒野皮甲女戰士",
+    "sub": "wasteland_leather_warrior",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/wasteland_leather_warrior.png"
+  },
+  {
+    "key": "crimson_hat_lute_bard",
+    "name": "紅帽魯特琴吟遊詩人",
+    "sub": "crimson_hat_lute_bard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_hat_lute_bard.png"
+  },
+  {
+    "key": "crimson_wing_dark_knight",
+    "name": "紅翼黑甲魔騎士",
+    "sub": "crimson_wing_dark_knight",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_wing_dark_knight.png"
+  },
+  {
+    "key": "crimson_horned_behemoth",
+    "name": "赤紅角魔巨獸",
+    "sub": "crimson_horned_behemoth",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_horned_behemoth.png"
+  },
+  {
+    "key": "green_feral_berserker",
+    "name": "綠膚赤髮狂戰士",
+    "sub": "green_feral_berserker",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/green_feral_berserker.png"
+  },
+  {
+    "key": "crimson_gown_noble_lady",
+    "name": "紅裙貴族夫人",
+    "sub": "crimson_gown_noble_lady",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_gown_noble_lady.png"
+  },
+  {
+    "key": "emerald_elven_princess",
+    "name": "綠袍精靈公主",
+    "sub": "emerald_elven_princess",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/emerald_elven_princess.png"
+  },
+  {
+    "key": "black_hat_pirate_lord",
+    "name": "黑帽海盜船長",
+    "sub": "black_hat_pirate_lord",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/black_hat_pirate_lord.png"
+  },
+  {
+    "key": "crimson_black_wyvern",
+    "name": "赤黑雙足飛龍",
+    "sub": "crimson_black_wyvern",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/crimson_black_wyvern.png"
+  },
+  {
+    "key": "giant_cave_troll",
+    "name": "巨型洞穴巨魔",
+    "sub": "giant_cave_troll",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/giant_cave_troll.png"
+  },
+  {
+    "key": "cellar_spider_queen",
+    "name": "酒窖蛛后",
+    "sub": "cellar_spider_queen",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/cellar_spider_queen.png"
+  },
+  {
+    "key": "thayan_red_wizard",
+    "name": "塞爾紅袍死靈法師",
+    "sub": "thayan_red_wizard",
+    "category": "monsters_npcs",
+    "image": "/prototype-assets/lego-creatures-v1/thayan_red_wizard.png"
+  },
+  {
+    "key": "drow_nezznar_mage",
+    "name": "黑蜘蛛卓爾法師",
+    "sub": "drow_nezznar_mage",
+    "category": "animals_dragons",
+    "image": "/prototype-assets/lego-creatures-v1/drow_nezznar_mage.png"
+  },
+  {
+    "key": "module_blind_monk",
+    "name": "盲眼武僧",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_blind_monk.png"
+  },
+  {
+    "key": "module_brewing_golem",
+    "name": "釀造魔像",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_brewing_golem.png"
+  },
+  {
+    "key": "module_burned_broker",
+    "name": "焦灼仲介人",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_burned_broker.png"
+  },
+  {
+    "key": "module_carpenter",
+    "name": "木匠",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_carpenter.png"
+  },
+  {
+    "key": "module_child_doll",
+    "name": "詭異人偶",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_child_doll.png"
+  },
+  {
+    "key": "module_cult_mage",
+    "name": "邪教法師",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_cult_mage.png"
+  },
+  {
+    "key": "module_deep_gnome_merchant",
+    "name": "地底侏儒商人",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_deep_gnome_merchant.png"
+  },
+  {
+    "key": "module_demogorgon",
+    "name": "狄摩高根",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_demogorgon.png"
+  },
+  {
+    "key": "module_derro_alchemist",
+    "name": "德洛鍊金術士",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_derro_alchemist.png"
+  },
+  {
+    "key": "module_dragonborn_elder",
+    "name": "龍裔長老",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_dragonborn_elder.png"
+  },
+  {
+    "key": "module_drow_priestess",
+    "name": "卓爾女祭司",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_drow_priestess.png"
+  },
+  {
+    "key": "module_duergar_lady",
+    "name": "灰矮人貴婦",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_duergar_lady.png"
+  },
+  {
+    "key": "module_dwarf_girl",
+    "name": "矮人少女",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_dwarf_girl.png"
+  },
+  {
+    "key": "module_dwarf_miner",
+    "name": "矮人礦工",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_dwarf_miner.png"
+  },
+  {
+    "key": "module_dwarf_sage",
+    "name": "矮人賢者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_dwarf_sage.png"
+  },
+  {
+    "key": "module_elf_sage",
+    "name": "精靈賢者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_elf_sage.png"
+  },
+  {
+    "key": "module_elf_scholar",
+    "name": "精靈學者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_elf_scholar.png"
+  },
+  {
+    "key": "module_faceless",
+    "name": "無面者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_faceless.png"
+  },
+  {
+    "key": "module_fire_beetle",
+    "name": "火甲蟲",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_fire_beetle.png"
+  },
+  {
+    "key": "module_frog_shaman",
+    "name": "蛙人薩滿",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_frog_shaman.png"
+  },
+  {
+    "key": "module_froghemoth",
+    "name": "巨蛙怪",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_froghemoth.png"
+  },
+  {
+    "key": "module_frost_giant",
+    "name": "霜巨人",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_frost_giant.png"
+  },
+  {
+    "key": "module_ghost_scholar",
+    "name": "幽靈學者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_ghost_scholar.png"
+  },
+  {
+    "key": "module_gnoll_flail",
+    "name": "鏈枷豺狼人",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_gnoll_flail.png"
+  },
+  {
+    "key": "module_gnome_artificer",
+    "name": "侏儒奇械師",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_gnome_artificer.png"
+  },
+  {
+    "key": "module_gnome_captain",
+    "name": "侏儒船長",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_gnome_captain.png"
+  },
+  {
+    "key": "module_gnome_cleric",
+    "name": "侏儒牧師",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_gnome_cleric.png"
+  },
+  {
+    "key": "module_goblin_bow",
+    "name": "哥布林弓手",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_goblin_bow.png"
+  },
+  {
+    "key": "module_green_dragon",
+    "name": "綠龍",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_green_dragon.png"
+  },
+  {
+    "key": "module_halfling_scholar",
+    "name": "半身人學者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_halfling_scholar.png"
+  },
+  {
+    "key": "module_herbalist",
+    "name": "草藥師",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_herbalist.png"
+  },
+  {
+    "key": "module_hollyphant",
+    "name": "聖象 (Hollyphant)",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_hollyphant.png"
+  },
+  {
+    "key": "module_ice_priest",
+    "name": "寒冰祭司",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_ice_priest.png"
+  },
+  {
+    "key": "module_innkeeper",
+    "name": "旅店老闆",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_innkeeper.png"
+  },
+  {
+    "key": "module_jester",
+    "name": "宮廷弄臣",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_jester.png"
+  },
+  {
+    "key": "module_kobold_keeper",
+    "name": "狗頭人看守",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_kobold_keeper.png"
+  },
+  {
+    "key": "module_myconid",
+    "name": "蕈人 (Myconid)",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_myconid.png"
+  },
+  {
+    "key": "module_noblewoman",
+    "name": "貴族女士",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_noblewoman.png"
+  },
+  {
+    "key": "module_northern_axe",
+    "name": "北地斧戰士",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_northern_axe.png"
+  },
+  {
+    "key": "module_nothic",
+    "name": "諾希克 (Nothic)",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_nothic.png"
+  },
+  {
+    "key": "module_priestess",
+    "name": "神殿女祭司",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_priestess.png"
+  },
+  {
+    "key": "module_purple_worm",
+    "name": "紫蟲 (Purple Worm)",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_purple_worm.png"
+  },
+  {
+    "key": "module_reuse_fish_caster",
+    "name": "魚人施法者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_reuse_fish_caster.png"
+  },
+  {
+    "key": "module_reuse_ice",
+    "name": "冰霜元素生物",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_reuse_ice.png"
+  },
+  {
+    "key": "module_reuse_mammoth",
+    "name": "猛獁巨象",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_reuse_mammoth.png"
+  },
+  {
+    "key": "module_reuse_plant",
+    "name": "蔓生植物怪",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_reuse_plant.png"
+  },
+  {
+    "key": "module_reuse_sahuagin",
+    "name": "沙華魚人",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_reuse_sahuagin.png"
+  },
+  {
+    "key": "module_scribe",
+    "name": "書記官",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_scribe.png"
+  },
+  {
+    "key": "module_sea_elf",
+    "name": "海精靈",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_sea_elf.png"
+  },
+  {
+    "key": "module_storm_giant",
+    "name": "風暴巨人",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_storm_giant.png"
+  },
+  {
+    "key": "module_tailor",
+    "name": "裁縫師",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_tailor.png"
+  },
+  {
+    "key": "module_tiamat",
+    "name": "提亞馬特 (Tiamat)",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_tiamat.png"
+  },
+  {
+    "key": "module_wheelchair_sage",
+    "name": "輪椅智者",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_wheelchair_sage.png"
+  },
+  {
+    "key": "module_white_stag",
+    "name": "聖白雄鹿",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_white_stag.png"
+  },
+  {
+    "key": "module_young_scribe",
+    "name": "見習書記官",
+    "sub": "劇情與模組 Token",
+    "category": "module_tokens",
+    "image": "/prototype-assets/lego-module-tokens-v1/module_young_scribe.png"
+  }
+]

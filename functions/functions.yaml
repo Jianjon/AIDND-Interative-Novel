@@ -1,0 +1,10 @@
+specVersion: v1alpha1
+endpoints:
+  generateContent:
+    platform: gcfv2
+    timeoutSeconds: 120
+    labels: {}
+    callableTrigger: {}
+    entryPoint: generateContent
+requiredAPIs: []
+extensions: {}

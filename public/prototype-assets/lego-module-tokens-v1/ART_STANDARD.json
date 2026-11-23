@@ -1,0 +1,45 @@
+{
+  "version": "2026-11-21-v2",
+  "userDecision": "允許曲線與細緻衣飾；不要過高或偏離樂高比例。已生成圖保留、不重做。",
+  "reference": "現有受保護預設角的實際顯示高度與傳統短身樂高人偶，不能只依整張PNG或長杖／帽飾高度判斷身高。",
+  "humanoidShape": {
+    "body": "短身、簡潔梯形軀幹；曲線可有，但不能變成狹長寫實腰腹。",
+    "head": "人偶頭保持足夠大小；臉可細緻，但不可把頭縮小做成修長公仔比例。",
+    "productionHeadRatio": "人型站立身體約4至4.5個裸頭高度；頭髮、帽飾、角、杖不列入身高比例。這是本專案產圖約束，非官方零件測量。",
+    "hands": "C形夾手，保留可握道具的人偶關節。",
+    "legs": "標準積木腿或短腿，不做人類長脛骨、肌肉小腿或腳趾。",
+    "clothing": "披風、裙襬與衣飾可有曲線，但不可拉長軀幹或遮掩過長雙腿。"
+  },
+  "sizes": {
+    "humanReference": 1,
+    "dwarfAnatomy": 0.86,
+    "shortLegRuntime": 0.787878787878788,
+    "medium": 1,
+    "large": 2,
+    "huge": 3,
+    "gargantuan": 4,
+    "policy": "尺寸由外層體型套用一次；保持頭身比例，禁止用非等比拉伸調整高矮。"
+  },
+  "image": {
+    "canvas": [
+      256,
+      272
+    ],
+    "footBaseline": 254,
+    "referenceHumanBodyHeight": 272,
+    "proportionalResizeOnly": true,
+    "fullSubject": true,
+    "transparentBackground": true,
+    "noShadowFloor": true,
+    "normalization": "以身體中央輪廓估計身高，保留武器與帽飾完整。新圖畫布先等比排版，再以顯示倍率對齊緊裁切預設角；不改預設角原檔。"
+  },
+  "creatures": "非人型生物可使用積木獸或brick-built結構；人型比例規則不強套於四足獸、龍、昆蟲或無足蟲。",
+  "labels": "物種 → 職業／功能 → 可見特色；近似或共用類型不冒稱具名角色的精準肖像。",
+  "continuation": "已產出32張保留、不重生；只對尚未生成的缺口套用新版比例約束。",
+  "preferredReferenceSeries": [
+    "附圖DOTA 2人偶系列",
+    "附圖Warcraft人偶系列",
+    "附圖Fortnite人偶系列"
+  ],
+  "referenceUsePolicy": "優先使用已完整去背且物種、職業符合劇情的現有單體。系列名稱或素材檔存在，不視為已在模組正確選用；不為提高使用率硬塞角色，也不重畫已保留的32張。"
+}

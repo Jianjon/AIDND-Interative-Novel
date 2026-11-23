@@ -1,0 +1,7661 @@
+[
+  {
+    "id": "lego_prop_001_01",
+    "sheet": 1,
+    "row": 1,
+    "name": "教堂長椅",
+    "nameEn": "Church Pew",
+    "category": "church",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "檢查坐墊暗格、推倒當掩體、點火焚燒阻敵",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_001_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_001_01_s1.png"
+  },
+  {
+    "id": "lego_prop_001_02",
+    "sheet": 1,
+    "row": 2,
+    "name": "告解懺悔室",
+    "nameEn": "Confessional Booth",
+    "category": "church",
+    "states": [
+      [
+        "closed",
+        "關閉"
+      ],
+      [
+        "open",
+        "打開"
+      ]
+    ],
+    "uses": "入內藏身偷聽、檢查木窗暗扣、撬開後門",
+    "size": "lg",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_001_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_001_02_s1.png"
+  },
+  {
+    "id": "lego_prop_001_03",
+    "sheet": 1,
+    "row": 3,
+    "name": "聖歌管風琴",
+    "nameEn": "Cathedral Pipe Organ",
+    "category": "church",
+    "states": [
+      [
+        "silent",
+        "靜止"
+      ],
+      [
+        "playing",
+        "奏響"
+      ]
+    ],
+    "uses": "彈奏聖詠解鎖暗門、震碎玻璃、破壞音管",
+    "size": "lg",
+    "gridSize": "2x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_001_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_001_03_s1.png"
+  },
+  {
+    "id": "lego_prop_002_01",
+    "sheet": 2,
+    "row": 1,
+    "name": "哥德黑鐵吊燈",
+    "nameEn": "Iron Chandelier",
+    "category": "dungeon",
+    "states": [
+      [
+        "hanging",
+        "高懸"
+      ],
+      [
+        "fallen",
+        "墜落"
+      ]
+    ],
+    "uses": "射斷繩索砸擊敵人、攀爬擺盪、點燃燭火",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_002_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_002_01_s1.png"
+  },
+  {
+    "id": "lego_prop_002_02",
+    "sheet": 2,
+    "row": 2,
+    "name": "神秘符文魔井",
+    "nameEn": "Mystic Rune Well",
+    "category": "arcane",
+    "states": [
+      [
+        "filled",
+        "湧泉"
+      ],
+      [
+        "dry",
+        "乾涸"
+      ]
+    ],
+    "uses": "投下硬幣祈願、汲取魔法泉水、順繩索垂降",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_002_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_002_02_s1.png"
+  },
+  {
+    "id": "lego_prop_003_01",
+    "sheet": 3,
+    "row": 1,
+    "name": "寶箱擬態怪",
+    "nameEn": "Chest Mimic",
+    "category": "dungeon",
+    "states": [
+      [
+        "disguised",
+        "寶箱"
+      ],
+      [
+        "revealed",
+        "現形"
+      ]
+    ],
+    "uses": "偵測陷阱與牙齒、丟肉塊試探、撬鎖開箱",
+    "size": "sm",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_003_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_003_01_s1.png"
+  },
+  {
+    "id": "lego_prop_003_02",
+    "sheet": 3,
+    "row": 2,
+    "name": "射箭孔石牆",
+    "nameEn": "Arrow Slit Wall",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "堅固"
+      ],
+      [
+        "breached",
+        "塌陷"
+      ]
+    ],
+    "uses": "獲得半身掩護、透過箭孔射擊、破城鎚撞破",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_003_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_003_02_s1.png"
+  },
+  {
+    "id": "lego_prop_003_03",
+    "sheet": 3,
+    "row": 3,
+    "name": "鐵柵隱蔽暗門",
+    "nameEn": "Iron Portcullis Gate",
+    "category": "dungeon",
+    "states": [
+      [
+        "locked",
+        "鎖定"
+      ],
+      [
+        "open",
+        "升起"
+      ]
+    ],
+    "uses": "撬開柵門門鎖、扳動拉桿、阻隔後方追兵",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_003_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_003_03_s1.png"
+  },
+  {
+    "id": "lego_prop_004_01",
+    "sheet": 4,
+    "row": 1,
+    "name": "暗影懸浮魔方",
+    "nameEn": "Shadow Arcane Cube",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "open",
+        "啟動"
+      ]
+    ],
+    "uses": "破解符文密碼、吸收暗影能量、封閉裂隙",
+    "size": "sm",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_004_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_004_01_s1.png"
+  },
+  {
+    "id": "lego_prop_004_02",
+    "sheet": 4,
+    "row": 2,
+    "name": "石砌防禦瞭望塔",
+    "nameEn": "Stone Watchtower",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "挺立"
+      ],
+      [
+        "ruined",
+        "崩塌"
+      ]
+    ],
+    "uses": "登高獲取視野、擊碎支撐石柱、發射弩砲",
+    "size": "xl",
+    "gridSize": "2x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_004_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_004_02_s1.png"
+  },
+  {
+    "id": "lego_prop_004_03",
+    "sheet": 4,
+    "row": 3,
+    "name": "占卜水晶球基座",
+    "nameEn": "Crystal Orb Pedestal",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "沉寂"
+      ],
+      [
+        "scrying",
+        "顯影"
+      ]
+    ],
+    "uses": "觸碰水晶窺探地城真相、反射光線破除幻術",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_004_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_004_03_s1.png"
+  },
+  {
+    "id": "lego_prop_005_01",
+    "sheet": 5,
+    "row": 1,
+    "name": "鐵匠鍛造鐵砧",
+    "nameEn": "Blacksmith Anvil",
+    "category": "craft",
+    "states": [
+      [
+        "cold",
+        "冰冷"
+      ],
+      [
+        "glowing",
+        "燒紅"
+      ]
+    ],
+    "uses": "打造應急武器、敲擊鐵砧發出巨響、推倒砸壓",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_005_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_005_01_s1.png"
+  },
+  {
+    "id": "lego_prop_005_02",
+    "sheet": 5,
+    "row": 2,
+    "name": "遠古符文方尖碑",
+    "nameEn": "Ancient Rune Obelisk",
+    "category": "arcane",
+    "states": [
+      [
+        "glowing",
+        "充能"
+      ],
+      [
+        "fractured",
+        "碎裂"
+      ]
+    ],
+    "uses": "解讀古老銘文、注入魔力激活法陣、擊碎引爆",
+    "size": "lg",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_005_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_005_02_s1.png"
+  },
+  {
+    "id": "lego_prop_005_03",
+    "sheet": 5,
+    "row": 3,
+    "name": "鍊金藥劑調配架",
+    "nameEn": "Alchemy Potion Rack",
+    "category": "alchemy",
+    "states": [
+      [
+        "stocked",
+        "擺滿"
+      ],
+      [
+        "spilled",
+        "打翻"
+      ]
+    ],
+    "uses": "搜刮治癒藥水、打翻強酸腐蝕地板、製造煙幕",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_005_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_005_03_s1.png"
+  },
+  {
+    "id": "lego_prop_006_01",
+    "sheet": 6,
+    "row": 1,
+    "name": "酒館任務公告欄",
+    "nameEn": "Tavern Notice Board",
+    "category": "tavern",
+    "states": [
+      [
+        "posted",
+        "佈滿"
+      ],
+      [
+        "looted",
+        "空蕩"
+      ]
+    ],
+    "uses": "撕下懸賞委託單、查看通緝令、留下暗號",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_006_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_006_01_s1.png"
+  },
+  {
+    "id": "lego_prop_006_02",
+    "sheet": 6,
+    "row": 2,
+    "name": "酒館長木桌椅",
+    "nameEn": "Tavern Dining Table",
+    "category": "tavern",
+    "states": [
+      [
+        "intact",
+        "整齊"
+      ],
+      [
+        "overturned",
+        "掀翻"
+      ]
+    ],
+    "uses": "掀翻桌子作掩體、踩桌跳躍奇襲、躲在桌下",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_006_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_006_02_s1.png"
+  },
+  {
+    "id": "lego_prop_006_03",
+    "sheet": 6,
+    "row": 3,
+    "name": "市集蔬果木貨攤",
+    "nameEn": "Market Stall",
+    "category": "market",
+    "states": [
+      [
+        "stocked",
+        "滿載"
+      ],
+      [
+        "wrecked",
+        "翻倒"
+      ]
+    ],
+    "uses": "推倒阻擋追兵、搜刮應急物資、投擲蔬果干擾",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_006_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_006_03_s1.png"
+  },
+  {
+    "id": "lego_prop_007_01",
+    "sheet": 7,
+    "row": 1,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_007_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_007_01_s1.png"
+  },
+  {
+    "id": "lego_prop_007_02",
+    "sheet": 7,
+    "row": 2,
+    "name": "地下城機關・儀式魔導儀器",
+    "nameEn": "Dungeon Ritual Apparatus",
+    "category": "dungeon",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_007_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_007_02_s1.png"
+  },
+  {
+    "id": "lego_prop_007_03",
+    "sheet": 7,
+    "row": 3,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_007_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_007_03_s1.png"
+  },
+  {
+    "id": "lego_prop_008_01",
+    "sheet": 8,
+    "row": 1,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_008_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_008_01_s1.png"
+  },
+  {
+    "id": "lego_prop_008_02",
+    "sheet": 8,
+    "row": 2,
+    "name": "地下城機關・機關重裝設施",
+    "nameEn": "Dungeon Heavy Mechanism",
+    "category": "dungeon",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_008_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_008_02_s1.png"
+  },
+  {
+    "id": "lego_prop_008_03",
+    "sheet": 8,
+    "row": 3,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_008_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_008_03_s1.png"
+  },
+  {
+    "id": "lego_prop_009_01",
+    "sheet": 9,
+    "row": 1,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_009_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_009_01_s1.png"
+  },
+  {
+    "id": "lego_prop_009_02",
+    "sheet": 9,
+    "row": 2,
+    "name": "地下城機關・封印祭壇神龕",
+    "nameEn": "Dungeon Sealed Altar Shrine",
+    "category": "dungeon",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_009_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_009_02_s1.png"
+  },
+  {
+    "id": "lego_prop_009_03",
+    "sheet": 9,
+    "row": 3,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_009_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_009_03_s1.png"
+  },
+  {
+    "id": "lego_prop_010_01",
+    "sheet": 10,
+    "row": 1,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_010_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_010_01_s1.png"
+  },
+  {
+    "id": "lego_prop_010_02",
+    "sheet": 10,
+    "row": 2,
+    "name": "地下城機關・隱藏儲藏箱櫃",
+    "nameEn": "Dungeon Hidden Storage Cache",
+    "category": "dungeon",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_010_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_010_02_s1.png"
+  },
+  {
+    "id": "lego_prop_010_03",
+    "sheet": 10,
+    "row": 3,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_010_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_010_03_s1.png"
+  },
+  {
+    "id": "lego_prop_011_01",
+    "sheet": 11,
+    "row": 1,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_011_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_011_01_s1.png"
+  },
+  {
+    "id": "lego_prop_011_02",
+    "sheet": 11,
+    "row": 2,
+    "name": "地下城機關・防禦掩體障礙",
+    "nameEn": "Dungeon Defensive Barricade",
+    "category": "dungeon",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_011_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_011_02_s1.png"
+  },
+  {
+    "id": "lego_prop_011_03",
+    "sheet": 11,
+    "row": 3,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_011_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_011_03_s1.png"
+  },
+  {
+    "id": "lego_prop_012_01",
+    "sheet": 12,
+    "row": 1,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_012_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_012_01_s1.png"
+  },
+  {
+    "id": "lego_prop_012_02",
+    "sheet": 12,
+    "row": 2,
+    "name": "地下城機關・儀式魔導儀器",
+    "nameEn": "Dungeon Ritual Apparatus",
+    "category": "dungeon",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_012_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_012_02_s1.png"
+  },
+  {
+    "id": "lego_prop_012_03",
+    "sheet": 12,
+    "row": 3,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_012_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_012_03_s1.png"
+  },
+  {
+    "id": "lego_prop_013_01",
+    "sheet": 13,
+    "row": 1,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_013_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_013_01_s1.png"
+  },
+  {
+    "id": "lego_prop_013_02",
+    "sheet": 13,
+    "row": 2,
+    "name": "地下城機關・機關重裝設施",
+    "nameEn": "Dungeon Heavy Mechanism",
+    "category": "dungeon",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_013_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_013_02_s1.png"
+  },
+  {
+    "id": "lego_prop_013_03",
+    "sheet": 13,
+    "row": 3,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_013_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_013_03_s1.png"
+  },
+  {
+    "id": "lego_prop_014_01",
+    "sheet": 14,
+    "row": 1,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_014_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_014_01_s1.png"
+  },
+  {
+    "id": "lego_prop_014_02",
+    "sheet": 14,
+    "row": 2,
+    "name": "地下城機關・封印祭壇神龕",
+    "nameEn": "Dungeon Sealed Altar Shrine",
+    "category": "dungeon",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_014_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_014_02_s1.png"
+  },
+  {
+    "id": "lego_prop_014_03",
+    "sheet": 14,
+    "row": 3,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_014_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_014_03_s1.png"
+  },
+  {
+    "id": "lego_prop_015_01",
+    "sheet": 15,
+    "row": 1,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_015_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_015_01_s1.png"
+  },
+  {
+    "id": "lego_prop_015_02",
+    "sheet": 15,
+    "row": 2,
+    "name": "地下城機關・隱藏儲藏箱櫃",
+    "nameEn": "Dungeon Hidden Storage Cache",
+    "category": "dungeon",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_015_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_015_02_s1.png"
+  },
+  {
+    "id": "lego_prop_015_03",
+    "sheet": 15,
+    "row": 3,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_015_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_015_03_s1.png"
+  },
+  {
+    "id": "lego_prop_016_01",
+    "sheet": 16,
+    "row": 1,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_016_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_016_01_s1.png"
+  },
+  {
+    "id": "lego_prop_016_02",
+    "sheet": 16,
+    "row": 2,
+    "name": "地下城機關・防禦掩體障礙",
+    "nameEn": "Dungeon Defensive Barricade",
+    "category": "dungeon",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_016_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_016_02_s1.png"
+  },
+  {
+    "id": "lego_prop_016_03",
+    "sheet": 16,
+    "row": 3,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_016_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_016_03_s1.png"
+  },
+  {
+    "id": "lego_prop_017_01",
+    "sheet": 17,
+    "row": 1,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_017_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_017_01_s1.png"
+  },
+  {
+    "id": "lego_prop_017_02",
+    "sheet": 17,
+    "row": 2,
+    "name": "地下城機關・儀式魔導儀器",
+    "nameEn": "Dungeon Ritual Apparatus",
+    "category": "dungeon",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_017_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_017_02_s1.png"
+  },
+  {
+    "id": "lego_prop_017_03",
+    "sheet": 17,
+    "row": 3,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_017_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_017_03_s1.png"
+  },
+  {
+    "id": "lego_prop_018_01",
+    "sheet": 18,
+    "row": 1,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_018_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_018_01_s1.png"
+  },
+  {
+    "id": "lego_prop_018_02",
+    "sheet": 18,
+    "row": 2,
+    "name": "地下城機關・機關重裝設施",
+    "nameEn": "Dungeon Heavy Mechanism",
+    "category": "dungeon",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_018_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_018_02_s1.png"
+  },
+  {
+    "id": "lego_prop_018_03",
+    "sheet": 18,
+    "row": 3,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_018_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_018_03_s1.png"
+  },
+  {
+    "id": "lego_prop_019_01",
+    "sheet": 19,
+    "row": 1,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_019_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_019_01_s1.png"
+  },
+  {
+    "id": "lego_prop_019_02",
+    "sheet": 19,
+    "row": 2,
+    "name": "地下城機關・封印祭壇神龕",
+    "nameEn": "Dungeon Sealed Altar Shrine",
+    "category": "dungeon",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_019_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_019_02_s1.png"
+  },
+  {
+    "id": "lego_prop_019_03",
+    "sheet": 19,
+    "row": 3,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_019_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_019_03_s1.png"
+  },
+  {
+    "id": "lego_prop_020_01",
+    "sheet": 20,
+    "row": 1,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_020_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_020_01_s1.png"
+  },
+  {
+    "id": "lego_prop_020_02",
+    "sheet": 20,
+    "row": 2,
+    "name": "地下城機關・隱藏儲藏箱櫃",
+    "nameEn": "Dungeon Hidden Storage Cache",
+    "category": "dungeon",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_020_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_020_02_s1.png"
+  },
+  {
+    "id": "lego_prop_020_03",
+    "sheet": 20,
+    "row": 3,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_020_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_020_03_s1.png"
+  },
+  {
+    "id": "lego_prop_021_01",
+    "sheet": 21,
+    "row": 1,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_021_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_021_01_s1.png"
+  },
+  {
+    "id": "lego_prop_021_02",
+    "sheet": 21,
+    "row": 2,
+    "name": "地下城機關・防禦掩體障礙",
+    "nameEn": "Dungeon Defensive Barricade",
+    "category": "dungeon",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_021_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_021_02_s1.png"
+  },
+  {
+    "id": "lego_prop_021_03",
+    "sheet": 21,
+    "row": 3,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_021_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_021_03_s1.png"
+  },
+  {
+    "id": "lego_prop_022_01",
+    "sheet": 22,
+    "row": 1,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_022_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_022_01_s1.png"
+  },
+  {
+    "id": "lego_prop_022_02",
+    "sheet": 22,
+    "row": 2,
+    "name": "地下城機關・儀式魔導儀器",
+    "nameEn": "Dungeon Ritual Apparatus",
+    "category": "dungeon",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_022_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_022_02_s1.png"
+  },
+  {
+    "id": "lego_prop_022_03",
+    "sheet": 22,
+    "row": 3,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_022_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_022_03_s1.png"
+  },
+  {
+    "id": "lego_prop_023_01",
+    "sheet": 23,
+    "row": 1,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_023_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_023_01_s1.png"
+  },
+  {
+    "id": "lego_prop_023_02",
+    "sheet": 23,
+    "row": 2,
+    "name": "地下城機關・機關重裝設施",
+    "nameEn": "Dungeon Heavy Mechanism",
+    "category": "dungeon",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_023_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_023_02_s1.png"
+  },
+  {
+    "id": "lego_prop_023_03",
+    "sheet": 23,
+    "row": 3,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_023_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_023_03_s1.png"
+  },
+  {
+    "id": "lego_prop_024_01",
+    "sheet": 24,
+    "row": 1,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_024_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_024_01_s1.png"
+  },
+  {
+    "id": "lego_prop_024_02",
+    "sheet": 24,
+    "row": 2,
+    "name": "地下城機關・封印祭壇神龕",
+    "nameEn": "Dungeon Sealed Altar Shrine",
+    "category": "dungeon",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_024_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_024_02_s1.png"
+  },
+  {
+    "id": "lego_prop_024_03",
+    "sheet": 24,
+    "row": 3,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_024_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_024_03_s1.png"
+  },
+  {
+    "id": "lego_prop_025_01",
+    "sheet": 25,
+    "row": 1,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_025_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_025_01_s1.png"
+  },
+  {
+    "id": "lego_prop_025_02",
+    "sheet": 25,
+    "row": 2,
+    "name": "地下城機關・隱藏儲藏箱櫃",
+    "nameEn": "Dungeon Hidden Storage Cache",
+    "category": "dungeon",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_025_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_025_02_s1.png"
+  },
+  {
+    "id": "lego_prop_025_03",
+    "sheet": 25,
+    "row": 3,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_025_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_025_03_s1.png"
+  },
+  {
+    "id": "lego_prop_026_01",
+    "sheet": 26,
+    "row": 1,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_026_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_026_01_s1.png"
+  },
+  {
+    "id": "lego_prop_026_02",
+    "sheet": 26,
+    "row": 2,
+    "name": "地下城機關・防禦掩體障礙",
+    "nameEn": "Dungeon Defensive Barricade",
+    "category": "dungeon",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_026_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_026_02_s1.png"
+  },
+  {
+    "id": "lego_prop_026_03",
+    "sheet": 26,
+    "row": 3,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_026_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_026_03_s1.png"
+  },
+  {
+    "id": "lego_prop_027_01",
+    "sheet": 27,
+    "row": 1,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_027_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_027_01_s1.png"
+  },
+  {
+    "id": "lego_prop_027_02",
+    "sheet": 27,
+    "row": 2,
+    "name": "地下城機關・儀式魔導儀器",
+    "nameEn": "Dungeon Ritual Apparatus",
+    "category": "dungeon",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_027_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_027_02_s1.png"
+  },
+  {
+    "id": "lego_prop_027_03",
+    "sheet": 27,
+    "row": 3,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_027_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_027_03_s1.png"
+  },
+  {
+    "id": "lego_prop_028_01",
+    "sheet": 28,
+    "row": 1,
+    "name": "城鎮設施・儀式魔導儀器",
+    "nameEn": "Town Ritual Apparatus",
+    "category": "town",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_028_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_028_01_s1.png"
+  },
+  {
+    "id": "lego_prop_028_02",
+    "sheet": 28,
+    "row": 2,
+    "name": "地下城機關・機關重裝設施",
+    "nameEn": "Dungeon Heavy Mechanism",
+    "category": "dungeon",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_028_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_028_02_s1.png"
+  },
+  {
+    "id": "lego_prop_028_03",
+    "sheet": 28,
+    "row": 3,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_028_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_028_03_s1.png"
+  },
+  {
+    "id": "lego_prop_029_01",
+    "sheet": 29,
+    "row": 1,
+    "name": "城鎮設施・機關重裝設施",
+    "nameEn": "Town Heavy Mechanism",
+    "category": "town",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_029_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_029_01_s1.png"
+  },
+  {
+    "id": "lego_prop_029_02",
+    "sheet": 29,
+    "row": 2,
+    "name": "地下城機關・封印祭壇神龕",
+    "nameEn": "Dungeon Sealed Altar Shrine",
+    "category": "dungeon",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_029_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_029_02_s1.png"
+  },
+  {
+    "id": "lego_prop_029_03",
+    "sheet": 29,
+    "row": 3,
+    "name": "城鎮設施・隱藏儲藏箱櫃",
+    "nameEn": "Town Hidden Storage Cache",
+    "category": "town",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_029_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_029_03_s1.png"
+  },
+  {
+    "id": "lego_prop_030_01",
+    "sheet": 30,
+    "row": 1,
+    "name": "城鎮設施・封印祭壇神龕",
+    "nameEn": "Town Sealed Altar Shrine",
+    "category": "town",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_030_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_030_01_s1.png"
+  },
+  {
+    "id": "lego_prop_030_02",
+    "sheet": 30,
+    "row": 2,
+    "name": "地下城機關・隱藏儲藏箱櫃",
+    "nameEn": "Dungeon Hidden Storage Cache",
+    "category": "dungeon",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_030_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_030_02_s1.png"
+  },
+  {
+    "id": "lego_prop_030_03",
+    "sheet": 30,
+    "row": 3,
+    "name": "城鎮設施・防禦掩體障礙",
+    "nameEn": "Town Defensive Barricade",
+    "category": "town",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_030_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_030_03_s1.png"
+  },
+  {
+    "id": "lego_prop_031_01",
+    "sheet": 31,
+    "row": 1,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_031_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_031_01_s1.png"
+  },
+  {
+    "id": "lego_prop_031_02",
+    "sheet": 31,
+    "row": 2,
+    "name": "要塞陣地・防禦掩體障礙",
+    "nameEn": "Fortress Defensive Barricade",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_031_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_031_02_s1.png"
+  },
+  {
+    "id": "lego_prop_031_03",
+    "sheet": 31,
+    "row": 3,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_031_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_031_03_s1.png"
+  },
+  {
+    "id": "lego_prop_032_01",
+    "sheet": 32,
+    "row": 1,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_032_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_032_01_s1.png"
+  },
+  {
+    "id": "lego_prop_032_02",
+    "sheet": 32,
+    "row": 2,
+    "name": "要塞陣地・儀式魔導儀器",
+    "nameEn": "Fortress Ritual Apparatus",
+    "category": "siege",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_032_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_032_02_s1.png"
+  },
+  {
+    "id": "lego_prop_032_03",
+    "sheet": 32,
+    "row": 3,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_032_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_032_03_s1.png"
+  },
+  {
+    "id": "lego_prop_033_01",
+    "sheet": 33,
+    "row": 1,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_033_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_033_01_s1.png"
+  },
+  {
+    "id": "lego_prop_033_02",
+    "sheet": 33,
+    "row": 2,
+    "name": "要塞陣地・機關重裝設施",
+    "nameEn": "Fortress Heavy Mechanism",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_033_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_033_02_s1.png"
+  },
+  {
+    "id": "lego_prop_033_03",
+    "sheet": 33,
+    "row": 3,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_033_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_033_03_s1.png"
+  },
+  {
+    "id": "lego_prop_034_01",
+    "sheet": 34,
+    "row": 1,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_034_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_034_01_s1.png"
+  },
+  {
+    "id": "lego_prop_034_02",
+    "sheet": 34,
+    "row": 2,
+    "name": "要塞陣地・封印祭壇神龕",
+    "nameEn": "Fortress Sealed Altar Shrine",
+    "category": "siege",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_034_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_034_02_s1.png"
+  },
+  {
+    "id": "lego_prop_034_03",
+    "sheet": 34,
+    "row": 3,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_034_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_034_03_s1.png"
+  },
+  {
+    "id": "lego_prop_035_01",
+    "sheet": 35,
+    "row": 1,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_035_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_035_01_s1.png"
+  },
+  {
+    "id": "lego_prop_035_02",
+    "sheet": 35,
+    "row": 2,
+    "name": "要塞陣地・隱藏儲藏箱櫃",
+    "nameEn": "Fortress Hidden Storage Cache",
+    "category": "siege",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_035_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_035_02_s1.png"
+  },
+  {
+    "id": "lego_prop_035_03",
+    "sheet": 35,
+    "row": 3,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_035_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_035_03_s1.png"
+  },
+  {
+    "id": "lego_prop_036_01",
+    "sheet": 36,
+    "row": 1,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_036_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_036_01_s1.png"
+  },
+  {
+    "id": "lego_prop_036_02",
+    "sheet": 36,
+    "row": 2,
+    "name": "要塞陣地・防禦掩體障礙",
+    "nameEn": "Fortress Defensive Barricade",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_036_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_036_02_s1.png"
+  },
+  {
+    "id": "lego_prop_036_03",
+    "sheet": 36,
+    "row": 3,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_036_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_036_03_s1.png"
+  },
+  {
+    "id": "lego_prop_037_01",
+    "sheet": 37,
+    "row": 1,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_037_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_037_01_s1.png"
+  },
+  {
+    "id": "lego_prop_037_02",
+    "sheet": 37,
+    "row": 2,
+    "name": "要塞陣地・儀式魔導儀器",
+    "nameEn": "Fortress Ritual Apparatus",
+    "category": "siege",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_037_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_037_02_s1.png"
+  },
+  {
+    "id": "lego_prop_037_03",
+    "sheet": 37,
+    "row": 3,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_037_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_037_03_s1.png"
+  },
+  {
+    "id": "lego_prop_038_01",
+    "sheet": 38,
+    "row": 1,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_038_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_038_01_s1.png"
+  },
+  {
+    "id": "lego_prop_038_02",
+    "sheet": 38,
+    "row": 2,
+    "name": "要塞陣地・機關重裝設施",
+    "nameEn": "Fortress Heavy Mechanism",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_038_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_038_02_s1.png"
+  },
+  {
+    "id": "lego_prop_039_01",
+    "sheet": 39,
+    "row": 1,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_039_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_039_01_s1.png"
+  },
+  {
+    "id": "lego_prop_039_02",
+    "sheet": 39,
+    "row": 2,
+    "name": "要塞陣地・封印祭壇神龕",
+    "nameEn": "Fortress Sealed Altar Shrine",
+    "category": "siege",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_039_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_039_02_s1.png"
+  },
+  {
+    "id": "lego_prop_039_03",
+    "sheet": 39,
+    "row": 3,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_039_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_039_03_s1.png"
+  },
+  {
+    "id": "lego_prop_040_01",
+    "sheet": 40,
+    "row": 1,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_040_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_040_01_s1.png"
+  },
+  {
+    "id": "lego_prop_040_02",
+    "sheet": 40,
+    "row": 2,
+    "name": "要塞陣地・隱藏儲藏箱櫃",
+    "nameEn": "Fortress Hidden Storage Cache",
+    "category": "siege",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_040_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_040_02_s1.png"
+  },
+  {
+    "id": "lego_prop_040_03",
+    "sheet": 40,
+    "row": 3,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_040_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_040_03_s1.png"
+  },
+  {
+    "id": "lego_prop_041_01",
+    "sheet": 41,
+    "row": 1,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_041_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_041_01_s1.png"
+  },
+  {
+    "id": "lego_prop_041_02",
+    "sheet": 41,
+    "row": 2,
+    "name": "要塞陣地・防禦掩體障礙",
+    "nameEn": "Fortress Defensive Barricade",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_041_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_041_02_s1.png"
+  },
+  {
+    "id": "lego_prop_041_03",
+    "sheet": 41,
+    "row": 3,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_041_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_041_03_s1.png"
+  },
+  {
+    "id": "lego_prop_042_01",
+    "sheet": 42,
+    "row": 1,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_042_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_042_01_s1.png"
+  },
+  {
+    "id": "lego_prop_042_02",
+    "sheet": 42,
+    "row": 2,
+    "name": "要塞陣地・儀式魔導儀器",
+    "nameEn": "Fortress Ritual Apparatus",
+    "category": "siege",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_042_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_042_02_s1.png"
+  },
+  {
+    "id": "lego_prop_042_03",
+    "sheet": 42,
+    "row": 3,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_042_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_042_03_s1.png"
+  },
+  {
+    "id": "lego_prop_043_01",
+    "sheet": 43,
+    "row": 1,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_043_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_043_01_s1.png"
+  },
+  {
+    "id": "lego_prop_043_02",
+    "sheet": 43,
+    "row": 2,
+    "name": "要塞陣地・機關重裝設施",
+    "nameEn": "Fortress Heavy Mechanism",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_043_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_043_02_s1.png"
+  },
+  {
+    "id": "lego_prop_043_03",
+    "sheet": 43,
+    "row": 3,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_043_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_043_03_s1.png"
+  },
+  {
+    "id": "lego_prop_044_01",
+    "sheet": 44,
+    "row": 1,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_044_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_044_01_s1.png"
+  },
+  {
+    "id": "lego_prop_044_02",
+    "sheet": 44,
+    "row": 2,
+    "name": "要塞陣地・封印祭壇神龕",
+    "nameEn": "Fortress Sealed Altar Shrine",
+    "category": "siege",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_044_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_044_02_s1.png"
+  },
+  {
+    "id": "lego_prop_044_03",
+    "sheet": 44,
+    "row": 3,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_044_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_044_03_s1.png"
+  },
+  {
+    "id": "lego_prop_045_01",
+    "sheet": 45,
+    "row": 1,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_045_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_045_01_s1.png"
+  },
+  {
+    "id": "lego_prop_045_02",
+    "sheet": 45,
+    "row": 2,
+    "name": "要塞陣地・隱藏儲藏箱櫃",
+    "nameEn": "Fortress Hidden Storage Cache",
+    "category": "siege",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_045_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_045_02_s1.png"
+  },
+  {
+    "id": "lego_prop_046_01",
+    "sheet": 46,
+    "row": 1,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_046_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_046_01_s1.png"
+  },
+  {
+    "id": "lego_prop_046_02",
+    "sheet": 46,
+    "row": 2,
+    "name": "要塞陣地・防禦掩體障礙",
+    "nameEn": "Fortress Defensive Barricade",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_046_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_046_02_s1.png"
+  },
+  {
+    "id": "lego_prop_046_03",
+    "sheet": 46,
+    "row": 3,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_046_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_046_03_s1.png"
+  },
+  {
+    "id": "lego_prop_047_01",
+    "sheet": 47,
+    "row": 1,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_047_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_047_01_s1.png"
+  },
+  {
+    "id": "lego_prop_047_02",
+    "sheet": 47,
+    "row": 2,
+    "name": "要塞陣地・儀式魔導儀器",
+    "nameEn": "Fortress Ritual Apparatus",
+    "category": "siege",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_047_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_047_02_s1.png"
+  },
+  {
+    "id": "lego_prop_047_03",
+    "sheet": 47,
+    "row": 3,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_047_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_047_03_s1.png"
+  },
+  {
+    "id": "lego_prop_048_01",
+    "sheet": 48,
+    "row": 1,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_048_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_048_01_s1.png"
+  },
+  {
+    "id": "lego_prop_048_02",
+    "sheet": 48,
+    "row": 2,
+    "name": "要塞陣地・機關重裝設施",
+    "nameEn": "Fortress Heavy Mechanism",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_048_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_048_02_s1.png"
+  },
+  {
+    "id": "lego_prop_048_03",
+    "sheet": 48,
+    "row": 3,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_048_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_048_03_s1.png"
+  },
+  {
+    "id": "lego_prop_049_01",
+    "sheet": 49,
+    "row": 1,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_049_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_049_01_s1.png"
+  },
+  {
+    "id": "lego_prop_049_02",
+    "sheet": 49,
+    "row": 2,
+    "name": "要塞陣地・封印祭壇神龕",
+    "nameEn": "Fortress Sealed Altar Shrine",
+    "category": "siege",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_049_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_049_02_s1.png"
+  },
+  {
+    "id": "lego_prop_049_03",
+    "sheet": 49,
+    "row": 3,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_049_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_049_03_s1.png"
+  },
+  {
+    "id": "lego_prop_050_01",
+    "sheet": 50,
+    "row": 1,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_050_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_050_01_s1.png"
+  },
+  {
+    "id": "lego_prop_050_02",
+    "sheet": 50,
+    "row": 2,
+    "name": "要塞陣地・隱藏儲藏箱櫃",
+    "nameEn": "Fortress Hidden Storage Cache",
+    "category": "siege",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_050_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_050_02_s1.png"
+  },
+  {
+    "id": "lego_prop_050_03",
+    "sheet": 50,
+    "row": 3,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_050_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_050_03_s1.png"
+  },
+  {
+    "id": "lego_prop_051_01",
+    "sheet": 51,
+    "row": 1,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_051_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_051_01_s1.png"
+  },
+  {
+    "id": "lego_prop_051_02",
+    "sheet": 51,
+    "row": 2,
+    "name": "要塞陣地・防禦掩體障礙",
+    "nameEn": "Fortress Defensive Barricade",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_051_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_051_02_s1.png"
+  },
+  {
+    "id": "lego_prop_051_03",
+    "sheet": 51,
+    "row": 3,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_051_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_051_03_s1.png"
+  },
+  {
+    "id": "lego_prop_052_01",
+    "sheet": 52,
+    "row": 1,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_052_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_052_01_s1.png"
+  },
+  {
+    "id": "lego_prop_052_02",
+    "sheet": 52,
+    "row": 2,
+    "name": "要塞陣地・儀式魔導儀器",
+    "nameEn": "Fortress Ritual Apparatus",
+    "category": "siege",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_052_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_052_02_s1.png"
+  },
+  {
+    "id": "lego_prop_052_03",
+    "sheet": 52,
+    "row": 3,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_052_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_052_03_s1.png"
+  },
+  {
+    "id": "lego_prop_053_01",
+    "sheet": 53,
+    "row": 1,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_053_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_053_01_s1.png"
+  },
+  {
+    "id": "lego_prop_053_02",
+    "sheet": 53,
+    "row": 2,
+    "name": "要塞陣地・機關重裝設施",
+    "nameEn": "Fortress Heavy Mechanism",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_053_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_053_02_s1.png"
+  },
+  {
+    "id": "lego_prop_053_03",
+    "sheet": 53,
+    "row": 3,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_053_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_053_03_s1.png"
+  },
+  {
+    "id": "lego_prop_054_01",
+    "sheet": 54,
+    "row": 1,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_054_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_054_01_s1.png"
+  },
+  {
+    "id": "lego_prop_054_02",
+    "sheet": 54,
+    "row": 2,
+    "name": "要塞陣地・封印祭壇神龕",
+    "nameEn": "Fortress Sealed Altar Shrine",
+    "category": "siege",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_054_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_054_02_s1.png"
+  },
+  {
+    "id": "lego_prop_054_03",
+    "sheet": 54,
+    "row": 3,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_054_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_054_03_s1.png"
+  },
+  {
+    "id": "lego_prop_055_01",
+    "sheet": 55,
+    "row": 1,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_055_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_055_01_s1.png"
+  },
+  {
+    "id": "lego_prop_055_02",
+    "sheet": 55,
+    "row": 2,
+    "name": "要塞陣地・隱藏儲藏箱櫃",
+    "nameEn": "Fortress Hidden Storage Cache",
+    "category": "siege",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_055_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_055_02_s1.png"
+  },
+  {
+    "id": "lego_prop_055_03",
+    "sheet": 55,
+    "row": 3,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_055_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_055_03_s1.png"
+  },
+  {
+    "id": "lego_prop_056_01",
+    "sheet": 56,
+    "row": 1,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_056_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_056_01_s1.png"
+  },
+  {
+    "id": "lego_prop_056_02",
+    "sheet": 56,
+    "row": 2,
+    "name": "要塞陣地・防禦掩體障礙",
+    "nameEn": "Fortress Defensive Barricade",
+    "category": "siege",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_056_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_056_02_s1.png"
+  },
+  {
+    "id": "lego_prop_056_03",
+    "sheet": 56,
+    "row": 3,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_056_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_056_03_s1.png"
+  },
+  {
+    "id": "lego_prop_057_01",
+    "sheet": 57,
+    "row": 1,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_057_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_057_01_s1.png"
+  },
+  {
+    "id": "lego_prop_057_02",
+    "sheet": 57,
+    "row": 2,
+    "name": "要塞陣地・儀式魔導儀器",
+    "nameEn": "Fortress Ritual Apparatus",
+    "category": "siege",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_057_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_057_02_s1.png"
+  },
+  {
+    "id": "lego_prop_057_03",
+    "sheet": 57,
+    "row": 3,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_057_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_057_03_s1.png"
+  },
+  {
+    "id": "lego_prop_058_01",
+    "sheet": 58,
+    "row": 1,
+    "name": "野營據點・儀式魔導儀器",
+    "nameEn": "Encampment Ritual Apparatus",
+    "category": "camp",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_058_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_058_01_s1.png"
+  },
+  {
+    "id": "lego_prop_058_02",
+    "sheet": 58,
+    "row": 2,
+    "name": "要塞陣地・機關重裝設施",
+    "nameEn": "Fortress Heavy Mechanism",
+    "category": "siege",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_058_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_058_02_s1.png"
+  },
+  {
+    "id": "lego_prop_058_03",
+    "sheet": 58,
+    "row": 3,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_058_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_058_03_s1.png"
+  },
+  {
+    "id": "lego_prop_059_01",
+    "sheet": 59,
+    "row": 1,
+    "name": "野營據點・機關重裝設施",
+    "nameEn": "Encampment Heavy Mechanism",
+    "category": "camp",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_059_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_059_01_s1.png"
+  },
+  {
+    "id": "lego_prop_059_02",
+    "sheet": 59,
+    "row": 2,
+    "name": "要塞陣地・封印祭壇神龕",
+    "nameEn": "Fortress Sealed Altar Shrine",
+    "category": "siege",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_059_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_059_02_s1.png"
+  },
+  {
+    "id": "lego_prop_059_03",
+    "sheet": 59,
+    "row": 3,
+    "name": "野營據點・隱藏儲藏箱櫃",
+    "nameEn": "Encampment Hidden Storage Cache",
+    "category": "camp",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_059_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_059_03_s1.png"
+  },
+  {
+    "id": "lego_prop_060_01",
+    "sheet": 60,
+    "row": 1,
+    "name": "野營據點・封印祭壇神龕",
+    "nameEn": "Encampment Sealed Altar Shrine",
+    "category": "camp",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_060_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_060_01_s1.png"
+  },
+  {
+    "id": "lego_prop_060_02",
+    "sheet": 60,
+    "row": 2,
+    "name": "要塞陣地・隱藏儲藏箱櫃",
+    "nameEn": "Fortress Hidden Storage Cache",
+    "category": "siege",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_060_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_060_02_s1.png"
+  },
+  {
+    "id": "lego_prop_060_03",
+    "sheet": 60,
+    "row": 3,
+    "name": "野營據點・防禦掩體障礙",
+    "nameEn": "Encampment Defensive Barricade",
+    "category": "camp",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_060_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_060_03_s1.png"
+  },
+  {
+    "id": "lego_prop_061_01",
+    "sheet": 61,
+    "row": 1,
+    "name": "奧術祭儀・隱藏儲藏箱櫃",
+    "nameEn": "Arcane Ritual Hidden Storage Cache",
+    "category": "arcane",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_061_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_061_01_s1.png"
+  },
+  {
+    "id": "lego_prop_061_02",
+    "sheet": 61,
+    "row": 2,
+    "name": "密林神殿・防禦掩體障礙",
+    "nameEn": "Jungle Shrine Defensive Barricade",
+    "category": "nature",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_061_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_061_02_s1.png"
+  },
+  {
+    "id": "lego_prop_061_03",
+    "sheet": 61,
+    "row": 3,
+    "name": "奧術祭儀・儀式魔導儀器",
+    "nameEn": "Arcane Ritual Ritual Apparatus",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_061_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_061_03_s1.png"
+  },
+  {
+    "id": "lego_prop_062_01",
+    "sheet": 62,
+    "row": 1,
+    "name": "奧術祭儀・防禦掩體障礙",
+    "nameEn": "Arcane Ritual Defensive Barricade",
+    "category": "arcane",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_062_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_062_01_s1.png"
+  },
+  {
+    "id": "lego_prop_062_02",
+    "sheet": 62,
+    "row": 2,
+    "name": "密林神殿・儀式魔導儀器",
+    "nameEn": "Jungle Shrine Ritual Apparatus",
+    "category": "nature",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_062_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_062_02_s1.png"
+  },
+  {
+    "id": "lego_prop_063_01",
+    "sheet": 63,
+    "row": 1,
+    "name": "奧術祭儀・儀式魔導儀器",
+    "nameEn": "Arcane Ritual Ritual Apparatus",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_063_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_063_01_s1.png"
+  },
+  {
+    "id": "lego_prop_063_02",
+    "sheet": 63,
+    "row": 2,
+    "name": "密林神殿・機關重裝設施",
+    "nameEn": "Jungle Shrine Heavy Mechanism",
+    "category": "nature",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_063_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_063_02_s1.png"
+  },
+  {
+    "id": "lego_prop_063_03",
+    "sheet": 63,
+    "row": 3,
+    "name": "奧術祭儀・封印祭壇神龕",
+    "nameEn": "Arcane Ritual Sealed Altar Shrine",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_063_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_063_03_s1.png"
+  },
+  {
+    "id": "lego_prop_064_01",
+    "sheet": 64,
+    "row": 1,
+    "name": "奧術祭儀・機關重裝設施",
+    "nameEn": "Arcane Ritual Heavy Mechanism",
+    "category": "arcane",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_064_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_064_01_s1.png"
+  },
+  {
+    "id": "lego_prop_064_02",
+    "sheet": 64,
+    "row": 2,
+    "name": "密林神殿・封印祭壇神龕",
+    "nameEn": "Jungle Shrine Sealed Altar Shrine",
+    "category": "nature",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_064_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_064_02_s1.png"
+  },
+  {
+    "id": "lego_prop_064_03",
+    "sheet": 64,
+    "row": 3,
+    "name": "奧術祭儀・隱藏儲藏箱櫃",
+    "nameEn": "Arcane Ritual Hidden Storage Cache",
+    "category": "arcane",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_064_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_064_03_s1.png"
+  },
+  {
+    "id": "lego_prop_065_01",
+    "sheet": 65,
+    "row": 1,
+    "name": "奧術祭儀・封印祭壇神龕",
+    "nameEn": "Arcane Ritual Sealed Altar Shrine",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_065_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_065_01_s1.png"
+  },
+  {
+    "id": "lego_prop_065_02",
+    "sheet": 65,
+    "row": 2,
+    "name": "密林神殿・隱藏儲藏箱櫃",
+    "nameEn": "Jungle Shrine Hidden Storage Cache",
+    "category": "nature",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_065_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_065_02_s1.png"
+  },
+  {
+    "id": "lego_prop_065_03",
+    "sheet": 65,
+    "row": 3,
+    "name": "奧術祭儀・防禦掩體障礙",
+    "nameEn": "Arcane Ritual Defensive Barricade",
+    "category": "arcane",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_065_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_065_03_s1.png"
+  },
+  {
+    "id": "lego_prop_066_01",
+    "sheet": 66,
+    "row": 1,
+    "name": "奧術祭儀・隱藏儲藏箱櫃",
+    "nameEn": "Arcane Ritual Hidden Storage Cache",
+    "category": "arcane",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_066_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_066_01_s1.png"
+  },
+  {
+    "id": "lego_prop_066_02",
+    "sheet": 66,
+    "row": 2,
+    "name": "密林神殿・防禦掩體障礙",
+    "nameEn": "Jungle Shrine Defensive Barricade",
+    "category": "nature",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_066_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_066_02_s1.png"
+  },
+  {
+    "id": "lego_prop_066_03",
+    "sheet": 66,
+    "row": 3,
+    "name": "奧術祭儀・儀式魔導儀器",
+    "nameEn": "Arcane Ritual Ritual Apparatus",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_066_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_066_03_s1.png"
+  },
+  {
+    "id": "lego_prop_067_01",
+    "sheet": 67,
+    "row": 1,
+    "name": "奧術祭儀・防禦掩體障礙",
+    "nameEn": "Arcane Ritual Defensive Barricade",
+    "category": "arcane",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_067_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_067_01_s1.png"
+  },
+  {
+    "id": "lego_prop_067_02",
+    "sheet": 67,
+    "row": 2,
+    "name": "密林神殿・儀式魔導儀器",
+    "nameEn": "Jungle Shrine Ritual Apparatus",
+    "category": "nature",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_067_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_067_02_s1.png"
+  },
+  {
+    "id": "lego_prop_067_03",
+    "sheet": 67,
+    "row": 3,
+    "name": "奧術祭儀・機關重裝設施",
+    "nameEn": "Arcane Ritual Heavy Mechanism",
+    "category": "arcane",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_067_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_067_03_s1.png"
+  },
+  {
+    "id": "lego_prop_068_01",
+    "sheet": 68,
+    "row": 1,
+    "name": "奧術祭儀・儀式魔導儀器",
+    "nameEn": "Arcane Ritual Ritual Apparatus",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_068_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_068_01_s1.png"
+  },
+  {
+    "id": "lego_prop_068_02",
+    "sheet": 68,
+    "row": 2,
+    "name": "密林神殿・機關重裝設施",
+    "nameEn": "Jungle Shrine Heavy Mechanism",
+    "category": "nature",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_068_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_068_02_s1.png"
+  },
+  {
+    "id": "lego_prop_068_03",
+    "sheet": 68,
+    "row": 3,
+    "name": "奧術祭儀・封印祭壇神龕",
+    "nameEn": "Arcane Ritual Sealed Altar Shrine",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_068_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_068_03_s1.png"
+  },
+  {
+    "id": "lego_prop_069_01",
+    "sheet": 69,
+    "row": 1,
+    "name": "奧術祭儀・機關重裝設施",
+    "nameEn": "Arcane Ritual Heavy Mechanism",
+    "category": "arcane",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_069_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_069_01_s1.png"
+  },
+  {
+    "id": "lego_prop_069_02",
+    "sheet": 69,
+    "row": 2,
+    "name": "密林神殿・封印祭壇神龕",
+    "nameEn": "Jungle Shrine Sealed Altar Shrine",
+    "category": "nature",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_069_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_069_02_s1.png"
+  },
+  {
+    "id": "lego_prop_069_03",
+    "sheet": 69,
+    "row": 3,
+    "name": "奧術祭儀・隱藏儲藏箱櫃",
+    "nameEn": "Arcane Ritual Hidden Storage Cache",
+    "category": "arcane",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_069_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_069_03_s1.png"
+  },
+  {
+    "id": "lego_prop_070_01",
+    "sheet": 70,
+    "row": 1,
+    "name": "奧術祭儀・封印祭壇神龕",
+    "nameEn": "Arcane Ritual Sealed Altar Shrine",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_070_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_070_01_s1.png"
+  },
+  {
+    "id": "lego_prop_070_02",
+    "sheet": 70,
+    "row": 2,
+    "name": "密林神殿・隱藏儲藏箱櫃",
+    "nameEn": "Jungle Shrine Hidden Storage Cache",
+    "category": "nature",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_070_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_070_02_s1.png"
+  },
+  {
+    "id": "lego_prop_070_03",
+    "sheet": 70,
+    "row": 3,
+    "name": "奧術祭儀・防禦掩體障礙",
+    "nameEn": "Arcane Ritual Defensive Barricade",
+    "category": "arcane",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_070_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_070_03_s1.png"
+  },
+  {
+    "id": "lego_prop_071_01",
+    "sheet": 71,
+    "row": 1,
+    "name": "奧術祭儀・隱藏儲藏箱櫃",
+    "nameEn": "Arcane Ritual Hidden Storage Cache",
+    "category": "arcane",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_071_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_071_01_s1.png"
+  },
+  {
+    "id": "lego_prop_071_02",
+    "sheet": 71,
+    "row": 2,
+    "name": "密林神殿・防禦掩體障礙",
+    "nameEn": "Jungle Shrine Defensive Barricade",
+    "category": "nature",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_071_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_071_02_s1.png"
+  },
+  {
+    "id": "lego_prop_071_03",
+    "sheet": 71,
+    "row": 3,
+    "name": "奧術祭儀・儀式魔導儀器",
+    "nameEn": "Arcane Ritual Ritual Apparatus",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_071_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_071_03_s1.png"
+  },
+  {
+    "id": "lego_prop_071_04",
+    "sheet": 71,
+    "row": 4,
+    "name": "密林神殿・機關重裝設施",
+    "nameEn": "Jungle Shrine Heavy Mechanism",
+    "category": "nature",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_071_04_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_071_04_s1.png"
+  },
+  {
+    "id": "lego_prop_072_01",
+    "sheet": 72,
+    "row": 1,
+    "name": "奧術祭儀・防禦掩體障礙",
+    "nameEn": "Arcane Ritual Defensive Barricade",
+    "category": "arcane",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_072_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_072_01_s1.png"
+  },
+  {
+    "id": "lego_prop_072_02",
+    "sheet": 72,
+    "row": 2,
+    "name": "密林神殿・儀式魔導儀器",
+    "nameEn": "Jungle Shrine Ritual Apparatus",
+    "category": "nature",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_072_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_072_02_s1.png"
+  },
+  {
+    "id": "lego_prop_072_03",
+    "sheet": 72,
+    "row": 3,
+    "name": "奧術祭儀・機關重裝設施",
+    "nameEn": "Arcane Ritual Heavy Mechanism",
+    "category": "arcane",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_072_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_072_03_s1.png"
+  },
+  {
+    "id": "lego_prop_073_01",
+    "sheet": 73,
+    "row": 1,
+    "name": "奧術祭儀・儀式魔導儀器",
+    "nameEn": "Arcane Ritual Ritual Apparatus",
+    "category": "arcane",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_073_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_073_01_s1.png"
+  },
+  {
+    "id": "lego_prop_073_02",
+    "sheet": 73,
+    "row": 2,
+    "name": "密林神殿・機關重裝設施",
+    "nameEn": "Jungle Shrine Heavy Mechanism",
+    "category": "nature",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_073_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_073_02_s1.png"
+  },
+  {
+    "id": "lego_prop_073_03",
+    "sheet": 73,
+    "row": 3,
+    "name": "奧術祭儀・封印祭壇神龕",
+    "nameEn": "Arcane Ritual Sealed Altar Shrine",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_073_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_073_03_s1.png"
+  },
+  {
+    "id": "lego_prop_074_01",
+    "sheet": 74,
+    "row": 1,
+    "name": "奧術祭儀・機關重裝設施",
+    "nameEn": "Arcane Ritual Heavy Mechanism",
+    "category": "arcane",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_074_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_074_01_s1.png"
+  },
+  {
+    "id": "lego_prop_074_02",
+    "sheet": 74,
+    "row": 2,
+    "name": "密林神殿・封印祭壇神龕",
+    "nameEn": "Jungle Shrine Sealed Altar Shrine",
+    "category": "nature",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_074_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_074_02_s1.png"
+  },
+  {
+    "id": "lego_prop_074_03",
+    "sheet": 74,
+    "row": 3,
+    "name": "奧術祭儀・隱藏儲藏箱櫃",
+    "nameEn": "Arcane Ritual Hidden Storage Cache",
+    "category": "arcane",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_074_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_074_03_s1.png"
+  },
+  {
+    "id": "lego_prop_075_01",
+    "sheet": 75,
+    "row": 1,
+    "name": "奧術祭儀・封印祭壇神龕",
+    "nameEn": "Arcane Ritual Sealed Altar Shrine",
+    "category": "arcane",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_075_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_075_01_s1.png"
+  },
+  {
+    "id": "lego_prop_075_02",
+    "sheet": 75,
+    "row": 2,
+    "name": "密林神殿・隱藏儲藏箱櫃",
+    "nameEn": "Jungle Shrine Hidden Storage Cache",
+    "category": "nature",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_075_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_075_02_s1.png"
+  },
+  {
+    "id": "lego_prop_075_03",
+    "sheet": 75,
+    "row": 3,
+    "name": "奧術祭儀・防禦掩體障礙",
+    "nameEn": "Arcane Ritual Defensive Barricade",
+    "category": "arcane",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_075_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_075_03_s1.png"
+  },
+  {
+    "id": "lego_prop_076_01",
+    "sheet": 76,
+    "row": 1,
+    "name": "極地冰霜・隱藏儲藏箱櫃",
+    "nameEn": "Frost Glacier Hidden Storage Cache",
+    "category": "ice",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_076_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_076_01_s1.png"
+  },
+  {
+    "id": "lego_prop_076_02",
+    "sheet": 76,
+    "row": 2,
+    "name": "黃沙古塚・防禦掩體障礙",
+    "nameEn": "Desert Tomb Defensive Barricade",
+    "category": "desert",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_076_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_076_02_s1.png"
+  },
+  {
+    "id": "lego_prop_076_03",
+    "sheet": 76,
+    "row": 3,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_076_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_076_03_s1.png"
+  },
+  {
+    "id": "lego_prop_077_01",
+    "sheet": 77,
+    "row": 1,
+    "name": "極地冰霜・防禦掩體障礙",
+    "nameEn": "Frost Glacier Defensive Barricade",
+    "category": "ice",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_077_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_077_01_s1.png"
+  },
+  {
+    "id": "lego_prop_077_02",
+    "sheet": 77,
+    "row": 2,
+    "name": "黃沙古塚・儀式魔導儀器",
+    "nameEn": "Desert Tomb Ritual Apparatus",
+    "category": "desert",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_077_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_077_02_s1.png"
+  },
+  {
+    "id": "lego_prop_077_03",
+    "sheet": 77,
+    "row": 3,
+    "name": "極地冰霜・機關重裝設施",
+    "nameEn": "Frost Glacier Heavy Mechanism",
+    "category": "ice",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_077_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_077_03_s1.png"
+  },
+  {
+    "id": "lego_prop_078_01",
+    "sheet": 78,
+    "row": 1,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_078_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_078_01_s1.png"
+  },
+  {
+    "id": "lego_prop_078_02",
+    "sheet": 78,
+    "row": 2,
+    "name": "黃沙古塚・機關重裝設施",
+    "nameEn": "Desert Tomb Heavy Mechanism",
+    "category": "desert",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_078_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_078_02_s1.png"
+  },
+  {
+    "id": "lego_prop_078_03",
+    "sheet": 78,
+    "row": 3,
+    "name": "極地冰霜・封印祭壇神龕",
+    "nameEn": "Frost Glacier Sealed Altar Shrine",
+    "category": "ice",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_078_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_078_03_s1.png"
+  },
+  {
+    "id": "lego_prop_079_01",
+    "sheet": 79,
+    "row": 1,
+    "name": "極地冰霜・機關重裝設施",
+    "nameEn": "Frost Glacier Heavy Mechanism",
+    "category": "ice",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_079_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_079_01_s1.png"
+  },
+  {
+    "id": "lego_prop_079_02",
+    "sheet": 79,
+    "row": 2,
+    "name": "黃沙古塚・封印祭壇神龕",
+    "nameEn": "Desert Tomb Sealed Altar Shrine",
+    "category": "desert",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_079_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_079_02_s1.png"
+  },
+  {
+    "id": "lego_prop_079_03",
+    "sheet": 79,
+    "row": 3,
+    "name": "極地冰霜・隱藏儲藏箱櫃",
+    "nameEn": "Frost Glacier Hidden Storage Cache",
+    "category": "ice",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_079_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_079_03_s1.png"
+  },
+  {
+    "id": "lego_prop_079_04",
+    "sheet": 79,
+    "row": 4,
+    "name": "黃沙古塚・防禦掩體障礙",
+    "nameEn": "Desert Tomb Defensive Barricade",
+    "category": "desert",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_079_04_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_079_04_s1.png"
+  },
+  {
+    "id": "lego_prop_079_05",
+    "sheet": 79,
+    "row": 5,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_079_05_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_079_05_s1.png"
+  },
+  {
+    "id": "lego_prop_080_01",
+    "sheet": 80,
+    "row": 1,
+    "name": "極地冰霜・封印祭壇神龕",
+    "nameEn": "Frost Glacier Sealed Altar Shrine",
+    "category": "ice",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_080_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_080_01_s1.png"
+  },
+  {
+    "id": "lego_prop_080_02",
+    "sheet": 80,
+    "row": 2,
+    "name": "黃沙古塚・隱藏儲藏箱櫃",
+    "nameEn": "Desert Tomb Hidden Storage Cache",
+    "category": "desert",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_080_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_080_02_s1.png"
+  },
+  {
+    "id": "lego_prop_080_03",
+    "sheet": 80,
+    "row": 3,
+    "name": "極地冰霜・防禦掩體障礙",
+    "nameEn": "Frost Glacier Defensive Barricade",
+    "category": "ice",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_080_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_080_03_s1.png"
+  },
+  {
+    "id": "lego_prop_081_01",
+    "sheet": 81,
+    "row": 1,
+    "name": "極地冰霜・隱藏儲藏箱櫃",
+    "nameEn": "Frost Glacier Hidden Storage Cache",
+    "category": "ice",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_081_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_081_01_s1.png"
+  },
+  {
+    "id": "lego_prop_081_02",
+    "sheet": 81,
+    "row": 2,
+    "name": "黃沙古塚・防禦掩體障礙",
+    "nameEn": "Desert Tomb Defensive Barricade",
+    "category": "desert",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_081_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_081_02_s1.png"
+  },
+  {
+    "id": "lego_prop_081_03",
+    "sheet": 81,
+    "row": 3,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_081_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_081_03_s1.png"
+  },
+  {
+    "id": "lego_prop_082_01",
+    "sheet": 82,
+    "row": 1,
+    "name": "極地冰霜・防禦掩體障礙",
+    "nameEn": "Frost Glacier Defensive Barricade",
+    "category": "ice",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_082_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_082_01_s1.png"
+  },
+  {
+    "id": "lego_prop_082_02",
+    "sheet": 82,
+    "row": 2,
+    "name": "黃沙古塚・儀式魔導儀器",
+    "nameEn": "Desert Tomb Ritual Apparatus",
+    "category": "desert",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_082_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_082_02_s1.png"
+  },
+  {
+    "id": "lego_prop_082_03",
+    "sheet": 82,
+    "row": 3,
+    "name": "極地冰霜・機關重裝設施",
+    "nameEn": "Frost Glacier Heavy Mechanism",
+    "category": "ice",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_082_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_082_03_s1.png"
+  },
+  {
+    "id": "lego_prop_083_01",
+    "sheet": 83,
+    "row": 1,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_083_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_083_01_s1.png"
+  },
+  {
+    "id": "lego_prop_083_02",
+    "sheet": 83,
+    "row": 2,
+    "name": "黃沙古塚・機關重裝設施",
+    "nameEn": "Desert Tomb Heavy Mechanism",
+    "category": "desert",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_083_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_083_02_s1.png"
+  },
+  {
+    "id": "lego_prop_083_03",
+    "sheet": 83,
+    "row": 3,
+    "name": "極地冰霜・封印祭壇神龕",
+    "nameEn": "Frost Glacier Sealed Altar Shrine",
+    "category": "ice",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_083_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_083_03_s1.png"
+  },
+  {
+    "id": "lego_prop_084_01",
+    "sheet": 84,
+    "row": 1,
+    "name": "極地冰霜・機關重裝設施",
+    "nameEn": "Frost Glacier Heavy Mechanism",
+    "category": "ice",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_084_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_084_01_s1.png"
+  },
+  {
+    "id": "lego_prop_084_02",
+    "sheet": 84,
+    "row": 2,
+    "name": "黃沙古塚・封印祭壇神龕",
+    "nameEn": "Desert Tomb Sealed Altar Shrine",
+    "category": "desert",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_084_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_084_02_s1.png"
+  },
+  {
+    "id": "lego_prop_084_03",
+    "sheet": 84,
+    "row": 3,
+    "name": "極地冰霜・隱藏儲藏箱櫃",
+    "nameEn": "Frost Glacier Hidden Storage Cache",
+    "category": "ice",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_084_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_084_03_s1.png"
+  },
+  {
+    "id": "lego_prop_085_01",
+    "sheet": 85,
+    "row": 1,
+    "name": "極地冰霜・封印祭壇神龕",
+    "nameEn": "Frost Glacier Sealed Altar Shrine",
+    "category": "ice",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_085_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_085_01_s1.png"
+  },
+  {
+    "id": "lego_prop_085_02",
+    "sheet": 85,
+    "row": 2,
+    "name": "黃沙古塚・隱藏儲藏箱櫃",
+    "nameEn": "Desert Tomb Hidden Storage Cache",
+    "category": "desert",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_085_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_085_02_s1.png"
+  },
+  {
+    "id": "lego_prop_085_03",
+    "sheet": 85,
+    "row": 3,
+    "name": "極地冰霜・防禦掩體障礙",
+    "nameEn": "Frost Glacier Defensive Barricade",
+    "category": "ice",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_085_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_085_03_s1.png"
+  },
+  {
+    "id": "lego_prop_086_01",
+    "sheet": 86,
+    "row": 1,
+    "name": "極地冰霜・隱藏儲藏箱櫃",
+    "nameEn": "Frost Glacier Hidden Storage Cache",
+    "category": "ice",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_086_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_086_01_s1.png"
+  },
+  {
+    "id": "lego_prop_086_02",
+    "sheet": 86,
+    "row": 2,
+    "name": "黃沙古塚・防禦掩體障礙",
+    "nameEn": "Desert Tomb Defensive Barricade",
+    "category": "desert",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_086_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_086_02_s1.png"
+  },
+  {
+    "id": "lego_prop_086_03",
+    "sheet": 86,
+    "row": 3,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_086_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_086_03_s1.png"
+  },
+  {
+    "id": "lego_prop_087_01",
+    "sheet": 87,
+    "row": 1,
+    "name": "極地冰霜・防禦掩體障礙",
+    "nameEn": "Frost Glacier Defensive Barricade",
+    "category": "ice",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_087_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_087_01_s1.png"
+  },
+  {
+    "id": "lego_prop_087_02",
+    "sheet": 87,
+    "row": 2,
+    "name": "黃沙古塚・儀式魔導儀器",
+    "nameEn": "Desert Tomb Ritual Apparatus",
+    "category": "desert",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_087_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_087_02_s1.png"
+  },
+  {
+    "id": "lego_prop_087_03",
+    "sheet": 87,
+    "row": 3,
+    "name": "極地冰霜・機關重裝設施",
+    "nameEn": "Frost Glacier Heavy Mechanism",
+    "category": "ice",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_087_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_087_03_s1.png"
+  },
+  {
+    "id": "lego_prop_088_01",
+    "sheet": 88,
+    "row": 1,
+    "name": "極地冰霜・儀式魔導儀器",
+    "nameEn": "Frost Glacier Ritual Apparatus",
+    "category": "ice",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_088_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_088_01_s1.png"
+  },
+  {
+    "id": "lego_prop_088_02",
+    "sheet": 88,
+    "row": 2,
+    "name": "黃沙古塚・機關重裝設施",
+    "nameEn": "Desert Tomb Heavy Mechanism",
+    "category": "desert",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_088_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_088_02_s1.png"
+  },
+  {
+    "id": "lego_prop_088_03",
+    "sheet": 88,
+    "row": 3,
+    "name": "極地冰霜・封印祭壇神龕",
+    "nameEn": "Frost Glacier Sealed Altar Shrine",
+    "category": "ice",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_088_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_088_03_s1.png"
+  },
+  {
+    "id": "lego_prop_089_01",
+    "sheet": 89,
+    "row": 1,
+    "name": "極地冰霜・機關重裝設施",
+    "nameEn": "Frost Glacier Heavy Mechanism",
+    "category": "ice",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_089_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_089_01_s1.png"
+  },
+  {
+    "id": "lego_prop_089_02",
+    "sheet": 89,
+    "row": 2,
+    "name": "黃沙古塚・封印祭壇神龕",
+    "nameEn": "Desert Tomb Sealed Altar Shrine",
+    "category": "desert",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_089_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_089_02_s1.png"
+  },
+  {
+    "id": "lego_prop_089_03",
+    "sheet": 89,
+    "row": 3,
+    "name": "極地冰霜・隱藏儲藏箱櫃",
+    "nameEn": "Frost Glacier Hidden Storage Cache",
+    "category": "ice",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_089_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_089_03_s1.png"
+  },
+  {
+    "id": "lego_prop_090_01",
+    "sheet": 90,
+    "row": 1,
+    "name": "極地冰霜・封印祭壇神龕",
+    "nameEn": "Frost Glacier Sealed Altar Shrine",
+    "category": "ice",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_090_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_090_01_s1.png"
+  },
+  {
+    "id": "lego_prop_090_02",
+    "sheet": 90,
+    "row": 2,
+    "name": "黃沙古塚・隱藏儲藏箱櫃",
+    "nameEn": "Desert Tomb Hidden Storage Cache",
+    "category": "desert",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_090_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_090_02_s1.png"
+  },
+  {
+    "id": "lego_prop_090_03",
+    "sheet": 90,
+    "row": 3,
+    "name": "極地冰霜・防禦掩體障礙",
+    "nameEn": "Frost Glacier Defensive Barricade",
+    "category": "ice",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_090_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_090_03_s1.png"
+  },
+  {
+    "id": "lego_prop_091_01",
+    "sheet": 91,
+    "row": 1,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_091_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_091_01_s1.png"
+  },
+  {
+    "id": "lego_prop_091_02",
+    "sheet": 91,
+    "row": 2,
+    "name": "血族古堡・防禦掩體障礙",
+    "nameEn": "Gothic Castle Defensive Barricade",
+    "category": "gothic",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_091_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_091_02_s1.png"
+  },
+  {
+    "id": "lego_prop_091_03",
+    "sheet": 91,
+    "row": 3,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_091_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_091_03_s1.png"
+  },
+  {
+    "id": "lego_prop_092_01",
+    "sheet": 92,
+    "row": 1,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_092_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_092_01_s1.png"
+  },
+  {
+    "id": "lego_prop_092_02",
+    "sheet": 92,
+    "row": 2,
+    "name": "血族古堡・儀式魔導儀器",
+    "nameEn": "Gothic Castle Ritual Apparatus",
+    "category": "gothic",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_092_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_092_02_s1.png"
+  },
+  {
+    "id": "lego_prop_092_03",
+    "sheet": 92,
+    "row": 3,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_092_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_092_03_s1.png"
+  },
+  {
+    "id": "lego_prop_093_01",
+    "sheet": 93,
+    "row": 1,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_093_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_093_01_s1.png"
+  },
+  {
+    "id": "lego_prop_093_02",
+    "sheet": 93,
+    "row": 2,
+    "name": "血族古堡・機關重裝設施",
+    "nameEn": "Gothic Castle Heavy Mechanism",
+    "category": "gothic",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_093_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_093_02_s1.png"
+  },
+  {
+    "id": "lego_prop_093_03",
+    "sheet": 93,
+    "row": 3,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_093_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_093_03_s1.png"
+  },
+  {
+    "id": "lego_prop_094_01",
+    "sheet": 94,
+    "row": 1,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_094_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_094_01_s1.png"
+  },
+  {
+    "id": "lego_prop_094_02",
+    "sheet": 94,
+    "row": 2,
+    "name": "血族古堡・封印祭壇神龕",
+    "nameEn": "Gothic Castle Sealed Altar Shrine",
+    "category": "gothic",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_094_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_094_02_s1.png"
+  },
+  {
+    "id": "lego_prop_094_03",
+    "sheet": 94,
+    "row": 3,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_094_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_094_03_s1.png"
+  },
+  {
+    "id": "lego_prop_095_01",
+    "sheet": 95,
+    "row": 1,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_095_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_095_01_s1.png"
+  },
+  {
+    "id": "lego_prop_095_02",
+    "sheet": 95,
+    "row": 2,
+    "name": "血族古堡・隱藏儲藏箱櫃",
+    "nameEn": "Gothic Castle Hidden Storage Cache",
+    "category": "gothic",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_095_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_095_02_s1.png"
+  },
+  {
+    "id": "lego_prop_095_03",
+    "sheet": 95,
+    "row": 3,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_095_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_095_03_s1.png"
+  },
+  {
+    "id": "lego_prop_096_01",
+    "sheet": 96,
+    "row": 1,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_096_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_096_01_s1.png"
+  },
+  {
+    "id": "lego_prop_096_02",
+    "sheet": 96,
+    "row": 2,
+    "name": "血族古堡・防禦掩體障礙",
+    "nameEn": "Gothic Castle Defensive Barricade",
+    "category": "gothic",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_096_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_096_02_s1.png"
+  },
+  {
+    "id": "lego_prop_096_03",
+    "sheet": 96,
+    "row": 3,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_096_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_096_03_s1.png"
+  },
+  {
+    "id": "lego_prop_097_01",
+    "sheet": 97,
+    "row": 1,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_097_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_097_01_s1.png"
+  },
+  {
+    "id": "lego_prop_097_02",
+    "sheet": 97,
+    "row": 2,
+    "name": "血族古堡・儀式魔導儀器",
+    "nameEn": "Gothic Castle Ritual Apparatus",
+    "category": "gothic",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_097_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_097_02_s1.png"
+  },
+  {
+    "id": "lego_prop_097_03",
+    "sheet": 97,
+    "row": 3,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_097_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_097_03_s1.png"
+  },
+  {
+    "id": "lego_prop_098_01",
+    "sheet": 98,
+    "row": 1,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_098_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_098_01_s1.png"
+  },
+  {
+    "id": "lego_prop_098_02",
+    "sheet": 98,
+    "row": 2,
+    "name": "血族古堡・機關重裝設施",
+    "nameEn": "Gothic Castle Heavy Mechanism",
+    "category": "gothic",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_098_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_098_02_s1.png"
+  },
+  {
+    "id": "lego_prop_098_03",
+    "sheet": 98,
+    "row": 3,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_098_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_098_03_s1.png"
+  },
+  {
+    "id": "lego_prop_099_01",
+    "sheet": 99,
+    "row": 1,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_099_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_099_01_s1.png"
+  },
+  {
+    "id": "lego_prop_099_02",
+    "sheet": 99,
+    "row": 2,
+    "name": "血族古堡・封印祭壇神龕",
+    "nameEn": "Gothic Castle Sealed Altar Shrine",
+    "category": "gothic",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_099_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_099_02_s1.png"
+  },
+  {
+    "id": "lego_prop_099_03",
+    "sheet": 99,
+    "row": 3,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_099_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_099_03_s1.png"
+  },
+  {
+    "id": "lego_prop_100_01",
+    "sheet": 100,
+    "row": 1,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_100_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_100_01_s1.png"
+  },
+  {
+    "id": "lego_prop_100_02",
+    "sheet": 100,
+    "row": 2,
+    "name": "血族古堡・隱藏儲藏箱櫃",
+    "nameEn": "Gothic Castle Hidden Storage Cache",
+    "category": "gothic",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_100_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_100_02_s1.png"
+  },
+  {
+    "id": "lego_prop_100_03",
+    "sheet": 100,
+    "row": 3,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_100_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_100_03_s1.png"
+  },
+  {
+    "id": "lego_prop_101_01",
+    "sheet": 101,
+    "row": 1,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_101_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_101_01_s1.png"
+  },
+  {
+    "id": "lego_prop_101_02",
+    "sheet": 101,
+    "row": 2,
+    "name": "血族古堡・防禦掩體障礙",
+    "nameEn": "Gothic Castle Defensive Barricade",
+    "category": "gothic",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_101_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_101_02_s1.png"
+  },
+  {
+    "id": "lego_prop_101_03",
+    "sheet": 101,
+    "row": 3,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_101_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_101_03_s1.png"
+  },
+  {
+    "id": "lego_prop_102_01",
+    "sheet": 102,
+    "row": 1,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_102_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_102_01_s1.png"
+  },
+  {
+    "id": "lego_prop_102_02",
+    "sheet": 102,
+    "row": 2,
+    "name": "血族古堡・儀式魔導儀器",
+    "nameEn": "Gothic Castle Ritual Apparatus",
+    "category": "gothic",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_102_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_102_02_s1.png"
+  },
+  {
+    "id": "lego_prop_102_03",
+    "sheet": 102,
+    "row": 3,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_102_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_102_03_s1.png"
+  },
+  {
+    "id": "lego_prop_103_01",
+    "sheet": 103,
+    "row": 1,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_103_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_103_01_s1.png"
+  },
+  {
+    "id": "lego_prop_103_02",
+    "sheet": 103,
+    "row": 2,
+    "name": "血族古堡・機關重裝設施",
+    "nameEn": "Gothic Castle Heavy Mechanism",
+    "category": "gothic",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_103_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_103_02_s1.png"
+  },
+  {
+    "id": "lego_prop_103_03",
+    "sheet": 103,
+    "row": 3,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_103_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_103_03_s1.png"
+  },
+  {
+    "id": "lego_prop_103_04",
+    "sheet": 103,
+    "row": 4,
+    "name": "血族古堡・隱藏儲藏箱櫃",
+    "nameEn": "Gothic Castle Hidden Storage Cache",
+    "category": "gothic",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_103_04_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_103_04_s1.png"
+  },
+  {
+    "id": "lego_prop_104_01",
+    "sheet": 104,
+    "row": 1,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_104_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_104_01_s1.png"
+  },
+  {
+    "id": "lego_prop_104_02",
+    "sheet": 104,
+    "row": 2,
+    "name": "血族古堡・封印祭壇神龕",
+    "nameEn": "Gothic Castle Sealed Altar Shrine",
+    "category": "gothic",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_104_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_104_02_s1.png"
+  },
+  {
+    "id": "lego_prop_104_03",
+    "sheet": 104,
+    "row": 3,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_104_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_104_03_s1.png"
+  },
+  {
+    "id": "lego_prop_105_01",
+    "sheet": 105,
+    "row": 1,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_105_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_105_01_s1.png"
+  },
+  {
+    "id": "lego_prop_105_02",
+    "sheet": 105,
+    "row": 2,
+    "name": "血族古堡・隱藏儲藏箱櫃",
+    "nameEn": "Gothic Castle Hidden Storage Cache",
+    "category": "gothic",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_105_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_105_02_s1.png"
+  },
+  {
+    "id": "lego_prop_105_03",
+    "sheet": 105,
+    "row": 3,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_105_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_105_03_s1.png"
+  },
+  {
+    "id": "lego_prop_106_01",
+    "sheet": 106,
+    "row": 1,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_106_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_106_01_s1.png"
+  },
+  {
+    "id": "lego_prop_106_02",
+    "sheet": 106,
+    "row": 2,
+    "name": "血族古堡・防禦掩體障礙",
+    "nameEn": "Gothic Castle Defensive Barricade",
+    "category": "gothic",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_106_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_106_02_s1.png"
+  },
+  {
+    "id": "lego_prop_106_03",
+    "sheet": 106,
+    "row": 3,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_106_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_106_03_s1.png"
+  },
+  {
+    "id": "lego_prop_107_01",
+    "sheet": 107,
+    "row": 1,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_107_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_107_01_s1.png"
+  },
+  {
+    "id": "lego_prop_107_02",
+    "sheet": 107,
+    "row": 2,
+    "name": "血族古堡・儀式魔導儀器",
+    "nameEn": "Gothic Castle Ritual Apparatus",
+    "category": "gothic",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_107_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_107_02_s1.png"
+  },
+  {
+    "id": "lego_prop_107_03",
+    "sheet": 107,
+    "row": 3,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_107_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_107_03_s1.png"
+  },
+  {
+    "id": "lego_prop_108_01",
+    "sheet": 108,
+    "row": 1,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_108_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_108_01_s1.png"
+  },
+  {
+    "id": "lego_prop_108_02",
+    "sheet": 108,
+    "row": 2,
+    "name": "血族古堡・機關重裝設施",
+    "nameEn": "Gothic Castle Heavy Mechanism",
+    "category": "gothic",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_108_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_108_02_s1.png"
+  },
+  {
+    "id": "lego_prop_108_03",
+    "sheet": 108,
+    "row": 3,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_108_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_108_03_s1.png"
+  },
+  {
+    "id": "lego_prop_109_01",
+    "sheet": 109,
+    "row": 1,
+    "name": "幽魂墓穴・機關重裝設施",
+    "nameEn": "Cursed Cemetery Heavy Mechanism",
+    "category": "cemetery",
+    "states": [
+      [
+        "intact",
+        "完好"
+      ],
+      [
+        "triggered",
+        "觸發"
+      ]
+    ],
+    "uses": "檢視發條齒輪連鎖反應、扳動操縱閥、卡入楔石阻滯",
+    "size": "lg",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_109_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_109_01_s1.png"
+  },
+  {
+    "id": "lego_prop_109_02",
+    "sheet": 109,
+    "row": 2,
+    "name": "血族古堡・封印祭壇神龕",
+    "nameEn": "Gothic Castle Sealed Altar Shrine",
+    "category": "gothic",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_109_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_109_02_s1.png"
+  },
+  {
+    "id": "lego_prop_109_03",
+    "sheet": 109,
+    "row": 3,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_109_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_109_03_s1.png"
+  },
+  {
+    "id": "lego_prop_110_01",
+    "sheet": 110,
+    "row": 1,
+    "name": "幽魂墓穴・封印祭壇神龕",
+    "nameEn": "Cursed Cemetery Sealed Altar Shrine",
+    "category": "cemetery",
+    "states": [
+      [
+        "sealed",
+        "封印"
+      ],
+      [
+        "broken",
+        "破損"
+      ]
+    ],
+    "uses": "調查神聖銘文、破解禁制引發元素激流、奪取聖物",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_110_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_110_01_s1.png"
+  },
+  {
+    "id": "lego_prop_110_02",
+    "sheet": 110,
+    "row": 2,
+    "name": "血族古堡・隱藏儲藏箱櫃",
+    "nameEn": "Gothic Castle Hidden Storage Cache",
+    "category": "gothic",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_110_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_110_02_s1.png"
+  },
+  {
+    "id": "lego_prop_110_03",
+    "sheet": 110,
+    "row": 3,
+    "name": "幽魂墓穴・防禦掩體障礙",
+    "nameEn": "Cursed Cemetery Defensive Barricade",
+    "category": "cemetery",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_110_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_110_03_s1.png"
+  },
+  {
+    "id": "lego_prop_111_01",
+    "sheet": 111,
+    "row": 1,
+    "name": "幽魂墓穴・隱藏儲藏箱櫃",
+    "nameEn": "Cursed Cemetery Hidden Storage Cache",
+    "category": "cemetery",
+    "states": [
+      [
+        "closed",
+        "鎖閉"
+      ],
+      [
+        "opened",
+        "敞開"
+      ]
+    ],
+    "uses": "使用盜賊工具撬鎖、檢查是否有毒針機關、搜刮珍寶",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_111_01_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_111_01_s1.png"
+  },
+  {
+    "id": "lego_prop_111_02",
+    "sheet": 111,
+    "row": 2,
+    "name": "血族古堡・防禦掩體障礙",
+    "nameEn": "Gothic Castle Defensive Barricade",
+    "category": "gothic",
+    "states": [
+      [
+        "standing",
+        "阻擋"
+      ],
+      [
+        "breached",
+        "突破"
+      ]
+    ],
+    "uses": "獲得半身掩蔽躲避箭矢、翻越路障近戰突襲、推倒砸向敵陣",
+    "size": "md",
+    "gridSize": "1x2",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_111_02_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_111_02_s1.png"
+  },
+  {
+    "id": "lego_prop_111_03",
+    "sheet": 111,
+    "row": 3,
+    "name": "幽魂墓穴・儀式魔導儀器",
+    "nameEn": "Cursed Cemetery Ritual Apparatus",
+    "category": "cemetery",
+    "states": [
+      [
+        "dormant",
+        "靜止"
+      ],
+      [
+        "active",
+        "充能"
+      ]
+    ],
+    "uses": "注入魔力導引法術能量、破壞魔核終止儀式、收集殘餘晶屑",
+    "size": "md",
+    "gridSize": "1x1",
+    "imageState0": "prototype-assets/lego-props-v2/components/prop_111_03_s0.png",
+    "imageState1": "prototype-assets/lego-props-v2/components/prop_111_03_s1.png"
+  }
+]

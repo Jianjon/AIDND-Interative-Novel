@@ -1,0 +1,465 @@
+{
+  "version": 1,
+  "status": "approved-live",
+  "owner": "Codex",
+  "approved": "2026-11-13",
+  "count": 25,
+  "sourceNativeSheetSize": [
+    1254,
+    1254
+  ],
+  "sourceManifestSha256": "8d0619db1132e97fb52fd8beb95da3742cbae39a6b78399df73915201e175314",
+  "scaling": "Visible-height ratio; display only, no combat footprint/range changes. Feet stay at254/272. No source upscaling.",
+  "items": [
+    {
+      "id": "giant_rat",
+      "name": "巨鼠",
+      "frame": 1000,
+      "texture": "lego-creature-giant_rat",
+      "image": "prototype-assets/lego-creatures-v1/giant_rat.png",
+      "size": "small",
+      "relativeHeight": 0.42,
+      "displayScale": 0.61357,
+      "bounds": {
+        "left": 0.16796875,
+        "top": 0.5110294117647058,
+        "right": 0.83203125,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/01-giant_rat.png",
+      "sha256": "bbaca0ae34e2ed63effb8cc8bf1a6224ef3b8c59b53cfa787da62d9ed629f621"
+    },
+    {
+      "id": "brown_bear",
+      "name": "棕熊",
+      "frame": 1001,
+      "texture": "lego-creature-brown_bear",
+      "image": "prototype-assets/lego-creatures-v1/brown_bear.png",
+      "size": "large",
+      "relativeHeight": 1.05,
+      "displayScale": 1.176,
+      "bounds": {
+        "left": 0.17578125,
+        "top": 0.38235294117647056,
+        "right": 0.82421875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/02-brown_bear.png",
+      "sha256": "712c702af8dd5b81425563059d4abb02dcc7630a2b2829b5c619aaee81fcf625"
+    },
+    {
+      "id": "polar_bear",
+      "name": "北極熊",
+      "frame": 1002,
+      "texture": "lego-creature-polar_bear",
+      "image": "prototype-assets/lego-creatures-v1/polar_bear.png",
+      "size": "large",
+      "relativeHeight": 1.15,
+      "displayScale": 1.33241,
+      "bounds": {
+        "left": 0.1796875,
+        "top": 0.4007352941176471,
+        "right": 0.81640625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/03-polar_bear.png",
+      "sha256": "8b0943f99a362e258c1517487131ebd9530602536bdd2e8fdbd55e8415d33dd5"
+    },
+    {
+      "id": "boar",
+      "name": "野豬",
+      "frame": 1003,
+      "texture": "lego-creature-boar",
+      "image": "prototype-assets/lego-creatures-v1/boar.png",
+      "size": "medium",
+      "relativeHeight": 0.65,
+      "displayScale": 0.71842,
+      "bounds": {
+        "left": 0.15625,
+        "top": 0.375,
+        "right": 0.83984375,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/04-boar.png",
+      "sha256": "2a4c2a2e0d133fc25dc9bb33be4673c5cb8262699e38edb5db37e456429b6016"
+    },
+    {
+      "id": "horse",
+      "name": "馬",
+      "frame": 1004,
+      "texture": "lego-creature-horse",
+      "image": "prototype-assets/lego-creatures-v1/horse.png",
+      "size": "large",
+      "relativeHeight": 1.1,
+      "displayScale": 1.0382,
+      "bounds": {
+        "left": 0.1484375,
+        "top": 0.27941176470588236,
+        "right": 0.8515625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/05-horse.png",
+      "sha256": "4a4612e7912de13b72b48f2ea915e549cc1fec6932787bc4a3894d366ff3e37c"
+    },
+    {
+      "id": "dog",
+      "name": "狗",
+      "frame": 1005,
+      "texture": "lego-creature-dog",
+      "image": "prototype-assets/lego-creatures-v1/dog.png",
+      "size": "small",
+      "relativeHeight": 0.58,
+      "displayScale": 0.56324,
+      "bounds": {
+        "left": 0.18359375,
+        "top": 0.2977941176470588,
+        "right": 0.81640625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/06-dog.png",
+      "sha256": "921f35c4d3ecfa623bbb437c78a8c2c1f063183bb625403d7cdc3b396705b755"
+    },
+    {
+      "id": "snake",
+      "name": "蛇",
+      "frame": 1006,
+      "texture": "lego-creature-snake",
+      "image": "prototype-assets/lego-creatures-v1/snake.png",
+      "size": "small",
+      "relativeHeight": 0.42,
+      "displayScale": 0.44943,
+      "bounds": {
+        "left": 0.203125,
+        "top": 0.35661764705882354,
+        "right": 0.796875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/07-snake.png",
+      "sha256": "3ccc3488a5e7c42add6ad9a27165d36f746db9168d39f855d0e744af392aeb82"
+    },
+    {
+      "id": "bat",
+      "name": "蝙蝠",
+      "frame": 1007,
+      "texture": "lego-creature-bat",
+      "image": "prototype-assets/lego-creatures-v1/bat.png",
+      "size": "tiny",
+      "relativeHeight": 0.42,
+      "displayScale": 0.59797,
+      "bounds": {
+        "left": 0.1015625,
+        "top": 0.5,
+        "right": 0.8984375,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/08-bat.png",
+      "sha256": "8f2f6439ce6ed7a902cd210a0103085f98e3c473db6a48138d013c21651a9fcc"
+    },
+    {
+      "id": "crocodile",
+      "name": "鱷魚",
+      "frame": 1008,
+      "texture": "lego-creature-crocodile",
+      "image": "prototype-assets/lego-creatures-v1/crocodile.png",
+      "size": "large",
+      "relativeHeight": 0.5,
+      "displayScale": 0.72414,
+      "bounds": {
+        "left": 0.15234375,
+        "top": 0.5073529411764706,
+        "right": 0.84765625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/09-crocodile.png",
+      "sha256": "92b93d0180e810151d216dcb5b0922a9f7ba4f6886008a835296495ed6f43d58"
+    },
+    {
+      "id": "giant_centipede",
+      "name": "巨蜈蚣",
+      "frame": 1009,
+      "texture": "lego-creature-giant_centipede",
+      "image": "prototype-assets/lego-creatures-v1/giant_centipede.png",
+      "size": "medium",
+      "relativeHeight": 0.45,
+      "displayScale": 0.47848,
+      "bounds": {
+        "left": 0.1484375,
+        "top": 0.35294117647058826,
+        "right": 0.84765625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/10-giant_centipede.png",
+      "sha256": "a4bf4489a78b699e43cf6e8221aedc6fd96f8a28d0a3da9dffa97b39359f7f87"
+    },
+    {
+      "id": "ice_toad",
+      "name": "冰蟾蜍",
+      "frame": 1010,
+      "texture": "lego-creature-ice_toad",
+      "image": "prototype-assets/lego-creatures-v1/ice_toad.png",
+      "size": "small",
+      "relativeHeight": 0.5,
+      "displayScale": 0.64122,
+      "bounds": {
+        "left": 0.1484375,
+        "top": 0.4522058823529412,
+        "right": 0.84765625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/11-ice_toad.png",
+      "sha256": "e6d21b66a1a7b8f8015b6c8328bc53c288f54189cce803548045baca93bfba67"
+    },
+    {
+      "id": "cat",
+      "name": "家貓",
+      "frame": 1011,
+      "texture": "lego-creature-cat",
+      "image": "prototype-assets/lego-creatures-v1/cat.png",
+      "size": "tiny",
+      "relativeHeight": 0.38,
+      "displayScale": 0.38691,
+      "bounds": {
+        "left": 0.25,
+        "top": 0.3272058823529412,
+        "right": 0.75,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/12-cat.png",
+      "sha256": "8ff349a567e7934e023cf51077433db9f210b74c7713df32415ab7f0c9726cd5"
+    },
+    {
+      "id": "goblin",
+      "name": "地精",
+      "frame": 1012,
+      "texture": "lego-creature-goblin",
+      "image": "prototype-assets/lego-creatures-v1/goblin.png",
+      "size": "small",
+      "relativeHeight": 0.7,
+      "displayScale": 0.68772,
+      "bounds": {
+        "left": 0.19921875,
+        "top": 0.30514705882352944,
+        "right": 0.80078125,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/13-goblin.png",
+      "sha256": "77379a5ea6ebc5abd7c717ac8a16abd4c671645f9f117f428791e3c76b16d162"
+    },
+    {
+      "id": "kobold",
+      "name": "狗頭人",
+      "frame": 1013,
+      "texture": "lego-creature-kobold",
+      "image": "prototype-assets/lego-creatures-v1/kobold.png",
+      "size": "small",
+      "relativeHeight": 0.6,
+      "displayScale": 0.58947,
+      "bounds": {
+        "left": 0.16796875,
+        "top": 0.30514705882352944,
+        "right": 0.83203125,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/14-kobold.png",
+      "sha256": "34d04f03a426e7f64c91670ed1cdf29e8005a3b007dd303f737e5b7fbe67eaa9"
+    },
+    {
+      "id": "orc",
+      "name": "獸人",
+      "frame": 1014,
+      "texture": "lego-creature-orc",
+      "image": "prototype-assets/lego-creatures-v1/orc.png",
+      "size": "medium",
+      "relativeHeight": 1.05,
+      "displayScale": 0.99101,
+      "bounds": {
+        "left": 0.12890625,
+        "top": 0.27941176470588236,
+        "right": 0.8671875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/15-orc.png",
+      "sha256": "16233aff739d1c2816f36ebdcea5aa8e39f728c86207b7c1a9f4b3b5c550067d"
+    },
+    {
+      "id": "gnoll",
+      "name": "豺狼人",
+      "frame": 1015,
+      "texture": "lego-creature-gnoll",
+      "image": "prototype-assets/lego-creatures-v1/gnoll.png",
+      "size": "medium",
+      "relativeHeight": 1.08,
+      "displayScale": 1.008,
+      "bounds": {
+        "left": 0.20703125,
+        "top": 0.27205882352941174,
+        "right": 0.7890625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/16-gnoll.png",
+      "sha256": "e6bc1a9fecfc7d464b99b3e5ed1c0a6985596eeb36e3bff780f5db1c4b51b417"
+    },
+    {
+      "id": "bugbear",
+      "name": "熊地精",
+      "frame": 1016,
+      "texture": "lego-creature-bugbear",
+      "image": "prototype-assets/lego-creatures-v1/bugbear.png",
+      "size": "large",
+      "relativeHeight": 1.2,
+      "displayScale": 1.12626,
+      "bounds": {
+        "left": 0.12890625,
+        "top": 0.2757352941176471,
+        "right": 0.87109375,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/17-bugbear.png",
+      "sha256": "16d1a3ac3821a41440a5e9070abe2114f0e771522a62ecf6b36ef20e0d9dad0f"
+    },
+    {
+      "id": "skeleton",
+      "name": "骷髏戰士",
+      "frame": 1017,
+      "texture": "lego-creature-skeleton",
+      "image": "prototype-assets/lego-creatures-v1/skeleton.png",
+      "size": "medium",
+      "relativeHeight": 1,
+      "displayScale": 0.96,
+      "bounds": {
+        "left": 0.20703125,
+        "top": 0.29044117647058826,
+        "right": 0.79296875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/18-skeleton.png",
+      "sha256": "6b27b0f03b3c720934662181fce24534fbb1893518ad1a1d4a0fec5fd8ec17ce"
+    },
+    {
+      "id": "zombie",
+      "name": "殭屍",
+      "frame": 1018,
+      "texture": "lego-creature-zombie",
+      "image": "prototype-assets/lego-creatures-v1/zombie.png",
+      "size": "medium",
+      "relativeHeight": 1,
+      "displayScale": 0.99408,
+      "bounds": {
+        "left": 0.24609375,
+        "top": 0.3125,
+        "right": 0.75390625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/19-zombie.png",
+      "sha256": "3db49662c842c4f2bbc72eaad3752d12fcdbd39653fd0821b3e46e0a47d3aa73"
+    },
+    {
+      "id": "ghost",
+      "name": "幽靈",
+      "frame": 1019,
+      "texture": "lego-creature-ghost",
+      "image": "prototype-assets/lego-creatures-v1/ghost.png",
+      "size": "medium",
+      "relativeHeight": 1,
+      "displayScale": 0.96,
+      "bounds": {
+        "left": 0.16015625,
+        "top": 0.29044117647058826,
+        "right": 0.83984375,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/20-ghost.png",
+      "sha256": "703d11324630f22973a93c9613d3603d54777caaa73da368249fd4eced0b7284"
+    },
+    {
+      "id": "mimic",
+      "name": "寶箱怪",
+      "frame": 1020,
+      "texture": "lego-creature-mimic",
+      "image": "prototype-assets/lego-creatures-v1/mimic.png",
+      "size": "medium",
+      "relativeHeight": 0.65,
+      "displayScale": 0.67407,
+      "bounds": {
+        "left": 0.203125,
+        "top": 0.3382352941176471,
+        "right": 0.796875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/21-mimic.png",
+      "sha256": "e8de358e81481e4c4b0de60e4f00abf94299b73eb956c6b0d8fda845732906f9"
+    },
+    {
+      "id": "gelatinous_cube",
+      "name": "膠質方塊",
+      "frame": 1021,
+      "texture": "lego-creature-gelatinous_cube",
+      "image": "prototype-assets/lego-creatures-v1/gelatinous_cube.png",
+      "size": "large",
+      "relativeHeight": 1.1,
+      "displayScale": 1.20784,
+      "bounds": {
+        "left": 0.203125,
+        "top": 0.3713235294117647,
+        "right": 0.79296875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/22-gelatinous_cube.png",
+      "sha256": "1a01df9000c8c03b2d33070fe469c322c12d20855b9749df13e5f58e551ac608"
+    },
+    {
+      "id": "owlbear",
+      "name": "梟熊",
+      "frame": 1022,
+      "texture": "lego-creature-owlbear",
+      "image": "prototype-assets/lego-creatures-v1/owlbear.png",
+      "size": "large",
+      "relativeHeight": 1.25,
+      "displayScale": 1.21387,
+      "bounds": {
+        "left": 0.1484375,
+        "top": 0.2977941176470588,
+        "right": 0.84765625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/23-owlbear.png",
+      "sha256": "3530dabfa1eece714a75b1ecaea82a6d8db03ea1af4b0867ba37bb37f946e8cc"
+    },
+    {
+      "id": "stone_golem",
+      "name": "石魔像",
+      "frame": 1023,
+      "texture": "lego-creature-stone_golem",
+      "image": "prototype-assets/lego-creatures-v1/stone_golem.png",
+      "size": "large",
+      "relativeHeight": 1.35,
+      "displayScale": 1.32632,
+      "bounds": {
+        "left": 0.1484375,
+        "top": 0.30514705882352944,
+        "right": 0.84765625,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/24-stone_golem.png",
+      "sha256": "4d657194248c12a57fb49690d851a5328ea5b3fba5dc47f58b1ace19df571c3f"
+    },
+    {
+      "id": "red_wyrmling",
+      "name": "紅龍雛龍",
+      "frame": 1024,
+      "texture": "lego-creature-red_wyrmling",
+      "image": "prototype-assets/lego-creatures-v1/red_wyrmling.png",
+      "size": "medium",
+      "relativeHeight": 0.8,
+      "displayScale": 0.80964,
+      "bounds": {
+        "left": 0.140625,
+        "top": 0.3235294117647059,
+        "right": 0.85546875,
+        "bottom": 0.9338235294117647
+      },
+      "sourceToken": "assets-library/lego_animal_monster_trial_v1/tokens/25-red_wyrmling.png",
+      "sha256": "6c6b8004cffaf9ecdc60344dac65099950f441635bbf40bca5f10f6a4ea783f5"
+    }
+  ]
+}

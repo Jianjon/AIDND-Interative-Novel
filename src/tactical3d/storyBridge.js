@@ -1,0 +1,422 @@
+import { M as MONSTER_DB, P as PRESET_HEROES } from "../artifactDeps.js";
+
+const VALID_LIGHTINGS = new Set(["daylight", "dusk", "night", "underground", "horror"]);
+const VALID_WEATHERS = new Set([
+  "clear",
+  "rain",
+  "lightning_storm",
+  "snow",
+  "fog",
+  "gale",
+  "embers",
+  "spores",
+]);
+
+export function inferScenarioIdFromSession(session) {
+  const mapId = String(session?.map || "").toLowerCase();
+  const raw = [
+    mapId,
+    session?.place?.name,
+    session?.node?.title,
+    session?.node?.situation,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  // Direct module map ID routing across all 98+ module scenes
+  if (/airship_deck|cargo_ship|sky_platform|pirate_cove|harbour_fort|ship|boat|deck|船|甲板|飛空艇|海盜/.test(raw)) {
+    return "ship_deck";
+  }
+  if (/volcanic_caves|lava_field|fire_sanctum|fiery_dragon_hall|infernal_altar|infernal_temple|forge_complex|dwarven_forge_room|volcanic|lava|infernal|forge|熔岩|火山|煉獄|熔爐|鍛造/.test(raw)) {
+    return "volcanic_forge";
+  }
+  if (/sand_arena|sandstone_pass|desert_settlement|dry_road|desert|sand|oasis|荒漠|沙漠|沙丘|砂岩/.test(raw)) {
+    return "desert_canyon";
+  }
+  if (/coral_shrine|coastal_beach|shore_ruins|waterfall_pool|harbour_town|coral|underwater|beach|shore|珊瑚|海灣|海灘|水下|沉沒|海底/.test(raw)) {
+    return "coral_underwater";
+  }
+  if (/mountain_pass|ravine_bridge|rocky_camp|bone_den|dragon_cave|cliff|mountain|ravine|山道|懸崖|峭壁|斷崖|峽谷/.test(raw)) {
+    return "mountain_cliff";
+  }
+  if (/royal_hall|sunlit_throne|banquet_manor|academy_library|blue_tower|round_arena|gold_chamber|treasure_store|chessboard|throne|castle|palace|academy|library|arena|王座|城堡|宮殿|高塔|圖書館|競技場|金庫/.test(raw)) {
+    return "castle_throne";
+  }
+  if (/night_alley|slum_alleys|stone_streets|ruined_street|courtyard_market|village_square|day_rooftops|phandalin_town|village_courtyard|urban|alley|rooftop|market|street|暗巷|街區|屋頂|市集|城鎮/.test(raw)) {
+    return "urban_alley";
+  }
+  if (/night_marsh|swamp_ruins|fungus_passages|underdark_ruins|worm_interior|swamp|marsh|bog|fungus|沼澤|泥濘|蘑菇|地底/.test(raw)) {
+    return "swamp_ruins";
+  }
+  if (/wooden_tavern|small_inn|riverside_inn|tavern|inn|pub|酒館|旅店|驛站/.test(raw)) {
+    return "tavern_brawl";
+  }
+  if (/ice_bridge|ice_chasm|ice_hunter_village|ice_sanctum|snow_harbor|snow_pass|snow_river|snow_town|frost|ice|snow|glacier|極地|冰|雪|寒霜/.test(raw)) {
+    return "frost_citadel";
+  }
+  if (/burial_chambers|cross_tomb|crypt_hall|haunted_manor|lich_tomb|shadow_cathedral|tomb_passages|crypt|cemetery|grave|church|gothic|tomb|墓|教堂|幽魂|亡靈|大教堂/.test(raw)) {
+    return "haunted_crypt";
+  }
+  if (/agatha_grove|bright_trail|glade_camp|grassy_crossroads|hedge_maze|luminous_garden|road_camp|waterfall_glade|woodland_cottage|woodland_lake|farmstead|forest|wood|jungle|camp|trail|森林|密林|樹林|營地|花園|林道/.test(raw)) {
+    return "forest_ambush";
+  }
+  if (/broken_bridge|creek_outpost|river_bridge|river_camp|sewer_pool|ritual_sewer|river|bridge|water|stream|canal|sewer|河|橋|溪|水道/.test(raw)) {
+    return "underground_river";
+  }
+  if (/arcane_cave|cragmaw_castle|redbrand_hideout|ruined_keep|thundertree_ruins|chasm|sanctum|altar|arcane|rift|深淵|聖殿|祭壇|裂隙/.test(raw)) {
+    return "chasm_sanctum";
+  }
+  if (/bear_cavern|dark_dragon_den|green_lair|troll|grotto|lair|食人妖|巨魔|巢穴|獸穴/.test(raw)) {
+    return "troll_grotto";
+  }
+  return "cave_ambush";
+}
+
+export function inferWeatherFromAmbient(ambient) {
+  const list = Array.isArray(ambient) ? ambient : ambient ? [ambient] : [];
+  const joined = list.join(" ").toLowerCase();
+  if (!joined) return "auto";
+  if (joined.includes("lightning") || joined.includes("storm") || joined.includes("雷")) return "lightning_storm";
+  if (joined.includes("rain") || joined.includes("雨")) return "rain";
+  if (joined.includes("snow") || joined.includes("雪")) return "snow";
+  if (joined.includes("fog") || joined.includes("mist") || joined.includes("霧")) return "fog";
+  if (joined.includes("gale") || joined.includes("wind") || joined.includes("風")) return "gale";
+  if (joined.includes("ember") || joined.includes("fire") || joined.includes("ash") || joined.includes("燼")) return "embers";
+  if (joined.includes("spore") || joined.includes("孢子")) return "spores";
+  for (const w of list) {
+    if (VALID_WEATHERS.has(w)) return w;
+  }
+  return "auto";
+}
+
+function matchMonsterTemplateId(foe) {
+  const txt = `${foe?.templateId || ""} ${foe?.role || ""} ${foe?.name || ""}`.toLowerCase();
+  if (foe?.templateId && MONSTER_DB[foe.templateId]) return foe.templateId;
+  if (/wyvern|飛龍/.test(txt)) return "wyvern";
+  if (/red_dragon|紅龍|巨龍|龍王|dragon/.test(txt)) return /幼|雛|wyrmling/.test(txt) ? "red_dragon_wyrmling" : "young_red_dragon";
+  if (/imp|demon|devil|fiend|惡魔|魔鬼|煉獄/.test(txt)) return "imp";
+  if (/vampire|吸血鬼/.test(txt)) return "vampire_spawn";
+  if (/frost_giant|冰霜巨人|巨人/.test(txt)) return "frost_giant";
+  if (/troll|巨魔|食人妖/.test(txt)) return "troll";
+  if (/ogre|食人魔/.test(txt)) return "ogre";
+  if (/archer|bow|弓/.test(txt)) return "goblin_archer";
+  if (/goblin|哥布林/.test(txt)) return "goblin";
+  if (/orc|獸人/.test(txt)) return "orc";
+  if (/skeleton|骷髏/.test(txt)) return "skeleton";
+  if (/zombie|殭屍|喪屍/.test(txt)) return "zombie";
+  if (/wolf|狼/.test(txt)) return "wolf";
+  if (/spider|蜘蛛/.test(txt)) return "giant_spider";
+  if (/cultist|教徒|邪教/.test(txt)) return "cultist";
+  if (/mage|wizard|法師|術士/.test(txt)) return "cult_fanatic";
+  if (/bandit|thug|盜賊|強盜|土匪/.test(txt)) return "bandit";
+  return "goblin";
+}
+
+function matchHeroPreset(hero, idx) {
+  const roleTxt = `${hero?.className || ""} ${hero?.role || ""} ${hero?.name || ""}`.toLowerCase();
+  let base =
+    PRESET_HEROES.find((p) => p.id === hero?.sourceId || p.id === hero?.id) ||
+    PRESET_HEROES.find((p) => roleTxt.includes((p.className || "").toLowerCase()));
+  if (!base) {
+    if (/rogue|thief|盜賊|遊蕩/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_rogue");
+    else if (/cleric|priest|牧師|神官/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_cleric");
+    else if (/wizard|mage|sorc|法師|術士/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_wizard");
+    else if (/barbarian|berserk|野蠻/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_barbarian");
+    else if (/paladin|knight|聖武|騎士/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_paladin");
+    else if (/ranger|archer|遊俠|弓/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_ranger");
+    else if (/bard|吟遊/.test(roleTxt)) base = PRESET_HEROES.find((p) => p.id === "preset_bard");
+    else base = PRESET_HEROES[idx % PRESET_HEROES.length];
+  }
+  return {
+    ...base,
+    id: hero?.id || base.id,
+    name: hero?.name || base.name,
+    avatar: hero?.image || hero?.avatar || base.avatar,
+    race: hero?.race || base.race,
+    hpOverride: Number.isFinite(hero?.hp) ? hero.hp : undefined,
+    maxHpOverride: Number.isFinite(hero?.maxHp) ? hero.maxHp : undefined,
+    acOverride: Number.isFinite(hero?.ac) ? hero.ac : undefined,
+  };
+}
+
+const VALID_HERO_FORMATIONS = new Set(["auto", "left", "bottom", "top", "center", "scattered", "split"]);
+const VALID_FOE_FORMATIONS = new Set(["auto", "right", "top", "bottom", "surround", "flank", "ambush_behind", "scattered"]);
+
+export function extractBlueprintFromText(rawText = "") {
+  const txt = String(rawText || "").toLowerCase();
+  if (!txt) return null;
+  const features = [];
+  let layout = "auto";
+  if (/(兩艘|雙船|木板|跳板|接舷|另一艘船)/.test(txt)) layout = "twin_ships";
+  else if (/(岸壁|峭壁|懸崖).*(海|浪|水)|(海|浪|水).*(岸壁|峭壁|懸崖)/.test(txt)) layout = "cliff_and_sea";
+
+  if (/營火|篝火|火堆|campfire/.test(txt)) features.push("campfire");
+  if (/貨車|馬車|車隊|wagon|cart/.test(txt)) features.push("wagon");
+  if (/油桶|火油|炸藥|barrel|oil/.test(txt)) features.push("oil_barrels");
+  if (/祭壇|神龕|altar/.test(txt)) features.push("altar");
+  if (/晶體|水晶|crystal/.test(txt)) features.push("crystal");
+
+  let heroFormation = "auto";
+  if (/(從下方|南側|南邊|底下|入口爬上|登陸|岸邊登|從南面)/.test(txt)) heroFormation = "bottom";
+  else if (/(從上方|北側|北邊|高處俯衝|跳下|從北面)/.test(txt)) heroFormation = "top";
+  else if (/(分散|失散|各自|墜落|四散|混戰)/.test(txt)) heroFormation = "scattered";
+  else if (/(中央|營火旁|紮營|圍坐在|大廳中央|被圍|四面楚歌)/.test(txt)) heroFormation = "center";
+  else if (/(分頭|兩路|分組|各自包抄)/.test(txt)) heroFormation = "split";
+
+  let foeFormation = "auto";
+  if (/(四面|包圍|包抄|團團圍住|四方湧出|被圍)/.test(txt)) foeFormation = "surround";
+  else if (/(兩翼|夾擊|左右包抄|前後夾擊)/.test(txt)) foeFormation = "flank";
+  else if (/(背後|後方|偷襲|暗算|身後)/.test(txt)) foeFormation = "ambush_behind";
+  else if (/(高處|上方|北側|居高臨下|懸崖上|城牆上)/.test(txt)) foeFormation = "top";
+  else if (/(下方湧|南側湧|水面湧出|船底)/.test(txt)) foeFormation = "bottom";
+  else if (/(埋伏在各處|四處|角落|潛伏|伏兵四起)/.test(txt)) foeFormation = "scattered";
+
+  if (foeFormation === "surround" && heroFormation === "auto" && layout !== "twin_ships") {
+    heroFormation = "center";
+  }
+
+  const foeWaves = /(援軍|增援|伏兵陸續|一波波|接連趕到)/.test(txt);
+
+  if (
+    layout === "auto" &&
+    features.length === 0 &&
+    heroFormation === "auto" &&
+    foeFormation === "auto" &&
+    !foeWaves
+  ) {
+    return null;
+  }
+  return { layout, features, heroFormation, foeFormation, foeWaves };
+}
+
+export async function adjudicateMapBlueprintWithAI(sampler, session) {
+  const fallbackText = [
+    session?.place?.name,
+    session?.node?.title,
+    session?.node?.situation,
+    ...(Array.isArray(session?.log) ? session.log.slice(-3).map((l) => l.text) : []),
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const localBp = extractBlueprintFromText(fallbackText);
+  if (typeof sampler !== "function") return localBp;
+
+  const prompt = `你是 D&D 3D 戰棋地圖建築師。請根據以下劇情現場描述，輸出簡潔的 3D 地形與雙方部署藍圖 JSON（只回傳 JSON，不要多餘文字）：
+劇情：「${fallbackText.slice(0, 450)}」
+欄位規格：
+- layout: "auto" | "twin_ships"(兩艘船用木板相連) | "cliff_and_sea"(一邊岸壁一邊海水)
+- features: 陣列，可選 ["campfire"(營火), "wagon"(貨車), "oil_barrels"(油桶), "altar"(祭壇), "crystal"(晶體)]
+- heroFormation: "auto"(預設左側) | "bottom"(從下方進場) | "top"(從上方進場) | "center"(中央聚攏/紮營/被圍) | "scattered"(分散各處) | "split"(分兩組行動)
+- foeFormation: "auto"(預設右側) | "top"(上方高處壓制) | "bottom"(下方進逼) | "surround"(四面包圍) | "flank"(兩翼夾擊) | "ambush_behind"(後方偷襲) | "scattered"(分散潛伏)
+- foeWaves: boolean (劇情是否有伏兵/援軍陸續趕到)
+- title: 12字內繁中戰場標題
+- objectiveName: 10字內繁中戰場互動目標名稱`;
+
+  try {
+    const res = await sampler(prompt, { modelTier: "quick" });
+    const match = String(res?.text || "").match(/\{[\s\S]*\}/);
+    if (!match) return localBp;
+    const parsed = JSON.parse(match[0]);
+    return {
+      layout: ["twin_ships", "cliff_and_sea"].includes(parsed.layout) ? parsed.layout : localBp?.layout || "auto",
+      features: Array.isArray(parsed.features) ? parsed.features : localBp?.features || [],
+      heroFormation: VALID_HERO_FORMATIONS.has(parsed.heroFormation) ? parsed.heroFormation : localBp?.heroFormation || "auto",
+      foeFormation: VALID_FOE_FORMATIONS.has(parsed.foeFormation) ? parsed.foeFormation : localBp?.foeFormation || "auto",
+      foeWaves: typeof parsed.foeWaves === "boolean" ? parsed.foeWaves : Boolean(localBp?.foeWaves),
+      title: parsed.title || undefined,
+      objectiveName: parsed.objectiveName || undefined,
+    };
+  } catch {
+    return localBp;
+  }
+}
+
+export function mapStorySessionTo3DConfig(session) {
+  if (!session) return null;
+  const scenarioId = inferScenarioIdFromSession(session);
+  const rawLighting = session?.sceneMood?.lighting;
+  const lighting = VALID_LIGHTINGS.has(rawLighting) ? rawLighting : "auto";
+  const weather = inferWeatherFromAmbient(session?.sceneMood?.ambient);
+  const partyLevel = Math.max(1, Math.min(5, Number(session?.level) || 3));
+  const blueprint = extractBlueprintFromText(
+    [
+      session?.place?.name,
+      session?.node?.title,
+      session?.node?.situation,
+      ...(Array.isArray(session?.log) ? session.log.slice(-3).map((l) => l.text) : []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
+
+  const livingHeroes = (session?.heroes || []).filter((h) => h && !h.dead);
+  const partyPresets = livingHeroes.slice(0, 5).map((h, idx) => matchHeroPreset(h, idx));
+
+  const activeFoes = (session?.cast || []).filter(
+    (c) =>
+      c &&
+      c.kind === "foe" &&
+      c.present &&
+      !["倒下", "投降", "逃走", "離開"].includes(c.status) &&
+      (c.hp === undefined || c.hp > 0)
+  );
+  const foeIds = activeFoes.length > 0 ? activeFoes.slice(0, 6).map((f) => matchMonsterTemplateId(f)) : null;
+  const foeSpecs = activeFoes.slice(0, 6).map((f) => ({
+    storyCastId: f.id,
+    catalogId: f.catalogId || f.templateId || undefined,
+    name: f.name,
+    hp: Number.isFinite(f.hp) ? f.hp : undefined,
+    maxHp: Number.isFinite(f.maxHp) ? f.maxHp : undefined,
+    avatar: f.image || f.avatar || f.spriteHint || undefined,
+  }));
+
+  const situationTxt = `${session?.node?.title || ""} ${session?.node?.situation || ""}`;
+  const activeAllies = (session?.cast || []).filter((c) => {
+    if (!c || !c.present) return false;
+    if (["倒下", "死亡", "逃走", "離開"].includes(c.status)) return false;
+    if (c.hp !== undefined && c.hp <= 0) return false;
+    if (c.kind === "ally") return true;
+    if (c.kind === "npc") {
+      return /護送|保護|隨行|同行|友軍|衛兵|商旅|領袖|協助|並肩|人質|受困/.test(
+        `${c.role || ""} ${c.note || ""} ${c.status || ""} ${situationTxt}`
+      );
+    }
+    return false;
+  });
+  const allySpecs = activeAllies.slice(0, 2).map((a) => {
+    const roleTxt = `${a.role || ""} ${a.name || ""} ${a.note || ""}`;
+    const isVip = /護送|被保護|保護|商旅|學者|村長|平民|人質|vip|受困/.test(roleTxt);
+    return {
+      storyCastId: a.id,
+      name: a.name,
+      className: a.role || (isVip ? "被保護人" : "友軍護衛"),
+      allyRole: isVip ? "vip" : "combat",
+      ranged: /弓|弩|法|牧|遊俠/.test(roleTxt),
+      hp: Number.isFinite(a.hp) ? a.hp : undefined,
+      maxHp: Number.isFinite(a.maxHp) ? a.maxHp : undefined,
+      avatar: a.image || a.avatar || a.spriteHint || undefined,
+    };
+  });
+
+  return {
+    scenarioId,
+    weather,
+    lighting,
+    partyLevel,
+    partyPresets: partyPresets.length > 0 ? partyPresets : null,
+    foeIds,
+    foeSpecs,
+    allySpecs: allySpecs.length > 0 ? allySpecs : null,
+    blueprint,
+    seed: ((Number(session?.turn) || 1) * 37 + 101) % 9999,
+    placeName: session?.place?.name || session?.map || "當前劇情場景",
+  };
+}
+
+export function applyBattleSummaryToSession(session, summary) {
+  if (!session || !summary) return session;
+
+  const statusById = new Map((summary.partyStatus || []).map((p) => [p.id, p]));
+  const statusByName = new Map((summary.partyStatus || []).map((p) => [p.name, p]));
+
+  const nextHeroes = (session.heroes || []).map((h) => {
+    const st = statusById.get(h.id) || statusByName.get(h.name);
+    if (!st) return h;
+    return {
+      ...h,
+      hp: Math.max(0, Math.min(h.maxHp || st.maxHp || 999, st.hp)),
+      dead: Boolean(st.dead),
+    };
+  });
+
+  const defeatedNames = new Set((summary.defeatedFoes || []).map((f) => f.name));
+  const capturedNames = new Set((summary.capturedFoes || []).map((f) => f.name));
+  const surrenderedNames = new Set((summary.surrenderedFoes || []).map((f) => f.name));
+  const allyByCastId = new Map((summary.allyStatus || []).filter((a) => a.storyCastId).map((a) => [a.storyCastId, a]));
+  const allyByName = new Map((summary.allyStatus || []).map((a) => [a.name, a]));
+  const nextCast = (session.cast || []).map((c) => {
+    if (c.present && (c.kind === "ally" || c.kind === "npc")) {
+      const al = allyByCastId.get(c.id) || allyByName.get(c.name);
+      if (al) {
+        return {
+          ...c,
+          hp: Math.max(0, Math.min(c.maxHp || al.maxHp || 999, al.hp)),
+          status: al.dead ? "倒下" : al.allyRole === "vip" && summary.outcome === "victory" ? "安全脫險" : c.status,
+        };
+      }
+    }
+    if (c.kind !== "foe" || !c.present) return c;
+    if (capturedNames.has(c.name)) return { ...c, hp: 1, status: "俘虜" };
+    if (surrenderedNames.has(c.name)) return { ...c, hp: 0, status: "投降" };
+    if (summary.outcome === "victory" || defeatedNames.has(c.name)) {
+      return { ...c, hp: 0, status: "倒下" };
+    }
+    return c;
+  });
+
+  const outcomeLabel =
+    summary.outcome === "victory"
+      ? "大獲全勝"
+      : summary.outcome === "retreat"
+        ? "戰術撤退"
+        : summary.outcome === "defeat"
+          ? "全軍覆沒"
+          : "戰鬥暫歇";
+  const defeatedList = (summary.defeatedFoes || []).map((f) => f.name).join("、") || "無";
+  const capturedList = (summary.capturedFoes || []).map((f) => f.name).join("、");
+  const surrenderedList = (summary.surrenderedFoes || []).map((f) => f.name).join("、");
+  const objList = (summary.completedObjectives || []).map((o) => o.name).join("、");
+  const vipNote = summary.vipLost
+    ? "⚠️ 護送目標在戰鬥中倒下"
+    : summary.vipProtected
+      ? "👑 成功護送保護目標安全存活"
+      : "";
+  const extraNotes = [
+    capturedList ? `俘虜：${capturedList}` : "",
+    surrenderedList ? `投降：${surrenderedList}` : "",
+    objList ? `達成戰場目標：${objList}` : "",
+    vipNote,
+  ]
+    .filter(Boolean)
+    .join("；");
+  const summaryText = `⚔️【3D 戰棋結算｜${summary.scenarioName || "戰場"}】${outcomeLabel}（歷經 ${summary.rounds || 1} 輪）。擊倒：${defeatedList}（獲得 ${summary.totalXp || 0} XP）${extraNotes ? `；${extraNotes}` : ""}。`;
+
+  const nextLog = [
+    ...(Array.isArray(session.log) ? session.log : []),
+    {
+      id: `tac3d_${Date.now()}`,
+      type: "system",
+      turn: session.turn || 1,
+      text: summaryText,
+    },
+  ];
+
+  return {
+    ...session,
+    heroes: nextHeroes,
+    cast: nextCast,
+    log: nextLog,
+    lastTacticalSummary: summary,
+  };
+}
+
+export async function adjudicateTacticalShoutWithAI(sampler, battle, actor, playerText) {
+  if (typeof sampler !== "function" || !battle || !actor) return null;
+  const foes = battle.units
+    .filter((u) => u.side === "foe" && u.hp > 0)
+    .map((f) => `${f.name}(HP ${f.hp}/${f.maxHp})`)
+    .join("、");
+  const prompt = `你是 D&D 5e 地下城主。戰場「${battle.map?.name || "戰場"}」第 ${battle.round} 輪，行動角色「${actor.name}（${actor.className}）」在戰鬥中喊話或嘗試創意行動：「${playerText}」。目前敵人：${foes || "無"}。請只回傳嚴格 JSON：{"success":true或false,"effectType":"frighten_foes|surrender_weak|inspire_party|ignite_area|knockdown_foe|none","narration":"40字內繁中戰場旁白"}`;
+  try {
+    const res = await sampler(prompt, { modelTier: "quick" });
+    const raw = String(res?.text || "");
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    const parsed = JSON.parse(match[0]);
+    if (typeof parsed.success !== "boolean" || !parsed.narration) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}

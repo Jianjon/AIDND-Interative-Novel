@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Token 原圖朝向標記工具（左 / 正 / 右）</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #090d14;
+      color: #f1f5f9;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(11, 17, 30, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 12px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    h1 { margin: 0; font-size: 18px; color: #fbbf24; }
+    .progress-pill {
+      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #bae6fd;
+      font-weight: 700;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .btn {
+      padding: 7px 13px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(30, 41, 59, 0.85);
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:hover { border-color: #fbbf24; }
+    .btn.primary {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-color: #fbbf24;
+      color: #0f172a;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .tab {
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.85);
+      color: #cbd5e1;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: rgba(245, 158, 11, 0.22);
+      border-color: #fbbf24;
+      color: #fef08a;
+      font-weight: 700;
+    }
+    input[type="search"] {
+      margin-left: auto;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+      min-width: 210px;
+    }
+    main {
+      padding: 18px 20px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card.marked {
+      border-color: rgba(52, 211, 153, 0.65);
+      background: rgba(6, 78, 59, 0.16);
+    }
+    .img-box {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(30, 41, 59, 0.8) 0%, rgba(9, 13, 22, 0.95) 85%);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .img-box img {
+      max-width: 108px;
+      max-height: 108px;
+      object-fit: contain;
+      transition: transform 0.15s;
+    }
+    .img-box .no-img { font-size: 12px; color: #64748b; }
+    .meta .name { font-size: 14px; font-weight: 700; color: #f8fafc; }
+    .meta .sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .dir-btns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+    .dir-btn {
+      padding: 6px 4px;
+      border-radius: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(30, 41, 59, 0.75);
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .dir-btn[data-on="true"] {
+      background: #f59e0b;
+      border-color: #fef08a;
+      color: #0f172a;
+    }
+    dialog {
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #fbbf24;
+      border-radius: 12px;
+      padding: 18px;
+      width: min(680px, 94vw);
+    }
+    dialog::backdrop { background: rgba(2, 6, 23, 0.8); }
+    textarea {
+      width: 100%;
+      height: 240px;
+      background: #020617;
+      color: #a7f3d0;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top-row">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <h1>🧭 Token 原圖朝向標記工具</h1>
+        <span class="progress-pill" id="progressPill">載入中…</span>
+      </div>
+      <div class="actions">
+        <button class="btn" id="copyBtn">📋 複製已標記 JSON</button>
+        <button class="btn primary" id="submitBtn">✅ 提交 / 匯出全部結果</button>
+      </div>
+    </div>
+    <div class="filter-row" id="filterRow">
+      <button class="tab active" data-cat="all">全部</button>
+      <button class="tab" data-cat="heroes">預設英雄</button>
+      <button class="tab" data-cat="companions">魔寵與夥伴</button>
+      <button class="tab" data-cat="animals_dragons">動物與龍類</button>
+      <button class="tab" data-cat="monsters_npcs">怪物與NPC</button>
+      <button class="tab" data-cat="module_tokens">劇情與模組 (55)</button>
+      <button class="tab" data-cat="unmarked">僅顯示未標記</button>
+      <input type="search" id="searchInput" placeholder="搜尋名字或檔名…" />
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <dialog id="exportDialog">
+    <h3 style="margin:0 0 8px;color:#fbbf24;">✅ 已產生 Token 朝向設定 JSON</h3>
+    <p style="margin:0 0 10px;font-size:13px;color:#cbd5e1;">
+      請點「複製 JSON」直接貼回對話給我，或點「下載檔案」傳給我，我就會全部套用進 3D 戰場！
+    </p>
+    <textarea id="exportArea" readonly></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
+      <button class="btn" id="dlBtn">💾 下載 token_facing.json</button>
+      <button class="btn primary" id="dlgCopyBtn">📋 複製 JSON</button>
+      <button class="btn" id="closeDlgBtn">關閉</button>
+    </div>
+  </dialog>
+
+  <script>
+    const STORAGE_KEY = "aidnd_token_facing_v1";
+    let allTokens = [];
+    let marks = {};
+    try { marks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch {}
+    let activeCat = "all";
+    let searchQ = "";
+
+    const gridEl = document.getElementById("grid");
+    const progressEl = document.getElementById("progressPill");
+
+    function saveMarks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(marks));
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const done = allTokens.filter(t => marks[t.key] || marks[t.image]).length;
+      progressEl.textContent = `已標記 ${done} / ${allTokens.length}`;
+    }
+
+    function getMark(t) {
+      return marks[t.key] || marks[t.image] || "";
+    }
+
+    function setMark(t, dir) {
+      const cur = getMark(t);
+      if (cur === dir) {
+        delete marks[t.key];
+        delete marks[t.image];
+      } else {
+        marks[t.key] = dir;
+        if (t.image) marks[t.image] = dir;
+      }
+      saveMarks();
+      render();
+    }
+
+    function render() {
+      const q = searchQ.trim().toLowerCase();
+      const filtered = allTokens.filter(t => {
+        if (activeCat === "unmarked" && getMark(t)) return false;
+        if (activeCat !== "all" && activeCat !== "unmarked" && t.category !== activeCat) return false;
+        if (q && !`${t.name} ${t.sub} ${t.key} ${t.image}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      gridEl.innerHTML = "";
+      const frag = document.createDocumentFragment();
+      for (const t of filtered) {
+        const cur = getMark(t);
+        const card = document.createElement("div");
+        card.className = "card" + (cur ? " marked" : "");
+
+        const imgBox = document.createElement("div");
+        imgBox.className = "img-box";
+        if (t.image) {
+          const img = document.createElement("img");
+          img.src = t.image;
+          img.alt = t.name;
+          img.loading = "lazy";
+          imgBox.appendChild(img);
+        } else {
+          const span = document.createElement("span");
+          span.className = "no-img";
+          span.textContent = "無圖檔";
+          imgBox.appendChild(span);
+        }
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.innerHTML = `<div class="name">${t.name}</div><div class="sub">${t.sub}</div>`;
+
+        const btns = document.createElement("div");
+        btns.className = "dir-btns";
+        for (const [val, label] of [["left", "⬅️ 左"], ["front", "⬆️ 正"], ["right", "➡️ 右"]]) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "dir-btn";
+          b.dataset.on = cur === val ? "true" : "false";
+          b.textContent = label;
+          b.onclick = () => setMark(t, val);
+          btns.appendChild(b);
+        }
+
+        card.append(imgBox, meta, btns);
+        frag.appendChild(card);
+      }
+      gridEl.appendChild(frag);
+    }
+
+    function buildExportJson() {
+      const out = {};
+      for (const t of allTokens) {
+        const m = getMark(t);
+        if (m) out[t.image || t.key] = m;
+      }
+      return JSON.stringify(out, null, 2);
+    }
+
+    document.getElementById("filterRow").addEventListener("click", (e) => {
+      const btn = e.target.closest(".tab");
+      if (!btn) return;
+      document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+      activeCat = btn.dataset.cat;
+      render();
+    });
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      searchQ = e.target.value;
+      render();
+    });
+
+    const dlg = document.getElementById("exportDialog");
+    const area = document.getElementById("exportArea");
+
+    document.getElementById("submitBtn").onclick = () => {
+      area.value = buildExportJson();
+      dlg.showModal();
+    };
+    document.getElementById("copyBtn").onclick = async () => {
+      await navigator.clipboard.writeText(buildExportJson());
+      alert("已複製到剪貼簿！直接貼回對話給我即可。");
+    };
+    document.getElementById("dlgCopyBtn").onclick = async () => {
+      await navigator.clipboard.writeText(area.value);
+      alert("已複製到剪貼簿！");
+    };
+    document.getElementById("dlBtn").onclick = () => {
+      const blob = new Blob([area.value], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "token_facing.json";
+      a.click();
+    };
+    document.getElementById("closeDlgBtn").onclick = () => dlg.close();
+
+    fetch("/token-facing-manifest.json")
+      .then(r => r.json())
+      .then(list => {
+        allTokens = list;
+        updateProgress();
+        render();
+      });
+  </script>
+</body>
+</html>

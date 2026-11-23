@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "atlasUnchanged": true,
+  "trialAssetsUsed": false,
+  "fixes": [
+    {
+      "frame": 64,
+      "name": "barbarian",
+      "image": "prototype-assets/lego-token-fixes-v1/64-barbarian.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        0,
+        0,
+        504,
+        468
+      ],
+      "height": 94,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 65,
+      "name": "bard",
+      "image": "prototype-assets/lego-token-fixes-v1/65-bard.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        504,
+        0,
+        830,
+        468
+      ],
+      "height": 66,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 66,
+      "name": "cleric",
+      "image": "prototype-assets/lego-token-fixes-v1/66-cleric.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        830,
+        0,
+        1228,
+        468
+      ],
+      "height": 72,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 67,
+      "name": "druid",
+      "image": "prototype-assets/lego-token-fixes-v1/67-druid.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        1228,
+        0,
+        1678,
+        468
+      ],
+      "height": 84,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 68,
+      "name": "fighter",
+      "image": "prototype-assets/lego-token-fixes-v1/68-fighter.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        0,
+        468,
+        422,
+        937
+      ],
+      "height": 84,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 69,
+      "name": "knight",
+      "image": "prototype-assets/lego-token-fixes-v1/69-knight.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        422,
+        468,
+        870,
+        937
+      ],
+      "height": 86,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 70,
+      "name": "monk",
+      "image": "prototype-assets/lego-token-fixes-v1/70-monk.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        870,
+        468,
+        1222,
+        937
+      ],
+      "height": 84,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 71,
+      "name": "paladin",
+      "image": "prototype-assets/lego-token-fixes-v1/71-paladin.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/heroes8.png",
+      "crop": [
+        1222,
+        468,
+        1678,
+        937
+      ],
+      "height": 88,
+      "footLine": 128,
+      "sourceSha256": "ff16b5d2e8a16ee963c7ae9898336272dc2edd951a71bd24cc08ad029ed8c994",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 107,
+      "name": "star-sorcerer",
+      "image": "prototype-assets/lego-token-fixes-v1/107-star-sorcerer.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/star.png",
+      "crop": null,
+      "height": 84,
+      "footLine": 128,
+      "sourceSha256": "95d1422ea28828e597dae451d5c129c892334bd28b6570f0f2358a033c996496",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 121,
+      "name": "baby-owlbear",
+      "image": "prototype-assets/lego-token-fixes-v1/121-baby-owlbear.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/owlbear.png",
+      "crop": null,
+      "height": 60,
+      "footLine": 128,
+      "sourceSha256": "a814d447a2ededbab3be55663cb08818466016cdf675f4884dec87913b21ea86",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    },
+    {
+      "frame": 1003,
+      "name": "boar",
+      "image": "prototype-assets/lego-token-fixes-v1/1003-boar.png",
+      "source": "assets-library/lego_token_fixes_v1/processed/boar.png",
+      "crop": null,
+      "height": 150,
+      "footLine": 254,
+      "sourceSha256": "303313c4fe71da7d8f555cd4d8a2799a32412f393d47a4784daffdf552c39f27",
+      "processing": "Built-in image editor removes only background/ground/shadow; script only crops, resizes and packs alpha unchanged."
+    }
+  ]
+}

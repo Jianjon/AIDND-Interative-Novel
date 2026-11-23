@@ -17,6 +17,8 @@ export default defineConfig({
                     react: ['react', 'react-dom'],
                     firebase: ['firebase/app', 'firebase/functions', 'firebase/auth'],
                     icons: ['lucide-react'],
+                    roguelike: ['rot-js'],
+                    three: ['three'],
                 },
             },
         },

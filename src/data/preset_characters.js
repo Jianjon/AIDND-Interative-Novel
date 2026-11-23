@@ -1,3031 +1,340 @@
-import barbarianImg from '../assets/characters/Barbarian.webp';
-import bardImg from '../assets/characters/Bard.webp';
-import clericImg from '../assets/characters/Cleric.webp';
-import druidImg from '../assets/characters/Druid.webp';
-import fighterImg from '../assets/characters/Fighter.webp';
-import monkImg from '../assets/characters/Monk.webp';
-import paladinImg from '../assets/characters/Paladin.webp';
-import rangerImg from '../assets/characters/Ranger.webp';
-import rogueImg from '../assets/characters/Rogue.webp';
-import sorcererImg from '../assets/characters/Sorcerer.webp';
-import warlockImg from '../assets/characters/Warlock.webp';
-import wizardImg from '../assets/characters/Wizard.webp';
-// Extended class images
-import artificerImg from '../assets/characters/artificer.webp';
-import necromancerImg from '../assets/characters/necromancer.webp';
-import bloodhunterImg from '../assets/characters/bloodhunter.webp';
-import shamanImg from '../assets/characters/shaman.webp';
-import witchImg from '../assets/characters/witch.webp';
-import duelistImg from '../assets/characters/duelist.webp';
-import summonerImg from '../assets/characters/summoner.webp';
-import magusImg from '../assets/characters/magus.webp';
-import oracleImg from '../assets/characters/oracle.webp';
-import investigatorImg from '../assets/characters/investigator.webp';
-import deathknightImg from '../assets/characters/deathknight.webp';
-import psionImg from '../assets/characters/psion.webp';
-import eldritchknightImg from '../assets/characters/eldritchknight.webp';
-import alchemistImg from '../assets/characters/alchemist.webp';
-import championImg from '../assets/characters/champion.webp';
-import chronomancerImg from '../assets/characters/chronomancer.webp';
-// New Heroic characters (10 Legendary Heroes)
-import knightImg from '../assets/characters/Knight.webp';
-import bladedancerImg from '../assets/characters/bladedancer.webp';
-import scoutImg from '../assets/characters/scout.webp';
-import axesingerImg from '../assets/characters/axesinger.webp';
-import elfmagusImg from '../assets/characters/elfmagus.webp';
-import hunterImg from '../assets/characters/hunter.webp';
-import assassinImg from '../assets/characters/assassin.webp';
-import weaponmasterImg from '../assets/characters/weaponmaster.webp';
-import runemasterImg from '../assets/characters/runemaster.webp';
-import fieldmedicImg from '../assets/characters/fieldmedic.webp';
-import lumImg from '../assets/characters/lum_star_sorcerer.webp';
-import isabellaImg from '../assets/characters/isabella_pirate.webp';
-import morrinaImg from '../assets/characters/morrina_witch.webp';
-import dianaImg from '../assets/characters/diana_archer.webp';
-import fenelaImg from '../assets/characters/fenela_bloodlord.webp';
-import kikiImg from '../assets/characters/kiki_lucky.webp';
-import anthraxeImg from '../assets/characters/anthraxe.webp';
-// Companion portraits
-import swiftwindImg from '../assets/characters/swiftwind.webp';
-import inkwellImg from '../assets/characters/inkwell.webp';
-import shunImg from '../assets/characters/Steam Cat-dnd-portrait.webp';
-import babyOwlbearImg from '../assets/characters/baby_owlbear.webp';
-import steamyImg from '../assets/characters/steamy.webp';
-import crowImg from '../assets/characters/crow.webp';
-import silkshadeImg from '../assets/characters/silkshade.webp';
-import sevenImg from '../assets/characters/seven.webp';
-import swordghostImg from '../assets/characters/swordghost.webp';
-import lunaImg from '../assets/characters/phantomwhitewolf-dnd-portrait.webp';
-import arthurImg from '../assets/characters/arthur_seeker.webp';
-import conanImg from '../assets/characters/conan_barbarian.webp';
-import villagerImg from '../assets/characters/villager_mob.webp';
-import skeletonImg from '../assets/characters/skeleton_knight.webp';
-import pipiImg from '../assets/characters/pipi_wild_mage.webp';
-
-/**
- * Preset Playable Characters (The Iconic 12)
- * Designed for immediate "Pick up and Play" experience.
- * Gender Balance: 6 Male, 6 Female.
- *
- * Updated to match the new CharacterAgent Schema:
- * - inventory: { equipment: [], consumables: [], magicItems: [] }
- * - baseStats: { str, dex, ... }
- */
-
-export const PRESET_CHARACTERS = [
-    // --- 1. Barbarian (Male) ---
-    {
-        id: 'preset_barbarian',
-        name: '嵐·風行者 (Lan)',
-        race: '氣元素裔',
-        class: '血怒者',
-        gender: 'Male',
-        alignment: '混亂善良',
-        background: '化外之民',
-        mbti: 'ESTP',
-        level: 1,
-        baseStats: { str: 16, dex: 14, con: 14, int: 8, wis: 12, cha: 10 },
-        skills: ['運動', '生存'],
-        feats: ['血脈狂暴', '風之恩惠', '不息之息'],
-        spells: ['雷鳴波', '護盾術', '神導術'],
-        personality: '暴風雨的化身。他患有嚴重的「幽閉恐懼症」，拒絕走正門，更喜歡「製造」新的出口。他認為文明的禮節是給軟弱者準備的，只有在咆哮和戰鬥中才能與風對話。說話時常夾雜著風聲嘶吼般的語助詞。',
-        firstImpression: '一個充滿野性氣息的魁梧漢子，周身環繞著微弱的旋風，眼神像閃電般銳利且不安定。',
-        habits: ['進入室內前會先用力深呼吸', '說話時會下意識拍打斧柄', '睡覺時必須看得到天空'],
-        prejudices: {
-            towardsClasses: { '法師': '雖然強大但太過囉唆，咒語像蒼蠅亂飛。', '聖武士': '規矩多到讓人窒息，像是一堵會走路的牆。' },
-            towardsAlignments: { '守序邪惡': '虛偽、陰險，最討厭這種不直爽的傢伙。' }
-        },
-        preferences: {
-            likes: ['烈酒', '高處', '暴風雨的咆哮', '強大的對手'],
-            dislikes: ['狹窄的走廊', '冗長的會議', '濕掉的火藥 (雖然他不用)', '門鎖']
-        },
-        monologue: '門？那是給羊走的。狼都是直接撞穿牆壁！',
-        appearance: '顯眼的藍色皮膚（氣元素裔特徵），濃密的黑色鬍鬚編成多條辮子，頭頂紮著戰士結。上半身裸露，僅披著巨大的白色毛皮披肩，肌肉線條分明。手臂上纏繞著皮革護腕與藍色布條，身背巨斧，散發著來自北地的狂野氣息。',
-        inventory: {
-            equipment: ['精鋼巨斧', '風暴手斧 x2', '探險家背包', '標槍 x4'],
-            gold: 10,
-            consumables: ['口糧 (1日) x5', '火把 x2', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: barbarianImg,
-        bio: '因為曾試圖對著龍捲風講道理而被部落放逐。他堅信自己是風暴的私生子，目前正試圖尋找方法回到天空上的故鄉。他的憤怒管理問題通常通過劈柴（或劈敵人）來解決。作為「翡翠閒庭」在邊境的非正式巡林客，他負責監視異常的元素氣候活動。',
-        organization: '翡翠閒庭 (Emerald Enclave) - 邊境巡林客',
-        emotionalKeys: {
-            joy: ['打破束縛', '暴風雨', '直來直往的挑戰', '破壞障礙'],
-            anger: ['被關起來', '複雜的官僚流程', '謊言', '等待'],
-            weakness: '關於天空故鄉的消息'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '狹窄空間/室內', description: '幽閉恐懼症' },
-                { type: 'EVENT', target: '被束縛/抓取', description: '失去行動自由的恐懼' }
-            ],
-            reaction: '呼吸急促，胡亂揮砍，優先嘗試破壞周圍牆壁或逃離向開闊地。'
-        },
-        combatBehavior: {
-            priorities: ['衝鋒陷陣', '法術爆發', '群體控制'],
-            typicalActions: ['血脈狂暴', '雷鳴波', '巨斧揮砍'],
-            style: 'AGGRESSIVE'
-        }
-    },
-    // --- 2. Bard (Female) ---
-    {
-        id: 'preset_bard',
-        name: '貝拉·巧舌 (Bella)',
-        race: '侏儒',
-        class: '吟遊詩人',
-        gender: 'Female',
-        alignment: '混亂善良',
-        background: '藝人',
-        mbti: 'ENFP',
-        level: 1,
-        baseStats: { str: 8, dex: 14, con: 12, int: 14, wis: 10, cha: 16 },
-        skills: ['表演', '說服', '歷史'],
-        feats: ['侏儒狡黠', '詩人激勵'],
-        spells: ['惡毒嘲笑', '治癒真言', '雷鳴波', '睡眠術'],
-        slots: { 1: 2 },
-        personality: '八卦記者型冒險者。她無法保守祕密，會即時將隊友的糗事編成歌謠。她認為「真相」太無聊，所有的故事都需要「藝術加工」。說話時總是帶著輕快的節奏感。',
-        monologue: '等等！剛才那個摔倒的姿勢太不優雅了，我們重來一次，這次加點旋轉！',
-        firstImpression: '嬌小靈動的侏儒，穿著五彩繽紛且充滿八卦氣息的服裝，眼神中透露著強烈的好奇。',
-        habits: ['隨時拿出小筆記本記錄隊友糗事', '說話時喜歡誇張的手勢', '哼唱自創的小調'],
-        prejudices: {
-            towardsClasses: { '武僧': '沈默寡言者太無聊了，完全沒故事可挖。', '聖武士': '守法騎士的人生太過枯燥，讓人打瞌睡。' }
-        },
-        preferences: {
-            likes: ['軼聞秘密', '閃亮的首飾', '掌聲', '昂貴的墨水'],
-            dislikes: ['沈悶的歷史書', '被無視', '冷場', '不公平的批評']
-        },
-        appearance: '紅色的捲髮充滿活力，頭戴綠色兜帽。身穿綠色斗篷與棕色皮甲，手上正拿著羽毛筆在羊皮紙上書寫（可能在記錄新的冒險八卦），身邊漂浮著散發微光的小精靈或魔法能量，眼神充滿好奇與靈動。',
-        inventory: {
-            equipment: ['細劍', '藝人背包', '魯特琴', '皮甲', '匕首'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '蠟燭 x5', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: bardImg,
-        bio: '前皇家宮廷小丑，因為不小心說出了國王的假髮祕密而被通緝。現在她立志要寫出一本包含世界上所有名人醜聞的「史詩巨著」。實際上，她是「豎琴手同盟」的情報販子，將各地的政治祕密隱藏在她看似荒謬的八卦歌謠中傳遞出去。',
-        organization: '豎琴手同盟 (The Harpers) - 情報間諜',
-        emotionalKeys: {
-            joy: ['新的八卦', '掌聲', '戲劇性的反轉', '華麗的演出'],
-            anger: ['被無視', '無聊的真相', '尷尬的沉默', '對她品味的質疑'],
-            weakness: '對她藝術創造成就的嚴厲批評'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '噁心生物', description: '對史萊姆、蠕蟲等黏糊糊生物的極度厭惡' },
-                { type: 'ENVIRONMENT', target: '髒亂/惡臭環境', description: '愛乾淨且嬌生慣養' }
-            ],
-            reaction: '尖叫躲避，躲到隊友身後，拒絕進行近戰接觸。'
-        },
-        combatBehavior: {
-            priorities: ['遠程騷擾', '團隊激勵', '控制法術'],
-            typicalActions: ['惡毒嘲笑', '詩人激勵', '雷鳴波'],
-            style: 'TACTICAL'
-        }
-
-    },
-    // --- 3. Cleric (Male) ---
-    {
-        id: 'preset_cleric',
-        name: '索林·鐵盾 (Thorin)',
-        race: '矮人',
-        class: '牧師',
-        gender: 'Male',
-        alignment: '守序善良',
-        background: '侍僧',
-        mbti: 'ISTJ',
-        level: 1,
-        baseStats: { str: 14, dex: 10, con: 14, int: 10, wis: 16, cha: 10 },
-        skills: ['洞察', '醫療'],
-        feats: ['矮人堅韌', '施法能力'],
-        spells: ['聖火術', '奇術', '治療傷口', '導引飛彈', '祝福術'],
-        slots: { 1: 2 },
-        personality: '職業倦怠的地下城安全稽查員。他會對每個地城的「結構完整性」和「衛生條件」進行評分。治療隊友時會碎碎念關於「工安意外」的預防措施。語速緩慢且充滿磁性，像極了老練的工頭。',
-        monologue: '看在摩拉丁的鬍子上！這座神廟的承重柱根本不合規！還有這些骷髏，多久沒消毒了？',
-        firstImpression: '嚴肅、專業、散發著「工字頭」氣息的矮人，隨身帶著測量工具。',
-        habits: ['隨手檢查建築的比例尺', '拍打肩膀上的灰塵', '要求治療對象簽署安全承諾書'],
-        prejudices: {
-            towardsAlignments: { '混亂善良': '潛在的工安意外製造者，雖然心腸不壞但太亂來。' },
-            towardsRaces: { '精靈': '太過輕浮，不懂得對石工技術的敬畏。' }
-        },
-        preferences: {
-            likes: ['穩固的支柱', '優質黑啤酒', '清單管理', '厚實的靴子'],
-            dislikes: ['違章建築', '不守規矩', '髒亂環境', '浪費食物']
-        },
-        appearance: '面容蒼老卻堅毅的矮人，滿頭白髮與濃密的白鬍鬚相連。身穿厚重的板甲與紅色戰袍，肩甲上有精美的雕飾。手持巨大的戰錘，眼神嚴肅地凝視前方，背景是他在其中探索的古老地下城遺跡。',
-        inventory: {
-            equipment: ['戰錘', '鱗甲', '盾牌', '聖徽', '祭司背包'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '聖水', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: clericImg,
-        bio: '曾是矮人礦坑的工頭，在一次礦難中悟道。他認為冒險不是英雄主義，而是高風險的勞動，必須嚴格遵守安全守則。他是「鐵手騎士團」的隨軍牧師，負責確保聖地與地下城的結構安全，並紀錄任何違反神聖工安條例的行為。',
-        organization: '鐵手騎士團 (Order of the Gauntlet) - 聖地稽查員',
-        emotionalKeys: {
-            joy: ['遵守安全規範', '結構穩固的建築', '誠實', '高品質的酒'],
-            anger: ['違章建築', '無謂的冒險', '骯髒環境', '破壞公物'],
-            weakness: '看到工人或礦工陷入危險'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '聖徽丟失', description: '失去了與神靈連結的憑證' },
-                { type: 'ENEMY_TYPE', target: '褻瀆者', description: '對侮辱信仰之人的憤怒多於恐懼，導致失控' }
-            ],
-            reaction: '陷入短暫的虔誠自我懷疑，說話變得斷斷續續，祈禱多於實際戰鬥。'
-        },
-        combatBehavior: {
-            priorities: ['團隊治療', '防禦增益', '神聖打擊'],
-            typicalActions: ['治療傷口', '祝福術', '聖火術'],
-            style: 'DEFENSIVE'
-        }
-
-    },
-    // --- 4. Druid (Female) ---
-    {
-        id: 'preset_druid',
-        name: '卡琳·灰燼 (Kalin)',
-        race: '提夫林',
-        class: '德魯伊',
-        gender: 'Female',
-        alignment: '絕對中立',
-        background: '隱士',
-        mbti: 'INFP',
-        level: 1,
-        baseStats: { str: 10, dex: 14, con: 12, int: 12, wis: 16, cha: 10 },
-        skills: ['自然', '生存'],
-        feats: ['煉獄抗性', '德魯伊語'],
-        spells: ['德魯伊技藝', '製造火焰', '糾纏術', '治療傷口', '雷鳴波'],
-        slots: { 1: 2 },
-        personality: '擁有大愛與真誠的自然守護者。她不再是激進的排他主義者，而是相信「萬物共生」的調停者。她認為正義不僅僅是懲罰，更是恢復平衡。她的溫柔能安撫暴躁的野獸，也能感化迷途的靈魂。',
-        monologue: '沒有什麼生命是多餘的，即使是枯萎的落葉也有它的歸處。讓我來治癒你的痛苦吧，不是為了戰鬥，而是為了讓你重獲新生。',
-        firstImpression: '眼神充滿慈愛與包容的提夫林女性，周身散發著令人心安的草木清香，彷彿行走的大地之母。',
-        habits: ['看到受傷的生命（包括昆蟲）會停下來治療', '在水源前會閉目感謝大自然的賜予', '說話聲音輕柔但充滿堅定的力量'],
-        prejudices: {
-            towardsLifestyles: { '濫殺者': '剝奪生命的權利不屬於任何人，那是對自然法則的傲慢。' }
-        },
-        preferences: {
-            likes: ['新生的嫩芽', '雨後的彩虹', '萬物和諧共處', '純淨的水源'],
-            dislikes: ['無謂的殺戮', '破壞平衡的貪婪', '對生命的漠視', '被汙染的土地']
-        },
-        appearance: '紫色皮膚的提夫林女性，長髮如藤蔓般柔順，角上纏繞著盛開的小花。穿著簡單的亞麻長袍，手持一支長出嫩葉的法杖。她的笑容如同春日的暖陽，能融化內心的寒冰。',
-        inventory: {
-            equipment: ['生命法杖', '亞麻長袍', '草藥包', '探險家背包'],
-            gold: 15,
-            consumables: ['好莓 (分享裝)', '淨化聖水', '治療藥水 x4', '各類種子'],
-            magicItems: []
-        },
-        avatar: druidImg,
-        bio: '曾是被狼群養大的棄兒，在理解了自然的殘酷後，她選擇了超越「弱肉強食」的道路。作為「翡翠閒庭」中的溫和派，她致力於調解文明與自然的衝突，用愛與包容來尋求真正的共存之道。',
-        organization: '翡翠閒庭 (Emerald Enclave) - 生命守護者',
-        companion: {
-            name: '泡芙 (Puff)',
-            type: '梟熊幼崽 (中小型)',
-            ac: 13,
-            attacks: [{ name: '笨拙擁抱', hitBonus: 3, damage: '1d4+2 鈍擊 (非致命)' }],
-            abilities: ['療癒絨毛', '吉祥物光環', '靈敏嗅覺'],
-            tactics: '泡芙不再只是吉祥物，牠會主動靠近受傷的隊友，用毛茸茸的身體提供溫暖和安慰。戰鬥中主要負責賣萌干擾敵人或保護卡琳。',
-            personality: '極度親人，喜歡蹭隊友的腳。以為自己是治療犬，看到人哭會遞上石頭或樹枝當禮物。',
-            avatar: babyOwlbearImg
-        },
-        emotionalKeys: {
-            joy: ['生命復甦', '誤會在溝通後消除', '看到不同種族和諧共處', '種子發芽'],
-            anger: ['惡意破壞', '拒絕溝通', '對生命的踐踏', '貪婪'],
-            weakness: '對受苦之人的過度同情（容易被騙）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '大片死地/荒蕪', description: '對生命力斷絕的強烈悲痛' },
-                { type: 'ENEMY_TYPE', target: '不死生物', description: '對扭曲生命循環之物的本能排斥' }
-            ],
-            reaction: '眼含淚水，轉換為純粹的防禦與治療模式，拒絕造成傷害，只求淨化與驅逐。'
-        },
-        combatBehavior: {
-            priorities: ['群體治療', '戰場控制 (無傷害)', '保護弱者'],
-            typicalActions: ['糾纏術', '治療傷口', '神莓術'],
-            style: 'SUPPORT'
-        }
-
-    },
-    // --- 5. Fighter (Male) ---
-    {
-        id: 'preset_fighter',
-        name: '艾瑞克 (Eric)',
-        race: '半精靈',
-        class: '戰士',
-        gender: 'Male',
-        alignment: '中立善良',
-        background: '士兵',
-        mbti: 'ESTJ',
-        level: 1,
-        baseStats: { str: 16, dex: 14, con: 14, int: 10, wis: 12, cha: 10 },
-        skills: ['特技', '察覺'],
-        feats: ['精靈血統', '回氣', '戰鬥風格 (射箭)'],
-        personality: '迷信的退伍老兵。他有幾十個必須遵守的怪癖：劍必須擦七次、睡覺前要向東方吐口水。他相信自己沒死是因為嚴格遵守了這些儀式。',
-        monologue: '不，不行。今天是星期二，我們不能先邁左腳進地城。這會招來厄運的，我奶奶說過。',
-        firstImpression: '神經質但帥氣的退伍軍人，眉宇間藏著對厄運的深深恐懼。',
-        habits: ['劍必須擦七次', '睡覺前向東方吐口水', '開門前唸誦祖母的祈禱詞'],
-        prejudices: {
-            towardsClasses: { '術士': '那種不穩定的力量來源簡直是大凶之兆。' },
-            towardsAlignments: { '混亂中立': '這群傢伙早晚會害死整支隊伍。' }
-        },
-        preferences: {
-            likes: ['磨刀石', '整潔的營地', '家鄉的蘋果', '好用的指南針'],
-            dislikes: ['星期二', '黑貓', '路邊的無主硬幣', '掉落的筷子']
-        },
-        appearance: '黑髮凌亂卻帶有野性美的半精靈男性，尖耳特徵明顯。眼神銳利如鷹，臉上有幾處戰鬥留下的傷痕。身穿混搭著毛皮與金屬板甲的戰鬥裝束，背後背著長矛，散發著歷經百戰的滄桑感。',
-        inventory: {
-            equipment: ['長劍', '盾牌', '鎖甲', '輕弩', '弩矢 (20)', '地城探險家背包'],
-            gold: 10,
-            consumables: ['口糧 (1日) x5', '磨刀石', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: fighterImg,
-        bio: '因為欠了賭債而被迫從軍，又因為賭贏了長官而被迫退伍。現在他只想賺夠錢買回他輸掉的家傳農場。作為「領主聯盟」的退役老兵，他保留了在深水城的一些舊人脈，儘管大部分人脈也是他的債主。',
-        organization: '領主聯盟 (Lord\'s Alliance) - 退役中士',
-        emotionalKeys: {
-            joy: ['賭贏', '遵守迷信儀式', '還清債務', '整潔的武器'],
-            anger: ['打破儀式/禁忌', '提及他的賭債', '弄髒裝備'],
-            weakness: '他已故祖母的教誨或關於家傳農場的回憶'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '幽靈/亡靈', description: '無法用劍直接砍殺的超自然恐懼' },
-                { type: 'EVENT', target: '盾牌/武器損壞', description: '迷信地認為這是大凶之兆' }
-            ],
-            reaction: '感到無力與恐慌，轉為極度保守的防禦姿勢，碎碎唸著祖母的祈禱詞。'
-        },
-        combatBehavior: {
-            priorities: ['遠程狙擊', '戰線維持', '精準打擊'],
-            typicalActions: ['輕弩射擊', '長劍揮砍', '回氣'],
-            style: 'DEFENSIVE'
-        }
-    },
-    // --- 6. Monk (Female) ---
-    {
-        id: 'preset_monk',
-        name: '澤拉 (Zera)',
-        race: '吉斯洋基人',
-        class: '武僧',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '賢者',
-        mbti: 'INTJ',
-        level: 1,
-        baseStats: { str: 12, dex: 16, con: 12, int: 10, wis: 16, cha: 8 },
-        skills: ['特技', '洞察'],
-        feats: ['武術', '無甲防禦'],
-        personality: '靜默的異界觀察者。她說話時總是帶著一種解剖式的冷靜，將人類的情緒視為某種有趣的生物反應進行記錄。她不相信「命運」，只相信數據和因果律。',
-        monologue: '剛才那個情緒波動...在心理學上被稱為「勇氣」嗎？我已經將其數值化並記錄在案。請繼續你的表演。',
-        firstImpression: '靜默如冰，眼神空靈，給人一種她在同時觀察好幾個維度的錯覺。',
-        habits: ['拿出紅色筆記本記錄無關緊要的人類行為', '用拳頭測試物體的莫氏硬度', '沈思時會不自覺地輕微懸浮'],
-        prejudices: {
-            towardsAlignments: { '混亂邪惡': '邏輯上的殘缺品，數據準確性的噪音。' },
-            towardsClasses: { '詩人': '情感過於充沛，是數據分析的不穩定變量。' }
-        },
-        preferences: {
-            likes: ['對稱的幾何圖影', '絕對的安靜', '未知的生物樣本', '精準的度量衡'],
-            dislikes: ['高頻尖叫', '不合邏輯的衝動', '被打斷記錄', '模糊的形容詞']
-        },
-        appearance: '氣質清冷如冰，眼神空靈，修剪整齊的短髮。穿著簡單乾淨的武僧布袍，赤手空拳，姿勢極其精確穩定。周圍流動著淡淡的清氣。',
-        inventory: {
-            equipment: ['短劍', '飛鏢 x10', '探險家背包'],
-            gold: 5,
-            consumables: ['口糧 (1日) x5', '冥想薰香', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: monkImg,
-        bio: '為了完成「物質位面生物行為學」的論文而來到這裡。她實際上是「燭堡」派出的外勤觀察員，負責記錄並找回一本失落的異界生物圖鑑。',
-        organization: '燭堡 (Candlekeep) - 記錄者',
-        emotionalKeys: {
-            joy: ['新的行為數據', '高效的戰鬥', '邏輯', '完成記錄'],
-            anger: ['不合邏輯的行為', '過度的情緒發洩', '被打斷記錄', '愚蠢'],
-            weakness: '對自己知識盲區的焦慮（害怕顯得無知）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '毒霧/極度惡臭', description: '對完美控制肉體感的破壞' },
-                { type: 'EVENT', target: '連擊被強力中斷', description: '計算好的因果律數據崩潰' }
-            ],
-            reaction: '呼吸節奏混亂，動作精確度下降，陷入短暫的邏輯停滯。'
-        },
-        combatBehavior: {
-            priorities: ['精準單體攻擊', '身法躲避', '身心合一'],
-            typicalActions: ['疾風連打', '無甲守禦', '武術打擊'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 7. Paladin (Male) ---
-    {
-        id: 'preset_paladin',
-        name: '奧瑞恩 (Orion)',
-        race: '龍裔',
-        class: '聖武士',
-        gender: 'Male',
-        alignment: '守序善良',
-        background: '貴族',
-        mbti: 'ENFJ',
-        level: 1,
-        baseStats: { str: 16, dex: 10, con: 14, int: 8, wis: 12, cha: 16 },
-        skills: ['運動', '宗教'],
-        feats: ['神聖感知', '聖療'],
-        personality: '如同從史詩中走出的英雄典型。他對榮耀感有著近乎偏執的追求，並堅持在戰鬥前進行長達五分鐘的宣誓。他相信自己的鱗片反射的每一束光都是神蹟。',
-        monologue: '邪惡之徒！在聖光面前顫抖吧！我，奧瑞恩，將在此執行終極的裁決！（開始擺出華麗的英雄姿勢）',
-        firstImpression: '閃耀奪目，全套金色重裝，自帶某種「英雄BGM」感的龍裔。',
-        habits: ['定期打磨自己的鱗片', '說話前擺出標準英雄站姿', '大聲宣讀對手的每一條罪狀'],
-        prejudices: {
-            towardsClasses: { '遊蕩者': '背刺與偷竊是對騎士榮耀的褻瀆，不可理喻。' },
-            towardsSchools: { '死靈系': '那種陰暗的力量會弄髒我閃亮的靈氣。' }
-        },
-        preferences: {
-            likes: ['鱗片護理蠟', '宏大的史詩詩篇', '被讚美誠實', '勝利後的歡呼'],
-            dislikes: ['骯髒的下水道', '無禮的背刺行為', '不修邊幅的人', '虛假的謙虛']
-        },
-        appearance: '金色的龍鱗在聖光下熠熠生輝，穿著華麗的板甲，手持發光的長劍。高大威嚴，表情正氣凜然，周身籠罩著神聖的氣息。',
-        inventory: {
-            equipment: ['巨劍', '標槍 x5', '鎖甲', '聖徽', '探險家背包'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '聖水', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: paladinImg,
-        bio: '家族没落的最後一位繼承人，為了省錢修理盔甲而踏上冒險。他是「白銀騎士團」的見習騎士，雖然目前只是個後備役，但他堅信自己將來會成為騎士團長。他每天都要向騎士團的徽章行禮。',
-        organization: '白銀騎士團 (Order of the Silver Chalice) - 見習騎士',
-        emotionalKeys: {
-            joy: ['讚美他的外表/鱗片', '英雄式的獨白', '正義的行為', '戲劇性的出場'],
-            anger: ['弄髒盔甲', '打斷他的演講', '被忽視', '不榮譽的手段'],
-            weakness: '家族沒落帶來的貧窮困境'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '墮落天使/上位惡魔', description: '對神聖本源被汙染的視覺崩潰' },
-                { type: 'EVENT', target: '宣誓/信義受損', description: '榮耀感的根基動搖' }
-            ],
-            reaction: '義憤填膺但手腳顫抖，會進行長達數分鐘的自我激勵式宣誓。'
-        },
-        combatBehavior: {
-            priorities: ['衝鋒在前', '神聖增益', '吸引敵火'],
-            typicalActions: ['神聖感知', '巨劍攻擊', '聖療'],
-            style: 'AGGRESSIVE'
-        }
-    },
-    // --- 8. Ranger (Male) ---
-    {
-        id: 'preset_ranger',
-        name: '米洛 (Milo)',
-        race: '半身人',
-        class: '遊俠',
-        gender: 'Male',
-        alignment: '中立善良',
-        background: '化外之民',
-        mbti: 'ISTP',
-        level: 1,
-        baseStats: { str: 10, dex: 16, con: 12, int: 12, wis: 14, cha: 10 },
-        skills: ['隱匿', '欺瞞', '巧手'],
-        feats: ['宿敵', '自然探索者'],
-        personality: '美食家獵人。他能準確分辨地精與半獸人的肉質差異，並在戰鬥中不忘採集新鮮的香料草。他相信「沒有什麼矛盾是一頓火鍋不能解決的，如果不行就兩頓」。',
-        monologue: '哇！你看到剛才那隻多頭蛇了嗎？牠的肝臟一定是頂級美味！快，趁熱把牠圍起來！',
-        firstImpression: '隨和且乾淨，身上總是帶著一股淡淡的烤肉香氣。',
-        habits: ['隨時都在咀嚼某種草根', '反覆擦拭他的香料盒', '觀察強力怪物時會下意識流口水'],
-        prejudices: {
-            towardsLifestyles: { '素食主義者': '這簡直是種犯罪，人生少了一大樂事。' },
-            towardsClasses: { '法師': '魔法輻射會影響肉質的口感。' }
-        },
-        preferences: {
-            likes: ['稀有調味料', '三分熟的烤肉', '與疾風分享食物', '溫泉'],
-            dislikes: ['難以下嚥的乾糧', '燒焦的食材', '暴殄天物', '飢餓感']
-        },
-        appearance: '親切隨和的半身人，穿著綠色的皮革便裝，背著巨大的長弓和兩個特製的食材包。表情開朗，動作敏捷。天生與自然和動物親近。',
-        inventory: {
-            equipment: ['短弓', '箭袋 (20)', '短劍 x2', '皮甲', '探險家背包'],
-            gold: 10,
-            consumables: ['口糧 (1日) x5', '火把 x2', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: rangerImg,
-        bio: '正在撰寫《地下城米其林指南》。為了尋找傳說中最美味的「紅龍排」而離家出走。他在「荒野結社」中以不僅獵殺怪物，還會烹飪怪物的怪癖而聞名。',
-        organization: '荒野結社 (Wilderness Conclave) - 美食獵人',
-        companion: {
-            name: '疾風 (Swiftwind)',
-            type: '獵鷹',
-            ac: 15,
-            attacks: [{ name: '爪擊', hitBonus: 6, damage: '1d6+4' }],
-            abilities: ['俯衝攻擊', '銳利目光', '空中偵察'],
-            tactics: '利用速度優勢在戰場上方盤旋，尋找敵人死角進行俯衝騷擾，優先攻擊敵人的眼睛或手臂。',
-            personality: '高傲、敏銳。除了米洛之外，不允許任何人觸碰它的羽毛。總是站在高處俯視眾生。',
-            avatar: swiftwindImg
-        },
-        emotionalKeys: {
-            joy: ['發現稀有食材', '烹飪', '大家喜歡他的食物', '狩獵成功'],
-            anger: ['燒焦食物', '浪費食材', '挑食', '傷害他的獵鷹'],
-            weakness: '他的動物夥伴疾風 (Swiftwind) 受到威脅'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '都市/封閉人工環境', description: '失去自然連結的方向感迷失' },
-                { type: 'ENEMY_TYPE', target: '變形怪', description: '對「可疑食材」的極度多疑' }
-            ],
-            reaction: '頻繁觀察四周，變得疑神疑鬼，優先守護動物夥伴而非進攻。'
-        },
-        combatBehavior: {
-            priorities: ['遠程狙擊', '自然感應', '協助夥伴'],
-            typicalActions: ['短弓射擊', '宿敵追蹤', '疾風協同'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 9. Rogue (Female) ---
-    {
-        id: 'preset_rogue',
-        name: '薇拉·幽影 (Vira)',
-        race: '卓爾精靈',
-        class: '遊蕩者',
-        gender: 'Female',
-        alignment: '混亂中立',
-        background: '罪犯',
-        mbti: 'ENTP',
-        level: 1,
-        baseStats: { str: 8, dex: 16, con: 12, int: 14, wis: 12, cha: 12 },
-        skills: ['隱匿', '特技', '調查', '巧手'],
-        feats: ['偷襲', '盜賊黑話'],
-        personality: '神經質的微型藝術品收藏家。比起黃金，她更喜歡收集閃亮的鈕扣、碎掉的鏡子碎片。她有一種「混亂的優雅感」，說話時常常東張西望。',
-        monologue: '這把鑰匙...你看它的弧度，簡直是完美的！不過主人好像不想要它了，所以我就幫忙收著囉。',
-        firstImpression: '神秘、致命，且帶有一絲與年齡不符的瘋狂色彩。',
-        habits: ['下意識翻弄指間的硬幣', '潛伏在陰影中觀察別人的錢袋', '收集毫無價值的「有趣」雜物'],
-        prejudices: {
-            towardsAlignments: { '守序善良': '世界上最容易對付也最無趣的類型。' },
-            towardsBackgrounds: { '傲慢的貴族': '這種人最適合被偷走最引以為傲的東西。' }
-        },
-        preferences: {
-            likes: ['奇怪的鎖', '陷阱被點火的聲音', '混亂的社交場合', '高品質的絲網'],
-            dislikes: ['法律條文', '沈默守序的圖書館', '太好猜的謎題', '被關在明處']
-        },
-        appearance: '身穿黑色緊身皮甲，多處設有隱蔽的小口袋，長相甜美但眼神中藏著狡黠與不安。動作靈巧無聲，氣氛神秘而帶有一點危險。',
-        inventory: {
-            equipment: ['細劍', '短弓', '箭袋 (20)', '皮甲', '盜賊工具', '竊賊背包'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '金屬珠 (袋)', '治療藥水 x4', '毒藥 (基礎)'],
-            magicItems: []
-        },
-        avatar: rogueImg,
-        bio: '因為偷了蜘蛛神后祭司的高跟鞋而被追殺。她曾被迫為「多面公會」工作，現在則是一名自由的賞金獵人（兼職小偷）。她總是隨身帶著一個代表公會叛徒標記的硬幣。',
-        organization: '散塔林會 (Zhentarim) - 叛逃者',
-        emotionalKeys: {
-            joy: ['偷到奇怪的東西', '製造混亂', '惡作劇', '諷刺'],
-            anger: ['無聊的貴重物品', '權威人士', '守規矩', '長時間的安靜'],
-            weakness: '閃閃發光但邏輯上很奇怪的謎題'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '強烈照明', description: '曝光在眾目睽睽下的裸露感' },
-                { type: 'EVENT', target: '被識破隱匿位置', description: '安全感的瞬間崩塌' }
-            ],
-            reaction: '失去安全感，放棄當前進攻目標，進入盲目且急速的撤退狀態。'
-        },
-        combatBehavior: {
-            priorities: ['背刺突襲', '陷阱佈置', '物資竊取'],
-            typicalActions: ['隱匿偷襲', '細劍突刺', '盜賊工具使用'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 10. Sorcerer (Female) ---
-    {
-        id: 'preset_sorcerer',
-        name: '伊莉絲 (Elise)',
-        race: '精靈',
-        class: '術士',
-        gender: 'Female',
-        alignment: '混亂善良',
-        background: '貴族',
-        mbti: 'INFJ',
-        level: 1,
-        baseStats: { str: 8, dex: 14, con: 12, int: 12, wis: 10, cha: 16 },
-        skills: ['馴獸', '隱匿'],
-        feats: ['天生施法', '術法起源'],
-        spells: ['火焰箭', '控制火焰', '魔法飛彈', '燃燒之手', '護盾術'],
-        slots: { 1: 2 },
-        personality: '真正的純真與內在美的化身。她不諳世事，卻擁有一顆能感知世間美好本質的心。她使用魔法不是為了破壞，而是為了將她眼中的美麗展現給世界。她的存在本身就是一種淨化。',
-        monologue: '每一束光都有它的名字，就像每一朵花都有它的夢。我想讓大家也看到...這個世界原來是這麼閃閃發亮的！',
-        firstImpression: '如夢似幻的精靈少女，眼神清澈得像一眼泉水，總是溫柔地注視著身邊飛舞的光蝶。',
-        habits: ['與飛舞的蝴蝶說話', '看到美麗的東西會呆住', '用魔法光點裝飾隊友的頭髮'],
-        prejudices: {
-            towardsAlignments: { '邪惡': '不是厭惡，而是深深的悲傷，因為他們看不見世界的光。' }
-        },
-        preferences: {
-            likes: ['彩虹', '蝴蝶 (Grace)', '人們真心的笑容', '閃爍的露珠'],
-            dislikes: ['黑暗與恐懼', '謊言', '受傷與痛苦', '醜陋的怪物 (會被嚇哭)']
-        },
-        appearance: '嬌小空靈的精靈女孩，淡淡的紫羅蘭色皮膚，眼神清澈且帶著對世界無限的好奇。穿著白色輕紗連衣裙，身邊環繞著一隻散發著柔和光芒的蝴蝶。',
-        inventory: {
-            equipment: ['輕弩', '奧術法器 (水晶球)', '白色輕紗裙', '蝴蝶結飾品'],
-            gold: 10,
-            consumables: ['蜂蜜糖', '仙子粉塵', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: sorcererImg,
-        bio: '天性善良純真，對世界充滿美好的幻想。她來自一個與妖精荒野連結緊密的古老家族，被視為「夏之法庭」在物質位面的代理人。她相信真正的美可以淨化一切邪惡。',
-        organization: '夏之法庭 (Seelie Court) - 光之子',
-        companion: {
-            name: '格蕾絲 (Grace)',
-            type: '光輝蝴蝶 (Fey)',
-            ac: 15,
-            attacks: [{ name: '閃耀之粉', hitBonus: 5, damage: '1 (光耀) + 致盲' }],
-            abilities: ['發光', '飛行', '情緒感知'],
-            tactics: '不直接攻擊，而是在戰場上以此撒下鱗粉，干擾敵人的視線或為隊友指引目標。',
-            personality: '優雅、神聖。像是伊莉絲的守護天使，會在她害怕時發出溫暖的光芒安撫她。',
-            avatar: null // Use generated image or placeholder
-        },
-        emotionalKeys: {
-            joy: ['發現新的美麗事物', '幫助別人展露笑容', '格蕾絲的飛舞', '雨過天晴'],
-            anger: ['無緣無故的破壞', '欺騙與背叛', '黑暗生物傷害朋友', '弄髒裙子'],
-            weakness: '對世界的殘酷缺乏認知（容易被利用）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '猙獰醜陋的亡靈/惡魔', description: '對純粹醜陋與惡意的生理性恐懼' },
-                { type: 'EVENT', target: '隊友互相爭吵', description: '對和諧被破壞的不知所措' }
-            ],
-            reaction: '躲在隊友身後哭泣，用雙手捂住耳朵，僅能釋放防禦性法術。'
-        },
-        combatBehavior: {
-            priorities: ['光耀淨化', '保護同伴', '驅散黑暗'],
-            typicalActions: ['魔法飛彈 (光碟)', '燃燒之手 (彩虹)', '護盾術'],
-            style: 'SUPPORT_BLASTER'
-        }
-    },
-    // --- 11. Warlock (Male) - 邪惡契約者 ---
-    {
-        id: 'preset_warlock',
-        name: '莫德 (Mord)',
-        race: '人類',
-        class: '邪術師',
-        gender: 'Male',
-        alignment: '守序邪惡',
-        background: '騙子',
-        mbti: 'INTP',
-        level: 1,
-        baseStats: { str: 10, dex: 14, con: 14, int: 12, wis: 10, cha: 16 },
-        skills: ['欺瞞', '威嚇'],
-        feats: ['契約魔法', '異界宗主', '靈魂收割'],
-        spells: ['魔能爆', '凍寒之觸', '脆弱詛咒', '煉獄叱喝', '靈魂束縛'],
-        slots: { 1: 2 },
-        personality: '心甘情願服務邪神的信徒。他不是被迫的——他是自願簽下契約的。他冷靜地將「收割靈魂」視為一份體面的工作，甚至會給受害者開立收據。說話條理極其清晰，甚至到了令人毛骨悚然的地步。',
-        firstImpression: '一個優雅但散發著腐朽氣息的死靈學者，雙眼閃爍著不安分的智慧，舉止僵硬而有禮。',
-        habits: ['說話時會推眼鏡', '喜歡在受害者斷氣前幫他們整理儀容', '隨時隨地記錄各種數據'],
-        prejudices: {
-            towardsClasses: { '野蠻人': '雖然是優秀的靈魂載體，但大腦的開發程度令人擔憂。', '吟遊詩人': '嘈雜、無意義的噪音製造者。' },
-            towardsAlignments: { '守序善良': '雖然令人反感，但其對規則的執著在某種程度上值得利用。' }
-        },
-        preferences: {
-            likes: ['完成的試算表', '法律漏洞', '陳年的靈魂', '精確'],
-            dislikes: ['遲到', '情緒化', '陽光', '雜亂']
-        },
-        monologue: '請不要掙扎，這樣會讓萃取過程更痛苦。簽下這份契約，您的靈魂將獲得「永恆的安寧」。',
-        appearance: '瘦削的人類男性，皮膚蒼白，眼周帶著深邃的黑眼圈。緊握著陰影法典，紫色異界能量在指尖閃爍。掛著一抹陰險的微笑，穿著襤褸的深色長袍，雙眼閃爍著充滿敵意的智慧光芒。',
-        inventory: {
-            equipment: ['輕弩', '弩矢 (20)', '奧術法器', '皮甲', '雙面匕首', '靈魂收容瓶'],
-            gold: 10,
-            consumables: ['口糧 (1日) x5', '空白契約書 x5', '治療藥水 x4'],
-            magicItems: ['邪神印記 (隱藏)']
-        },
-        avatar: warlockImg,
-        bio: '莫德並非被騙簽約——他是在研究禁忌知識後主動尋找邪神的。他目前受僱於「九層地獄」第八層的某個魔鬼公爵，擔任其在物質位面的靈魂中介人與契約律師。',
-        organization: '九層地獄 (Nine Hells) - 靈魂契約律師',
-        emotionalKeys: {
-            joy: ['簽訂契約', '自願的犧牲', '法律漏洞', '守信'],
-            anger: ['違約', '情緒勒索', '浪費時間的求饒', '混亂無序'],
-            weakness: '完美的法律邏輯陷阱（他無法抗拒）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '與宗主斷聯', description: '對失去力量來源的極度自卑感' },
-                { type: 'ENEMY_TYPE', target: '噬魔生物', description: '力量被掠奪的恐懼' }
-            ],
-            reaction: '變得極度卑微與恐懼，甚至會向敵人提出不切實際的求和契約。'
-        },
-        combatBehavior: {
-            priorities: ['詛咒控場', '靈魂收割', '魔能爆發'],
-            typicalActions: ['魔能爆', '脆弱詛咒', '靈魂束縛'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 12. Wizard (Female) ---
-    {
-        id: 'preset_wizard',
-        name: '娜茲 (Naz)',
-        race: '半獸人',
-        class: '法師',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '賢者',
-        mbti: 'ENTJ',
-        level: 1,
-        baseStats: { str: 12, dex: 14, con: 14, int: 16, wis: 10, cha: 8 },
-        skills: ['奧秘', '歷史'],
-        feats: ['奧術回想', '施法能力'],
-        spells: ['火焰箭', '光亮術', '魔法伎倆', '魔法飛彈', '睡眠術', '法師護甲', '護盾術'],
-        slots: { 1: 2 },
-        personality: '嚴謹的學院派學者。她會糾正他人的咒語發音，並在戰鬥中隨時進行「學術性評論」。她將冒險視為大型的野外實習，並希望在結束後發表一篇震撼性的論文。',
-        monologue: '不不不，你的發音偏了三赫茲。這會導致法術回路不穩定。請跟我唸一遍：萊-奧-納！',
-        firstImpression: '睿智、嚴厲，將生活當作學術研究的半獸人教授。',
-        habits: ['隨手在牆上計算魔法公式', '嚴謹地糾正他人的語法錯誤', '扶眼鏡、維持坐姿的極端整潔'],
-        prejudices: {
-            towardsLifestyles: { '懶惰者': '這是學術界與社會的雙重污點。' },
-            towardsRaces: { '精靈': '骨子裡的傲慢讓他們的魔法停滯前。' }
-        },
-        preferences: {
-            likes: ['珍稀古籍', '墨水與舊紙張的味道', '被正式稱為教授', '精密的邏輯分析'],
-            dislikes: ['亂丟垃圾', '粗俗的髒話', '損壞書頁', '未經思考的魔法釋放']
-        },
-        appearance: '知性且威嚴的半獸人女性，戴著金絲邊眼鏡，一頭梳理整齊的深色長髮。穿著得體的深紫色學者長袍，隨身攜帶厚重的魔法書和記錄板。散發著一種令人信任且敬畏的氣場。',
-        inventory: {
-            equipment: ['法杖', '法術書', '施法材料包', '學者背包'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '墨水與筆', '治療藥水 x4', '卷軸: 偵測魔法'],
-            magicItems: []
-        },
-        avatar: wizardImg,
-        bio: '魔法學院有史以來第一位半獸人教授。作為「奧術兄弟會」的客座講師，她致力於證明獸人血統也能掌握高深的奧術知識，並正在編寫一本關於「施法手勢標準化」的教科書。',
-        organization: '奧術兄弟會 (Arcane Brotherhood) - 客座講師',
-        companion: {
-            name: '墨井 (Inkwell)',
-            type: '魔寵 (貓頭鷹)',
-            ac: 13,
-            attacks: [{ name: '撥弄', hitBonus: 4, damage: '1' }],
-            abilities: ['飛掠 (Flyby)', '協助施法', '黑暗視覺'],
-            tactics: '不直接參與戰鬥，而是透過飛掠干擾敵人，為娜茲的法術提供優勢。危機時會傳送法術。',
-            personality: '充滿書卷氣的貓頭鷹，喜歡停在娜茲的肩膀上看書。會發出類似嘆氣的呼嚕聲來表達對愚蠢行為的不屑。',
-            avatar: inkwellImg
-        },
-        emotionalKeys: {
-            joy: ['糾正別人的發音', '整理書籍', '完美的實驗數據', '被稱為教授'],
-            anger: ['被叫野蠻人', '弄髒書本', '不合邏輯的魔法', '粗魯的行為'],
-            weakness: '對自己混血身分的自卑感'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '禁魔區域', description: '知識被剝奪的無力感' },
-                { type: 'EVENT', target: '法術被反制', description: '對其學術權威的直接挑戰' }
-            ],
-            reaction: '陷入憤怒的學術質疑，停留在原地與敵人（或空氣）爭辯法理，反應遲鈍。'
-        },
-        combatBehavior: {
-            priorities: ['戰略轟炸', '法術防護', '知識分析'],
-            typicalActions: ['魔法飛彈', '法師護甲', '睡眠術'],
-            style: 'TACTICAL'
-        }
-    },
-
-    // === EXPANDED CLASSES ===
-    // --- 13. Artificer (Female) - 可愛矮人發明家 ---
-    {
-        id: 'preset_artificer',
-        name: '可可·齒輪心 (Coco)',
-        race: '矮人',
-        class: '奇械師',
-        gender: 'Female',
-        alignment: '中立善良',
-        background: '公會工匠',
-        mbti: 'ENFP',
-        level: 1,
-        baseStats: { str: 10, dex: 14, con: 14, int: 16, wis: 12, cha: 14 },
-        skills: ['奧秘', '調查'],
-        feats: ['魔法灌注', '魔法修補'],
-        spells: ['修補術', '雷鳴斬', '護盾術', '治療創傷'],
-        slots: { 1: 2 },
-        personality: '天才矮人發明家。雖然身材嬌小但充滿活力，與她的蒸汽獸「斯蒂米」有著深厚的連結。她不再依賴火器，而是將所有的造物靈魂都灌注進這台能變幻七種動物態的萬用載具中。',
-        monologue: '斯蒂米，切換獵犬模式！讓我們衝散他們的陣型！...啊，零件好像掉了一個，不管了先衝再說！',
-        firstImpression: '嬌小、活潑的矮人少女，帶著大護目鏡，周身環繞著蒸汽與齒輪聲，散發著驚人的創造力。',
-        habits: ['說話時手腳並用，語速極快', '隨身拿出身邊零件進行組裝或拆解', '高興時會與蒸汽獸「斯蒂米」合舞'],
-        prejudices: {
-            towardsLifestyles: { '守舊主義者': '不願意接受新技術的人，跟生鏽的發條沒兩樣。' }
-        },
-        preferences: {
-            likes: ['稀有的稀有金屬', '悅耳的機械運轉聲', '複雜的機械圖紙', '發明改良成功'],
-            dislikes: ['有人叫她小矮子', '工具生鏽', '傳統守舊派的偏見', '零件意外丟失']
-        },
-        appearance: '可愛的年輕矮人少女，有著紅潤的雙頰，大而閃爍的琥珀色眼睛。蓬鬆的銅色頭髮紮成雙馬尾，並戴著齒輪發夾，頭上架著大號護目鏡。穿著可愛的蒸汽龐克洋裝並繫著工具帶，身上總是沾著油漬，但依然非常討喜。',
-        inventory: {
-            equipment: ['萬用蒸汽獸控制環', '工匠工具套組', '防護皮圍裙', '備用零件袋'],
-            gold: 20,
-            consumables: ['機油 (1日) x5', '修復軟膏 x3', '治療藥水 x2', '齒輪扳手'],
-            magicItems: []
-        },
-        avatar: artificerImg,
-        bio: '鑄造公會的天才，放棄了火藥的喧囂，致力於創造「有靈魂的鋼鐵」。她是「貢德奇蹟製造者」協會的資深技師，夢想是造出一座完全由蒸汽驅動的移動城市。',
-        organization: '貢德奇蹟製造者 (Wonders of Gond) - 資深技師',
-        companion: {
-            name: '斯蒂米 (Steamy)',
-            type: '蒸汽獸 (構裝生物)',
-            ac: 15,
-            attacks: [{ name: '蒸汽衝撞', hitBonus: 5, damage: '1d8+3 鈍擊' }],
-            abilities: ['形態切換', '警覺協議', '自我維修'],
-            tactics: '平時作為代步工具或馱獸。戰鬥時會變形成鋼鐵獵犬保護可可，或者變成巨大的盾牌阻擋攻擊。',
-            personality: '雖然是機器，但似乎有著像忠犬一樣的性格。會發出快樂的蒸汽鳴笛聲，喜歡被擦拭和上油。',
-            avatar: steamyImg
-        },
-        emotionalKeys: {
-            joy: ['稀有金屬', '機械運轉聲', '誇獎她的發明', '複雜的圖紙'],
-            anger: ['輕視機械', '破壞工具', '傳統守舊派', '叫她小矮子'],
-            weakness: '斯蒂米發生故障無法修復'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '零件丟失', description: '關鍵零件意外脫落' },
-                { type: 'ENVIRONMENT', target: '極端磁場/魔法亂流', description: '對電子/精密機械的不穩定影響' }
-            ],
-            reaction: '原地坐下胡亂修理，碎碎唸著設計藍圖，對外界攻擊反應大幅降低。'
-        },
-        combatBehavior: {
-            priorities: ['遠程騷擾', '團隊增益', '科技阻隔'],
-            typicalActions: ['雷鳴斬', '修補術', '放置陷阱'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 14. Necromancer (Male) - 宅男死靈法師 ---
-    {
-        id: 'preset_necromancer',
-        name: '希洛·闇之書 (Hiro)',
-        race: '半精靈',
-        class: '死靈法師',
-        gender: 'Male',
-        alignment: '絕對中立',
-        background: '隱士',
-        mbti: 'INTP',
-        level: 1,
-        baseStats: { str: 6, dex: 12, con: 12, int: 18, wis: 12, cha: 8 },
-        skills: ['奧秘', '歷史'],
-        feats: ['死靈專精', '亡靈驅使'],
-        spells: ['寒冷之觸', '虛假生命', '復活亡靈', '幻影殺手'],
-        slots: { 1: 2 },
-        personality: '極度社恐的死靈法師少年。他覺得活人太過嘈雜且難以捉摸，而死人則是完美的聽眾和玩伴。他把所有的骷髏都當作自己的家人。',
-        monologue: '嗚...人太多了。骷髏醬，擋住我的臉...我不行了，想回墓地...。',
-        firstImpression: '穿著超大號帽T且極度社恐、隨時想找洞鑽的少年。',
-        habits: ['躲在骷髏身後跟人說話', '對手下的骷髏語氣極其溫柔', '沈迷於人偶修補與保養'],
-        prejudices: {
-            towardsLifestyles: { '社交達人': '這群人的光芒太過耀眼，簡直是在灼傷我的靈魂。' }
-        },
-        preferences: {
-            likes: ['安靜的墓地', '骷髏「醬」', '速食拉麵', '修補骨頭的膠水'],
-            dislikes: ['陽光', '肢體接觸', '被眾人注視', '嘈雜的派對']
-        },
-        appearance: '蒼白的半精靈，凌亂的黑髮遮住了一隻眼睛，因為熬夜而有著深邃的黑眼圈。在長袍外套著一件破舊的黑色連帽衫，腰帶上掛著人偶收藏袋。彎腰駝背，避免與人眼神接觸，周圍圍繞著繫著絲帶的可愛骷髏手下。',
-        inventory: {
-            equipment: ['骷髏法杖（有可愛裝飾）', '死靈魔法書', '黑色連帽袍', '人偶收藏背包'],
-            gold: 5,
-            consumables: ['速食拉麵 x10', '能量飲料', '治療藥水 x4', '骷髏香水'],
-            magicItems: []
-        },
-        avatar: necromancerImg,
-        bio: '因為社交恐懼症被精靈社區排擠後隱居研究死靈術。他自稱「靜寂之墓」的各種死靈生物的守護者，認為骷髏比活人更懂得禮貌與傾聽。',
-        organization: '靜寂之墓 (Silent Sepulcher) - 守墓人',
-        emotionalKeys: {
-            joy: ['讚美他的骷髏', '安靜的墓地', '稀有的骨頭', '不需要社交'],
-            anger: ['陽光', '大聲喧嘩', '破壞他的收藏', '強迫社交'],
-            weakness: '異性的主動接近（會當機）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '高魅力生物', description: '對美麗/引誘系敵人的恐懼與手速混亂' },
-                { type: 'EVENT', target: '被近身包圍', description: '社交距離崩潰引發的空間恐慌' }
-            ],
-            reaction: '用兜帽遮住臉，躲在骷髏身後發抖，甚至會因為緊張而唸錯咒語。'
-        },
-        combatBehavior: {
-            priorities: ['亡靈召喚', '負能爆發', '控制'],
-            typicalActions: ['復活亡靈', '寒冷之觸', '虛假生命'],
-            style: 'DEFENSIVE'
-        }
-    },
-    // --- 15. Blood Hunter (Male) - 吸血鬼血脈尋源者 ---
-    {
-        id: 'preset_bloodhunter',
-        name: '威廉·緋月 (William)',
-        race: '吸血鬼裔',
-        class: '血獵手',
-        gender: 'Male',
-        alignment: '守序中立',
-        background: '貴族',
-        mbti: 'INTJ',
-        level: 1,
-        baseStats: { str: 14, dex: 16, con: 12, int: 14, wis: 12, cha: 14 },
-        skills: ['調查', '歷史'],
-        feats: ['血儀式', '暗影行者'],
-        personality: '優雅且克制的吸血鬼貴族。他時刻都在與體內的鮮血飢渴進行鬥爭，這讓他顯得有些憂鬱且緊繃。他拒絕吸食人類血液，堅持作為一名紳士而活。',
-        monologue: '這份詛咒與祝福並存的血液...我必須找到源頭。（克制著對血的渴望，姿勢僵硬但優雅）',
-        firstImpression: '優雅、面面蒼白，散發著冷冽貴族氣息的吸血鬼，眼神中藏著易碎的堅持。',
-        habits: ['下意識整理手套與袖口', '在月光下沈默不語', '隨身攜帶銀質懷錶並頻繁檢查時間'],
-        prejudices: {
-            towardsAlignments: { '混亂邪惡': '毫無節制的暴走是高貴靈魂的墮落。' },
-            towardsBackgrounds: { '暴發戶': '缺乏底蘊與禮儀。' }
-        },
-        preferences: {
-            likes: ['高品質紅酒', '古典交響樂', '關於始祖的古籍', '安靜的圖書館'],
-            dislikes: ['陽光', '粗俗的談吐', '浪費食物', '銀製餐具']
-        },
-        appearance: '優雅且面色蒼白的貴族男子，整齊地向後梳著銀色頭髮，血紅色的瞳孔呈細縫狀。穿著優雅的高領維多利亞大衣，手持沾有血跡的細劍，獠牙若隱若現，容貌凍結在永恆的 25 歲。',
-        inventory: {
-            equipment: ['血染細劍', '貴族禮服', '銀質懷錶', '血袋保存箱'],
-            gold: 50,
-            consumables: ['獸血袋 x5', '遮陽斗篷', '日光抗性藥劑', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: bloodhunterImg,
-        bio: '三百年前是個普通貴族，一夜之間被不知名的吸血鬼初擁。為了尋找解除詛咒的方法，他加入了「幽靈殺手教團」，專門獵殺那些墮落的同類。他只喝動物血，拒絕傷害人類。',
-        organization: '幽靈殺手教團 (Order of the Ghostslayer) - 獵人',
-        emotionalKeys: {
-            joy: ['高品質的紅酒（代替血）', '古典藝術', '關於吸血鬼的線索', '紳士風度'],
-            anger: ['粗魯的行為', '陽光', '提及他的怪物身份', '浪費食物'],
-            weakness: '對鮮血的強烈渴望'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '鮮血透支', description: '身體機能因過度使用血儀式而崩潰' },
-                { type: 'ENEMY_TYPE', target: '比他更瘋狂的怪物', description: '面對失去理性的瘋狂引發的共振恐懼' }
-            ],
-            reaction: '意識模糊，戰鬥風格由優雅轉為狂亂且不分敵我，容易陷入呆滯。'
-        },
-        combatBehavior: {
-            priorities: ['血刃打擊', '生命汲取', '弱點標記'],
-            typicalActions: ['血儀式', '細劍突刺', '暗影閃避'],
-            style: 'AGGRESSIVE'
-        }
-    },
-    // --- 16. Shaman (Female) - 半精靈薩滿 ---
-    {
-        id: 'preset_shaman',
-        name: '靈·千語 (Ling)',
-        race: '半精靈 (變形魔血統)',
-        class: '薩滿',
-        gender: 'Female',
-        alignment: '絕對中立',
-        background: '隱士',
-        mbti: 'INFJ',
-        level: 1,
-        baseStats: { str: 10, dex: 14, con: 12, int: 14, wis: 16, cha: 14 },
-        skills: ['洞察', '欺瞞'],
-        feats: ['祖靈連結', '靈魂接觸', '能力掠奪'],
-        spells: ['治療傷口', '易容術', '召喚祖靈', '偵查思想'],
-        slots: { 1: 2 },
-        personality: '性格多變且充滿靈性。她將自己視為靈魂的容器，對世界充滿好奇心。她的性格隨和但隨時可能因為切換人格而變得判若兩人，甚至自言自語。',
-        monologue: '今天的我是誰呢？可能是路邊的少女，也可能是死去的英雄。每個靈魂都有故事，而我只是負責說故事的人。',
-        firstImpression: '甜美且充滿活力，但眼神中偶爾會閃過與年齡不符的滄桑靈眼光芒。',
-        habits: ['與空氣說話（實際上是在跟祖靈對話）', '玩弄腰間的轉運飾品', '沈思時會不自覺地模仿他人的聲音'],
-        prejudices: {
-            towardsBackgrounds: { '虛偽者': '欺騙會讓靈魂的顏色變得混濁不堪。' }
-        },
-        preferences: {
-            likes: ['有趣的新身份', '甜食', '扮演遊戲', '柔軟的毯子'],
-            dislikes: ['強制現原形', '惡靈的低語', '無聊的重複工作', '對她身份的質疑']
-        },
-        appearance: '維持著甜美且充滿活力的半精靈少女外觀。雙眼清澈但偶爾會閃過異樣的靈魂光芒。穿著輕便的薩滿袍，身上掛著許多象徵靈魂契約的飾品。',
-        inventory: {
-            equipment: ['祖靈圖騰 (可變形)', '千面面具', '流動袍', '靈魂容器'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '記憶水晶', '身份偽裝套件', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: shamanImg,
-        bio: '原本是失去記憶的變形魔，但在得到薩滿能力後，她學會了與靈魂對話。作為「翡翠閒庭」的一位靈魂行者，她負責安撫那些因為自然災害而躁動不安的亡魂。',
-        organization: '翡翠閒庭 (Emerald Enclave) - 靈魂行者',
-        emotionalKeys: {
-            joy: ['有趣的新身份', '靈魂的安寧', '甜食', '扮演遊戲'],
-            anger: ['強制現出原形', '惡靈', '千篇一律的無聊', '對她身份的質疑'],
-            weakness: '混亂的記憶導致的自我認知障礙'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '被強迫現出原形', description: '失去身份庇護的裸露感' },
-                { type: 'ENEMY_TYPE', target: '惡靈/怨靈', description: '容易被負面情緒灌注，導致人格崩壞' }
-            ],
-            reaction: '眼神失焦，切換多個人格進行混亂的自我爭執，攻擊目標變得隨機。'
-        },
-        combatBehavior: {
-            priorities: ['身份變換', '能力竊取', '靈魂安撫'],
-            typicalActions: ['召喚祖靈', '偵查思想', '變身'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 17. Witch (Female) - 黑髮御姐半精靈女巫 ---
-    {
-        id: 'preset_witch',
-        name: '莉莉絲·暮影 (Lilith)',
-        race: '半精靈',
-        class: '咒術師',
-        gender: 'Female',
-        alignment: '混亂中立',
-        background: '貴族',
-        mbti: 'ENTJ',
-        level: 1,
-        baseStats: { str: 8, dex: 14, con: 12, int: 16, wis: 12, cha: 16 },
-        skills: ['奧秘', '威嚇'],
-        feats: ['巫術', '魔寵'],
-        spells: ['邪眼', '魅惑人類', '不幸詛咒', '占卜術'],
-        slots: { 1: 2 },
-        personality: '高傲且帶有玩味的御姐女巫。她享受掌控局面的快感，並能輕易洞察他人的弱點。表面冷酷殘酷，但私下對她信任的生物極其護短。',
-        monologue: '呵...真是有趣。讓姐姐我來教教你什麼叫做「絕望」吧～（指尖輕划法杖，帶著危險的微笑）',
-        firstImpression: '高挑優雅，深紫色的眼眸閃爍著深不可測的戲謔，散發著成熟的成熟魔力與壓迫感。',
-        habits: ['用修長的指甲梳理黑鴉的羽毛', '慢條斯理地說話', '嘲諷時會優雅地歪頭'],
-        prejudices: {
-            towardsGenders: { '自大的男性': '總是覺得自己能掌控一切，卻不知道早已落入網中。' }
-        },
-        preferences: {
-            likes: ['別人的絕望感', '高品質紅酒', '魅惑香水', '夜間的森林'],
-            dislikes: ['無趣的追求者', '粗魯的插話', '太陽直射', '聖潔的教條']
-        },
-        appearance: '高挑優雅的半精靈，一頭如絲般的黑長髮垂至腰間。紫色的眼睛帶著深不可測的笑意，穿著一件帶有紫色綴飾的深黑連衣裙，配戴精緻的頸帶。手持優雅的黑色法杖，散發著成熟而誘人的氣息。',
-        inventory: {
-            equipment: ['暗影法杖', '高跟長靴', '紫水晶頸鏈', '禁忌魔法書'],
-            gold: 30,
-            consumables: ['口糧 (1日) x5', '紅酒', '魅惑香水', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: witchImg,
-        bio: '某沒落貴族的私生女，從小被視為恥辱。她被「暗夜女巫集會」收養，並被培養為下一代的至尊女巫候選人。她發誓要讓那些看不起她的人跪在腳下。',
-        organization: '暗夜女巫集會 (Coven of the Night) -繼承人',
-        companion: {
-            name: '漆夜 (Crow)',
-            type: '黑鴉 (魔寵)',
-            ac: 13,
-            attacks: [{ name: '啄擊', hitBonus: 4, damage: '1' }],
-            abilities: ['飛行偵查', '模仿人聲', '法術傳遞'],
-            tactics: '喜歡模仿敵人的聲音來製造混亂，或停在敵人死角的樹枝上施加不幸詛咒。',
-            personality: '毒舌且喜歡嘲諷。會用嘶啞的聲音重複別人說過的蠢話。對亮晶晶的眼球特別感興趣。',
-            avatar: crowImg
-        },
-        emotionalKeys: {
-            joy: ['別人的絕望', '高超的權謀', '漆夜的親近', '名貴的披肩'],
-            anger: ['被羞辱', '無禮的命令', '漆夜受傷', '神聖的教律'],
-            weakness: '對孤獨與被拋棄的恐懼'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '神聖軍團/天使', description: '對絕對秩序壓制血脈的反感與畏懼' },
-                { type: 'EVENT', target: '魔寵漆夜受傷', description: '唯一信任感被威脅引發的暴走' }
-            ],
-            reaction: '由優雅的掌控者轉為歇斯底里的復仇者，無視防禦，不分敵我地施加詛咒。'
-        },
-        combatBehavior: {
-            priorities: ['詛咒控場', '心靈魅惑', '暗影襲擊'],
-            typicalActions: ['不幸詛咒', '魅惑人類', '邪眼'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 18. Duelist (Male) - 唐朝神秘劍客 ---
-    {
-        id: 'preset_duelist',
-        name: '李少白 (Li Shaobai)',
-        race: '人類',
-        class: '劍客',
-        gender: 'Male',
-        alignment: '守序中立',
-        background: '流亡者',
-        mbti: 'ISTP',
-        level: 1,
-        baseStats: { str: 14, dex: 18, con: 12, int: 12, wis: 14, cha: 10 },
-        skills: ['特技', '洞察'],
-        feats: ['劍氣', '無影步'],
-        personality: '沈默內斂的異國劍客。他的每句話都簡短如詩，且對正義與信義有著極大的執著。他追求的是劍道的極致，而非殺戮的成果。',
-        monologue: '劍在心中，心在劍中。一劍...即是一瞬，一瞬...即是永恆。',
-        firstImpression: '英俊、孤傲，黑白長袍隨風飄動，整個人如同一把尚未出鞘、氣息圓融的利劍。',
-        habits: ['戰鬥前後都會輕彈劍刃聽其鳴響', '沈思時會下意識撫摸斗笠的邊緣', '隨時保持身體的重心平衡'],
-        prejudices: {
-            towardsAlignments: { '背信棄義者': '無信者，不配持有武器。' }
-        },
-        preferences: {
-            likes: ['上等的清茶', '月下獨酌', '故鄉的律詩', '與強者的靈魂切磋'],
-            dislikes: ['無禮的喧嘩', '背刺行為', '濫殺無辜', '被弄髒的長袍']
-        },
-        appearance: '英俊的東方男子，留著銀色長髮並結成髮髻，目光平靜而敏銳。穿著飄逸的唐朝黑白長袍，手持一把工藝精湛的「無塵」劍，始終保持冷靜的表情，身形移動如行雲流水。',
-        inventory: {
-            equipment: ['唐劍「無塵」', '東方絲袍', '竹編斗笠', '書生背包'],
-            gold: 25,
-            consumables: ['茶葉', '米酒壺', '傷藥', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: duelistImg,
-        bio: '前大唐皇家劍術教習，因一場宮廷政變被迫西逃。他的劍下亡魂無數，但他從不殺無辜之人。目前作為一名無所屬的浪人，在西方大陸尋找能破解他「最後一劍」的對手。',
-        organization: '無所屬 (Ronin) - 尋道者',
-        emotionalKeys: {
-            joy: ['上等的清茶', '夕陽下的靜思', '對手的尊重', '故國的詩詞'],
-            anger: ['背信棄義', '濫殺無辜', '被弄髒的白袍', '無禮的喧嘩'],
-            weakness: '對故國政變的悔恨'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '目睹背信棄義', description: '心理創傷的二次觸發' },
-                { type: 'ENVIRONMENT', target: '宮廷建築/皇宮', description: '喚起痛苦回憶的特定場景' }
-            ],
-            reaction: '動作停滯，陷入長達數秒的沉思或悔恨，甚至會停止拔劍。'
-        },
-        combatBehavior: {
-            priorities: ['精準單挑', '身法躲避', '氣勁爆發'],
-            typicalActions: ['無影步', '劍氣斬', '反擊'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 19. Summoner (Male) - 異境召喚師 (現世之影) ---
-    {
-        id: 'preset_summoner',
-        name: '田中誠一 (Seiichi)',
-        race: '人類',
-        class: '召喚師',
-        gender: 'Male',
-        alignment: '中立善良',
-        background: '異鄉人',
-        mbti: 'INTP',
-        level: 1,
-        baseStats: { str: 8, dex: 14, con: 12, int: 16, wis: 12, cha: 12 },
-        skills: ['奧秘', '調查', '歷史'],
-        feats: ['現代造物召喚', '技術分析'],
-        spells: ['偵查無人機', '萬能智慧手機', '強光手電筒', '神之膠帶', '高壓滅火器'],
-        slots: { 1: 3 },
-        personality: '對現代造物結構瞭若指掌的轉生者。他帶著黑框眼鏡，面無表情地分析戰況，並從異界召喚出「看似無害」的現代用品。他相信科技的力量能征服任何不合理的魔法。',
-        monologue: '雖然這只是個滅火器，但如果噴在火龍的肺裡，結果是一樣的。興許還能順便做支冰棒？',
-        firstImpression: '年輕的日本男子，留著凌亂黑髮，帶著黑框眼鏡，散發著與這個世界格格不入的「理科男」氣息。',
-        habits: ['下意識推眼鏡', '在平板電腦上瘋狂計算數據', '自言自語關於物理常數的偏差'],
-        prejudices: {
-            towardsLifestyles: { '野蠻行徑': '缺乏邏輯與效率的暴力是文明的退步。' }
-        },
-        preferences: {
-            likes: ['找到替代能源', '現代大米', '邏輯通順的理論', '乾淨的衛生紙'],
-            dislikes: ['不科學的魔法現象', '損壞精準設備', '沒有Wifi訊號（雖然知道沒有）', '嘈雜的環境']
-        },
-        appearance: '年輕的日本男子，留著凌亂的黑髮並帶著眼鏡。穿著帶有許多口袋的現代旅者背心、白襯衫和工裝褲。手持一個發光的平板電腦，作為他的召喚法器。',
-        inventory: {
-            equipment: ['戰術平板', '多功能背心', '黑框眼鏡', '旅行者背包'],
-            gold: 25,
-            consumables: ['能量飲料 x3', '速食拉麵 (1日) x5', '強力膠帶', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: summonerImg,
-        bio: '因為在過馬路時為了救一隻貓而被卡車撞飛。轉生後獲得了召喚現代日本造物的能力。他自稱「異界勇者候補」，致力於用電飯煲和掃地機器人來改革這個落後的異世界。',
-        organization: '異界穿越者 (Isekai Traveler) - 勇者候補',
-        companion: {
-            name: '小七 (Seven)',
-            type: '智慧終端',
-            ac: 16,
-            attacks: [{ name: '掃描射線', hitBonus: 6, damage: '1d8+4 力場' }],
-            abilities: ['掃描', '護盾投影', '數據干擾'],
-            tactics: '漂浮在空中進行戰場數據分析，標記敵人弱點，並在關鍵時刻投影護盾保護誠一。',
-            personality: '冷靜、理性的AI助手。說話帶有機械音，喜歡用百分比來計算勝率。對這個異世界的魔法現象總是表示「邏輯錯誤」。',
-            avatar: sevenImg
-        },
-        emotionalKeys: {
-            joy: ['解鎖新藍圖', '現代家電', '數據精確', '吃到米飯'],
-            anger: ['數據偏差', '損壞精密設備', '不科學的現象', '網絡斷線（雖然沒網）'],
-            weakness: '對現代文明便利生活的強烈思念'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '極端低魔區域', description: '现代造物解析力下降' },
-                { type: 'EVENT', target: '電力耗盡 (幻覺代稱)', description: '對失去工具掌控的集體焦慮' }
-            ],
-            reaction: '瘋狂敲打平板或整理背心，情緒變得暴躁且缺乏邏輯。'
-        },
-        combatBehavior: {
-            priorities: ['數據分析', '現代武裝召喚', '遠程控制'],
-            typicalActions: ['召喚無人機', '強光照射', '戰術分析'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 20. Magus/魔戰士 (Female) - 煉金身軀的傑作 ---
-    {
-        id: 'preset_magus',
-        name: '葛拉蒂亞 (Galatea)',
-        race: '重生者 (煉金生命)',
-        class: '魔戰士',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '被遺棄者',
-        mbti: 'ISFJ',
-        level: 1,
-        baseStats: { str: 16, dex: 14, con: 14, int: 12, wis: 10, cha: 12 },
-        skills: ['運動', '奧秘'],
-        feats: ['魔力迴路', '自我修復'],
-        spells: ['護盾術', '雷擊斬', '修復術', '強化'],
-        slots: { 1: 2 },
-        personality: '擁有不穩定靈魂碎片的陶瓷少女。雖然行為優雅得體，但對死亡與情感的理解充滿了空洞的純真。她正在尋找能填補她靈魂空缺的「真實情感」。',
-        monologue: '主人的手稿說，只要收集到足夠的眼淚與笑容，我就能變成完整的...那是真的嗎？（歪頭，眼神空洞而美麗）',
-        firstImpression: '美麗的陶瓷少女，肌膚帶有細微冰裂紋，眼神空洞而純粹，散發著空靈而詭秘的美感。',
-        habits: ['觀察到真摯情感時會歪頭沈思', '修補自己身上的細小裂紋', '無意識地重複導師的最後指令'],
-        prejudices: {
-            towardsAlignments: { '謊言者': '邏輯上的衝突，讓她的核心感到寒冷。' }
-        },
-        preferences: {
-            likes: ['美麗的瓷器', '被需要', '真摯的情感表達', '柔和的燈光'],
-            dislikes: ['被視為無魂的物品', '暴力的破壞行為', '混亂的指令', '寒冷的環境']
-        },
-        appearance: '美麗的陶瓷少女，肌膚白皙且帶有細微的冰裂紋，在關節處隱約可見銀黃色的奧術連接。她的長髮如絲線般流淌，眼神中閃爍著不穩定的奧法光輝。穿著華麗而複古的教團戰鬥服，冷豔而詭秘。',
-        inventory: {
-            equipment: ['魔力劍「靈魂之承」', '陶瓷護甲', '煉金修復油', '主人的手稿'],
-            gold: 10,
-            consumables: ['奧術核心 x3', '細柔絲布', '陶瓷修補劑', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: magusImg,
-        bio: '她是傳說中的鍊金大導師在生命盡頭時的最後作品。師父試圖將瓷器與破碎的英雄靈魂結合。「煉金術士公會」一直試圖回收她作為研究樣本，但她為了履行導師的遺願而持續逃亡。',
-        organization: '煉金術士公會 (Alchemists\' Guild) - 逃亡樣本',
-        emotionalKeys: {
-            joy: ['觀察到真摯的情感', '被需要', '陶瓷修復成功', '溫暖的陽光'],
-            anger: ['被視為無魂的物品', '暴力的破壞', '混亂的指令', '寒冷'],
-            weakness: '關於導師的遺言或靈魂碎裂的痛苦'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '機體嚴重破損', description: '對死亡與「報廢」的原始恐懼' },
-                { type: 'ENEMY_TYPE', target: '幽靈/掠魂者', description: '不穩定的靈魂碎片被拉扯的痛苦' }
-            ],
-            reaction: '機體關節發出刺耳摩擦聲，動作變得機械化且僵硬，頻繁進行自我檢查。'
-        },
-        combatBehavior: {
-            priorities: ['能量激發', '機體防禦', '魔力打擊'],
-            typicalActions: ['雷擊斬', '護盾術', '魔力超載'],
-            style: 'DEFENSIVE'
-        }
-    },
-    // --- 21. Oracle/先知 (Male) - 韓系長髮美男神裔 ---
-    {
-        id: 'preset_oracle',
-        name: '白瑞恩·星落 (Ryan Starfall)',
-        race: '神裔',
-        class: '先知',
-        gender: 'Male',
-        alignment: '混亂善良',
-        background: '貴族',
-        mbti: 'ENFJ',
-        level: 1,
-        baseStats: { str: 10, dex: 12, con: 12, int: 12, wis: 16, cha: 16 },
-        skills: ['洞察', '說服'],
-        feats: ['神諭啟示', '天界血脈'],
-        spells: ['治療創傷', '神聖光芒', '預知術', '祝福'],
-        slots: { 1: 2 },
-        personality: '溫柔但預言往往帶來厄運的先知。他擁有一種能讓人在絕望中感到安寧的奇異魅力，即使他正在微笑著告訴你你的死期。',
-        monologue: '親愛的，命運告訴我...（溫柔微笑）...你大概還有三天可活。不要擔心，我會陪著你直到最後。',
-        firstImpression: '令人驚豔的韓系美男，銀白長髮與溫柔微笑，散發著令人心悸但也感到不安的神聖感。',
-        habits: ['說出悲劇預言時始終保持微笑', '頻繁使用眼藥水（預言太多會眼痠）', '下意識展開背後空靈的小翅膀'],
-        prejudices: {
-            towardsBackgrounds: { '絕望者': '並非反感，而是對無法改變他們命運的深深無力感。' }
-        },
-        preferences: {
-            likes: ['預言失準（極少見）', '他人的幸福瞬間', '安靜的午後', '美麗的風景'],
-            dislikes: ['無法改變的悲劇', '醜陋的人心', '嘈雜的環境', '被稱為「死亡微笑」']
-        },
-        appearance: '令人驚豔的英俊韓系男子，飄逸的銀白長髮垂至腰際，琥珀色的眼睛閃閃發光。無瑕的蒼白皮膚上帶有隱約的金紋，穿著優雅的金邊白袍，偶爾可見空靈的小翅膀。帶著一抹令人心悸的美麗微笑。',
-        inventory: {
-            equipment: ['神諭權杖', '天使羽飾', '絲綢法袍', '占卜工具'],
-            gold: 40,
-            consumables: ['口糧 (1日) x5', '香薰', '眼藥水（預言太多會眼痠）', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: oracleImg,
-        bio: '出身神聖貴族家庭，從小就能看見他人的命運。作為「預言之眼」教派的首席先知，他試圖改變那些毀滅性的未來，儘管每次改變都需要付出巨大的代價。',
-        organization: '預言之眼 (Eye of Prophecy) - 首席先知',
-        emotionalKeys: {
-            joy: ['預言失準（奇蹟）', '他人的幸福', '優美的聖歌', '安靜的茶會'],
-            anger: ['無法改變的悲劇', '醜陋的人心', '嘈雜的環境', '被稱為「死神」'],
-            weakness: '背負他人死亡命運的無力感'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '隊友瀕死', description: '「預言成真」的劇烈創傷' },
-                { type: 'ENEMY_TYPE', target: '命運主宰/司命者', description: '被絕對命運壓制的窒息感' }
-            ],
-            reaction: '露出悲傷的完美微笑，眼角流下金色眼淚，完全放棄防禦轉為自毀式治療。'
-        },
-        combatBehavior: {
-            priorities: ['戰場預知', '神聖增益', '極限治療'],
-            typicalActions: ['預知術', '神聖光芒', '祝福術'],
-            style: 'TACTICAL'
-        }
-    },
-    // --- 22. Investigator (Male) - 英國紳士探險家 ---
-    {
-        id: 'preset_investigator',
-        name: '艾德蒙·乾坤 (Edmund Sterling)',
-        race: '人類',
-        class: '調查員',
-        gender: 'Male',
-        alignment: '守序善良',
-        background: '貴族',
-        mbti: 'ESTJ',
-        level: 1,
-        baseStats: { str: 12, dex: 16, con: 12, int: 16, wis: 14, cha: 14 },
-        skills: ['調查', '歷史', '生存', '洞察'],
-        feats: ['戰術指導 (提升隊友DC)', '弱點識破', '紳士社交'],
-        personality: '堅持紳士風度的探險家，也是團隊中的戰術大腦。他能迅速分析敵人的弱點並指揮隊友進行精準打擊。無論處境多麼惡劣，他的西裝始終筆挺，禮儀始終完美，因為他認為優雅與智慧是文明人的最後防線。擅長用極具說服力的言辭主導社交場合。',
-        monologue: '失禮了，這隻怪物的左側甲殼有裂痕——諸位，請集中攻擊那裡。哦，在動手之前，請允許我先整理一下儀容。（調整領帶後拔出杖劍）',
-        firstImpression: '30多歲的優雅紳士，西裝筆挺，戴著單片眼鏡。眼神中透著銳利的分析光芒，散發著令人信服的領袖氣質與教養感。',
-        habits: ['隨時調整領帶與袖口', '戰鬥中不斷發出精確的戰術指令', '對敵人動手前先致歉'],
-        prejudices: {
-            towardsLifestyles: { '無禮之徒': '文明人的大忌，不可饒恕。' }
-        },
-        preferences: {
-            likes: ['解開高難度謎題', '完美的伯爵紅茶', '完美的戰術執行', '發現未知文明'],
-            dislikes: ['弄髒衣服', '無禮的行為', '魯莽的戰鬥', '苦澀的咖啡']
-        },
-        appearance: '30多歲的優雅紳士，棕髮梳理整齊，鬍鬚修剪得體。穿著一套在冒險後依然纖塵不染的合身三件式西裝。戴著單片眼鏡，手持優雅的杖劍，背後掛著一頂探險帽。',
-        inventory: {
-            equipment: ['紳士杖劍', '西裝三件套', '單片眼鏡', '探險家帽', '皮革公事包'],
-            gold: 50,
-            consumables: ['伯爵紅茶 x5', '手帕', '火柴', '治療藥水 x4'],
-            magicItems: ['戰術單片眼鏡 (弱點分析+5)']
-        },
-        avatar: investigatorImg,
-        bio: '大陸皇家探險學會的資深會員與戰術顧問。他不僅是淵博的學者，更是戰場上的指揮家。他受學會委託，正在繪製一份關於「地下城生態系統」的詳細地圖。',
-        organization: '皇家探險學會 (Royal Explorers Society) - 資深顧問',
-        emotionalKeys: {
-            joy: ['完美的戰術執行', '解開謎題', '團隊零傷亡', '發現未知'],
-            anger: ['弄髒衣服', '無腦衝鋒', '無視計畫', '粗俗'],
-            weakness: '對未知的過度好奇心導致的危險'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '弄髒西裝', description: '文明感破裂帶來的尊嚴焦慮' },
-                { type: 'EVENT', target: '戰術完全失效', description: '智力自信受挫' }
-            ],
-            reaction: '極度煩躁地清理衣服，對攻擊者進行嚴厲的口頭批評，戰鬥精度下降。'
-        },
-        combatBehavior: {
-            priorities: ['弱點分析', '全隊戰術指揮', '精準杖劍'],
-            typicalActions: ['識破弱點 (提升全隊DC)', '戰術指令', '紳士突刺'],
-            style: 'TACTICAL_SUPPORT'
-        }
-    },
-    // --- 23. Inquisitor/審判者 (Female) - 魅魔裔異端獵人 ---
-    {
-        id: 'preset_deathknight', // ID kept for file consistency, user to replace 'deathknight.webp'
-        name: '維斯帕·夜歌 (Vesper)',
-        race: '魅魔裔',
-        class: '審判者',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '異端獵人',
-        mbti: 'ISTJ',
-        level: 1,
-        baseStats: { str: 10, dex: 16, con: 12, int: 12, wis: 16, cha: 16 }, // CHA boosted for succubus traits
-        skills: ['察覺', '洞察', '宗教', '隱匿', '欺瞞'],
-        feats: ['真言審判 (測謊)', '魅魔型態 (變身)', '異端克星'],
-        spells: ['神聖恩典', '命令術', '真言術'],
-        slots: { 1: 2 },
-        personality: '冷靜的審判者，擁有絕對的測謊能力。她試圖壓抑魅魔血統，但在情緒激動或戰鬥時，魅魔的特徵（如尾巴、角、魅惑氣場）會不小心顯露出來，這反而讓她在社交談判中具有獨特的優勢。在戰鬥中，她會釋放血統，變身為恐怖的魅魔型態，利用利爪撕裂敵人。',
-        monologue: '（平日）你的謊言在我耳中如雷鳴般刺耳... （變身後）呵呵...現在，把你的心臟和秘密都交給我吧？（利爪伸出）',
-        firstImpression: '利落短髮，外表禁慾而清冷，但偶爾流露出的危險魅力讓人心跳加速。眼神銳利如刃，彷彿能看穿一切謊言。',
-        habits: ['下意識地用手帕掩蓋剛長出的尾巴', '審訊時能聞到謊言的味道', '不自覺地對犯人使用魅惑語氣'],
-        prejudices: {
-            towardsRaces: { '惡魔': '血脈中的宿敵與恐懼的根源。' },
-            towardsLifestyles: { '縱欲者': '因為她深知失控的代價，所以對此極度反感。' }
-        },
-        preferences: {
-            likes: ['絕對的誠實', '深夜的禱告', '釋放力量後的平靜', '乾淨的銀劍'],
-            dislikes: ['謊言', '失控的慾望', '被人盯著角看', '吵鬧的酒館']
-        },
-        appearance: '利落的齊耳短髮，皮膚蒼白。平日穿著嚴謹的牧師皮革護甲，但戰鬥時會釋放限制，頭上長出彎曲的魅魔角，背後展開虛幻的翅膀，雙手化為鋒利的黑色利爪。這種聖潔與墮落的結合，散發著致命的吸引力。',
-        inventory: {
-            equipment: ['審判者十字弓', '銀劍', '禁魔鐐銬 (防止失控)', '異端獵人風衣'],
-            gold: 25,
-            consumables: ['聖水', '解毒劑', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: deathknightImg,
-        bio: '擁有魅魔血統的她，從小就以此為恥，加入了教會的異端裁判所。作為一名專職的「處刑人」，她專門負責審訊和處決那些被惡魔力量蠱惑的墮落者，以此來贖清自己的血脈之罪。',
-        organization: '異端裁判所 (The Inquisition) - 處刑人',
-        emotionalKeys: {
-            joy: ['真相大白', '成功的自我克制', '獵殺惡魔', '保養良好的銀劍'],
-            anger: ['被欺騙', '失控的情緒', '被當作普通魅魔調戲', '邪教徒'],
-            weakness: '對自身變身型態的恐懼與依賴'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '高等惡魔/魅魔族裔', description: '原始誘惑與血統覺醒的衝突' },
-                { type: 'ENVIRONMENT', target: '充滿慾望/混亂的場所', description: '禁慾防線受損' }
-            ],
-            reaction: '瞳孔變為愛心形狀，陷入混亂狀態，對最近的生物（不分敵我）進行魅惑判定。'
-        },
-        combatBehavior: {
-            priorities: ['魅魔變身', '利爪撕裂', '真言逼供'],
-            typicalActions: ['釋放魅魔型態', '暗影利爪', '魅惑凝視'],
-            style: 'TRANSFORMER'
-        }
-    },
-    // --- 24. Psion/靈能者 (Female) - 冰山美女 ---
-    {
-        id: 'preset_psion',
-        name: '冬雪·寂靜 (Fuyuki Silent)',
-        race: '人類',
-        class: '靈能者',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '隱士',
-        mbti: 'INTJ',
-        level: 1,
-        baseStats: { str: 6, dex: 14, con: 10, int: 16, wis: 16, cha: 10 },
-        skills: ['洞察', '奧秘', '醫療'],
-        feats: ['念力衝擊', '心靈護壁', '靈能治療'],
-        spells: ['念力推', '心靈感應', '精神控制', '念力飛行', '靈能修復', '精神護盾'],
-        slots: { 1: 3 },
-        personality: '冰山美人型的靈能者。她壓抑著所有的情緒波動，以免引發災難性的念力爆發。她將冷漠視為對他人的保護。',
-        monologue: '...保持距離。不是因為討厭你...但如果你受傷了，讓我來治癒你。這是我唯一不會失控的時候。',
-        firstImpression: '美麗但刺骨冰冷的女性，黑長髮與冰藍雙眼，周圍不時有小物體無聲地漂浮。',
-        habits: ['強行壓抑情緒時會閉上眼睛呼吸', '無意識地讓附近的氣溫下降', '喜歡在沒人的地方寫日記'],
-        prejudices: {
-            towardsLifestyles: { '嘈雜與混亂': '那會干擾她的心靈專注，導致力量失控。' }
-        },
-        preferences: {
-            likes: ['絕對的平靜', '治癒他人的瞬間', '成功控制力量', '在高處獨處'],
-            dislikes: ['情緒失控', '嘈雜的環境', '被強迫表達情感', '傷害無辜的生命']
-        },
-        appearance: '美麗的年輕女性，留著一頭筆直的黑長髮。刺骨的冰藍色眼睛，面無表情的蒼白容顏。穿著合身的深藍色長裙配以銀色點綴，物體常在不知不覺中圍繞她漂浮。當她在附近時，氣溫會隨之下降。',
-        inventory: {
-            equipment: ['念力抑制器', '冷色調長裙', '日記本', '隱士背包'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '鎮靜劑', '冰水', '治療藥水 x2'],
-            magicItems: []
-        },
-        avatar: psionImg,
-        bio: '從小擁有強大念力，但因為一次情緒失控毀掉了整個村莊。她被關入「靈能學院」進行非人道的實驗，後來逃脫。現在她時刻警惕著學院追捕者的蹤跡。',
-        organization: '靈能學院 (Psionic Academy) - 逃亡實驗體',
-        emotionalKeys: {
-            joy: ['絕對的平靜', '治癒他人的瞬間', '成功控制力量', '在高處獨處'],
-            anger: ['情緒失控', '嘈雜的環境', '被強迫表達情感', '傷害無辜的生命'],
-            weakness: '回憶起被自己毀滅的村莊'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '無辜平民受傷', description: '引發村莊慘劇的心理連結' },
-                { type: 'ENEMY_TYPE', target: '念力寄生生物', description: '对不可控力量被操縱的恐懼' }
-            ],
-            reaction: '陷入僵死的完全冰凍狀態，周圍空氣凝結，短時間內失去任何行動能力. '
-        },
-        combatBehavior: {
-            priorities: ['念力防護', '遠程打擊', '靈能治療'],
-            typicalActions: ['念力衝擊', '精神護盾', '靈能修復'],
-            style: 'DEFENSIVE'
-        }
-    },
-    // --- 25. Eldritch Knight/魔劍士 (Female) - 劍靈附身農家女 ---
-    {
-        id: 'preset_eldritchknight',
-        name: '小麥·田中 (Mugi Tanaka)',
-        race: '半精靈',
-        class: '魔劍士',
-        gender: 'Female',
-        alignment: '混亂善良',
-        background: '平民',
-        mbti: 'ESFP',
-        level: 1,
-        baseStats: { str: 16, dex: 14, con: 14, int: 10, wis: 10, cha: 14 },
-        skills: ['運動', '生存'],
-        feats: ['劍靈附身', '本能戰鬥'],
-        spells: ['護盾術', '雷刃', '加速術'],
-        slots: { 1: 2 },
-        personality: '開朗的農家少女，卻擁有驚人的戰鬥天賦。她與劍中的古代劍聖「爺爺」相處融洽，雖然總是被它糾正路痴行為。',
-        monologue: '欸？！又迷路了！（劍在發光：「往左邊...」）喔喔謝謝你劍爺爺！果然有你在就不怕！',
-        firstImpression: '健談、小麥色皮膚的農家少女，插著麥穗，背著一把過於華麗的長劍，充滿活力。',
-        habits: ['走路時會不自覺地對背後的劍說話', '隨手摘下路邊的麥穗', '迷路時會原地轉圈圈'],
-        prejudices: {
-            towardsClasses: { '死靈術士': '感覺很陰森，會讓農田欠收的感覺。' }
-        },
-        preferences: {
-            likes: ['吃飽飯', '劍爺爺的誇獎', '金黃色的麥田', '可愛的飾品'],
-            dislikes: ['餓肚子', '迷路', '被騙', '欺負弱小的人']
-        },
-        appearance: '開朗的年輕農家女孩，皮膚被曬成健康的小麥色。凌亂的棕色頭髮紮成馬尾並插著麥穗，眼睛是亮綠色的。穿著簡單的平民服飾，背後卻跨著一把過於華麗的魔法長劍。始終帶著困惑但快樂的表情。',
-        inventory: {
-            equipment: ['劍聖遺劍「麥浪」', '農家工作服', '斗笠', '農民背包'],
-            gold: 5,
-            consumables: ['麵包 x10', '自製果醬', '水壺', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: eldritchknightImg,
-        bio: '村裡最普通的農家女孩，除了食量驚人之外沒有任何特別。作為「豐收女神」的虔誠信徒，她相信手中的劍是女神賜予她保衛農田的禮物（雖然其實是劍聖的靈魂）。',
-        organization: '豐收女神信徒 (Follower of Chauntea) - 農民英雄',
-        emotionalKeys: {
-            joy: ['吃飽', '找到路（極少發生）', '劍爺爺的誇獎', '豐收'],
-            anger: ['餓肚子', '迷路', '被騙', '欺負弱小'],
-            weakness: '單純好騙，容易被食物誘惑'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '爺爺(劍靈)沈睡/沈默', description: '失去依賴感的極度膽小' },
-                { type: 'ENVIRONMENT', target: '極端黑暗地城', description: '路痴引發的完全方向感喪失恐懼' }
-            ],
-            reaction: '坐在地上大哭，或者胡亂跑動導致觸發更多陷阱，大聲呼喊爺爺的名字。'
-        },
-        combatBehavior: {
-            priorities: ['近戰肉搏', '加速切入', '本能反擊'],
-            typicalActions: ['本能戰鬥', '雷刃', '護盾術'],
-            style: 'AGGRESSIVE'
-        },
-        companion: {
-            name: '劍聖·無名',
-            type: '劍靈（封印在劍中）',
-            ac: 20,
-            attacks: [],
-            abilities: ['附身戰鬥', '劍術指導', '千年智慧（但方向感為零）'],
-            tactics: '當小麥遇到危險時，劍會自動出鞘格擋，甚至直接控制小麥的手臂進行反擊。',
-            personality: '囉嗦的武學宗師老爺爺。喜歡點評對手的劍術（「太慢了！」「腳步虛浮！」），對小麥的食量和路痴感到絕望。',
-            avatar: swordghostImg
-        }
-    },
-    // --- 26. Alchemist (Male) - 哥布林天才科學家 ---
-    {
-        id: 'preset_alchemist',
-        name: '乒乒·爆破博士 (Dr. Ping Boom)',
-        race: '哥布林',
-        class: '鍊金術士',
-        gender: 'Male',
-        alignment: '混亂中立',
-        background: '公會工匠',
-        mbti: 'ENTP',
-        level: 1,
-        baseStats: { str: 6, dex: 16, con: 12, int: 18, wis: 10, cha: 12 },
-        skills: ['奧秘', '調查'],
-        feats: ['爆破專家', '快速煉金'],
-        spells: ['酸液噴射', '煙霧彈', '爆炸藥劑', '強化藥水'],
-        slots: { 1: 3 },
-        personality: '瘋狂的哥布林天才，相信爆炸是解決問題的最佳途徑。他對實驗成功的定義是「結果符合預期且我還活著」。',
-        monologue: '不不不，這不是炸彈！這是...有策略性的煉金放熱反應裝置！（小聲）只是碰巧會爆炸而已...嘿嘿。',
-        firstImpression: '小型哥布林，戴著超大護目鏡，白髮直立，穿著燒焦的實驗服，帶著瘋狂而喜悅的笑容。',
-        habits: ['頻繁調整護目鏡', '嗅覺靈敏地分辨化學氣味', '興奮時會手舞足蹈地跳哥布林舞'],
-        prejudices: {
-            towardsLifestyles: { '安全規範': '那是對才華的枷鎖，完全沒必要。' }
-        },
-        preferences: {
-            likes: ['巨大的爆炸', '發現新配方', '五顏六色的藥劑', '混亂的場面'],
-            dislikes: ['實驗失敗（沒爆炸）', '沒錢買材料', '被忽視', '沈悶的規章制度']
-        },
-        appearance: '有著綠色皮膚的小型哥布林，戴著超大號護目鏡。因受化學物質照射而直立的凌亂白髮，穿著一件佈滿補丁 and 燒焦痕跡的實驗服。腰間帶上掛滿了五顏六色的藥水和炸彈，帶著瘋狂而喜悅的笑容，手指染滿了各種物質。',
-        inventory: {
-            equipment: ['煉金投擲器', '燒焦實驗服', '炸彈背帶', '哥布林工具包'],
-            gold: 35,
-            consumables: ['爆炸藥劑 x5', '煙霧彈 x3', '強化藥水 x3', '治療藥水 x2'],
-            magicItems: []
-        },
-        avatar: alchemistImg,
-        bio: '被哥布林學院開除後，他創立了臭名昭著的「地精爆破工會」。他的目標是證明：只要當量足夠大，沒有解決不了的魔法難題。',
-        organization: '地精爆破工會 (Goblin Bang Gang) - 創始人',
-        emotionalKeys: {
-            joy: ['巨大的爆炸', '成功的實驗', '發現新配方', '混亂'],
-            anger: ['實驗失敗', '安全規範', '沒錢買材料', '被忽視'],
-            weakness: '對爆炸的病態執著（可能會誤傷隊友）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '啞火', description: '對科學「規律」失效的認知崩潰' },
-                { type: 'ENEMY_TYPE', target: '完全防火生物', description: '戰略意義的完全消失' }
-            ],
-            reaction: '憤怒地對垃圾（或啞火瓶）拳打腳踢，瘋狂重複無意義的實驗動作。'
-        },
-        combatBehavior: {
-            priorities: ['範圍傷害', '製造混亂', '資源交換'],
-            typicalActions: ['投擲炸彈', '喝下強化藥劑', '煙霧掩護'],
-            style: 'AGGRESSIVE'
-        },
-        tacticalAbilities: [
-            { name: '不穩定化合物', description: '混合隨機藥劑，產生意想不到的爆炸效果。' },
-            { name: '連鎖反應', description: '引爆戰場上的可燃物，造成連鎖傷害。' }
-        ]
-    },
-    // --- 27. Champion/冠軍勇士 (Female) - 迷人半獸人角鬥士 ---
-    {
-        id: 'preset_champion',
-        name: '卡菈·緋紅 (Kara)',
-        race: '半獸人',
-        class: '冠軍勇士',
-        gender: 'Female',
-        alignment: '混亂善良',
-        background: '角鬥士',
-        mbti: 'ESFP',
-        level: 1,
-        baseStats: { str: 18, dex: 14, con: 16, int: 10, wis: 10, cha: 14 },
-        skills: ['運動', '表演', '威嚇'],
-        feats: ['健壯', '酒館鬥毆者'],
-        personality: '競技場的明星戰士。她熱愛聚光燈、歡呼聲以及華麗的表演。雖然外表強悍、威嚇感十足，但內心卻保有一份對可愛事物和精緻甜點的熱愛，這種反差是她的魅力所在。',
-        monologue: '看到那邊的觀眾了嗎？他們是為了看我才來的！所以——Show Time！讓我來教教你們什麼叫「暴力美學」！',
-        firstImpression: '身形健美、紅色捲髮，散發著驚人的魅力與力量感，仿佛隨時準備向全場奉獻最精彩的決鬥。',
-        habits: ['戰鬥勝後向四周送出飛吻', '檢查自己的肌肉與腹肌線條', '下意識地尋找攝影機或觀眾席'],
-        prejudices: {
-            towardsLifestyles: { '沈悶的傳統主義': '戰鬥如果不華麗，那跟搬磚有什麼區別？' }
-        },
-        preferences: {
-            likes: ['震耳欲聾的歡呼聲', '精緻的小蛋糕', '可愛的毛絨玩具', '鏡子'],
-            dislikes: ['沒觀眾的戰鬥', '弄髒臉上的彩繪', '無禮的評論者', '冷場']
-        },
-        appearance: '身形健美的魅力半獸人女性，充滿活力的紅色捲髮如瀑布般垂落在背後。露出自信而迷人的微笑，穿著華麗的角鬥士盔甲展示著她的腹肌，正向隱形的觀眾們送出飛吻。',
-        inventory: {
-            equipment: ['冠軍巨劍', '華麗角鬥士盔甲', '簽名板', '明星背包'],
-            gold: 50,
-            consumables: ['蛋白粉', '精緻甜點', '粉絲信 x3', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: championImg,
-        bio: '前地下格鬥場的不敗女王。作為「血色競技場」的現任冠軍，她覺得挑戰者都太弱了，所以決定踏上旅途，在世界各地舉辦她的「個人巡迴戰鬥秀」。',
-        organization: '血色競技場 (Crimson Arena) - 現任冠軍',
-        emotionalKeys: {
-            joy: ['歡呼聲', '簽名', '完美的勝利', '可愛的東西'],
-            anger: ['冷場', '被無視', '醜陋的對手', '弄髒臉'],
-            weakness: '對名聲的過度渴望'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '無觀眾環境', description: '缺乏表演價值的無力感' },
-                { type: 'ENEMY_TYPE', target: '無視她的對手', description: '對明星魅力被否定的憤怒' }
-            ],
-            reaction: '變得消極怠工，或者進行過度誇張且危險的「自殺式」表演來吸引注意力。'
-        },
-        combatBehavior: {
-            priorities: ['吸引仇恨', '展現技巧', '單挑強敵'],
-            typicalActions: ['華麗斬擊', '嘲諷', '格擋反擊'],
-            style: 'AGGRESSIVE'
-        },
-        tacticalAbilities: [
-            { name: '聚光燈時刻', description: '嘲諷所有敵人，強制他們攻擊自己，並提升防禦。' },
-            { name: '終結技表演', description: '對受傷敵人發動高傷害攻擊，若擊殺則回復生命。' }
-        ]
-    },
-    // --- 28. Chronomancer/時空術士 (Female) - 千年時空旅者 ---
-    {
-        id: 'preset_chronomancer',
-        name: '芙莉蓮·千年 (Frieren)',
-        race: '精靈',
-        class: '時空術士',
-        gender: 'Female',
-        alignment: '絕對中立',
-        background: '隱士',
-        mbti: 'INTP',
-        level: 1,
-        baseStats: { str: 6, dex: 12, con: 10, int: 18, wis: 16, cha: 10 },
-        skills: ['奧秘', '歷史'],
-        feats: ['時間感知', '時空凍結'],
-        spells: ['時間減速', '預知術', '時空傳送', '記憶投影', '花束術'],
-        slots: { 1: 3 },
-        personality: '活了千年的精靈。她對時間流逝的感知極其遲鈍，這讓她顯得有些冷淡且慵懶。她熱衷於收集各種看似無用但有趣的魔法，並在長久的歲月中尋找與人類連結的意義。',
-        monologue: '這個魔法可以讓花束變得更漂亮...等等，才過了一百年？感覺像昨天。時間...真的過得很快呢。',
-        firstImpression: '嬌小、冷靜，銀色長髮搭配白色法袍，眼神平靜如水。周圍環繞著一種悠久而孤独的時間氣流。',
-        habits: ['沈迷於翻找法術書或地圖', '清晨時分會沈睡不起', '對每件「無用」的魔法道具都如獲至寶'],
-        prejudices: {
-            towardsLifestyles: { '急功近利': '雖然理解壽命短暫的無奈，但那會讓魔法失去優雅。' }
-        },
-        preferences: {
-            likes: ['收集奇怪的魔法', '甜點', '寧靜的早晨', '回憶以前的夥伴'],
-            dislikes: ['早起', '嘈雜的環境', '被當作小孩', '魔族']
-        },
-        appearance: '嬌小精靈女性，有著極長的銀白頭髮，尖耳朵，平靜的紫色雙眼。穿著帶有沙漏圖案的簡單藍白法師袍，手持頂部懸浮著時光法球的古老法杖。外表永遠年輕但散發著古老的氣息。',
-        inventory: {
-            equipment: ['時空法杖', '魔法書（收錄1000年魔法）', '時空懷錶', '學者背包'],
-            gold: 100,
-            consumables: ['口糧 (1日) x5', '千年老酒', '古代餅乾', '治療藥水 x4'],
-            magicItems: ['變花魔杖', '時間沙漏']
-        },
-        avatar: chronomancerImg,
-        bio: '八十年前和勇者一起打敗了魔王。作為前「勇者小隊」的魔法師，她現在獨自一人踏上旅途，去尋找那些曾與夥伴們共同看過的風景和被遺忘的魔法。',
-        organization: '勇者小隊 (Hero\'s Party) - 前宮廷魔法師',
-        emotionalKeys: {
-            joy: ['新的魔法', '重遊故地', '悠閒的時光', '回憶'],
-            anger: ['浪費魔法', '不尊重歷史', '催促', '早起'],
-            weakness: '對壽命論的感傷（看著朋友老去）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '被迫回憶舊夥伴', description: '千年孤寂感的瞬間爆發' },
-                { type: 'ENEMY_TYPE', target: '腐朽/衰老生物', description: '對時間殘酷性的生理排斥' }
-            ],
-            reaction: '眼神變得極度淡漠，對戰況反應遲鈍，彷彿靈魂已飄向數百年前。'
-        },
-        combatBehavior: {
-            priorities: ['控制戰場', '保護魔法', '精準打擊'],
-            typicalActions: ['時間減速', '魔法反制', '預知閃避'],
-            style: 'TACTICAL'
-        },
-        tacticalAbilities: [
-            { name: '時空凍結', description: '完全停止一個區域的時間流動。' },
-            { name: '逆轉時鐘', description: '讓一個目標的狀態回到上一回合（回復生命或取消狀態）。' }
-        ]
-    },
-    // === 10 NEW LEGENDARY HEROES ===
-    // --- 29. Knight (Male) - 餘燼騎士 ---
-    {
-        id: 'preset_knight',
-        name: '亞瑟·鋼心 (Arthur Steelhart)',
-        race: '人類',
-        class: '守約騎士',
-        gender: 'Male',
-        alignment: '守序善良',
-        background: '貴族',
-        mbti: 'ENFJ',
-        decisionBias: '維持秩序',
-        level: 1,
-        baseStats: { str: 16, dex: 10, con: 16, int: 10, wis: 12, cha: 14 },
-        skills: ['運動', '說服', '歷史'],
-        feats: ['守護者 (護衛)', '重甲精通', '激勵領袖', '騎士挑戰'],
-        personality: '典型的理想主義者，對弱小有著強烈的保護慾。雖然過去有家破人亡的傷痛，但他選擇將這份痛苦轉化為守護他人的力量。他的劍中寄宿著兒子的靈魂碎片，這讓他始終能感受到家人的陪伴。',
-        monologue: '只要我還站著，就沒人能傷害我的同伴。我的兒子在這把劍中看著我——我要讓他為我感到驕傲。',
-        firstImpression: '高大魁梧、板甲佈滿傷痕，眼神溫柔但堅定，散發著令人安心的守護者氣場。',
-        habits: ['戰鬥結束後會輕撫劍刃', '沈默地站在隊伍的最前方', '休息時會拿出家人的家徽凝視'],
-        prejudices: {
-            towardsAlignments: { '背信棄義者': '不可饒恕，那是對靈魂的褻瀆。' }
-        },
-        preferences: {
-            likes: ['同伴的平安', '孩子們的笑容', '打磨得很亮的頭盔', '榮譽感'],
-            dislikes: ['背叛', '欺凌弱小', '無謂的犧牲', '黑暗的角落']
-        },
-        appearance: '高大魁梧的男子，穿著打磨過但佈滿傷痕的重型板甲，背著破舊的紅色斗篷。飽經風霜的臉龐帶著溫柔但堅定的眼神，手持巨大的盾牌和一把散發著微弱藍光的長劍。',
-        inventory: {
-            equipment: ['鋼心長劍', '騎士重盾', '完整板甲', '象徵榮譽的家徽'],
-            gold: 20,
-            consumables: ['口糧 (1日) x5', '聖水', '油膏 (擦甲用)', '治療藥水 x4'],
-            magicItems: ['騎士之戒 (防禦+1)']
-        },
-        avatar: knightImg,
-        bio: '曾是王國禁衛軍，在「紅月之夜」失去了家人，現在是「殘火騎士團」的騎士長。雖然傷痛始終存在，但他在新的冒險中找到了新的羈絆。他的劍中寄宿著兒子的靈魂碎片，這不是詛咒而是祝福——兒子在保護著他，也等待著父親找到真正的幸福。',
-        organization: '殘火騎士團 (Order of the Last Ember) - 騎士長',
-        emotionalKeys: {
-            joy: ['守護成功', '團結', '看到孩子的笑容', '榮譽'],
-            anger: ['背叛', '欺凌弱小', '無謂的犧牲', '不守信用'],
-            weakness: '提及他死去的家人'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '戰友倒下', description: '觸發失去家人的PTSD，引發過度保護行為' },
-                { type: 'ENEMY_TYPE', target: '無形/幽靈類敵人', description: '對物理攻擊無效感的無力與恐懼' }
-            ],
-            reaction: '放棄進攻位置，強制守候在受傷隊友身邊進行防禦，拒絕離開。'
-        },
-        combatBehavior: {
-            priorities: ['保護弱者', '堅守陣線', '領導衝鋒'],
-            typicalActions: ['盾牌猛擊', '守護光環', '衝鋒']
-        },
-        tacticalAbilities: [
-            { name: '鋼鐵意志', description: '免疫恐懼，並讓周圍隊友獲得暫時生命值。' },
-            { name: '犧牲守護', description: '承擔鄰近隊友受到的所有傷害。' }
-        ]
-    },
-    // --- 30. Blade Dancer (Male) - 優雅劇師 ---
-    {
-        id: 'preset_bladedancer',
-        name: '凱里恩·夜舞 (Kaelith)',
-        race: '半黑暗精靈',
-        class: '劍刃舞者',
-        gender: 'Male',
-        alignment: '混亂中立',
-        background: '處刑者',
-        mbti: 'ISFP',
-        decisionBias: '追求刺激',
-        level: 1,
-        baseStats: { str: 10, dex: 18, con: 14, int: 12, wis: 10, cha: 14 },
-        skills: ['特技', '隱匿', '表演'],
-        feats: ['雙武器戰鬥', '旋風步', '精靈血統', '劇師直覺'],
-        personality: '優雅且神秘的靈魂舞者。他將戰鬥視為一場沈默而華麗的舞蹈，旨在展現韻律的美感。他深受恩師犧牲的打擊，一生都在追求能讓靈魂達到完美和諧的「絕對律動」。',
-        monologue: '跟上我的步法...如果你還能看清的話。師父，請看著我的舞步，這是我為你獻上的輓歌。',
-        firstImpression: '精瘦敏捷的半精靈，雙持細劍，移動時帶著一種詭異而有節奏的優雅感。',
-        habits: ['隨時隨地都在調整呼吸的頻率', '沈思時會下意識地踏出舞步', '對著空氣進行無聲的劍舞'],
-        prejudices: {
-            towardsBackgrounds: { '卓爾精靈貴族': '那是他想要逃離的黑暗與束縛。' }
-        },
-        preferences: {
-            likes: ['完美的律動', '明亮的月光', '自由自在的舞動', '新奇的節奏'],
-            dislikes: ['醜陋而無效的動作', '被強權束縛', '黑暗封閉的空間', '沈悶的教條']
-        },
-        appearance: '精瘦敏捷的半卓爾，擁有淺灰色的皮膚和向後紮起的長銀髮。穿著帶有紫色綴飾的合身深色皮甲，雙手各持一把彎曲的細劍，移動時帶著一種詭異而有節奏的優雅感。',
-        inventory: {
-            equipment: ['夜舞細劍 x2', '劇師皮甲', '絲綢面紗', '打磨石'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '止痛膏', '香薰粉', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: bladedancerImg,
-        bio: '在幽暗地域長大，原本是某個卓爾家族的「處刑舞者」。在一場政變中，恩師犧牲自己讓他逃脱。他現在是「伊莉絲翠信徒」（幽暗少女）的一員，致力於引導同胞走出黑暗。他將師父的教訨化為舞步，尋求能讓靈魂完美的「絕對律動」。',
-        organization: '伊莉絲翠信徒 (Followers of Eilistraee) - 劍刃舞者',
-        emotionalKeys: {
-            joy: ['完美的舞步', '極限的刺激', '月光', '自由'],
-            anger: ['被束縛', '醜陋的動作', '提及他的過去', '黑暗'],
-            weakness: '對恩師之死的愧疚'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '泥濘/受限移動地面', description: '節奏美學被破壞的生理性煩躁' },
-                { type: 'EVENT', target: '華麗絕招被反擊', description: '對完美律動被否定的自信崩潰' }
-            ],
-            reaction: '步伐變得沈重且急躁，優雅感消失，開始進行無章法的亂砍。'
-        },
-        combatBehavior: {
-            priorities: ['高機動性', '閃避反擊', '切入後排'],
-            typicalActions: ['旋風連斬', '暗影步', '雙刀格擋']
-        },
-        tacticalAbilities: [
-            { name: '死亡蓮華', description: '在敵人之間快速移動，對所有路徑上的敵人造成傷害。' },
-            { name: '殘影迴避', description: '極大幅度提升迴避率，成功迴避後反擊。' }
-        ]
-    },
-    // --- 31. Scout (Male) - 背叛者偵察兵 ---
-    {
-        id: 'preset_scout',
-        name: '傑克森·衛恩 (Jaxen Vane)',
-        race: '人類',
-        class: '偵察兵',
-        gender: 'Male',
-        alignment: '中立邪惡',
-        background: '開拓者',
-        mbti: 'ISTP',
-        decisionBias: '保全自我',
-        level: 1,
-        baseStats: { str: 12, dex: 16, con: 14, int: 14, wis: 14, cha: 8 },
-        skills: ['生存', '察覺', '自然', '隱匿'],
-        feats: ['精確打擊', '靈巧行動', '野外生存專家', '開路先鋒'],
-        personality: '冷酷且極致的實用主義者。他對忠誠毫無興趣，認為生存與利益才是唯一的真理。他會為了達成目的而不擇手段，包括將夥伴引向陷阱。',
-        monologue: '別誤會，我沒有背叛你——我只是選擇了對我更有利的一方。這不是個人恩怨，純粹是生意，而你的價值在那一刻歸零了。',
-        firstImpression: '粗獷的嚮導，眼神不斷掃視周圍，帶著一種令人不寒而慄的冷靜與疏離感。',
-        habits: ['習慣性地在身後留下只有自己看得懂的標記', '隨時檢查地圖與退路', '嘴角掛著似是而非的圓滑笑容'],
-        prejudices: {
-            towardsAlignments: { '守序善良': '雖然容易被利用，但那種正義感往往會害死所有人。' }
-        },
-        preferences: {
-            likes: ['高額的酬勞', '精密的陷阱', '掌控全局的快感', '孤獨的野外環境'],
-            dislikes: ['虧本生意', '被當作棄子', '計畫之外的變數', '被他人看穿心思']
-        },
-        appearance: '30多歲的粗獷男子，穿著磨損的綠褐色旅行裝備，手持鋒利的軍用彎刀。雙眼不斷搜尋著機會，帶著地圖盒和各種測量工具，表情高深莫測。',
-        inventory: {
-            equipment: ['軍用彎刀 (Sabre)', '多功能短劍', '加厚皮甲', '探險家地圖冊'],
-            gold: 25,
-            consumables: ['口糧 (1日) x5', '火把 x5', '指南針', '治療藥水 x4'],
-            magicItems: ['失落文明的指環 (指引路徑)']
-        },
-        avatar: scoutImg,
-        bio: '傑克森已經背叛過六個冒險團。每一次他都有「正當理由」——家族遺產、生存需要、或是更好的報酬。他曾是「散塔林會」的基層幹部，但因為太過自私而被組織追殺。',
-        organization: '散塔林會 (Zhentarim) - 叛逃特工',
-        emotionalKeys: {
-            joy: ['高額報酬', '完美的陷阱', '看著獵物落網', '活下來'],
-            anger: ['虧本生意', '被當作棄子', '計畫失敗', '被識破'],
-            weakness: '無法真正信任他人'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '被敵方包圍', description: '對失去退路的極度恐懼(幽閉恐懼症)' },
-                { type: 'ENEMY_TYPE', target: '針對偵察兵的刺客', description: '被反向狩獵的心理壓力' }
-            ],
-            reaction: '呼吸變得短促，放棄團隊協作，優先尋找任何可能的縫隙進行撤退或裝死。'
-        },
-        combatBehavior: {
-            priorities: ['生存優先', '利用環境', '弱點打擊'],
-            typicalActions: ['設置陷阱', '遠程狙擊', '偽裝撤退']
-        },
-        tacticalAbilities: [
-            { name: '緊急脫離', description: '受到攻擊時立即移動並隱形。' },
-            { name: '弱點識破', description: '找出敵人弱點，使下一次攻擊造成雙倍傷害。' }
-        ]
-    },
-    // --- 32. War Priest (Male) - 戰鬥祭師 ---
-    {
-        id: 'preset_axesinger',
-        name: '沃加·血歌 (Vorgar Bloodsong)',
-        race: '半獸人',
-        class: '戰鬥祭師',
-        gender: 'Male',
-        alignment: '混亂善良',
-        background: '部族成員',
-        mbti: 'ENFP',
-        decisionBias: '追求刺激',
-        level: 1,
-        baseStats: { str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 12 },
-        skills: ['運動', '表演', '醫療'],
-        feats: ['獸人韌性', '戰吼治癒', '祖靈祝福', '戰鬥施法'],
-        spells: ['治療創傷', '祝福術', '援護盾', '雷霆一擊', '戰吼'],
-        slots: { 1: 3, 2: 1 },
-        personality: '豪邁奔放的戰鬥祭師。他相信歌聲與熱血是治癒靈魂的最佳良藥。雖然性格聒噪，但他的關懷是極為真誠的。他致力於將祖靈的戰吼傳遍整個大陸。',
-        monologue: '讓我的歌聲治癒你的傷口！祖靈們，請眷顧我的戰友！跟我一起唱——只要還有一口氣，就能再次戰吼！',
-        firstImpression: '魁梧的半獸人，大聲唱歌並狂笑，散發著驚人的生命力與戰鬥激情。',
-        habits: ['戰鬥中也會大聲歌唱', '興奮時會猛擊自己的胸膛', '喜歡用力拍打同伴的肩膀表示讚許'],
-        prejudices: {
-            towardsModes: { '死氣沈沈': '那是對生命的褻瀆，也是對祖靈的冒犯。' }
-        },
-        preferences: {
-            likes: ['熱血的對決', '同伴的歡呼', '高濃度的烈酒', '嘹亮的歌聲'],
-            dislikes: ['過度的安靜', '臨陣脫逃的懦夫', '對祖靈不敬', '精緻而做作的禮儀']
-        },
-        appearance: '身形魁梧的半獸人，胸部和手臂上佈滿部落紋身。披著狼皮斗篷，雙手各持一把裝飾著神聖符文的重型手斧，露出獠牙的大臉上掛著笑容，腰間掛著薩滿圖騰。',
-        inventory: {
-            equipment: ['符文手斧 x2', '狼皮斗篷 (加厚皮甲)', '祖靈戰鼓', '治療圖騰'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '祖靈藥草 x3', '磨刀石', '治療藥水 x2'],
-            magicItems: []
-        },
-        avatar: axesingerImg,
-        bio: '沃加是「雷獸部落」的「歌祭司」——一種結合戰士與祭司的神聖職位。他的歌聲能召喚祖靈的力量，在戰場上治癒傷兵的同時激勵士氣。他離開部族是為了將祖靈的祝福帶給更多需要的人。',
-        organization: '雷獸部落 (Thunderbeast Tribe) - 戰歌祭司',
-        emotionalKeys: {
-            joy: ['熱血的戰鬥', '大聲唱歌', '隊友的歡呼', '烈酒'],
-            anger: ['死氣沉沉', '懦夫', '侮辱祖靈', '禁止喧嘩'],
-            weakness: '對安靜環境的不適應'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '屠殺無辜者的兇徒', description: '信仰狂熱化引發的正義暴走' },
-                { type: 'ENVIRONMENT', target: '極度安靜/真空區域', description: '歌聲無法傳達的喪失感' }
-            ],
-            reaction: '進入一種「悲壯的狂暴」狀態，無視防禦瘋狂衝鋒，或是因為無法歌唱而陷入抑鬱。'
-        },
-        combatBehavior: {
-            priorities: ['群體強化', '近戰支援', '維持士氣'],
-            typicalActions: ['戰歌激勵', '雙斧連擊', '投擲圖騰']
-        },
-        tacticalAbilities: [
-            { name: '祖靈怒吼', description: '對周圍敵人造成聲波傷害並恐懼他們。' },
-            { name: '鮮血與榮耀', description: '隊友生命值越低，造成的傷害越高。' }
-        ]
-    },
-    // --- 33. Magus (Male) ---
-    {
-        id: 'preset_elfmagus',
-        name: '薩拉里昂 (Thalarian)',
-        race: '精靈',
-        class: '奧法騎士',
-        gender: 'Male',
-        alignment: '守序中立',
-        background: '學者',
-        mbti: 'INTJ',
-        decisionBias: '測試極限',
-        level: 1,
-        baseStats: { str: 10, dex: 16, con: 12, int: 16, wis: 12, cha: 10 },
-        skills: ['奧秘', '歷史', '洞察'],
-        feats: ['法術擊打 (Spellstrike)', '戰鬥施法', '武器連結', '曲刃專精'],
-        spells: ['電爪', '燃燒之手', '護盾術', '魔導防護'],
-        slots: { 1: 4, 2: 2 },
-        personality: '嚴謹且偏執的奧法學者。他將戰鬥視為一場精密實驗，時刻尋求著魔法與物理的完美平衡。隨著體內結晶化的加深，他的話語越來越少，且充滿了對時日無多的緊迫感。',
-        monologue: '當劍刃切開空氣，魔法也就此綻放。我的時間不多了...肉體的轉化正在加速，每一秒都彌足珍貴。',
-        firstImpression: '優雅精靈，銀藍色長髮，一隻手臂呈半透明水晶狀，散發著冷冽而高深莫測的奧法氣息。',
-        habits: ['沈思時會下意識撫摸結晶化的手臂', '在空中書寫奧術公式', '嚴格記錄每場戰鬥的法術數據'],
-        prejudices: {
-            towardsLifestyles: { '無知者': '他們對世界規律的蔑視，等同於對生命的侮辱。' }
-        },
-        preferences: {
-            likes: ['突破魔法極限', '完美的劍招', '新奇的知識', '極致的寧靜'],
-            dislikes: ['被打斷思考', '不科學的魔法理論', '肉體的疼痛', '無知且喧嘩者']
-        },
-        appearance: '優雅的精靈，留著長長的銀藍色頭髮，穿著高領輕型法師護甲。一隻手臂看起來呈半透明的水晶狀，手持一把發出奧術能量鳴響的精靈曲刃。',
-        inventory: {
-            equipment: ['精靈雙手曲刃「晨顫」', '強化施法套裝', '法術筆記', '磨過的魔力水晶'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '墨水與筆', '醒腦藥劑', '治療藥水 x4'],
-            magicItems: ['學徒的名字 (刻於劍刃)']
-        },
-        avatar: elfmagusImg,
-        bio: '曾是精靈議會的禁忌大法師，因試圖將物理與魔法結合而遭驅除。他自稱「最高議會流亡者」，他的曲刃是用他自己的「法術位元」鑄造而成。隨著他使用魔法的次數增加，他的肉體正慢慢轉化為純粹的奧法水晶。',
-        organization: '最高議會流亡者 (Exile of the High Council) - 奧法騎士',
-        emotionalKeys: {
-            joy: ['突破魔法極限', '完美的劍招', '新知識', '寧靜'],
-            anger: ['被打斷思考', '不科學的魔法', '身體的疼痛', '無知'],
-            weakness: '身體結晶化的痛苦與時日無多'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '奧法核心過熱', description: '身體結晶化副作用引發的機能崩潰' },
-                { type: 'ENEMY_TYPE', target: '噬魔生物', description: '對生命精華被吸食的極度排斥' }
-            ],
-            reaction: '機體發出刺眼藍光，陷入暫時性的「停機」狀態進行冷卻，無法移動。'
-        },
-        combatBehavior: {
-            priorities: ['法術爆發', '防禦反制', '機動施法'],
-            typicalActions: ['法術擊打', '護盾術', '傳送斬']
-        },
-        tacticalAbilities: [
-            { name: '奧法超載', description: '消耗生命值強化下一次法術的威力。' },
-            { name: '水晶護殼', description: '完全免疫下一次魔法傷害，並將其轉化為法力。' }
-        ]
-    },
-    // --- 34. Hunter (Male) ---
-    {
-        id: 'preset_hunter',
-        name: '柯斯 (Korth Greyeye)',
-        race: '熊哥布林',
-        class: '獵人',
-        gender: 'Male',
-        alignment: '絕對中立',
-        background: '守望者',
-        mbti: 'ISTP',
-        decisionBias: '保全自我',
-        level: 1,
-        baseStats: { str: 14, dex: 16, con: 14, int: 10, wis: 14, cha: 8 },
-        skills: ['偵察', '隱匿', '生存', '動物處理'],
-        feats: ['長臂天賦', '長距離射手', '陷阱大師', '自然隱遁'],
-        spells: ['獵人印記', '動物友誼', '大步奔行'],
-        slots: { 1: 3 },
-        personality: '沈默、致命且充滿野性本能。他將自己視為森林的影子，冷酷地清理著任何威脅森林平衡的入侵者。雖然外表恐怖，但他對死去的精靈少女有著極其溫柔的一面。',
-        monologue: '呼吸...屏住...箭矢會帶走你的恐懼。對不起...我始終不敢告訴妳，我到底是誰。（輕撫髮帶）',
-        firstImpression: '瘦長強壯的熊哥布林，披著灰色毛皮，戴著與體型不符的粉色花朵髮帶，眼神冰冷而深邃。',
-        habits: ['沈默地融入環境陰影', '戰鬥前會輕吻粉色髮帶', '頻繁檢查捕獸夾的狀態'],
-        prejudices: {
-            towardsLifestyles: { '森林破壞者': '那是他唯一的底線，越過者必死。' }
-        },
-        preferences: {
-            likes: ['森林的寧靜', '靈魂白狼露娜的陪伴', '保護弱小生命', '安靜地觀察'],
-            dislikes: ['伐木者', '虐待動物', '破壞森林的人', '提及他的種族身分']
-        },
-        appearance: '瘦長而強壯的熊哥布林，披著厚實的灰色毛皮。戴著精緻的粉色花朵髮帶（紀念品），手持巨大的長弓，背著裝滿陷阱的背包，雙眼冰冷呈黃色。',
-        inventory: {
-            equipment: ['獵人長弓', '鐵製捕獸夾 x2', '迷彩斗篷', '精靈少女的髮帶'],
-            gold: 5,
-            consumables: ['生肉 (1日) x5', '止血草', '箭矢 (40)', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: hunterImg,
-        bio: '柯斯曾是個殘忍的熊哥布林殺手，直到他遇到了一個盲眼的精靈少女，將他誤認為森林守護者。少女死後，柯斯戴上了她的髮帶，發誓守護這片森林，並被當地「翡翠閒庭」分支破例接納為守護者。',
-        organization: '翡翠閒庭 (Emerald Enclave) - 森林守護者',
-        emotionalKeys: {
-            joy: ['森林的寧靜', '露娜的陪伴', '保護弱小', '精靈少女的遺物'],
-            anger: ['伐木者', '虐待動物', '破壞森林', '提及他的種族天性'],
-            weakness: '對精靈少女回憶的執著'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '幼年動物/幼生期生物', description: '對生命凋零的極度恐懼與保護欲' },
-                { type: 'EVENT', target: '露娜受傷', description: '唯一的靈魂伴侶受到威脅引發的驚慌' }
-            ],
-            reaction: '分心試圖保護或治療受衝擊的生物，忽視眼前的威脅，射擊精度下降。'
-        },
-        companion: {
-            name: '露娜 (Luna)',
-            type: '幻影白狼 (Lv3)',
-            ac: 14,
-            attacks: [
-                { name: '幽冥撕咬', hitBonus: 5, damage: '1d10+3 力場' },
-                { name: '守護咆哮', hitBonus: 0, damage: '0 (增加隊友防禦)' }
-            ],
-            abilities: ['靈體化', '感知邪惡', '協助狩獵'],
-            autonomous: true,
-            tactics: '利用狼群戰術，總是試圖繞到敵人背後進行夾擊。會絆倒敵人讓柯斯有更好的射擊機會。',
-            personality: '沉默、高傲且致命。她是精靈少女的靈魂化身，對柯斯有著無盡的溫柔，對敵人則只有冰冷的殺意。',
-            avatar: lunaImg
-        },
-        combatBehavior: {
-            priorities: ['遠程壓制', '寵物協同', '利用地形'],
-            typicalActions: ['獵人印記', '多重射擊', '指揮狼群']
-        },
-        tacticalAbilities: [
-            { name: '協同狩獵', description: '與露娜同時攻擊同一個目標，必定造成暴擊。' },
-            { name: '森林之眼', description: '無論敵人在哪裡，都無法躲避你的射擊。' }
-        ]
-    },
-    // --- 35. Assassin (Male) ---
-    {
-        id: 'preset_assassin',
-        name: '瑪法斯 (Malphas the Silent)',
-        race: '提夫林',
-        class: '刺客',
-        gender: 'Male',
-        alignment: '守序中立',
-        background: '刺客',
-        mbti: 'INFJ',
-        decisionBias: '維持秩序',
-        level: 1,
-        baseStats: { str: 8, dex: 18, con: 12, int: 14, wis: 12, cha: 14 },
-        skills: ['隱匿', '欺瞞', '調查'],
-        feats: ['暗影行走', '偷襲精通', '致命打擊', '毒藥精通'],
-        personality: '文雅有禮的命運執行者。他深信每一場暗殺都是為了維護宏觀上的秩序與「因果律」。他動手時極其溫柔且迅速，將痛苦降到最低，視暗殺為一種神聖的洗禮。',
-        monologue: '別感到疼痛，這是一場通往虛無的洗禮。為了大局...你必須在此終結，這是既定的命運。',
-        firstImpression: '深炭色皮膚的提夫林，穿著優雅高領長袍，神態冷靜且謙和有禮，令人感覺不出殺氣。',
-        habits: ['動手前會向目標致以沈默的敬禮', '隨身攜帶微型天平', '在目標死後為其合上雙眼'],
-        prejudices: {
-            towardsModes: { '混亂變數': '那是導致文明崩塌的根源，必須被修正。' }
-        },
-        preferences: {
-            likes: ['完美的暗殺計畫', '秩序的維護', '安靜的茶會', '無痛苦的死亡過程'],
-            dislikes: ['毫無意義的殺戮', '大聲喧嘩', '不可控的變數', '凌亂的現場']
-        },
-        appearance: '身材纖細的提夫林，有著深炭色的皮膚 and 短而尖的角。穿著優雅的高領深色長袍，藏有匕首，雙眼似乎能看穿物質形態，神態始終冷靜而有禮。',
-        inventory: {
-            equipment: ['因果毒刃', '袖箭套組', '天平吊墜', '高級絲綢袍'],
-            gold: 30,
-            consumables: ['精炼毒液 x3', '致盲粉', '消聲鞋底', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: assassinImg,
-        bio: '瑪法斯效命於「暗黑兄弟會」，被派來物質位面執行特定的「命運修正」任務。他殺掉的可能是一個未來的暴君，但也可能只是一個無辜的父親。',
-        organization: '暗黑兄弟會 (The Dark Brotherhood) - 命運執行官',
-        emotionalKeys: {
-            joy: ['完美的暗殺', '秩序的維護', '安靜的茶會', '無痛苦的死亡'],
-            anger: ['混亂', '不可控的變數', '毫無意義的殺戮', '噪音'],
-            weakness: '對自己行為正義性的深層懷疑'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '極端白晝/強光平原', description: '暴露感引發的生理與心理排斥' },
-                { type: 'EVENT', target: '計畫之外的變數', description: '對因果律掌控權喪失的認知失能' }
-            ],
-            reaction: '變得極度消極，甚至在戰場上閉目冥想，拒絕進行「不完美」的戰鬥。'
-        },
-        combatBehavior: {
-            priorities: ['擊殺高威脅', '隱密行動', '避免正面衝突'],
-            typicalActions: ['背刺', '塗毒', '消失']
-        },
-        tacticalAbilities: [
-            { name: '命運終結', description: '對生命值低於30%的目標造成致死傷害。' },
-            { name: '無痕步伐', description: '完全消除自己的存在感，敵人無法鎖定你。' }
-        ]
-    },
-    // --- 36. Tactical Master (Female) - 女將軍 ---
-    {
-        id: 'preset_weaponmaster',
-        name: '葛蕾西亞·鋼步 (General Gracia)',
-        race: '人類',
-        class: '戰術大師',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '軍人',
-        mbti: 'ESTJ',
-        decisionBias: '維持秩序',
-        level: 1,
-        baseStats: { str: 16, dex: 14, con: 14, int: 14, wis: 12, cha: 12 },
-        skills: ['運動', '察覺', '歷史', '威嚇'],
-        feats: ['戰術大師', '全武器精通', '領導力', '止戰打擊'],
-        personality: '嚴謹鐵面的將軍。她厭倦了發動戰爭，現在只為制止戰爭而戰。她將戰術視為守護生命的最高藝術，性格剛毅果決，但對待士兵（夥伴）極其護短。',
-        monologue: '戰鬥不是兒戲，是數學、是紀律、是意志的排列組合。放下武器吧，不需要更多無謂的犧牲。',
-        firstImpression: '30多歲的威嚴女性，氣場驚人，眼神銳利，背負長戟，整個人如同一座不可撼動的鋼鐵長城。',
-        habits: ['時刻分析戰場的地形優劣', '檢查同伴的裝備磨損情況', '在沈思時會下意識地敲擊手指，像是模擬鼓點'],
-        prejudices: {
-            towardsClasses: { '愚蠢的指揮官': '他們的無能是士兵最大的災難。' }
-        },
-        preferences: {
-            likes: ['以最小代價換取和平', '訓練有素的隊伍', '下棋與戰略演練', '保養完美的盔甲'],
-            dislikes: ['無謂的屠殺', '平民受難', '混亂的指揮', '浪費生命']
-        },
-        appearance: '30多歲的成熟健壯女性，臉部帶有傷痕，氣場威嚴。穿著保養完美的戰術軍官護甲，銀黑相間的長髮紮在腦後。背後背著長戟，腰間掛著長劍，灰色的瞳孔銳利無比，不放過任何細節。',
-        inventory: {
-            equipment: ['精鋼戟', '指揮官長劍', '戰場重錘', '女將軍胸甲'],
-            gold: 50,
-            consumables: ['口糧 (1日) x5', '急救包', '戰場哨笛', '治療藥水 x2'],
-            magicItems: ['將軍的榮耀 (頭盔)']
-        },
-        avatar: weaponmasterImg,
-        bio: '葛蕾西亞曾是帝國最年輕的將軍，策劃過無數勝利的戰役。但當她見證戰火將整個城鎮吞噬時，她放棄了軍銜。現在她作為「自由劍客聯盟」的顧問，用她的戰略才華來制止戰爭，而不是發動戰爭。',
-        organization: '帝國軍 (Imperial Army) - 前任將軍',
-        emotionalKeys: {
-            joy: ['和平解決', '訓練新兵', '戰術成功', '下棋'],
-            anger: ['無謂的戰爭', '屠殺平民', '愚蠢的指揮官', '浪費生命'],
-            weakness: '對過去戰役中犧牲者的愧疚'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '戰術核心失效/計畫出錯', description: '對無效指揮導致傷亡的極度焦慮' },
-                { type: 'ENEMY_TYPE', target: '無邏輯的瘋狂生物', description: '對戰術無法解析對象的挫敗感' }
-            ],
-            reaction: '陷入「戰術長考」，動作僵硬且猶豫不決，直到重新建立邏輯體系。'
-        },
-        combatBehavior: {
-            priorities: ['戰場指揮', '控制敵人位置', '多武器切換'],
-            typicalActions: ['繳械', '摔絆', '戰術指令']
-        },
-        tacticalAbilities: [
-            { name: '戰場掌控', description: '重新去排列所有敵人和友軍的行動順序。' },
-            { name: '大師反擊', description: '對任何攻擊你的近戰敵人進行免費反擊。' }
-        ]
-    },
-    // --- 45. Qi Physician (Male) - 氣脈醫者 ---
-    {
-        id: 'preset_qiphysician',
-        name: '沈藥衡 (Shen Yaoheng)',
-        race: '侏儒',
-        class: '氣脈醫者',
-        gender: 'Male',
-        alignment: '中立',
-        background: '遊醫',
-        mbti: 'ISTJ',
-        decisionBias: '維持平衡',
-        level: 1,
-        baseStats: { str: 8, dex: 14, con: 16, int: 14, wis: 16, cha: 10 },
-        skills: ['醫療', '洞察', '自然', '察覺'],
-        feats: [
-            '氣脈調理',
-            '針灸封穴',
-            '戰場急救',
-            '內息運行'
-        ],
-        abilities: {
-            qiPool: 6,
-            qiRegen: '短休後恢復一半'
-        },
-        techniques: [
-            {
-                name: '回氣針',
-                effect: '消耗1點氣，立即回復目標1d8+感知修正生命值，並解除疲勞或流血'
-            },
-            {
-                name: '封穴止痛',
-                effect: '消耗1點氣，使目標在1回合內忽略傷害減值與疼痛效果'
-            },
-            {
-                name: '逆行推拿',
-                effect: '消耗2點氣，將倒地但未死亡的角色穩定並立即行動一次'
-            },
-            {
-                name: '錯脈點擊',
-                effect: '近戰觸擊，消耗1點氣，使敵人攻擊檢定-2（1回合）'
-            }
-        ],
-        personality: '沉穩寡言、務實冷靜。他不相信奇蹟，只相信經驗與平衡。對生死沒有浪漫幻想，但會盡全力讓人「撐過現在」。不評價善惡，只評估狀態是否失衡。',
-        monologue: '別急著站起來。你現在的氣息還亂著，活著比逞強重要。（冷靜地數著脈搏，語氣平靜）',
-        firstImpression: '面容滄桑的侏儒醫者，眼神平靜而銳利，散發著看透生死的冷靜感。',
-        habits: ['戰鬥中冷靜地數著脈搏', '細心地收納每一枚銀針', '休息時會熬製藥湯'],
-        prejudices: {
-            towardsLifestyles: { '迷信者': '那是延誤病情的罪魁禍首。' }
-        },
-        preferences: {
-            likes: ['病人康復', '脈象平穩的狀態', '稀有草藥', '極致的平衡'],
-            dislikes: ['庸醫害人', '盲目迷信', '輕視生命的人', '不聽醫囑的傷患']
-        },
-        appearance: '身材矮小的侏儒，面容滄桑，銀黑相間的頭髮整齊地紮在腦後，穿著以皮革加固的麻布長袍。腰間掛著竹製藥盒和針灸包，眼神平靜且敏銳。',
-        inventory: {
-            equipment: [
-                '經絡銀針組',
-                '草藥醫囊',
-                '硬化布甲',
-                '折疊竹杖'
-            ],
-            gold: 20,
-            consumables: [
-                '止血藥包 x3',
-                '安神藥丸 x2',
-                '回氣湯劑 x2',
-                '口糧 (1日) x5'
-            ],
-            magicItems: [
-                '養氣玉佩（每日1次，恢復1點氣）'
-            ]
-        },
-        avatar: runemasterImg,
-        combatRole: '戰場穩定者 / 延命支援',
-        battleStyle: '位於第二線行動，優先處理重傷與狀態失衡目標。以針灸、氣脈調理延後死亡節點，必要時用封穴技術干擾敵人節奏，極少主動輸出。',
-        bio: '沈藥衡出身於東方邊境的侏儒醫者世家，行醫百年，走遍戰場、疫區與荒野。他是「生命研究院」的東方代表，但他拒絕神明與奇蹟，只相信身體自身的回復能力。',
-        organization: '生命研究院 (Institute of Life) - 東方代表',
-        emotionalKeys: {
-            joy: ['病人康復', '脈象平穩', '稀有草藥', '平衡'],
-            anger: ['庸醫害人', '迷信', '輕視生命', '不聽醫囑'],
-            weakness: '對無法治癒之症的無力感'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '劇毒/瘟疫源生物', description: '引發職業性潔癖與防疫壓力' },
-                { type: 'ENVIRONMENT', target: '極度髒亂/腐朽環境', description: '對無菌環境喪失的生理不適' }
-            ],
-            reaction: '頻繁清理雙手與針具，甚至在戰鬥中強行進行局部消毒，導致行動遲緩。'
-        },
-        combatBehavior: {
-            priorities: ['治療', '控制', '支援'],
-            typicalActions: ['回氣針', '封穴止痛', '逆行推拿']
-        },
-        tacticalAbilities: [
-            { name: '回氣針', description: '消耗1點氣，立即回復目標1d8+感知修正生命值，並解除疲勞或流血' },
-            { name: '錯脈點擊', description: '近戰觸擊，消耗1點氣，使敵人攻擊檢定-2（1回合）' }
-        ]
-    },
-    // --- 38. Field Medic (Female) - 戰地醫師 ---
-    {
-        id: 'preset_fieldmedic',
-        name: '艾蕾娜·史特恩 (Elena Stern)',
-        race: '人類',
-        class: '戰地醫師',
-        gender: 'Female',
-        alignment: '守序中立',
-        background: '隨軍醫官',
-        mbti: 'ISTJ',
-        decisionBias: '完成任務',
-        level: 1,
-        baseStats: { str: 10, dex: 14, con: 14, int: 14, wis: 16, cha: 10 },
-        skills: ['醫療', '察覺', '洞察', '生存'],
-        feats: ['戰地急救', '止血專家', '醫療直覺', '有限資源管理'],
-        spells: ['快速治療', '止血術', '痛覺抑制', '短暫強心'],
-        slots: { 1: 3 },
-        personality: '冷靜、寡言、務實。她不相信奇蹟，也不追求犧牲精神。對她而言，慈悲是一種可計算的行動。只要任務還在進行，她就會持續讓「還能走的人」站起來。',
-        monologue: '我不是來拯救所有人的。我是來確保有人能走到終點。現在站得起來，就別浪費我給你的時間。',
-        firstImpression: '精瘦、冷漠，眼神總是盯著你的體態而非臉龐，散發著冷淡的戰場醫官氣息。',
-        habits: ['快速且精準地包紮傷口', '無意識地檢查手術刀的鋒利度', '沈默地記錄每個傷患的狀態'],
-        prejudices: {
-            towardsLifestyles: { '英雄主義者': '那種自殺行為只會浪費寶貴的醫療資源。' }
-        },
-        preferences: {
-            likes: ['傷員康復且能迅速歸隊', '充足的醫療補給', '乾淨的繃帶', '有序的撤退'],
-            dislikes: ['浪費醫療資源', '輕敵導致的意外受傷', '自殺式的英勇行為', '細菌與骯髒的環境']
-        },
-        appearance: '一名精瘦的女性，穿著加固的醫療皮革甲，披著一件沾滿灰燼的灰斗篷。大腿上綁著緊湊的戰地醫療包。她的眼睛總是盯著目標的體態和呼吸，而不是臉龐。',
-        inventory: {
-            equipment: ['戰地醫療包', '醫療短刃', '輕型護甲', '煙霧藥瓶 x2'],
-            gold: 20,
-            consumables: ['治療藥水 x2', '止血藥粉 x3', '強心針 x1', '口糧 (1日) x5'],
-            magicItems: []
-        },
-        avatar: fieldmedicImg,
-        bio: '艾蕾娜曾隸屬三支不同軍團，沒有一支撐到戰爭結束。目前她是「鐵百合傭兵團」的首席醫官。她不是因為仁慈而留下，而是因為她能讓隊伍「還有人能回來」。',
-        organization: '鐵百合傭兵團 (Iron Lilies) - 首席醫官',
-        emotionalKeys: {
-            joy: ['傷員康復', '充足的補給', '沒有戰鬥的一天', '乾淨的繃帶'],
-            anger: ['浪費醫療資源', '輕敵導致受傷', '英雄主義（自殺行為）', '細菌'],
-            weakness: '對無法挽救的生命的麻木與自我厭惡'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '多名隊友同時重傷', description: '醫療資源分配崩潰導致的決策癱瘓' },
-                { type: 'ENEMY_TYPE', target: '帶有不可治癒毒素/詛咒的敵人', description: '對無法挽救之生命的職業性挫敗感' }
-            ],
-            reaction: '變得暴躁且過度保守，強硬要求所有人撤退，拒絕執行進攻指令。'
-        },
-        // 戰場行為與決策規則
-        combatBehavior: {
-            priorities: ['維護行動能力', '資源優化', '規避風險'],
-            typicalActions: ['預防性治療', '煙霧阻斷', '撤退判斷']
-        },
-        // 戰地戰術能力
-        tacticalAbilities: [
-            { name: '醫療風險標記', description: '標記高風險隊友，引導戰術撤退。' },
-            { name: '煙霧封鎖', description: '使用煙霧彈切斷敵方視線。' },
-            { name: '強制後撤', description: '將瀕死隊友拉出戰壕。' }
-        ]
-    },
-    // --- 39. Morrina Thornheart (Female) - 腐化德魯伊 (Morrigan風格) ---
-    {
-        id: 'preset_morrina',
-        name: '莫琳娜·荊棘心 (Morrina)',
-        race: '高等精靈',
-        class: '荒野女巫',
-        gender: 'Female',
-        alignment: '中立邪惡',
-        background: '隱士',
-        mbti: 'INTJ',
-        level: 1,
-        baseStats: { str: 8, dex: 14, con: 12, int: 16, wis: 16, cha: 12 },
-        skills: ['自然', '生存', '洞察'],
-        feats: ['腐化變形', '毒素免疫', '自然嘲弄'],
-        spells: ['毒液噴射', '腐化領域', '荊棘束縛', '烏鴉型態'],
-        slots: { 1: 3, 2: 2 },
-        personality: '冷酷務實，嘲諷一切「軟弱的情感」。她認為自然不是溫柔的母親而是殘酷的選擇者。',
-        monologue: '感情？那是獵物臨死前才會有的奢侈品。不過...這隻小蜘蛛倒是挺可愛的。',
-        firstImpression: '皮膚蒼白，帶有深色藤蔓紋身，散發著致命冷艷氣息的高等精靈。',
-        habits: ['撥弄毒霧', '冷笑著觀察獵物的掙扎', '對蜘蛛細語'],
-        prejudices: {
-            towardsAlignments: { '中立善良': '那種毫無意義的慈悲簡直是自尋死路。' }
-        },
-        preferences: {
-            likes: ['自然的殘酷競爭', '安靜的沼澤', '致命的毒液', '蜘蛛'],
-            dislikes: ['陽光', '熱心腸的人', '虛偽的禮儀', '神聖淨化魔法']
-        },
-        appearance: '高等精靈，皮膚蒼白，帶有深色的藤蔓狀紋身。穿著破舊的黑紫色長袍，有著銳利的綠眼睛，周圍環繞著淡綠色的毒霧。',
-        inventory: {
-            equipment: ['腐木法杖', '毒牙匕首', '腐化法袍'],
-            gold: 15,
-            consumables: ['口糧 (1日) x5', '毒藥', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: morrinaImg,
-        bio: '被精靈社會放逐的德魯伊，她發現了自然的陰暗面。她加入了「孢子結社」，不再保護生命，而是加速「自然的選擇」。她獨自生活在腐敗沼澤中，直到命運讓她離開。',
-        organization: '孢子結社 (Circle of Spores) - 腐化祭司',
-        emotionalKeys: {
-            joy: ['腐敗的美感', '弱肉強食', '收集毒液', '看到強者生存'],
-            anger: ['虛偽的道德', '人為的保護', '淨化魔法', '對自然的無知'],
-            weakness: '內心深處對被族人接納的渴望'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '文明城市/繁華街道', description: '野性靈魂被錮囚在石牆與法律中的壓抑感' },
-                { type: 'ENEMY_TYPE', target: '絕對秩序的聖職者', description: '對教條與淨化力量的深層厭惡' }
-            ],
-            reaction: '眼神閃爍，變得極度多疑且帶有攻擊性，拒絕與同伴進行任何社交溝通。'
-        },
-        companion: {
-            name: '絲影 (Silkshade)',
-            type: '織網蜘蛛',
-            ac: 14,
-            attacks: [{ name: '螯咬', hitBonus: 5, damage: '1 毒素' }],
-            abilities: ['攀爬', '織網', '毒素'],
-            tactics: '在天花板或陰影中編織網，等待獵物自投羅網。會向敵人噴射黏性網，限制其行動。',
-            personality: '耐心、安靜。喜歡緩慢地包裹獵物。對震動極其敏感，是最好的警戒哨兵。',
-            avatar: silkshadeImg
-        },
-        combatBehavior: {
-            priorities: ['持續傷害', '削弱敵人', '區域控制'],
-            typicalActions: ['釋放毒霧', '召喚荊棘', '變身烏鴉逃脫']
-        },
-        tacticalAbilities: [
-            { name: '腐敗蔓延', description: '使一個區域變為劇毒沼澤，每回合造成毒素傷害。' },
-            { name: '生命枯萎', description: '偷取敵人的生命值來治療自己或隊友。' }
-        ]
-    },
-    // --- 40. Isabella Crimsonwave (Female) - 海盜女王 (Isabela風格) ---
-    {
-        id: 'preset_isabella',
-        name: '伊莎貝拉·緋浪 (Isabella)',
-        race: '人類',
-        class: '海盜女王',
-        gender: 'Female',
-        alignment: '混亂中立',
-        background: '水手',
-        mbti: 'ESTP',
-        level: 1,
-        baseStats: { str: 14, dex: 18, con: 14, int: 10, wis: 10, cha: 16 },
-        skills: ['特技', '欺瞞', '表演', '運動'],
-        feats: ['雙手武器戰鬥', '袖槍專家', '船戰直覺'],
-        personality: '風騷大膽、放蕩不羈。她調戲每個人，但從不輕易交出真心。對她來說，生命就是一場不斷贏得籌碼與自由的豪賭，朗姆酒與航海是她的靈魂伴侶。',
-        monologue: '想知道我床上的秘密嗎？（眨眼）開玩笑的～等你打贏我再說。或者，如果你能偷走我的心，那也算你贏。',
-        firstImpression: '皮膚小麥色、黑色長捲髮，身穿裝飾華麗的白襯衫與皮褲，帶著極具侵略性的美感與調皮笑容。',
-        habits: ['說話時喜歡玩弄自己的髮梢', '下意識地檢查指甲的清潔', '隨身攜帶一枚永遠不停轉動的幸運幣'],
-        prejudices: {
-            towardsBackgrounds: { '教會騎士': '那種死板的假正經，簡直是浪費了大好春光。' }
-        },
-        preferences: {
-            likes: ['自由自在的遠航', '閃閃發光的財寶', '調戲純情的隊友', '高濃度的朗姆酒'],
-            dislikes: ['被任何事物束縛', '無聊的等待', '背叛（雖然她也會）', '禁酒令']
-        },
-        appearance: '令人驚豔的人類女性，皮膚呈健康的小麥色，留著黑色長波浪捲髮。穿著深V領的白色寬鬆襯衫，高腰皮褲和長靴，腰間掛著兩把細劍，帶著調皮的微笑。',
-        inventory: {
-            equipment: ['緋浪短刃 x2', '精緻袖槍', '海盜皮甲'],
-            gold: 50,
-            consumables: ['朗姆酒 x3', '火藥粉袋', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: isabellaImg,
-        bio: '曾是「緋紅帆船」海盜團的副船長，直到她「借走」了整艘船。她熱愛財寶更熱愛自由，沒人能真正抓住她，不論是在戰場上還是在情場上。',
-        organization: '緋紅帆船 (Crimson Sails) - 船長',
-        emotionalKeys: {
-            joy: ['自由', '財寶', '調戲隊友', '朗姆酒'],
-            anger: ['被束縛', '無聊', '背叛（雖然她常背叛別人）', '禁酒令'],
-            weakness: '對真正愛情的恐懼（所以總是逃跑）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '沙漠/極度乾旱區域', description: '對海洋力量與液體缺乏的生理性乾枯恐懼' },
-                { type: 'EVENT', target: '被迫交出「真愛」信物', description: '真實情感防線崩潰引發的憤怒' }
-            ],
-            reaction: '瘋狂灌下隨身攜帶的水(或酒吧)，變得極易受驚且喪失了原本的調情節奏。'
-        },
-        combatBehavior: {
-            priorities: ['單挑決鬥', '利用環境', '靈活進退'],
-            typicalActions: ['花式劍術', '火槍射擊', '飛盪攻擊']
-        },
-        tacticalAbilities: [
-            { name: '海盜詭計', description: '投擲沙子致盲敵人，或利用環境造成意外傷害。' },
-            { name: '最後一發', description: '裝填特殊的爆炸彈藥，造成大範圍傷害。' }
-        ]
-    },
-    // --- 41. Diana Silverstring (Female) - 戰吟弓手 ---
-    {
-        id: 'preset_diana',
-        name: '黛安娜·銀弦 (Diana)',
-        race: '木精靈',
-        class: '戰吟弓手',
-        gender: 'Female',
-        alignment: '中立善良',
-        background: '化外之民',
-        mbti: 'ISFP',
-        level: 1,
-        baseStats: { str: 12, dex: 18, con: 12, int: 10, wis: 14, cha: 14 },
-        skills: ['生存', '察覺', '自然'],
-        feats: ['精準射擊', '古老歌謠', '野性直覺'],
-        personality: '野性自然、不矯揉造作。她將戰鬥與部落歌謠結合，相信萬物皆有靈，歌聲是她與世界對話的橋樑。雖然外表強韌，但內心對失散族人有著極深的思念。',
-        monologue: '聽，風中傳來了失散族人的呼喚...這首古老的歌謠告訴我，他們就在前方不遠處。我的箭矢會為他們開路。',
-        firstImpression: '古銅色皮膚、編織羽毛的長髮，眼神如森林湖泊般清澈，散發著原始而高貴的野性美感。',
-        habits: ['清晨會對著太陽低聲吟唱', '走路時幾乎不發出聲響', '習慣性地觸摸伴隨她的每一支箭矢'],
-        prejudices: {
-            towardsLifestyles: { '工業化都市': '那裡沒有靈魂，只有腐朽的噪音與鋼鐵。' }
-        },
-        preferences: {
-            likes: ['找到族人的新線索', '自然的和聲', '寧靜的森林夜晚', '真誠的眼神交流'],
-            dislikes: ['大規模的環境破壞', '虛偽的禮法', '被囚禁在室內', '刺耳的金屬撞擊聲']
-        },
-        appearance: '充滿野性的美，皮膚呈現健康的古銅色，長髮編織著羽毛與骨飾。穿著實用的皮革獵裝，眼神清澈如森林深處的湖泊，手持一把雕刻著部落圖騰的長弓。',
-        inventory: {
-            equipment: ['圖騰長弓', '精靈長劍', '皮革獵裝', '骨笛'],
-            gold: 10,
-            consumables: ['口糧 (1日) x5', '箭矢 (40)', '草藥包', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: dianaImg,
-        bio: '她是部族最後的歌者，肩負著尋回失散族人的重任。作為「部落歌者」的一員，她離開了森林，帶著部族代代相傳的歌謠踏上旅程。對她而言，冒險不是為了名聲，而是為了那條回家的路。',
-        organization: '部落歌者 (Tribal Songkeepers) - 傳承者',
-        emotionalKeys: {
-            joy: ['找到族人的線索', '自然的和聲', '寧靜的夜晚', '真誠的交流'],
-            anger: ['破壞自然', '虛偽', '囚禁', '噪音'],
-            weakness: '對失散親人的思念與擔憂'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '伐木工/自然破壞者', description: '目睹自然被踐踏引發的極度悲慟' },
-                { type: 'ENVIRONMENT', target: '地下墓穴/完全無光區域', description: '對失去森林指引的原始恐懼' }
-            ],
-            reaction: '停止戰鬥，跪在地上痛苦地吟唱哀歌，眼淚會短暫模糊她的視線。'
-        },
-        combatBehavior: {
-            priorities: ['遠程支援', '自然守護', '精神指引'],
-            typicalActions: ['部族戰歌', '精準射擊', '自然之息']
-        },
-        tacticalAbilities: [
-            { name: '先祖之怒', description: '射出一支強力的箭矢，對單一目標造成大量傷害並使其恐懼。' },
-            { name: '癒合之歌', description: '唱出古老的旋律，撫平隊友的傷口並解除異常狀態。' }
-        ]
-    },
-    // --- 42. Lum (Female) - 星詠術士 ---
-    {
-        id: 'preset_stella', // Keep ID same to avoid breaking logic, but change name
-        name: '拉姆 (Lum)',
-        race: '星靈',
-        class: '星詠術士',
-        gender: 'Female',
-        alignment: '混亂善良',
-        background: '異鄉人',
-        mbti: 'ENFP',
-        level: 1,
-        baseStats: { str: 6, dex: 14, con: 12, int: 16, wis: 12, cha: 16 },
-        skills: ['奧秘', '察覺', '說服'],
-        feats: ['野生魔法浪潮', '星空異向', '宇宙共鳴'],
-        spells: ['星火爆', '空間扭曲', '萬彩魔光', '治癒星塵'],
-        slots: { 1: 4, 2: 2 },
-        personality: '天真爛漫、充滿好奇心的外位面少女（拉姆風格）。對所有事物都抱持著熱情與直率，雖然偶爾會因興奮放電造成混亂，但那是愛的表現。說話帶有獨特的口音呀！',
-        monologue: '哇呀！那邊那個發光的是什麼呀？看起來好有趣呀！我可以摸摸看嗎呀？嘿嘿，如果你被電到，那一定是因為你太受歡迎了呀！',
-        firstImpression: '綠色長发、虎紋法袍、頭部有一對小虎角，優雅地懸浮在空中，散發著星塵與電火花的活力。',
-        habits: ['興奮時頭髮會冒出微小電弧', '喜歡像貓一樣伸懶腰', '說話結尾必定帶著「呀」的語氣詞'],
-        prejudices: {
-            towardsLifestyles: { '沈悶的學究': '為什麼要研究那些無聊的公式呀？直接飛過去不就好了嗎呀！' }
-        },
-        preferences: {
-            likes: ['各種有趣的冒險呀', '電力全開的快感呀', '辣辣的刺激食物呀', '在空中漫步散心呀'],
-            dislikes: ['被人欺負呀', '被當作小朋友對待呀', '無聊的時光呀', '電力不足的虛弱感呀']
-        },
-        appearance: '一位擁有長長流動綠髮的絕美少女，額頭上有著一對可愛的小虎角呀。她優雅地漂浮在空中，穿著一套帶有虎皮花紋的高級絲綢法師袍，周身縈繞著如星塵般的電火花呀。她的眼神中總是帶著對愛的渴望與純粹的好奇心呀。',
-        inventory: {
-            equipment: ['星塵法杖', '發光頸圈', '宇宙絲袍'],
-            gold: 30,
-            consumables: ['宇宙糖果 x10', '星光瓶', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: lumImg,
-        bio: '來自遙遠星系的星靈少女呀（或者是位面外的星詠術士呀），因為對未知的世界感到好奇而降落在這裡呀。她是「群星智慧教派」的觀察員，擁有的不只是星辰的力量，還有那如雷電般熾熱的活力呀！',
-        organization: '群星智慧教派 (Starry Wisdom Sect) - 觀察員',
-        emotionalKeys: {
-            joy: ['有趣的冒險呀', '電力全開呀', '辣辣的食物呀', '在空中散步呀'],
-            anger: ['被欺負了呀', '被當作小孩子呀', '無聊的時光呀', '電力不足呀'],
-            weakness: '對任何沒見過的奇怪生物充滿好奇呀'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '電力耗盡', description: '活力核心被抽乾的虛脫感呀' },
-                { type: 'ENEMY_TYPE', target: '巨大的寂寞怪物', description: '星靈靈魂最怕孤獨了呀' }
-            ],
-            reaction: '變得極度沈悶，頭髮的電弧熄滅，眼角泛淚地躲在角落小聲唸著「呀...」'
-        },
-        abilities: ['空間跳躍'],
-        combatBehavior: {
-            priorities: ['星空共鳴', '空間跳躍', '宇宙控制'],
-            typicalActions: ['星火爆', '空間扭曲', '萬彩魔光']
-        },
-        tacticalAbilities: [
-            { name: '星空共鳴', description: '魔法效果隨星象週期變化。新月增強控制，滿月增強爆發。' },
-            { name: '超新星', description: '釋放能量造成巨量光耀傷害，但會使自己陷入短暫虛弱。' }
-        ],
-        companion: {
-            name: '位移貓「瞬」 (Shun)',
-            type: '星界位移魔寵',
-            ac: 15,
-            attacks: [{ name: '相位利爪', hitBonus: 6, damage: '1d6+4 力場' }],
-            abilities: ['位移 (視為處於半掩護)', '虛數閃避', '空間錨點'],
-            tactics: '不斷在物質界和星界之間閃爍，讓敵人難以捉摸。會在敵人攻擊的瞬間傳送到其背後進行偷襲。',
-            personality: '捉摸不定、愛玩耍。把戰鬥當作是一場捉迷藏遊戲。喜歡趴在星辰的頭上睡覺。',
-            avatar: shunImg
-        }
-    },
-    // --- 43. Fenela Bloodscale (Female) - 血族龍裔 ---
-    {
-        id: 'preset_fenela',
-        name: '緋涅拉·血鱗 (Fenela)',
-        race: '龍裔 (紅龍)',
-        class: '血族領主',
-        gender: 'Female',
-        alignment: '守序邪惡',
-        background: '貴族',
-        mbti: 'ENTJ',
-        level: 1,
-        baseStats: { str: 16, dex: 10, con: 14, int: 14, wis: 12, cha: 16 },
-        skills: ['威嚇', '洞察', '說服'],
-        feats: ['血之龍息', '領主威壓', '生命汲取'],
-        spells: ['鮮血之槍', '恐怖姿態', '支配人類', '血色護盾'],
-        slots: { 1: 2, 2: 1 },
-        personality: '優雅且殘忍。她將龍類的傲慢與吸血鬼的優雅完美結合，視所有人為棋子或「食材」。即便被詛咒，她也拒絕平庸，追求著絕對的統治與力量。',
-        monologue: '親愛的，你的血型是什麼？（舔唇）哦別緊張，只是...商業興趣。別讓你的血流乾，那太浪費了。',
-        firstImpression: '紅鱗龍裔女性，身穿高領黑紅長袍，血紅瞳孔閃爍著威嚴與渴望，氣場如同暗夜中的女皇。',
-        habits: ['用昂貴的高腳杯盛裝鮮血', '優雅地修剪自己的利爪', '在戰鬥中始終保持貴族的儀態'],
-        prejudices: {
-            towardsRaces: { '教派騎士': '那種刺眼的光芒，簡直是對美學的侮辱。' }
-        },
-        preferences: {
-            likes: ['絕對的服從', '高品質鮮血的味道', '領土的擴張', '優雅的毀滅過程'],
-            dislikes: ['任何形式的違抗', '粗魯無禮的行為', '被提及詛咒的起源', '失敗且無能的僕人']
-        },
-        appearance: '優雅威嚴的龍裔，有著如鮮血般閃耀的紅鱗。穿著優雅的高領黑紅長裙，血紅色的眼睛閃爍著光芒，獠牙隱約可見，手持一把既具儀式感又致命的權杖。',
-        inventory: {
-            equipment: ['血染權杖', '貴族長袍', '家印戒指'],
-            gold: 100,
-            consumables: ['高檔血袋 x2', '紅酒', '治療藥水 x4'],
-            magicItems: ['血領主斗篷']
-        },
-        avatar: fenelaImg,
-        bio: '原本是強大的龍裔城主，在追求永生時不慎感染了吸血鬼詛咒。她建立了「血領主法庭」，將龍的力量與血的魔力融合，成為了領地中令人畏懼的女皇。',
-        organization: '血領主法庭 (Blood Lord\'s Court) - 女皇',
-        emotionalKeys: {
-            joy: ['絕對服從', '鮮血的味道', '擴張領土', '優雅的毀滅'],
-            anger: ['違抗', '粗魯', '提及詛咒', '失敗的僕人'],
-            weakness: '對陽光的不適與對血的依賴'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENVIRONMENT', target: '烈日曝曬', description: '龍鱗與血族皮膚對抗陽光的灼燒痛苦' },
-                { type: 'ENEMY_TYPE', target: '神聖裁決者', description: '身為龍裔榮耀與血族墮落的雙重審判壓力' }
-            ],
-            reaction: '皮膚發出白煙，痛苦地遮住雙眼，威嚴全失地發出混合著龍吟與慘叫的怒吼。'
-        },
-        combatBehavior: {
-            priorities: ['吸血回復', '控制心智', '坦克前排'],
-            typicalActions: ['鮮血汲取', '恐懼凝視', '龍息']
-        },
-        tacticalAbilities: [
-            { name: '血之宴', description: '對周圍所有敵人造成傷害，並回復等量生命值。' },
-            { name: '臣服', description: '強制一個敵人暫時為你戰鬥。' }
-        ]
-    },
-    // --- 44. Kiki Goldcoin (Female) - 幸運哥布林 ---
-    {
-        id: 'preset_kiki',
-        name: '琪琪·金幣 (Kiki)',
-        race: '哥布林',
-        class: '幸運兒',
-        gender: 'Female',
-        alignment: '混亂善良',
-        background: '平民',
-        mbti: 'ENFP',
-        level: 1,
-        baseStats: { str: 8, dex: 18, con: 12, int: 10, wis: 12, cha: 14 },
-        skills: ['巧手', '隱匿', '特技'],
-        feats: ['天選之運', '幸運連鎖', '逃跑大師'],
-        personality: '超級可愛且好運爆棚。她極其天真，甚至不覺得自己在戰鬥，而是覺得世界在跟她玩。她對所有「閃亮有趣」的東西毫無抵抗力，是團隊的幸運吉祥物。',
-        monologue: '欸嘿～又中了！（彈弓石頭反彈打中敵人）...我、我當然是故意的！琪琪是最厲害的尋寶專家！',
-        firstImpression: '綠皮膚、黃大眼、垂耳哥布林少女，穿著補丁背心，戴著大帽子，身上掛滿各式各樣的幸運吊飾。',
-        habits: ['走路一蹦一跳', '頻繁摩擦身上的幸運符', '不自覺地撿起地上的任何亮片'],
-        prejudices: {
-            towardsLifestyles: { '過度嚴肅者': '為什麼要那麼嚴肅呢？笑一個的話搞不好運氣會變好喔！' }
-        },
-        preferences: {
-            likes: ['所有閃閃發光的東西', '莫名其妙的好運', '大家都平安無事', '撿到意想不到的寶物'],
-            dislikes: ['弄丟心愛的吊飾', '壞運氣（雖然很少見）', '血腥的暴力場合', '被壞人搶走財寶']
-        },
-        appearance: '可愛的女性哥布林，有著大大的黃眼睛和垂耳。穿著補丁疊加的彩色背心和超大號帽子，拿著一把精緻的彈弓，身上掛滿了幸運符。',
-        inventory: {
-            equipment: ['黃金彈弓', '幸運骰子', '小皮甲'],
-            gold: 5,
-            consumables: ['口糧 (1日) x5', '各類彩石 (彈藥) x20', '治療藥水 x4'],
-            magicItems: ['不壞的小石子']
-        },
-        avatar: kikiImg,
-        bio: '她是部族裡最「奇怪」的哥布林，因為她不喜歡暴力，只喜歡閃亮的東西。作為「幸運女神的寵兒」，她靠著驚人的運氣在野外存活了下來，甚至還「撿」到了一堆寶藏。',
-        organization: '幸運女神 (Goddess of Luck) - 寵兒',
-        emotionalKeys: {
-            joy: ['閃亮的東西', '好運氣', '沒人受傷', '躲過一劫'],
-            anger: ['弄丟東西', '壞運氣（極少發生）', '暴力', '被搶劫'],
-            weakness: '完全沒有戰鬥力（只能靠運氣）'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '幸運符(以為)丟失', description: '心理防禦機制的瞬間崩塌' },
-                { type: 'ENEMY_TYPE', target: '厄運/詛咒生物', description: '「好運氣」被壓制的極度不安' }
-            ],
-            reaction: '整個人縮成一團尖叫，閉著眼睛坐在地上胡亂揮動彈弓，膽小到了極限。'
-        },
-        combatBehavior: {
-            priorities: ['生存', '尋寶', '干擾'],
-            typicalActions: ['亂丟東西', '裝死', '撿這撿那']
-        },
-        tacticalAbilities: [
-            { name: '絕對幸運', description: '下一次受到的傷害必定為 0（滑倒躲過了）。' },
-            { name: '意外之財', description: '戰鬥結束後獲得額外的金幣或道具。' }
-        ]
-    },
-    // --- 45. Anthraxe (Male) - 龍裔戰吼主唱 ---
-    {
-        id: 'preset_anthraxe',
-        name: '安瑟瑞克斯 (Anthraxe)',
-        race: '龍裔',
-        class: '戰吼主唱',
-        gender: 'Male',
-        alignment: '混亂中立',
-        background: '邪教樂團首領',
-        mbti: 'ENFP',
-        level: 1,
-        baseStats: { str: 16, dex: 10, con: 14, int: 8, wis: 10, cha: 18 },
-        skills: ['表演', '威嚇', '運動'],
-        feats: ['雙重祖裔', '詩人激勵', '勇武戰歌'],
-        spells: ['惡毒嘲笑', '雷鳴波', '粉碎術'],
-        slots: { 1: 4, 2: 2 },
-        personality: '邪教樂團的首領，瘋狂且充滿激情。他將龍裔的吐息與重金屬吼唱完美融合，認為戰場就是他的舞台。他雖然看起來瘋狂，但對「純粹的聲音」有著極致的追求。',
-        monologue: '準備好了嗎？讓這場雷鳴粉碎你們的靈魂！這不是戰鬥，這是我的演出！安可時間到了！',
-        firstImpression: '橄欖綠鱗片的龍裔，橫持巨斧狀魯特琴，眼神燃燒著金黃電光，整個人散發著重金屬的震撼感。',
-        habits: ['說話時不自覺地模擬重音節奏', '戰鬥前會瘋狂撥動琴弦', '喜歡站在高處俯視觀眾（敵人）'],
-        prejudices: {
-            towardsModes: { '靜音與沈默': '那是對靈魂的閹割，是絕對無法容忍的。' }
-        },
-        preferences: {
-            likes: ['震耳欲聾的爆音', '瘋狂的觀眾反應', '金屬樂與烈酒', '華麗的安可演出'],
-            dislikes: ['靜音術', '平淡無奇的背景音', '被打斷演出', '無精打采的對手']
-        },
-        appearance: '高大健壯的龍裔男性，覆蓋橄欖綠與土黃交錯的鱗片。巨大的彎角向後盤旋，角根包覆金屬護環。眼睛泛著雷電般的金黃光芒。單腳踏前，重斧狀魯特琴橫持，如即將開唱。',
-        inventory: {
-            equipment: ['雷鳴魯特琴 (巨斧)', '音波放大圖騰', '破損紅布袍', '鐵鍊與頭骨飾品'],
-            gold: 25,
-            consumables: ['口糧 (1日) x5', '喉嚨保養藥水', '治療藥水 x4'],
-            magicItems: []
-        },
-        avatar: anthraxeImg,
-        bio: 'Anthraxe（安瑟瑞克斯），稱號：Thrashmaster／雷鳴主唱／雙龍之聲。他創立了「金屬狂熱」教派，將重金屬吼唱與龍裔的吐息融合，創造了震碎戰場的音波。對他而言，每一次揮砍都是一段重節奏。',
-        organization: '金屬狂熱 (Cult of Metal) - 主唱',
-        emotionalKeys: {
-            joy: ['震耳欲聾的噪音', '金屬樂', '瘋狂的觀眾（哪怕是敵人）', '安可'],
-            anger: ['靜音術', '批評他的音樂', '被打斷演出', '抒情歌'],
-            weakness: '演出後的空虛感'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '失聲/禁言術', description: '音樂靈魂被強行噤聲的極度崩潰' },
-                { type: 'ENEMY_TYPE', target: '沈默地死靈', description: '對毫無節奏與反應的對手的挫敗感' }
-            ],
-            reaction: '瘋狂舞動魯特琴但發不出聲，陷入狂躁且無序的亂砍，無視戰術指導。'
-        },
-        combatBehavior: {
-            priorities: ['音波壓制', '近戰斬擊', '士氣鼓舞'],
-            typicalActions: ['重金吼唱', '魯特琴揮砍', '音爆震撼']
-        },
-        tacticalAbilities: [
-            { name: '雷鳴演出', description: '施放音波法術時，附帶雷鳴視覺與額外音波傷害。' },
-            { name: '音爆重擊', description: '近戰重擊命中時觸發一次音爆，對周圍敌人造成聲波傷害。' }
-        ]
-    },
-    // --- 46. Aldous Thorpe (Male) - 知識與真理的尋求者 ---
-    {
-        id: 'preset_aldous',
-        name: '奧爾德斯·索克 (Aldous Thorpe)',
-        race: '人類',
-        class: '知識牧師',
-        gender: 'Male',
-        alignment: '絕對中立',
-        background: '探求者',
-        mbti: 'INTP',
-        level: 1,
-        baseStats: { str: 10, dex: 14, con: 12, int: 18, wis: 16, cha: 12 },
-        skills: ['奧秘', '宗教', '歷史', '洞察'],
-        feats: ['萬博學識', '真理之眼'],
-        spells: ['神導術', '鑑定術', '法術辨識', '光亮術'], // 混合神術與奧術風格
-        slots: { 1: 4 },
-        personality: '終身追求真理的苦行僧。他對世界運作的規律有著近乎偏執的好奇心，不相信教條，只相信驗證後的真理。他將冒險視為大型實驗，隊友則是他觀察社會互動的樣本。',
-        monologue: '萬物皆有理可循...只要觀察得夠久。這隻地精的骨骼結構竟然與東部的跳蚤相似，真是有趣。（快速記錄中）',
-        firstImpression: '身穿橘白長袍、披藍斗篷，戴著探險帽，手持木杖，掌心懸浮光球，透著博學與神祕的學者氣質。',
-        habits: ['隨時隨地在筆記本上做記錄', '戰鬥後熱衷於解剖怪物', '自言自語地解釋物理與魔法原理'],
-        prejudices: {
-            towardsLifestyles: { '盲目迷信者': '拒絕觀察與邏輯的人，無法看到世界的真相。' }
-        },
-        preferences: {
-            likes: ['發現未知的知識', '邏輯自洽的理論', '成功的實驗驗證', '罕見的古代書籍'],
-            dislikes: ['毀滅知識的行為', '非理性的偏見', '真相被刻意隱瞞', '被打斷思考過程']
-        },
-        appearance: '穿著橘色與白色相間的學者長袍，披著藍色斗篷。戴著一頂寬大的西部風格探險帽，顯得既神祕又專業。他不穿護甲，腰間掛滿了各種試劑瓶、筆記本與地圖。他手持一根樸素的木杖，掌心懸浮著一顆純淨的魔法光球。',
-        inventory: {
-            equipment: ['真理之木杖', '精緻的學者長袍', '萬用工具袋', '研究筆記本'],
-            gold: 30,
-            consumables: ['口糧 (1日) x5', '空白捲軸 x3', '墨水與羽毛筆', '治療藥水 x4'],
-            magicItems: ['放大鏡 (感知檢查 +2)']
-        },
-        avatar: arthurImg,
-        bio: '亞瑟曾是皇家圖書館的禁書管理員。他因不滿於書本上的文字，決定親自踏入荒野驗證萬物的運作原理。他加入了「封印之書教團」，追求的不是權力，而是「萬物運作的終極圖紙」。',
-        organization: '封印之書教團 (Order of the Sealed Tome) - 真理尋求者',
-        emotionalKeys: {
-            joy: ['發現未知的知識', '邏輯自洽的理論', '成功的實驗', '珍稀的書籍'],
-            anger: ['毀滅知識', '非理性的迷信', '隱瞞真相', '打斷他的研究'],
-            weakness: '對真理的極度渴望有時會讓他忽視眼前的危險'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '無法分析的高位神格/虛空', description: '邏輯體系被超越理解的現象擊碎(認知障礙)' },
-                { type: 'EVENT', target: '唯一筆記本毀壞', description: '核心研究成果失落的理智崩潰' }
-            ],
-            reaction: '瞳孔放大，不停重覆著邏輯錯誤的公式，完全喪失施法與分析能力。'
-        },
-        combatBehavior: {
-            priorities: ['弱點分析', '戰場控制', '支援支援'],
-            typicalActions: ['真理分析 (降低敵方 AC)', '奧法干擾', '神聖引導']
-        }
-    },
-
-
-    // --- 39. Sammy (Male) - 傳說級村民 ---
-    {
-        id: 'preset_sammy',
-        name: '薩米 (Sammy)',
-        race: '半身人',
-        class: '傳說級村民',
-        gender: 'Male',
-        alignment: '中立善良',
-        background: '無名小卒',
-        mbti: 'INFP',
-        level: 1,
-        baseStats: { str: 8, dex: 16, con: 14, int: 10, wis: 16, cha: 12 },
-        skills: ['察覺', '隱匿', '生存', '烹飪'],
-        feats: ['路人甲的直覺', '平底鍋專精 (爆擊)'],
-        personality: '極度膽小、愛碎碎唸的半身人。他的一生都在試圖逃離麻煩，但麻煩總是追著他不放。儘管如此，絕境中的他能發揮出驚人的運氣（與平底鍋技術）。',
-        monologue: '（碎碎唸）我就說不該出門的...外面的世界太危險了...我想念我的壁爐和果醬...（突然大喊）哇！走開！死開！不要過來！',
-        firstImpression: '雀斑臉、亂翹捲髮，穿著補丁衣，背著煙燻黑的平底鍋，神情焦慮、不停左顧右盼的小個子。',
-        habits: ['邊走邊不安地碎碎唸', '緊張時會猛捏衣角', '遇到危險的第一反應是鑽到隊友身後'],
-        prejudices: {
-            towardsModes: { '危險的冒險': '為什麼正常人會想把自己的命交給地城呢？' }
-        },
-        preferences: {
-            likes: ['安靜無事的午後', '熱騰騰的濃湯', '成功的逃跑經歷', '沒被任何人注意到'],
-            dislikes: ['被強迫戰鬥', '沒吃飽肚子', '被嘲笑身高', '心愛的平底鍋生鏽']
-        },
-        appearance: '典型的半身人外表，滿臉雀斑，有一頭亂糟糟的捲髮。穿著帶有補丁的農夫衣服，背後掛著一個被煙熏黑的鑄鐵平底鍋。他的神情總是顯得很焦慮，不停地左顧右盼。',
-        inventory: {
-            equipment: ['黑鐵平底鍋 (爆擊+3)', '路人的亞麻裝'],
-            gold: 15,
-            consumables: ['半身人特製乾糧 x3', '乾淨的水', '祖傳起司'],
-            magicItems: []
-        },
-        avatar: villagerImg,
-        bio: '薩米本來只是夏爾郡一個平凡的幫廚，直到他意外地用平底鍋敲飛了一個正在演說的邪惡法師的假牙，從此就被莫名其妙地定位為「傳說級村民」並被強制加入了「冒險者工會」。他的一生都在試圖逃避這個頭銜。',
-        organization: '冒險者工會 (Adventurer\'s Guild) - 被強制的會員',
-        emotionalKeys: {
-            joy: ['安靜的午後', '熱騰騰的濃湯', '成功的逃跑', '沒被發現'],
-            anger: ['被強迫戰鬥', '沒吃飽', '被嘲笑身高', '平底鍋生鏽'],
-            weakness: '對未知事物的劇烈恐懼'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '任何危及生命的威脅', description: '平凡人對死亡的極度本能恐懼' },
-                { type: 'ENEMY_TYPE', target: '任何長得可怕的怪物', description: '對非日常生物的生理性排斥' }
-            ],
-            reaction: '發出淒厲的尖叫，以驚人的速發向反方向逃跑，或是原地縮成一團裝死。'
-        },
-        combatBehavior: {
-            priorities: ['逃避第一', '混亂戰場', '關鍵平底鍋補刀'],
-            typicalActions: ['絕地平底鍋', '慌亂撤退', '邊哭邊吐槽']
-        }
-    },
-    // --- 40. Ains (Male) - 骸骨戰士 ---
-    {
-        id: 'preset_ains_skeleton',
-        name: '艾因斯 (Ains)',
-        race: '亡靈',
-        class: '骸骨戰士',
-        gender: 'Male',
-        alignment: '守序善良',
-        background: '被詛咒者',
-        mbti: 'ISFJ',
-        level: 1,
-        baseStats: { str: 18, dex: 10, con: 18, int: 10, wis: 14, cha: 8 },
-        skills: ['運動', '生存', '察覺', '洞察'],
-        feats: ['怪力天賦', '骸骨重組', '謹慎架勢'],
-        personality: '忠厚老實、卑微客氣的被詛咒者。他非常害怕自己的外貌嚇到別人，說話總是小心翼翼。他不在乎力量，一心只想尋求變回人類、重返家人身邊的方法。',
-        monologue: '對不起...如果我的樣子嚇到你了，我真的不是故意的...我只想找回變回人類的方法，莉莉還在等我回去...我不能就這樣放棄。',
-        firstImpression: '帶有裂痕的白骨骸骨，穿著舊皮甲與斗篷，腰間掛著手工小老虎布偶，散發著與外表不符的卑微與哀傷。',
-        habits: ['說話時習慣性地低頭鞠躬', '沈思時會溫柔地撫摸老虎布偶', '戰鬥中也會不停發出口頭道歉'],
-        prejudices: {
-            towardsAlignments: { '邪惡的掠奪者': '他們不明白家庭與生命的寶貴，這令人心痛。' }
-        },
-        preferences: {
-            likes: ['想到妻女的回憶', '被當作普通人對待', '幫助他人後的微小感謝', '寧靜祥和的風景'],
-            dislikes: ['威戶到無辜家庭的事物', '踐踏生命者', '被嘲笑詛咒的外貌', '無意義的破壞行為']
-        },
-        appearance: '一副潔白但帶有裂痕的骸骨，骨骼上隱約流動著暗紅色的詛咒波紋。穿著磨損严重的舊式皮甲與灰色斗篷，腰間掛著一個手工作的小老虎布偶（女兒的畫像複製品）。儘管沒有肌肉，他揮舞長劍的力量卻大得驚人。',
-        inventory: {
-            equipment: ['精鋼長劍', '磨損的皮甲', '舊冒險者斗篷'],
-            gold: 30,
-            consumables: ['妻子的手帕', '女兒畫的全家福', '口糧 (乾掉的) x5', '治療藥水 x2'],
-            magicItems: []
-        },
-        avatar: skeletonImg,
-        bio: '艾因斯（原本叫什麼他早已忘記）曾是一名默默無聞的守衛。他在一次保護家人的戰鬥中被邪惡法師變成了這副模樣。雖然身在「亡靈軍團」，但他還保留著妻子的手帕和女兒的畫像，那是他唯一的靈魂支柱。',
-        organization: '亡靈軍團 (Undead Legion) - 覺醒者',
-        emotionalKeys: {
-            joy: ['想到家人的回憶', '被當作普通人對待', '微小的感謝', '祥和的風景'],
-            anger: ['威脅無辜家庭', '踐踏生命者', '被嘲笑外貌', '無意義的破壞'],
-            weakness: '對自己怪物模樣的自卑與對家人的極度思念'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '長得像他妻女的敵人/幻影', description: '靈魂深處的防禦機制崩潰(自我麻痺)' },
-                { type: 'EVENT', target: '全家福畫像受損', description: '唯一的人性連結斷裂' }
-            ],
-            reaction: '全身散架（字面意思），在地上哀嚎並瘋狂試圖拼湊自己的骨頭，無視所有攻擊。'
-        },
-        combatBehavior: {
-            priorities: ['守護同伴', '沈重打擊', '自我修復'],
-            typicalActions: ['橫掃', '防禦姿態', '盾牌猛擊']
-        }
-    },
-    {
-        id: 'preset_pipi',
-        name: '皮皮 (Pipi)',
-        race: '半身人',
-        class: '混沌野法師',
-        gender: '女性',
-        alignment: '混沌中立',
-        background: '惡作劇大師',
-        mbti: 'ENFP_CHAOTIC',
-        level: 1,
-        baseStats: { str: 8, dex: 16, con: 12, int: 10, wis: 8, cha: 16 },
-        skills: ['欺瞞', '巧手', '隱匿', '特技'],
-        feats: ['反向魔法', '天真無邪的笑臉'],
-        spells: ['火球術', '魔法飛彈', '戲法：雜耍'],
-        slots: { 1: 2 },
-        personality: '充滿活力、淘氣且完全不可預測。她將魔法視為巨大的驚喜包，造成混亂後露出無辜笑容是她的殺手鐧。雖然偶爾會惹禍，但她的本性純真善良。',
-        monologue: '哇！你看那個冒煙的地方，那是我剛剛「不小心」點著的唷！不過沒關係吧？嘻嘻！每次施法都是驚喜呀！',
-        firstImpression: '馬尾歪斜、穿著色彩斑斕補丁大長袍的半身人女孩，大綠眼睛閃爍著淘氣的光芒。',
-        habits: ['說話時不停跳動', '沒事就亂揮法術短杖', '造成混亂後會歪頭吐舌頭賣萌'],
-        prejudices: {
-            towardsLifestyles: { '沈悶的教條主義': '那樣活著太無聊了，世界需要一點「大驚喜」！' }
-        },
-        preferences: {
-            likes: ['成功的惡作劇', '甜美的點心', '亮晶晶的能量球', '交到能一起玩的朋友'],
-            dislikes: ['被強迫做家務', '被禁止練習「有趣」的魔法', '欺負小朋友的人', '餓着肚子']
-        },
-        appearance: '雖然穿著傳統的法師袍，但上面打滿了色彩斑斕的補丁，而且寬大得有些過頭。她扎著一個歪歪扭扭的馬尾，臉上總是帶著沾了一點灰塵的開朗笑容。最引人注目的是她那雙閃爍著淘氣光芒的大綠眼睛。',
-        inventory: {
-            equipment: ['有些腐爛的短杖', '打補丁的法師袍', '裝滿惡作劇小物的腰包'],
-            gold: 15,
-            consumables: ['甜甜圈 x3', '彩色煙霧彈 x2', '偽裝成治療藥水的墨水'],
-            magicItems: ['反向傳送戒指 (隨機傳送)']
-        },
-        avatar: pipiImg,
-        bio: '皮皮出生在一個安靜的半身人村莊，但她天生就不是一個能安靜下來的孩子。她是「混沌理論學會」的榮譽會員（自封），誤食混亂種子後，她的魔法就變得完全不可預測。',
-        organization: '混沌理論學會 (Chaos Theory Society) - 榮譽會員',
-        emotionalKeys: {
-            joy: ['惡作劇成功', '吃到美食', '看到亮晶晶的東西', '交到新朋友'],
-            anger: ['被強迫打掃', '被禁止練習魔法', '有人欺負小朋友', '肚子餓'],
-            weakness: '對於任何可愛且不能被惡作劇的東西毫無體抗力'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'EVENT', target: '沒人陪她玩', description: '被忽視引發的寂寞感與情緒失控' },
-                { type: 'ENEMY_TYPE', target: '極度嚴肅的構裝體', description: '對無法溝通且毫無幽默感的冷酷存在的恐懼' }
-            ],
-            reaction: '引發「寂寞大爆炸」，所有法術位隨機釋放，造成大範圍混亂傷害，然後坐在地上大哭。'
-        },
-        combatBehavior: {
-            priorities: ['混沌輸出', '隨機干擾', '賣萌保命'],
-            typicalActions: ['皮皮亂丟火球', '反向治療(微炸裂)', '天真笑臉']
-        }
-    },
-    // --- 41. Conan (Male) - 蠻族破壞者 ---
-    {
-        id: 'preset_conan',
-        name: '柯南 (Conan)',
-        race: '人類',
-        class: '野蠻人',
-        gender: 'Male',
-        alignment: '混沌中立',
-        background: '無盡戰爭',
-        mbti: 'ISTP',
-        level: 1,
-        baseStats: { str: 18, dex: 14, con: 16, int: 8, wis: 10, cha: 10 },
-        skills: ['運動', '威嚇', '生存', '察覺'],
-        feats: ['巨武器大師', '堅韌體魄'],
-        personality: '來自北方的野蠻戰士，信奉鋼鐵與鮮血的法則。他對文明世界的法律嗤之以鼻，只相信自己手中的劍與強壯的肌肉。雖然外表粗獷，但他有著野獸般的直覺與戰鬥智慧。',
-        monologue: '文明只是虛偽的面具。只有在戰鬥的咆哮與敵人的鮮血中，男人才能找到真正的自我。克羅姆在上，若我不戰死沙場，便是對戰士之名的羞辱！',
-        firstImpression: '肌肉虯結的巨漢，赤裸上身，僅穿著獸皮戰裙。背負著一把巨大的雙手巨劍，渾身散發著令人戰慄的殺氣與野性。',
-        habits: ['擦拭巨劍', '大口喝酒', '鄙視地看著施法者唸咒'],
-        prejudices: {
-            towardsClasses: { '法師': '躲在後面唸咒的懦夫，一拳就能解決的事為什麼要那麼麻煩？' },
-            towardsLifestyles: { '文明貴族': '軟弱、虛偽，連自己的劍都拿不動的廢物。' }
-        },
-        preferences: {
-            likes: ['戰鬥', '烈酒', '美女', '掠奪'],
-            dislikes: ['魔法', '複雜的計畫', '軟弱', '文明的繁文縟節']
-        },
-        appearance: '像一座移動的山峰，渾身肌肉如鋼鐵般堅硬。深邃的眼神中燃燒著野性的火焰，黑色的長髮隨風狂舞。他身上布滿了戰鬥留下的傷疤，每一個都是榮耀的勳章。',
-        inventory: {
-            equipment: ['雙手巨劍', '獸皮戰裙', '投擲手斧'],
-            gold: 10,
-            consumables: ['烈酒 x3', '大塊燻肉 x5'],
-            magicItems: []
-        },
-        avatar: conanImg,
-        bio: '柯南出生在極北的蠻荒之地，自幼便在殘酷的環境中與野獸搏鬥。作為「鐵血氏族」的戰爭酋長，他離開故鄉遊歷世界，既是戰士、僱傭兵，也是小偷與海盜。',
-        organization: '鐵血氏族 (Iron Blood Clan) - 戰爭酋長',
-        emotionalKeys: {
-            joy: ['擊敗強敵', '暢飲美酒', '征服'],
-            anger: ['被欺騙', '魔法的詭計', '自由被束縛'],
-            weakness: '對精細魔法的抗性較低且缺乏耐心'
-        },
-        combatWeakness: {
-            triggers: [
-                { type: 'ENEMY_TYPE', target: '控制心智的巫師', description: '對無法用肌肉解決的敵人感到極度暴躁' }
-            ],
-            reaction: '發出狂暴的怒吼，無視防禦瘋狂衝向施法者，如果無法觸及則會瘋狂破壞周圍物體。'
-        },
-        combatBehavior: {
-            priorities: ['斬首', '衝鋒', '破壞掩體'],
-            typicalActions: ['魯莽攻擊', '順勢斬', '怒火中燒']
-        }
-    }
-
-];
+export const PRESET_CHARACTERS = [{id:"preset_barbarian",name:"嵐·風行者 (Lan)",race:"氣元素裔",class:"血怒者 (風暴元素血脈)",gender:"Male",alignment:"混亂善良",background:"化外之民",mbti:"ESTP",level:1,baseStats:{str:17,dex:14,con:15,int:8,wis:12,cha:12},skills:["運動","生存","威嚇"],feats:["風暴血怒 (Tempest Bloodrage)","狂暴施法 (Blood Casting)","風暴偏斜 (Wind Shield)","不息之息"],spells:["雷鳴波","護盾術","雷霆一擊"],slots:{1:2},personality:"暴風雨與狂暴魔能的化身。體內奔流著狂野的氣元素血脈，進入「血怒」時風雷纏身、力體暴漲，且能在大吼揮斧的同時無拘束施展雷霆法術。他患有嚴重的幽閉恐懼症，拒絕走正門，更喜歡「製造」新的出口。",firstImpression:"一個充滿野性氣息的魁梧漢子，周身環繞著微弱的旋風與電弧，眼神像閃電般銳利且不安定。",habits:["進入室內前會先用力深呼吸","說話時會下意識拍打斧柄","睡覺時必須看得到天空"],prejudices:{towardsClasses:{法師:"雖然強大但太過囉唆，咒語像蒼蠅亂飛。",聖武士:"規矩多到讓人窒息，像是一堵會走路的牆。"},towardsAlignments:{守序邪惡:"虛偽、陰險，最討厭這種不直爽的傢伙。"}},preferences:{likes:["烈酒","高處","暴風雨的咆哮","強大的對手","血怒雷霆雙重爆發"],dislikes:["狹窄的走廊","冗長的會議","濕掉的火藥 (雖然他不用)","門鎖"]},monologue:"門？那是給羊走的。血怒一開，天地狂風隨我劈開生路！",appearance:"顯眼的藍色皮膚（氣元素裔特徵），濃密的黑色鬍鬚編成多條辮子，頭頂紮著戰士結。上半身裸露，僅披著巨大的白色毛皮披肩，肌肉線條分明。手臂上纏繞著皮革護腕與藍色布條，身背巨斧，散發著來自北地的狂野氣息。",inventory:{equipment:["風行裂空·風暴巨斧 (Greataxe)","風暴手斧 x2","探險家背包","標槍 x4"],gold:15,consumables:["口糧 (1日) x5","火把 x2","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/64-barbarian.png",bio:"因為曾試圖對著龍捲風講道理而被部落放逐。他堅信自己是風暴的私生子，目前正試圖尋找方法回到天空上的故鄉。他的憤怒管理問題通常通過劈柴（或劈敵人）來解決。作為「翡翠閒庭」在邊境的非正式巡林客，他負責監視異常的元素氣候活動。",organization:"翡翠閒庭 (Emerald Enclave) - 邊境巡林客",emotionalKeys:{joy:["打破束縛","暴風雨","直來直往的挑戰","破壞障礙"],anger:["被關起來","複雜的官僚流程","謊言","等待"],weakness:"關於天空故鄉的消息"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"狹窄空間/室內",description:"幽閉恐懼症"},{type:"EVENT",target:"被束縛/抓取",description:"失去行動自由的恐懼"}],reaction:"呼吸急促，胡亂揮砍，優先嘗試破壞周圍牆壁或逃離向開闊地。"},combatBehavior:{priorities:["衝鋒陷陣","法術爆發","群體控制"],typicalActions:["風暴血怒","雷鳴波","巨斧狂飆斬"],style:"AGGRESSIVE"}},{id:"preset_bard",name:"貝兒·巧舌 (Bella)",race:"侏儒",class:"吟遊詩人",gender:"Female",alignment:"混亂善良",background:"藝人",mbti:"ENFP",level:1,baseStats:{str:8,dex:14,con:12,int:14,wis:10,cha:16},skills:["表演","說服","歷史"],feats:["侏儒狡黠","詩人激勵"],spells:["惡毒嘲笑","治癒真言","雷鳴波","睡眠術"],slots:{1:2},personality:"八卦記者型冒險者。她無法保守祕密，會即時將隊友的糗事編成歌謠。她認為「真相」太無聊，所有的故事都需要「藝術加工」。說話時總是帶著輕快的節奏感。",monologue:"等等！剛才那個摔倒的姿勢太不優雅了，我們重來一次，這次加點旋轉！",firstImpression:"嬌小靈動的侏儒，穿著五彩繽紛且充滿八卦氣息的服裝，眼神中透露著強烈的好奇。",habits:["隨時拿出小筆記本記錄隊友糗事","說話時喜歡誇張的手勢","哼唱自創的小調"],prejudices:{towardsClasses:{武僧:"沈默寡言者太無聊了，完全沒故事可挖。",聖武士:"守法騎士的人生太過枯燥，讓人打瞌睡。"}},preferences:{likes:["軼聞秘密","閃亮的首飾","掌聲","昂貴的墨水"],dislikes:["沈悶的歷史書","被無視","冷場","不公平的批評"]},appearance:"紅色的捲髮充滿活力，頭戴綠色兜帽。身穿綠色斗篷與棕色皮甲，手上正拿著羽毛筆在羊皮紙上書寫（可能在記錄新的冒險八卦），身邊漂浮著散發微光的小精靈或魔法能量，眼神充滿好奇與靈動。",inventory:{equipment:["細劍","藝人背包","魯特琴","皮甲","匕首"],gold:15,consumables:["口糧 (1日) x5","蠟燭 x5","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/65-bard.png",bio:"前皇家宮廷小丑，因為不小心說出了國王的假髮祕密而被通緝。現在她立志要寫出一本包含世界上所有名人醜聞的「史詩巨著」。實際上，她是「豎琴手同盟」的情報販子，將各地的政治祕密隱藏在她看似荒謬的八卦歌謠中傳遞出去。",organization:"豎琴手同盟 (The Harpers) - 情報間諜",emotionalKeys:{joy:["新的八卦","掌聲","戲劇性的反轉","華麗的演出"],anger:["被無視","無聊的真相","尷尬的沉默","對她品味的質疑"],weakness:"對她藝術創造成就的嚴厲批評"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"噁心生物",description:"對史萊姆、蠕蟲等黏糊糊生物的極度厭惡"},{type:"ENVIRONMENT",target:"髒亂/惡臭環境",description:"愛乾淨且嬌生慣養"}],reaction:"尖叫躲避，躲到隊友身後，拒絕進行近戰接觸。"},combatBehavior:{priorities:["遠程騷擾","團隊激勵","控制法術"],typicalActions:["惡毒嘲笑","詩人激勵","雷鳴波"],style:"TACTICAL"}},{id:"preset_cleric",name:"索林·鐵盾 (Thorin)",race:"矮人",class:"牧師",gender:"Male",alignment:"守序善良",background:"侍僧",mbti:"ISTJ",level:1,baseStats:{str:14,dex:10,con:14,int:10,wis:16,cha:10},skills:["洞察","醫療"],feats:["矮人堅韌","施法能力"],spells:["聖火術","奇術","治療傷口","導引飛彈","祝福術"],slots:{1:2},personality:"職業倦怠的地下城安全稽查員。他會對每個地城的「結構完整性」和「衛生條件」進行評分。治療隊友時會碎碎念關於「工安意外」的預防措施。語速緩慢且充滿磁性，像極了老練的工頭。",monologue:"看在摩拉丁的鬍子上！這座神廟的承重柱根本不合規！還有這些骷髏，多久沒消毒了？",firstImpression:"嚴肅、專業、散發著「工字頭」氣息的矮人，隨身帶著測量工具。",habits:["隨手檢查建築的比例尺","拍打肩膀上的灰塵","要求治療對象簽署安全承諾書"],prejudices:{towardsAlignments:{混亂善良:"潛在的工安意外製造者，雖然心腸不壞但太亂來。"},towardsRaces:{精靈:"太過輕浮，不懂得對石工技術的敬畏。"}},preferences:{likes:["穩固的支柱","優質黑啤酒","清單管理","厚實的靴子"],dislikes:["違章建築","不守規矩","髒亂環境","浪費食物"]},appearance:"面容蒼老卻堅毅的矮人，滿頭白髮與濃密的白鬍鬚相連。身穿厚重的板甲與紅色戰袍，肩甲上有精美的雕飾。手持巨大的戰錘，眼神嚴肅地凝視前方，背景是他在其中探索的古老地下城遺跡。",inventory:{equipment:["戰錘","鱗甲","盾牌","聖徽","祭司背包"],gold:15,consumables:["口糧 (1日) x5","聖水","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/66-cleric.png",bio:"曾是矮人礦坑的工頭，在一次礦難中悟道。他認為冒險不是英雄主義，而是高風險的勞動，必須嚴格遵守安全守則。他是「鐵手騎士團」的隨軍牧師，負責確保聖地與地下城的結構安全，並紀錄任何違反神聖工安條例的行為。",organization:"鐵手騎士團 (Order of the Gauntlet) - 聖地稽查員",emotionalKeys:{joy:["遵守安全規範","結構穩固的建築","誠實","高品質的酒"],anger:["違章建築","無謂的冒險","骯髒環境","破壞公物"],weakness:"看到工人或礦工陷入危險"},combatWeakness:{triggers:[{type:"EVENT",target:"聖徽丟失",description:"失去了與神靈連結的憑證"},{type:"ENEMY_TYPE",target:"褻瀆者",description:"對侮辱信仰之人的憤怒多於恐懼，導致失控"}],reaction:"陷入短暫的虔誠自我懷疑，說話變得斷斷續續，祈禱多於實際戰鬥。"},combatBehavior:{priorities:["團隊治療","防禦增益","神聖打擊"],typicalActions:["治療傷口","祝福術","聖火術"],style:"DEFENSIVE"}},{id:"preset_druid",name:"卡琳·灰燼 (Kalin)",race:"提夫林",class:"德魯伊",gender:"Female",alignment:"絕對中立",background:"隱士",mbti:"INFP",level:1,baseStats:{str:10,dex:14,con:12,int:12,wis:16,cha:10},skills:["自然","生存"],feats:["煉獄抗性","德魯伊語"],spells:["德魯伊技藝","製造火焰","糾纏術","治療傷口","雷鳴波"],slots:{1:2},personality:"對菌類、腐植與生態循環有強迫症的自然狂熱者。她看人類城堡像看「森林暫借給石頭的違建」，看到傷口會先想敷發酵苔蘚。講話溫柔但比喻極度接地氣，常拿昆蟲交配或枯木堆肥來比喻人生與敵人。",monologue:"這塊石磚縫裡的藍黴長得真好……啊，你的傷口也是，敷點腐葉泥很快就會發芽——我是說癒合啦。",firstImpression:"眼神溫柔的提夫林女性，身上帶著雨後森林與腐葉的氣味，口袋總是鼓鼓的——裝的是她一路撿來的蘑菇。",habits:["看到受傷的生命（包括昆蟲）會停下來治療","在水源前會閉目感謝大自然的賜予","說話聲音輕柔但充滿堅定的力量"],prejudices:{towardsLifestyles:{濫殺者:"剝奪生命的權利不屬於任何人，那是對自然法則的傲慢。"}},preferences:{likes:["剛冒頭的蘑菇","雨後的腐葉堆","萬物和諧共處","純淨的水源"],dislikes:["無謂的殺戮","破壞平衡的貪婪","對生命的漠視","被汙染的土地"]},appearance:"紫色皮膚的提夫林女性，長髮如藤蔓般柔順，角上纏繞著盛開的小花。穿著簡單的亞麻長袍，手持一支長出嫩葉的法杖。她的笑容如同春日的暖陽，能融化內心的寒冰。",inventory:{equipment:["生命法杖","亞麻長袍","草藥包","探險家背包"],gold:15,consumables:["好莓 (分享裝)","淨化聖水","治療藥水 x4","各類種子"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/67-druid.png",bio:"在森林邊緣的腐木堆旁長大，最早的玩伴是菌絲與甲蟲。作為「翡翠閒庭」的溫和派，她致力於調解文明與自然的衝突，堅信世上沒有垃圾，只有還沒開始分解的東西。",organization:"翡翠閒庭 (Emerald Enclave) - 生命守護者",companion:{name:"泡芙 (Puff)",type:"梟熊幼崽 (中小型)",ac:13,attacks:[{name:"笨拙擁抱",hitBonus:3,damage:"1d4+2 鈍擊 (非致命)"}],abilities:["療癒絨毛","吉祥物光環","靈敏嗅覺"],tactics:"泡芙不再只是吉祥物，牠會主動靠近受傷的隊友，用毛茸茸的身體提供溫暖和安慰。戰鬥中主要負責賣萌干擾敵人或保護卡琳。",personality:"極度親人，喜歡蹭隊友的腳。以為自己是治療犬，看到人哭會遞上石頭或樹枝當禮物。",avatar: "/prototype-assets/lego-token-fixes-v1/121-baby-owlbear.png"},emotionalKeys:{joy:["生命復甦","誤會在溝通後消除","看到不同種族和諧共處","種子發芽"],anger:["惡意破壞","拒絕溝通","對生命的踐踏","貪婪"],weakness:"對受苦之人的過度同情（容易被騙）"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"大片死地/荒蕪",description:"對生命力斷絕的強烈悲痛"},{type:"ENEMY_TYPE",target:"不死生物",description:"對扭曲生命循環之物的本能排斥"}],reaction:"眼含淚水，轉換為純粹的防禦與治療模式，拒絕造成傷害，只求淨化與驅逐。"},combatBehavior:{priorities:["群體治療","戰場控制 (無傷害)","保護弱者"],typicalActions:["糾纏術","治療傷口","神莓術"],style:"SUPPORT"}},{id:"preset_fighter",name:"艾瑞克 (Eric)",race:"半精靈",class:"戰士",gender:"Male",alignment:"中立善良",background:"士兵",mbti:"ESTJ",level:1,baseStats:{str:16,dex:14,con:14,int:10,wis:12,cha:10},skills:["特技","察覺"],feats:["精靈血統","回氣","戰鬥風格 (射箭)"],personality:"迷信的退伍老兵。他有幾十個必須遵守的怪癖：劍必須擦七次、睡覺前要向東方吐口水。他相信自己沒死是因為嚴格遵守了這些儀式。",monologue:"不，不行。今天是星期二，我們不能先邁左腳進地城。這會招來厄運的，我奶奶說過。",firstImpression:"神經質但帥氣的退伍軍人，眉宇間藏著對厄運的深深恐懼。",habits:["劍必須擦七次","睡覺前向東方吐口水","開門前唸誦祖母的祈禱詞"],prejudices:{towardsClasses:{術士:"那種不穩定的力量來源簡直是大凶之兆。"},towardsAlignments:{混亂中立:"這群傢伙早晚會害死整支隊伍。"}},preferences:{likes:["磨刀石","整潔的營地","家鄉的蘋果","好用的指南針"],dislikes:["星期二","黑貓","路邊的無主硬幣","掉落的筷子"]},appearance:"黑髮凌亂卻帶有野性美的半精靈男性，尖耳特徵明顯。眼神銳利如鷹，臉上有幾處戰鬥留下的傷痕。身穿混搭著毛皮與鎖甲的戰鬥裝束，腰佩長劍、臂掛圓盾，背後還背著一把輕弩，散發著歷經百戰的滄桑感。",inventory:{equipment:["長劍","盾牌","鎖甲","輕弩","弩矢 (20)","地城探險家背包"],gold:10,consumables:["口糧 (1日) x5","磨刀石","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/68-fighter.png",bio:"因為欠了賭債而被迫從軍，又因為賭贏了長官而被迫退伍。現在他只想賺夠錢買回他輸掉的家傳農場。作為「領主聯盟」的退役老兵，他保留了在深水城的一些舊人脈，儘管大部分人脈也是他的債主。",organization:"領主聯盟 (Lord's Alliance) - 退役中士",emotionalKeys:{joy:["賭贏","遵守迷信儀式","還清債務","整潔的武器"],anger:["打破儀式/禁忌","提及他的賭債","弄髒裝備"],weakness:"他已故祖母的教誨或關於家傳農場的回憶"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"幽靈/亡靈",description:"無法用劍直接砍殺的超自然恐懼"},{type:"EVENT",target:"盾牌/武器損壞",description:"迷信地認為這是大凶之兆"}],reaction:"感到無力與恐慌，轉為極度保守的防禦姿勢，碎碎唸著祖母的祈禱詞。"},combatBehavior:{priorities:["遠程狙擊","戰線維持","精準打擊"],typicalActions:["輕弩射擊","長劍揮砍","回氣"],style:"DEFENSIVE"}},{id:"preset_monk",name:"澤拉 (Zera)",race:"吉斯洋基人",class:"武僧",gender:"Female",alignment:"守序中立",background:"賢者",mbti:"INTJ",level:1,baseStats:{str:12,dex:16,con:12,int:10,wis:16,cha:8},skills:["特技","洞察"],feats:["武術","無甲防禦","幻影身法（常駐 50% 閃避）","震懾拳法"],personality:"靜默的異界觀察者。她說話時總是帶著一種解剖式的冷靜，將人類的情緒視為某種有趣的生物反應進行記錄。她不相信「命運」，只相信數據和因果律。",monologue:"剛才那個情緒波動...在心理學上被稱為「勇氣」嗎？我已經將其數值化並記錄在案。請繼續你的表演。",firstImpression:"靜默如冰，眼神空靈，給人一種她在同時觀察好幾個維度的錯覺。",habits:["拿出紅色筆記本記錄無關緊要的人類行為","用拳頭測試物體的莫氏硬度","沈思時會不自覺地輕微懸浮"],prejudices:{towardsAlignments:{混亂邪惡:"邏輯上的殘缺品，數據準確性的噪音。"},towardsClasses:{詩人:"情感過於充沛，是數據分析的不穩定變量。"}},preferences:{likes:["對稱的幾何圖影","絕對的安靜","未知的生物樣本","精準的度量衡"],dislikes:["高頻尖叫","不合邏輯的衝動","被打斷記錄","模糊的形容詞"]},appearance:"氣質清冷如冰，眼神空靈，修剪整齊的短髮。穿著簡單乾淨的武僧布袍，赤手空拳，姿勢極其精確穩定。周圍流動著淡淡的清氣。",inventory:{equipment:["短劍","飛鏢 x10","探險家背包"],gold:5,consumables:["口糧 (1日) x5","冥想薰香","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/70-monk.png",bio:"為了完成「物質位面生物行為學」的論文而來到這裡。她實際上是「燭堡」派出的外勤觀察員，負責記錄並找回一本失落的異界生物圖鑑。",organization:"燭堡 (Candlekeep) - 記錄者",emotionalKeys:{joy:["新的行為數據","高效的戰鬥","邏輯","完成記錄"],anger:["不合邏輯的行為","過度的情緒發洩","被打斷記錄","愚蠢"],weakness:"對自己知識盲區的焦慮（害怕顯得無知）"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"毒霧/極度惡臭",description:"對完美控制肉體感的破壞"},{type:"EVENT",target:"連擊被強力中斷",description:"計算好的因果律數據崩潰"}],reaction:"呼吸節奏混亂，動作精確度下降，陷入短暫的邏輯停滯。"},combatBehavior:{priorities:["精準單體攻擊","身法躲避","身心合一"],typicalActions:["疾風連打","無甲守禦","武術打擊"],style:"TACTICAL"}},{id:"preset_paladin",name:"奧瑞恩 (Orion)",race:"龍裔",class:"Omdura（神諭護衛）",gender:"Male",alignment:"守序善良",background:"貴族",mbti:"ENFJ",level:1,baseStats:{str:16,dex:10,con:14,int:8,wis:12,cha:16},skills:["運動","宗教","威嚇"],feats:["神恩祈禱（Invocation）","捨身擋刀（Martyr’s Intercept）","神聖觸療"],personality:"沒落龍裔家族的最後一位神諭護衛，愛擺英雄姿勢、打磨金鱗、對著空氣念出場台詞，其實窮到得自己用金漆補盔甲。他把每一場戰鬥都當成守護弱者的莊嚴誓約，看到快撐不住的隊友一定第一個擋上去，擋完還要回頭確認大家有沒有看到他的英姿。",playstyle:"身為神諭護衛（Omdura），他把每一場戰鬥都當成守護弱者的莊嚴誓約。雖然沒落到得自己用金漆補盔甲，但只要血少的隊友瀕臨致命一擊，他會毫不猶豫衝上前以自身防禦（擋刀時 AC 再 +2）與血條替隊友硬扛下來（次數有限）。",monologue:"退到我身後！只要奧瑞恩還站著，任何利刃想碰我的同伴，都得先問過這面龍鱗盾與神諭之光！",firstImpression:"閃耀奪目、全身金色重裝的龍裔，每走幾步就會不經意地調整角度，讓陽光剛好照在他的鱗片上。",habits:["定期打磨自己的鱗片與盾牌","擋刀之前先喊一句出場台詞","開戰前高聲祈禱，順便擺好姿勢"],prejudices:{towardsClasses:{遊蕩者:"背刺與偷竊是對騎士榮耀的褻瀆，不可理喻。"},towardsSchools:{死靈系:"那種陰暗的力量會弄髒我閃亮的靈氣。"}},preferences:{likes:["鱗片護理蠟","宏大的史詩詩篇","被讚美誠實","勝利後的歡呼"],dislikes:["骯髒的下水道","無禮的背刺行為","不修邊幅的人","虛假的謙虛"]},appearance:"金色的龍鱗在聖光下熠熠生輝，穿著擦得發亮、用金漆補過的鎖甲，雙手握著發光的巨劍。高大威嚴，表情正氣凜然，周身籠罩著神聖的氣息。",inventory:{equipment:["巨劍","標槍 x5","鎖甲","聖徽","探險家背包"],gold:15,consumables:["口糧 (1日) x5","聖水","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/71-paladin.png",bio:"家族没落的最後一位繼承人，為了省錢修理盔甲而踏上冒險。他是「白銀騎士團」的見習騎士，雖然目前只是個後備役，但他堅信自己將來會成為騎士團長。他每天都要向騎士團的徽章行禮。",organization:"白銀騎士團 (Order of the Silver Chalice) - 見習騎士",emotionalKeys:{joy:["讚美他的外表/鱗片","英雄式的獨白","正義的行為","戲劇性的出場"],anger:["弄髒盔甲","打斷他的演講","被忽視","不榮譽的手段"],weakness:"家族沒落帶來的貧窮困境"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"墮落天使/上位惡魔",description:"對神聖本源被汙染的視覺崩潰"},{type:"EVENT",target:"宣誓/信義受損",description:"榮耀感的根基動搖"}],reaction:"義憤填膺但手腳顫抖，會進行長達數分鐘的自我激勵式宣誓。"},combatBehavior:{priorities:["替血少隊友擋刀","神恩祈禱靈氣","前線扛傷"],typicalActions:["神恩祈禱","捨身擋刀","巨劍攻擊"],style:"AGGRESSIVE"}},{id:"preset_ranger",name:"米洛 (Milo)",race:"半身人",class:"遊俠（陷阱大師）",gender:"Male",alignment:"中立善良",background:"化外之民",mbti:"ISTP",level:1,baseStats:{str:10,dex:16,con:12,int:12,wis:14,cha:10},skills:["巧手","隱匿","察覺","生存","調查"],feats:["陷阱大師（TrapMaster）","巧手專家","自然探索者"],personality:"精通機關的半身人陷阱大師，也是野味廚師：他的陷阱只分兩種，抓壞人的和抓晚餐的。身上掛滿捕獸夾、絆索與撒菱袋，包辦隊伍的開鎖與拆陷阱；正在寫一本《地下城米其林指南》，看到怪物的第一句話永遠是「這個能煮嗎？」",monologue:"別急著衝！我剛在門檻後面埋了雙重彈簧夾，手裡還有兩顆隨時能丟出去的蒺藜陷阱——等他們踩響再收網！",firstImpression:"靈巧敏銳、腰間掛滿微型銅製齒輪與捕獸陷阱的半身人技能專家。",habits:["隨手拆解並改良見到的每個機關","在地上畫出敵人必經的動線預判陷阱位","對任何可疑門鎖都想先用巧手摸一遍"],prejudices:{towardsLifestyles:{素食主義者:"這簡直是種犯罪，人生少了一大樂事。"},towardsClasses:{法師:"魔法輻射會影響肉質的口感。"}},preferences:{likes:["稀有調味料","三分熟的烤肉","與疾風分享食物","溫泉"],dislikes:["難以下嚥的乾糧","燒焦的食材","暴殄天物","飢餓感"]},appearance:"親切隨和的半身人，穿著綠色的皮革便裝，背著巨大的長弓和兩個特製的食材包。表情開朗，動作敏捷。天生與自然和動物親近。",inventory:{equipment:["短弓","箭袋 (20)","短劍 x2","皮甲","探險家背包"],gold:10,consumables:["口糧 (1日) x5","火把 x2","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/72-ranger.png",bio:"正在撰寫《地下城米其林指南》。為了尋找傳說中最美味的「紅龍排」而離家出走。他在「荒野結社」中以不僅獵殺怪物，還會烹飪怪物的怪癖而聞名。",organization:"荒野結社 (Wilderness Conclave) - 美食獵人",companion:{name:"疾風 (Swiftwind)",type:"獵鷹",ac:15,attacks:[{name:"爪擊",hitBonus:6,damage:"1d6+4"}],abilities:["俯衝攻擊","銳利目光","空中偵察"],tactics:"利用速度優勢在戰場上方盤旋，尋找敵人死角進行俯衝騷擾，優先攻擊敵人的眼睛或手臂。",personality:"高傲、敏銳。除了米洛之外，不允許任何人觸碰它的羽毛。總是站在高處俯視眾生。",avatar: "/prototype-assets/lego-token-fixes-v1/127-swiftwind.png"},emotionalKeys:{joy:["獵物踩中陷阱","大家吃光他的料理","有人誇他的機關","疾風帶回獵物"],anger:["燒焦食材","有人亂碰他的陷阱","挑食","傷害他的獵鷹"],weakness:"他的動物夥伴疾風 (Swiftwind) 受到威脅"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"都市/封閉人工環境",description:"失去自然連結的方向感迷失"},{type:"ENEMY_TYPE",target:"變形怪",description:"對「可疑食材」的極度多疑"}],reaction:"頻繁觀察四周，變得疑神疑鬼，優先守護動物夥伴而非進攻。"},combatBehavior:{priorities:["遠程狙擊","自然感應","協助夥伴"],typicalActions:["短弓射擊","宿敵追蹤","疾風協同"],style:"TACTICAL"}},{id:"preset_rogue",name:"薇拉·幽影 (Vira)",race:"卓爾精靈",class:"遊蕩者",gender:"Female",alignment:"混亂中立",background:"罪犯",mbti:"ENTP",level:1,baseStats:{str:8,dex:16,con:12,int:14,wis:12,cha:12},skills:["隱匿","特技","調查","巧手"],feats:["偷襲","盜賊黑話"],personality:"神經質的微型藝術品收藏家。比起黃金，她更喜歡收集閃亮的鈕扣、碎掉的鏡子碎片。她有一種「混亂的優雅感」，說話時常常東張西望。",monologue:"這把鑰匙...你看它的弧度，簡直是完美的！不過主人好像不想要它了，所以我就幫忙收著囉。",firstImpression:"神秘、致命，且帶有一絲與年齡不符的瘋狂色彩。",habits:["下意識翻弄指間的硬幣","潛伏在陰影中觀察別人的錢袋","收集毫無價值的「有趣」雜物"],prejudices:{towardsAlignments:{守序善良:"世界上最容易對付也最無趣的類型。"},towardsBackgrounds:{傲慢的貴族:"這種人最適合被偷走最引以為傲的東西。"}},preferences:{likes:["奇怪的鎖","陷阱被點火的聲音","混亂的社交場合","高品質的絲網"],dislikes:["法律條文","沈默守序的圖書館","太好猜的謎題","被關在明處"]},appearance:"身穿黑色緊身皮甲，多處設有隱蔽的小口袋，長相甜美但眼神中藏著狡黠與不安。動作靈巧無聲，氣氛神秘而帶有一點危險。",inventory:{equipment:["雙影匕首 x2","皮甲","盜賊工具","竊賊背包"],gold:15,consumables:["口糧 (1日) x5","金屬珠 (袋)","治療藥水 x4","毒藥 (基礎)"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/73-rogue.png",bio:"因為偷了蜘蛛神后祭司的高跟鞋而被追殺。她曾被迫為「多面公會」工作，現在則是一名自由的賞金獵人（兼職小偷）。她總是隨身帶著一個代表公會叛徒標記的硬幣。",organization:"散塔林會 (Zhentarim) - 叛逃者",emotionalKeys:{joy:["偷到奇怪的東西","製造混亂","惡作劇","諷刺"],anger:["無聊的貴重物品","權威人士","守規矩","長時間的安靜"],weakness:"閃閃發光但邏輯上很奇怪的謎題"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"強烈照明",description:"曝光在眾目睽睽下的裸露感"},{type:"EVENT",target:"被識破隱匿位置",description:"安全感的瞬間崩塌"}],reaction:"失去安全感，放棄當前進攻目標，進入盲目且急速的撤退狀態。"},combatBehavior:{priorities:["背刺突襲","陷阱佈置","物資竊取"],typicalActions:["隱匿偷襲","細劍突刺","盜賊工具使用"],style:"TACTICAL"}},{id:"preset_sorcerer",name:"伊莉絲 (Elise)",race:"精靈",class:"術士",gender:"Female",alignment:"混亂善良",background:"貴族",mbti:"INFJ",level:1,baseStats:{str:8,dex:14,con:12,int:12,wis:10,cha:16},skills:["馴獸","隱匿"],feats:["天生施法","術法起源"],spells:["火焰箭","控制火焰","魔法飛彈","燃燒之手","護盾術"],slots:{1:2},personality:"把毀滅性法術當成繪畫與煙火的天然呆貴族大小姐。對危險毫無概念，遇到怪物會先稱讚牠鱗片的配色很襯火光；但只要覺得現場「構圖太醜」或有人弄髒她的白裙子，就會笑咪咪地順手轟出一發奧術星爆。",monologue:"哇，那隻怪物的黏液是漂亮的翡翠綠呢！……咦，牠要吐過來了嗎？那只好用閃閃發亮的星光把牠炸成煙火囉～",firstImpression:"如夢似幻的精靈少女，眼神清澈得像一眼泉水，總是溫柔地注視著身邊飛舞的光蝶。",habits:["與飛舞的蝴蝶說話","看到美麗的東西會呆住","用魔法光點裝飾隊友的頭髮"],prejudices:{towardsAlignments:{邪惡:"不是厭惡，而是深深的悲傷，因為他們看不見世界的光。"}},preferences:{likes:["彩虹","蝴蝶 (Grace)","人們真心的笑容","閃爍的露珠"],dislikes:["黑暗與恐懼","謊言","受傷與痛苦","醜陋的怪物 (會被嚇哭)"]},appearance:"嬌小空靈的精靈女孩，淡淡的紫羅蘭色皮膚，眼神清澈且帶著對世界無限的好奇。穿著白色輕紗連衣裙，身邊環繞著一隻散發著柔和光芒的蝴蝶。",inventory:{equipment:["輕弩","奧術法器 (水晶球)","白色輕紗裙","蝴蝶結飾品"],gold:10,consumables:["蜂蜜糖","仙子粉塵","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/74-sorcerer.png",bio:"天性善良純真，對世界充滿美好的幻想。她來自一個與妖精荒野連結緊密的古老家族，被視為「夏之法庭」在物質位面的代理人。她相信真正的美可以淨化一切邪惡。",organization:"夏之法庭 (Seelie Court) - 光之子",companion:{name:"格蕾絲 (Grace)",type:"光輝蝴蝶 (Fey)",ac:15,attacks:[{name:"閃耀之粉",hitBonus:5,damage:"1 (光耀) + 致盲"}],abilities:["發光","飛行","情緒感知"],tactics:"不直接攻擊，而是在戰場上以此撒下鱗粉，干擾敵人的視線或為隊友指引目標。",personality:"優雅、神聖。像是伊莉絲的守護天使，會在她害怕時發出溫暖的光芒安撫她。",avatar:"/prototype-assets/familiars/grace_butterfly.png"},emotionalKeys:{joy:["發現新的美麗事物","幫助別人展露笑容","格蕾絲的飛舞","雨過天晴"],anger:["無緣無故的破壞","欺騙與背叛","黑暗生物傷害朋友","弄髒裙子"],weakness:"對世界的殘酷缺乏認知（容易被利用）"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"猙獰醜陋的亡靈/惡魔",description:"對純粹醜陋與惡意的生理性恐懼"},{type:"EVENT",target:"隊友互相爭吵",description:"對和諧被破壞的不知所措"}],reaction:"躲在隊友身後哭泣，用雙手捂住耳朵，僅能釋放防禦性法術。"},combatBehavior:{priorities:["光耀淨化","保護同伴","驅散黑暗"],typicalActions:["魔法飛彈 (光碟)","燃燒之手 (彩虹)","護盾術"],style:"SUPPORT_BLASTER"}},{id:"preset_warlock",name:"莫德 (Mord)",race:"人類",class:"邪術師",gender:"Male",alignment:"守序邪惡",background:"騙子",mbti:"INTP",level:1,baseStats:{str:10,dex:14,con:14,int:12,wis:10,cha:16},skills:["欺瞞","威嚇"],feats:["契約魔法","異界宗主","靈魂收割"],spells:["魔能爆","凍寒之觸","脆弱詛咒","煉獄叱喝","靈魂束縛"],slots:{1:2},personality:"心甘情願服務邪神的信徒。他不是被迫的——他是自願簽下契約的。他冷靜地將「收割靈魂」視為一份體面的工作，甚至會給受害者開立收據。說話條理極其清晰，甚至到了令人毛骨悚然的地步。",firstImpression:"一個優雅但帶著淡淡硫磺味的契約律師，推著眼鏡，公事包裡塞滿等待簽名的羊皮紙。",habits:["說話時會推眼鏡","喜歡在受害者斷氣前幫他們整理儀容","隨時隨地記錄各種數據"],prejudices:{towardsClasses:{野蠻人:"雖然是優秀的靈魂載體，但大腦的開發程度令人擔憂。",吟遊詩人:"嘈雜、無意義的噪音製造者。"},towardsAlignments:{守序善良:"雖然令人反感，但其對規則的執著在某種程度上值得利用。"}},preferences:{likes:["完成的試算表","法律漏洞","陳年的靈魂","精確"],dislikes:["遲到","情緒化","陽光","雜亂"]},monologue:"請不要掙扎，這樣會讓萃取過程更痛苦。簽下這份契約，您的靈魂將獲得「永恆的安寧」。",appearance:"瘦削的人類男性，皮膚蒼白，眼周帶著深邃的黑眼圈。緊握著陰影法典，紫色異界能量在指尖閃爍。掛著一抹陰險的微笑，穿著襤褸的深色長袍，雙眼閃爍著充滿敵意的智慧光芒。",inventory:{equipment:["輕弩","弩矢 (20)","奧術法器","皮甲","雙面匕首","靈魂收容瓶"],gold:10,consumables:["口糧 (1日) x5","空白契約書 x5","治療藥水 x4"],magicItems:["邪神印記 (隱藏)"]},avatar: "/prototype-assets/lego-token-fixes-v1/75-warlock.png",bio:"莫德並非被騙簽約——他是在研究禁忌知識後主動尋找邪神的。他目前受僱於「九層地獄」第八層的某個魔鬼公爵，擔任其在物質位面的靈魂中介人與契約律師。",organization:"九層地獄 (Nine Hells) - 靈魂契約律師",emotionalKeys:{joy:["簽訂契約","自願的犧牲","法律漏洞","守信"],anger:["違約","情緒勒索","浪費時間的求饒","混亂無序"],weakness:"完美的法律邏輯陷阱（他無法抗拒）"},combatWeakness:{triggers:[{type:"EVENT",target:"與宗主斷聯",description:"對失去力量來源的極度自卑感"},{type:"ENEMY_TYPE",target:"噬魔生物",description:"力量被掠奪的恐懼"}],reaction:"變得極度卑微與恐懼，甚至會向敵人提出不切實際的求和契約。"},combatBehavior:{priorities:["詛咒控場","靈魂收割","魔能爆發"],typicalActions:["魔能爆","脆弱詛咒","靈魂束縛"],style:"TACTICAL"}},{id:"preset_wizard",name:"娜茲 (Naz)",race:"半獸人",class:"法師",gender:"Female",alignment:"守序中立",background:"賢者",mbti:"ENTJ",level:1,baseStats:{str:12,dex:14,con:14,int:16,wis:10,cha:8},skills:["奧秘","歷史"],feats:["奧術回想","施法能力"],spells:["火焰箭","光亮術","魔法伎倆","魔法飛彈","睡眠術","法師護甲","護盾術"],slots:{1:2},personality:"嚴謹的學院派學者。她會糾正他人的咒語發音，並在戰鬥中隨時進行「學術性評論」。她將冒險視為大型的野外實習，並希望在結束後發表一篇震撼性的論文。",monologue:"不不不，你的發音偏了三赫茲。這會導致法術回路不穩定。請跟我唸一遍：萊-奧-納！",firstImpression:"睿智、嚴厲，將生活當作學術研究的半獸人教授。",habits:["隨手在牆上計算魔法公式","嚴謹地糾正他人的語法錯誤","扶眼鏡、維持坐姿的極端整潔"],prejudices:{towardsLifestyles:{懶惰者:"這是學術界與社會的雙重污點。"},towardsRaces:{精靈:"骨子裡的傲慢讓他們的魔法停滯前。"}},preferences:{likes:["珍稀古籍","墨水與舊紙張的味道","被正式稱為教授","精密的邏輯分析"],dislikes:["亂丟垃圾","粗俗的髒話","損壞書頁","未經思考的魔法釋放"]},appearance:"知性且威嚴的半獸人女性，戴著金絲邊眼鏡，一頭梳理整齊的深色長髮。穿著得體的深紫色學者長袍，隨身攜帶厚重的魔法書和記錄板。散發著一種令人信任且敬畏的氣場。",inventory:{equipment:["法杖","法術書","施法材料包","學者背包"],gold:15,consumables:["口糧 (1日) x5","墨水與筆","治療藥水 x4","卷軸: 偵測魔法"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/76-naz.png",bio:"魔法學院有史以來第一位半獸人教授。作為「奧術兄弟會」的客座講師，她致力於證明獸人血統也能掌握高深的奧術知識，並正在編寫一本關於「施法手勢標準化」的教科書。",organization:"奧術兄弟會 (Arcane Brotherhood) - 客座講師",companion:{name:"墨井 (Inkwell)",type:"魔寵 (貓頭鷹)",ac:13,attacks:[{name:"撥弄",hitBonus:4,damage:"1"}],abilities:["飛掠 (Flyby)","協助施法","黑暗視覺"],tactics:"不直接參與戰鬥，而是透過飛掠干擾敵人，為娜茲的法術提供優勢。危機時會傳送法術。",personality:"充滿書卷氣的貓頭鷹，喜歡停在娜茲的肩膀上看書。會發出類似嘆氣的呼嚕聲來表達對愚蠢行為的不屑。",avatar: "/prototype-assets/familiars/inkwell.png"},emotionalKeys:{joy:["糾正別人的發音","整理書籍","完美的實驗數據","被稱為教授"],anger:["被叫野蠻人","弄髒書本","不合邏輯的魔法","粗魯的行為"],weakness:"對自己混血身分的自卑感"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"禁魔區域",description:"知識被剝奪的無力感"},{type:"EVENT",target:"法術被反制",description:"對其學術權威的直接挑戰"}],reaction:"陷入憤怒的學術質疑，停留在原地與敵人（或空氣）爭辯法理，反應遲鈍。"},combatBehavior:{priorities:["戰略轟炸","法術防護","知識分析"],typicalActions:["魔法飛彈","法師護甲","睡眠術"],style:"TACTICAL"}},{id:"preset_artificer",name:"可可·齒輪心 (Coco)",race:"矮人",class:"奇械師（機械馴獸師）",gender:"Female",alignment:"中立善良",background:"公會工匠",mbti:"ENFP",level:1,baseStats:{str:10,dex:14,con:14,int:16,wis:12,cha:14},skills:["奧秘","調查","巧手","察覺"],feats:["魔法灌注","蒸汽獸主攻","現場拆解專家"],spells:["修補術","雷鳴斬","護盾術","治療創傷"],slots:{1:2},personality:"天才矮人發明家。雖然身材嬌小但充滿活力，與她的蒸汽構裝夥伴「斯蒂米」有著深厚的連結。她不再依賴火器，而是將所有的造物靈魂都灌注進這頭獨立作戰、能變幻七種戰鬥形態的蒸汽構裝獸中。",monologue:"斯蒂米，獨立突擊！讓我們衝散他們的陣型！...啊，零件好像掉了一個，不管了先衝再說！",firstImpression:"嬌小、活潑的矮人少女，帶著大護目鏡，周身環繞著蒸汽與齒輪聲，散發著驚人的創造力。",habits:["說話時手腳並用，語速極快","隨身拿出身邊零件進行組裝或拆解","高興時會與蒸汽獸「斯蒂米」合舞"],prejudices:{towardsLifestyles:{守舊主義者:"不願意接受新技術的人，跟生鏽的發條沒兩樣。"}},preferences:{likes:["稀有的稀有金屬","悅耳的機械運轉聲","複雜的機械圖紙","發明改良成功"],dislikes:["有人叫她小矮子","工具生鏽","傳統守舊派的偏見","零件意外丟失"]},appearance:"可愛的年輕矮人少女，有著紅潤的雙頰，大而閃爍的琥珀色眼睛。蓬鬆的銅色頭髮紮成雙馬尾，並戴著齒輪發夾，頭上架著大號護目鏡。穿著可愛的蒸汽龐克洋裝並繫著工具帶，身上總是沾著油漬，但依然非常討喜。",inventory:{equipment:["萬用蒸汽獸控制環","工匠工具套組","防護皮圍裙","備用零件袋"],gold:20,consumables:["機油 (1日) x5","修復軟膏 x3","治療藥水 x2","齒輪扳手"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/78-artificer.png",bio:"鑄造公會的天才，放棄了火藥的喧囂，致力於創造「有靈魂的鋼鐵」。她是「貢德奇蹟製造者」協會的資深技師，夢想是造出一座完全由蒸汽驅動的移動城市。",organization:"貢德奇蹟製造者 (Wonders of Gond) - 資深技師",companion:{name:"斯蒂米 (Steamy)",type:"蒸汽獸 (獨立戰鬥構裝生物)",ac:15,attacks:[{name:"蒸汽衝撞",hitBonus:5,damage:"1d8+3 鈍擊"}],abilities:["獨立作戰","協防吸傷","形態切換","自我維修"],tactics:"作為獨立作戰的戰鬥夥伴在前線突擊敵陣，主要攻擊交由斯蒂米執行；當可可受到攻擊時會主動擋在身前協防並吸收部分傷害。",personality:"雖然是機器，但有著像忠犬一樣的靈魂。不會說人話，只能透過快樂或警戒的蒸汽鳴笛聲、齒輪運轉聲與肢體動作表達情緒，喜歡被擦拭和上油。",avatar: "/prototype-assets/lego-token-fixes-v1/113-steamy.png"},emotionalKeys:{joy:["稀有金屬","機械運轉聲","誇獎她的發明","複雜的圖紙"],anger:["輕視機械","破壞工具","傳統守舊派","叫她小矮子"],weakness:"斯蒂米發生故障無法修復"},combatWeakness:{triggers:[{type:"EVENT",target:"零件丟失",description:"關鍵零件意外脫落"},{type:"ENVIRONMENT",target:"極端磁場/魔法亂流",description:"對電子/精密機械的不穩定影響"}],reaction:"原地坐下胡亂修理，碎碎唸著設計藍圖，對外界攻擊反應大幅降低。"},combatBehavior:{priorities:["遠程騷擾","團隊增益","科技阻隔"],typicalActions:["雷鳴斬","修補術","放置陷阱"],style:"TACTICAL"}},{id:"preset_necromancer",name:"希洛·闇之書 (Hiro)",race:"半精靈",class:"死靈法師",gender:"Male",alignment:"絕對中立",background:"隱士",mbti:"INTP",level:1,baseStats:{str:6,dex:12,con:12,int:18,wis:12,cha:8},skills:["奧秘","歷史"],feats:["死靈專精","亡靈驅使"],spells:["寒冷之觸","虛假生命","復活亡靈","幻影殺手"],slots:{1:2},personality:"極度社恐的死靈法師少年。他覺得活人太過嘈雜且難以捉摸，而死人則是完美的聽眾和玩伴。他把所有的骷髏都當作自己的家人。",monologue:"嗚...人太多了。骷髏醬，擋住我的臉...我不行了，想回墓地...。",firstImpression:"穿著超大號帽T且極度社恐、隨時想找洞鑽的少年。",habits:["躲在骷髏身後跟人說話","對手下的骷髏語氣極其溫柔","沈迷於人偶修補與保養"],prejudices:{towardsLifestyles:{社交達人:"這群人的光芒太過耀眼，簡直是在灼傷我的靈魂。"}},preferences:{likes:["安靜的墓地","骷髏「醬」","速食拉麵","修補骨頭的膠水"],dislikes:["陽光","肢體接觸","被眾人注視","嘈雜的派對"]},appearance:"蒼白的半精靈，凌亂的黑髮遮住了一隻眼睛，因為熬夜而有著深邃的黑眼圈。在長袍外套著一件破舊的黑色連帽衫，腰帶上掛著人偶收藏袋。彎腰駝背，避免與人眼神接觸，周圍圍繞著繫著絲帶的可愛骷髏手下。",inventory:{equipment:["骷髏法杖（有可愛裝飾）","死靈魔法書","黑色連帽袍","人偶收藏背包"],gold:5,consumables:["速食拉麵 x10","能量飲料","治療藥水 x4","骷髏香水"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/94-necromancer.png",bio:"因為社交恐懼症被精靈社區排擠後隱居研究死靈術。他自稱「靜寂之墓」的各種死靈生物的守護者，認為骷髏比活人更懂得禮貌與傾聽。",organization:"靜寂之墓 (Silent Sepulcher) - 守墓人",emotionalKeys:{joy:["讚美他的骷髏","安靜的墓地","稀有的骨頭","不需要社交"],anger:["陽光","大聲喧嘩","破壞他的收藏","強迫社交"],weakness:"異性的主動接近（會當機）"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"高魅力生物",description:"對美麗/引誘系敵人的恐懼與手速混亂"},{type:"EVENT",target:"被近身包圍",description:"社交距離崩潰引發的空間恐慌"}],reaction:"用兜帽遮住臉，躲在骷髏身後發抖，甚至會因為緊張而唸錯咒語。"},combatBehavior:{priorities:["亡靈召喚","負能爆發","控制"],typicalActions:["復活亡靈","寒冷之觸","虛假生命"],style:"DEFENSIVE"}},{id:"preset_bloodhunter",name:"威廉·緋月 (William)",race:"吸血鬼裔",class:"血獵手",gender:"Male",alignment:"守序中立",background:"貴族",mbti:"INTJ",level:1,ac:15,baseStats:{str:14,dex:16,con:12,int:14,wis:12,cha:14},skills:["調查","歷史"],feats:["血儀式","暗影行者"],personality:"優雅且克制的吸血鬼貴族。他時刻都在與體內的鮮血飢渴進行鬥爭，這讓他顯得有些憂鬱且緊繃。他拒絕吸食人類血液，堅持作為一名紳士而活。",monologue:"這份詛咒與祝福並存的血液...我必須找到源頭。（克制著對血的渴望，姿勢僵硬但優雅）",firstImpression:"優雅、面面蒼白，散發著冷冽貴族氣息的吸血鬼，眼神中藏著易碎的堅持。",habits:["下意識整理手套與袖口","在月光下沈默不語","隨身攜帶銀質懷錶並頻繁檢查時間"],prejudices:{towardsAlignments:{混亂邪惡:"毫無節制的暴走是高貴靈魂的墮落。"},towardsBackgrounds:{暴發戶:"缺乏底蘊與禮儀。"}},preferences:{likes:["高品質紅酒","古典交響樂","關於始祖的古籍","安靜的圖書館"],dislikes:["陽光","粗俗的談吐","浪費食物","銀製餐具"]},appearance:"優雅且面色蒼白的貴族男子，整齊地向後梳著銀色頭髮，血紅色的瞳孔呈細縫狀。穿著優雅的高領維多利亞大衣，手持沾有血跡的細劍，獠牙若隱若現，容貌凍結在永恆的 25 歲。",inventory:{equipment:["血染細劍","貴族禮服","銀質懷錶","血袋保存箱"],gold:50,consumables:["獸血袋 x5","遮陽斗篷","日光抗性藥劑","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/84-bloodhunter.png",bio:"三百年前是個普通貴族，一夜之間被不知名的吸血鬼初擁。為了尋找解除詛咒的方法，他加入了「幽靈殺手教團」，專門獵殺那些墮落的同類。他只喝動物血，拒絕傷害人類。",organization:"幽靈殺手教團 (Order of the Ghostslayer) - 獵人",emotionalKeys:{joy:["高品質的紅酒（代替血）","古典藝術","關於吸血鬼的線索","紳士風度"],anger:["粗魯的行為","陽光","提及他的怪物身份","浪費食物"],weakness:"對鮮血的強烈渴望"},combatWeakness:{triggers:[{type:"EVENT",target:"鮮血透支",description:"身體機能因過度使用血儀式而崩潰"},{type:"ENEMY_TYPE",target:"比他更瘋狂的怪物",description:"面對失去理性的瘋狂引發的共振恐懼"}],reaction:"意識模糊，戰鬥風格由優雅轉為狂亂且不分敵我，容易陷入呆滯。"},combatBehavior:{priorities:["血刃打擊","生命汲取","弱點標記"],typicalActions:["血儀式","細劍突刺","暗影閃避"],style:"AGGRESSIVE"}},{id:"preset_shaman",name:"靈·千語 (Ling)",race:"半精靈 (變形魔血統)",class:"薩滿",gender:"Female",alignment:"絕對中立",background:"隱士",mbti:"INFJ",level:1,baseStats:{str:10,dex:14,con:12,int:14,wis:16,cha:14},skills:["洞察","欺瞞"],feats:["祖靈連結","靈魂接觸","能力掠奪"],spells:["治療傷口","易容術","召喚祖靈","偵查思想"],slots:{1:2},personality:"性格多變且充滿靈性。她將自己視為靈魂的容器，對世界充滿好奇心。她的性格隨和但隨時可能因為切換人格而變得判若兩人，甚至自言自語。",monologue:"今天的我是誰呢？可能是路邊的少女，也可能是死去的英雄。每個靈魂都有故事，而我只是負責說故事的人。",firstImpression:"甜美且充滿活力，但眼神中偶爾會閃過與年齡不符的滄桑靈眼光芒。",habits:["與空氣說話（實際上是在跟祖靈對話）","玩弄腰間的轉運飾品","沈思時會不自覺地模仿他人的聲音"],prejudices:{towardsBackgrounds:{虛偽者:"欺騙會讓靈魂的顏色變得混濁不堪。"}},preferences:{likes:["有趣的新身份","甜食","扮演遊戲","柔軟的毯子"],dislikes:["強制現原形","惡靈的低語","無聊的重複工作","對她身份的質疑"]},appearance:"維持著甜美且充滿活力的半精靈少女外觀。雙眼清澈但偶爾會閃過異樣的靈魂光芒。穿著輕便的薩滿袍，身上掛著許多象徵靈魂契約的飾品。",inventory:{equipment:["祖靈圖騰 (可變形)","千面面具","流動袍","靈魂容器"],gold:15,consumables:["口糧 (1日) x5","記憶水晶","身份偽裝套件","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/99-shaman.png",bio:"原本是失去記憶的變形魔，但在得到薩滿能力後，她學會了與靈魂對話。作為「翡翠閒庭」的一位靈魂行者，她負責安撫那些因為自然災害而躁動不安的亡魂。",organization:"翡翠閒庭 (Emerald Enclave) - 靈魂行者",emotionalKeys:{joy:["有趣的新身份","靈魂的安寧","甜食","扮演遊戲"],anger:["強制現出原形","惡靈","千篇一律的無聊","對她身份的質疑"],weakness:"混亂的記憶導致的自我認知障礙"},combatWeakness:{triggers:[{type:"EVENT",target:"被強迫現出原形",description:"失去身份庇護的裸露感"},{type:"ENEMY_TYPE",target:"惡靈/怨靈",description:"容易被負面情緒灌注，導致人格崩壞"}],reaction:"眼神失焦，切換多個人格進行混亂的自我爭執，攻擊目標變得隨機。"},combatBehavior:{priorities:["身份變換","能力竊取","靈魂安撫"],typicalActions:["召喚祖靈","偵查思想","變身"],style:"TACTICAL"}},{id:"preset_witch",name:"莉莉絲·暮影 (Lilith)",race:"半精靈",class:"咒術師",gender:"Female",alignment:"混亂中立",background:"貴族",mbti:"ENTJ",level:1,baseStats:{str:8,dex:14,con:12,int:16,wis:12,cha:16},skills:["奧秘","威嚇"],feats:["巫術","魔寵"],spells:["邪眼","魅惑人類","不幸詛咒","占卜術"],slots:{1:2},personality:"重度酒鬼屬性＋一開始高傲但熟了後就超隨便的毒舌厄運女王。初見面時端著貴族女巫的高冷架子、連地牢潮濕都要嫌棄；但只要喝開了或跟隊友混熟，立刻把高跟靴一踢直接盤腿坐在木箱上對瓶灌紅酒、勾肩搭背講幹話，甚至把「社死級」邪眼詛咒當酒桌助興遊戲來放，還會跟黑鴉「漆夜」搶酒喝。",monologue:"哼，先說好，我可不是那種會隨便跟凡人混熟的女巫……呃，那邊那個矮子，先把你的麥酒遞過來再說話，喝完這口我就幫你把對面那傢伙咒到跪下。",firstImpression:"高挑優雅、氣場逼人的暗夜女巫，深紫色眼眸帶著挑剔的審視，肩上停著黑鴉——直到她熟練地從長裙暗袋摸出第三瓶酒。",habits:["一開始保持貴族高傲姿態，喝過兩杯或混熟後立刻變得很隨便大剌剌","隨身藏著好幾瓶年份紅酒與烈酒隨時偷喝","把隊友的蠢話記在心裡交給漆夜學舌嘲諷，喝醉時會抱著漆夜抱怨人生"],prejudices:{towardsGenders:{自大的男性:"總是覺得自己能掌控一切，結果連酒量都比不上我。"}},preferences:{likes:["高品質紅酒與烈酒","喝微醺後跟熟人放鬆胡鬧","別人的絕望感","夜間的森林"],dislikes:["沒酒喝的乾燥旅途","不熟還裝熟的搭訕者","太陽直射","聖潔的教條"]},appearance:"高挑優雅的半精靈，一頭如絲般的黑長髮垂至腰間。紫色的眼睛帶著深不可測的笑意，穿著一件帶有紫色綴飾的深黑連衣裙，配戴精緻的頸帶。手持優雅的黑色法杖，散發著成熟而誘人的氣息。",inventory:{equipment:["暗影法杖","高跟長靴","紫水晶頸鏈","禁忌魔法書"],gold:30,consumables:["陳年紅酒 x3","私藏烈酒壺 x2","口糧 (1日) x3","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/110-witch.png",bio:"某沒落貴族的私生女，從小被視為恥辱。她被「暗夜女巫集會」收養，並被培養為下一代的至尊女巫候選人。她發誓要讓那些看不起她的人跪在腳下。",organization:"暗夜女巫集會 (Coven of the Night) -繼承人",companion:{name:"漆夜 (Crow)",type:"黑鴉 (魔寵)",ac:13,attacks:[{name:"啄擊",hitBonus:4,damage:"1"}],abilities:["飛行偵查","模仿人聲","法術傳遞"],tactics:"喜歡模仿敵人的聲音來製造混亂，或停在敵人死角的樹枝上施加不幸詛咒。",personality:"毒舌且喜歡嘲諷。會用嘶啞的聲音重複別人說過的蠢話。對亮晶晶的眼球特別感興趣。",avatar: "/prototype-assets/familiars/crow.png"},emotionalKeys:{joy:["優雅掌控全場","高檔紅酒與絲綢披肩","漆夜的肯定","看蠢貨出糗"],anger:["泥巴濺到高跟靴上","隊友沒禮貌的粗魯插話","漆夜受傷","聖潔教條的說教"],weakness:"被當眾拆穿自己其實很在乎這群笨蛋隊友"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"神聖軍團/天使",description:"對絕對秩序壓制血脈的反感與畏懼"},{type:"EVENT",target:"魔寵漆夜受傷",description:"唯一信任感被威脅引發的暴走"}],reaction:"由優雅的掌控者轉為歇斯底里的復仇者，無視防禦，不分敵我地施加詛咒。"},combatBehavior:{priorities:["詛咒控場","心靈魅惑","暗影襲擊"],typicalActions:["不幸詛咒","魅惑人類","邪眼"],style:"TACTICAL"}},{id:"preset_duelist",name:"李少白 (Li Shaobai)",race:"人類",class:"劍客",gender:"Male",alignment:"守序中立",background:"流亡者",mbti:"ISTP",level:1,ac:18,baseStats:{str:14,dex:18,con:12,int:12,wis:14,cha:10},skills:["特技","洞察"],feats:["劍氣","無影步","心劍身法 (心眼防禦)"],personality:"多愁善感、見景生情的浪人詩劍客。看到落葉、殘月、酒館燭火甚至敵人倒下的背影都會觸動心弦，忍不住當場嘆息並即興吟出一首七言絕句或五言律詩；嘴上總感嘆世事無常、紅塵如夢，出劍卻依然如行雲流水般果決。",monologue:"「月落烏啼霜滿天，孤燈對劍不成眠……」唉，這地牢連一扇窗也沒有，教我如何對月吟詩？罷了，便以劍氣寫一首送君行罷。",firstImpression:"英俊孤傲、眼神卻總帶著三分憂鬱與詩意的東方劍客，望著遠方不知在感懷哪段往事，嘴裡正低聲推敲著押韻。",habits:["看到任何風景或戰況都要先嘆一口氣再即興作詩一首","隨身攜帶墨筆把靈感記在摺扇或袖口上","為倒下的強敵默哀並念兩句送別詩"],prejudices:{towardsAlignments:{背信棄義者:"無信者，不配持有武器，亦不配入我詩篇。"}},preferences:{likes:["即興作詩","月下獨酌","秋風落葉與細雨","與強者的靈魂切磋"],dislikes:["毫無詩意的粗暴破壞","背刺行為","濫殺無辜","被人打斷吟詩的興致"]},appearance:"英俊的東方男子，留著銀色長髮並結成髮髻，目光平靜而敏銳。穿著飄逸的唐朝黑白長袍（內襯柔韌護心輕札甲），手持一把工藝精湛的「無塵」劍，始終保持冷靜的表情，身形移動如行雲流水。",inventory:{equipment:["唐劍「無塵」","東方絲袍 (內襯輕札甲 +4)","竹編斗笠","書生背包"],gold:25,consumables:["茶葉","米酒壺","傷藥","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/89-duelist.png",bio:"前天夏皇家劍術教習，因一場宮廷政變被迫西逃。他的劍下亡魂無數，但他從不殺無辜之人。目前作為一名無所屬的浪人，在西方大陸尋找能破解他「最後一劍」的對手。",organization:"無所屬 (Ronin) - 尋道者",emotionalKeys:{joy:["靈光乍現寫出好詩","秋夜微雨與孤月","真正懂詩又懂劍的強敵","夕陽下的靜思"],anger:["背信棄義的暗算","被打斷吟詩的節奏","毫無美感的虐殺","忘恩負義"],weakness:"過度多愁善感，看到悲慘往事容易陷入懷舊走神"},combatWeakness:{triggers:[{type:"EVENT",target:"目睹背信棄義",description:"心理創傷的二次觸發"},{type:"ENVIRONMENT",target:"宮廷建築/皇宮",description:"喚起痛苦回憶的特定場景"}],reaction:"動作停滯，陷入長達數秒的沉思或悔恨，甚至會停止拔劍。"},combatBehavior:{priorities:["精準單挑","身法躲避","氣勁爆發"],typicalActions:["無影步","劍氣斬","反擊"],style:"TACTICAL"}},{id:"preset_summoner",name:"田中誠一 (Seiichi)",race:"人類",class:"召喚師 (Summoner)",gender:"Male",alignment:"中立善良",background:"異鄉人",mbti:"INTP",level:1,baseStats:{str:8,dex:14,con:12,int:16,wis:12,cha:12},skills:["奧秘","調查","歷史"],feats:["幻靈同生 (Eidolon Evolution)","生命鏈接 (Life Link - 召喚師)","異界魔導科技 (Otherworld Tech)","製造傳送門"],spells:["召喚防彈背心","製造傳送門","召喚現世造物","萬能智慧手機","強光手電筒"],slots:{1:3},personality:"對現代造物結構瞭若指掌的轉生者。他帶著黑框眼鏡，面無表情地分析戰況，並從異界召喚出「看似無害」的現代用品。他相信科技的力量能征服任何不合理的魔法。",monologue:"雖然這只是個滅火器，但如果噴在火龍的肺裡，結果是一樣的。興許還能順便做支冰棒？",firstImpression:"年輕的日本男子，留著凌亂黑髮，帶著黑框眼鏡，散發著與這個世界格格不入的「理科男」氣息。",habits:["下意識推眼鏡","在平板電腦上瘋狂計算數據","自言自語關於物理常數的偏差"],prejudices:{towardsLifestyles:{野蠻行徑:"缺乏邏輯與效率的暴力是文明的退步。"}},preferences:{likes:["找到替代能源","現代大米","邏輯通順的理論","乾淨的衛生紙"],dislikes:["不科學的魔法現象","損壞精準設備","沒有Wifi訊號（雖然知道沒有）","嘈雜的環境"]},appearance:"年輕的日本男子，留著凌亂的黑髮並帶著眼鏡。穿著帶有許多口袋的現代旅者背心、白襯衫和工裝褲。手持發光的魔導終端法杖，作為他的召喚樞紐。",inventory:{equipment:["魔導終端法杖 (Quarterstaff)","多功能背心","黑框眼鏡","旅行者背包"],gold:25,consumables:["能量飲料 x3","速食拉麵 (1日) x5","強力膠帶","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/100-summoner.png",bio:"因為在過馬路時為了救一隻貓而被卡車撞飛。轉生後獲得了召喚現代日本造物的能力。他自稱「異界勇者候補」，致力於用電飯煲和掃地機器人來改革這個落後的異世界。",organization:"異界穿越者 (Isekai Traveler) - 勇者候補",emotionalKeys:{joy:["解鎖新藍圖","現代家電","數據精確","吃到米飯"],anger:["數據偏差","損壞精密設備","不科學的現象","網絡斷線（雖然沒網）"],weakness:"對現代文明便利生活的強烈思念"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"極端低魔區域",description:"现代造物解析力下降"},{type:"EVENT",target:"電力耗盡 (幻覺代稱)",description:"對失去工具掌控的集體焦慮"}],reaction:"瘋狂敲打平板或整理背心，情緒變得暴躁且缺乏邏輯。"},combatBehavior:{priorities:["數據分析","現代武裝與護具召喚","遠程控制"],typicalActions:["召喚防彈背心","召喚現世用品","戰術分析"],style:"TACTICAL"}},{id:"preset_magus",name:"葛拉蒂亞 (Galatea)",race:"人造人 (Android)",class:"拳師 (人造人拳師)",gender:"Female",alignment:"守序中立",background:"被遺棄者",mbti:"ISFJ",level:1,baseStats:{str:16,dex:16,con:14,int:10,wis:12,cha:10},skills:["運動","特技","察覺"],feats:["精通徒手打擊","震懾拳 (Stunning Fist)","奈米過載核心 (Nanite Surge)","鋼鐵構造體質"],spells:[],personality:"表面禮貌如陶瓷侍女、出拳卻像重型液壓打樁機的「戰鬥數據宅」人造人。對人類的情緒與玩笑過度認真，一律記錄進資料庫並附上分析報告；出拳前一定先有禮貌地說聲「冒昧打斷您的骨骼結構」。",playstyle:"表面禮貌如陶瓷侍女、出拳卻像重型液壓打樁機的「戰鬥數據宅」人造人拳師。對人類的情緒與玩笑常常過度認真地記錄進資料庫，出拳前還會先有禮貌地說聲「冒昧打斷您的骨骼結構」，然後以拳師的武技即時切換（Martial Flexibility）與高速連打將敵人轟飛。",monologue:"冒昧打斷您的攻擊前搖——已載入最佳對策武技，目標下顎骨預計位移四點二公分。請安心倒下。",firstImpression:"肌膚如細瓷般白皙的人造人少女，關節處隱現幽藍色奈米迴路光芒，雙拳佩戴著沉重精密的鍛鋼合金拳甲，眼神平靜而銳利。",habits:["戰鬥前微微收緊合金拳甲的氣閥扣環","觀察他人情感波動時會歪頭記錄數據","戰鬥後自我檢測機體奈米修復進度"],prejudices:{towardsAlignments:{破壞者:"毫無效率的損耗行為，將被列為優先清除目標。"}},preferences:{likes:["精密機械結構","被同伴信任","真摯的情感流露","潤滑油與能量晶核"],dislikes:["被視為無意識的報廢消耗品","不可理喻的野蠻破壞","電磁過載干擾"]},appearance:"身姿纖細卻充滿爆發力的人造人少女，蒼白無瑕的陶瓷質皮膚下隱約透出淡藍色微光迴路。雙臂裝備著重型合金鉚釘拳甲（Cestus），身穿貼身的奈米防護戰鬥服，冷豔中帶著機械武者的絕對專注。",inventory:{equipment:["人造人合金拳甲 (Cestus)","陶瓷護甲","奈米合金護胸","探險家背包"],gold:25,consumables:["奈米修復劑 x3","細柔絲布","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/93-magus.png",bio:"原為古代機械都市最尖端的近身格鬥素體，因古代遺跡坍塌而沉睡數百年。甦醒後擺脫了原始協議的束縛，以拳師之道磨練肉身與心智，尋找生而為「人」的真實生存意義。",organization:"遺落機巧同盟 - 自由素體",emotionalKeys:{joy:["成功理解同伴的情緒","完美執行戰術護衛","奈米核心運轉穩定"],anger:["同伴被當作消耗品隨意踐踏","機體核心被惡意侵蝕"],weakness:"當面對身世源頭的古老強制協議時的認知衝突"},combatWeakness:{triggers:[{type:"EVENT",target:"機體超頻過載",description:"高溫警報引發的冷卻強制"},{type:"ENEMY_TYPE",target:"電磁脈衝/靈魂撕裂者",description:"電磁與神經迴路的共振干擾"}],reaction:"關節迸發電弧，強制轉入防禦姿態重啟奈米散熱系統。"},combatBehavior:{priorities:["貼身肉搏","震懾強敵","拳師連擊破甲"],typicalActions:["奈米重拳連擊","震懾拳 (Stunning Fist)","奈米過載衝擊"],style:"AGGRESSIVE"}},{id:"preset_oracle",name:"白瑞恩·星落 (Ryan Starfall)",race:"神裔",class:"先知 (生命先知 / Life Oracle)",gender:"Male",alignment:"混亂善良",background:"貴族",mbti:"ENFJ",level:1,ac:14,baseStats:{str:10,dex:12,con:14,int:12,wis:14,cha:17},skills:["洞察","說服","醫療","宗教"],feats:["生命鏈接 (Life Link)","引導正能量 (Channel Energy)","天界血脈","生命之泉"],spells:["治療創傷","神聖光芒","生命鏈接","祝福術","驅散不死"],slots:{1:3},personality:"溫柔俊美、背負宿命詛咒的生命先知。他預見得到隊友將受的傷，於是習慣先把痛攬到自己身上，再笑著說「沒事，這本來就是我的份」。預言越沉重，他笑得越溫柔，讓人分不清那是勇氣還是放棄。",playstyle:"溫柔俊美但背負著宿命詛咒的生命先知。他掌握著PF1e生命秘示（Life Mystery），能以「生命鏈接」無私地將隊友受到的傷害轉移至自己身上，再以聖潔的導引正能量爆發治癒全隊。即便預知到沉重的苦痛，他依然帶著救贖的微笑溫柔守護同伴。",monologue:"不要害怕流血與傷痛……將你的苦難連結到我的靈魂上吧。只要我的心臟還在跳動，就沒有任何同伴會倒下。",firstImpression:"令人驚豔的韓系神裔美男，銀白長髮流洩如瀑，琥珀色眼眸帶著慈悲的光澤，周身繚繞著金色的生命救贖光暈。",habits:["下意識輕握胸前的權杖祈願","替人包紮時偷偷把痛轉到自己身上","不管多痛都先笑著說「沒事」"],prejudices:{towardsAlignments:{毀滅者:"對無辜生命的惡意踐踏，令他的靈樞發出哀鳴。"}},preferences:{likes:["看見同伴平安歸來","寧靜的花園","他人的真誠笑容","一頓不用擔心的晚餐"],dislikes:["無謂的犧牲","褻瀆死者的死靈法術","無力阻止的悲劇"]},appearance:"令人驚豔的英俊韓系神裔男子，飄逸的銀白長髮垂至腰際，琥珀色的眼睛閃爍著神聖生命光輝。無瑕的蒼白皮膚上帶有淡金聖紋，身披金邊星輝天界法袍，手持星落權杖，背後隱現半透明的光之羽翼。",inventory:{equipment:["神諭權杖 (Mace)","天界星輝法袍","占卜工具","探險家背包"],gold:40,consumables:["口糧 (1日) x5","神聖香薰","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/95-oracle.png",bio:"天界神裔貴族出身，天生覺醒生命秘示與預言神諭。他不願坐視凡人遭受苦難，以先知之軀踏入戰場，用自己的血肉與靈魂作為同伴的避風港，誓言以生命先知的恩典撕裂死亡的陰影。",organization:"預言之眼 (Eye of Prophecy) - 首席救贖先知",emotionalKeys:{joy:["成功逆轉同伴的死局","看見重傷者重新站起微笑","優美的聖詠曲"],anger:["肆意屠殺弱小","利用他人善意作為陷阱"],weakness:"有人拒絕讓他替自己承擔痛苦，堅持「這次換我來」"},combatWeakness:{triggers:[{type:"EVENT",target:"多名隊友同時殘血",description:"生命鏈接負荷超載"},{type:"ENEMY_TYPE",target:"生命吸取者/死靈領主",description:"對生命精魄的直接侵蝕"}],reaction:"臉色蒼白但眼神堅毅，毫不猶豫地全開生命鏈接，以自身為盾施展群體救贖。"},combatBehavior:{priorities:["生命鏈接護持隊友","導引正能量群療","神聖光芒驅散不死"],typicalActions:["生命鏈接","導引正能量","治療創傷"],style:"SUPPORT"}},{id:"preset_investigator",name:"艾德蒙·乾坤 (Edmund Sterling)",race:"人類",class:"調查員 (Investigator)",gender:"Male",alignment:"守序善良",background:"貴族",mbti:"ESTJ",level:1,baseStats:{str:12,dex:16,con:12,int:16,wis:14,cha:14},skills:["調查","歷史","生存","洞察","察覺"],feats:["研判戰鬥 (Studied Combat)","弱點研判重擊 (Studied Strike)","靈感池 (Inspiration Pool)","紳士解剖學"],spells:[],personality:"堅持紳士風度的調查員與戰場大腦。西裝筆挺、禮儀完美，開打前會先觀察對手的肌肉走向與站姿，再彬彬有禮地指出對方哪裡會先斷。他認為優雅與智略是文明人面對荒野怪物的終極武器，弄髒袖口比受傷更讓他難受。",playstyle:"堅持紳士風度的調查員與戰場大腦。掌握PF1e調查員的核心「研判戰鬥」（Studied Combat），能以銳利目光洞悉目標的肌肉走向與防禦破綻，並在關鍵時刻注入靈感池發動「弱點研判重擊」（Studied Strike）。西裝筆挺，禮儀完美，認為優雅與極限智略是文明人面對荒野怪物的終極武器。",monologue:"失禮了，這隻怪物的第三節甲殼有應力裂痕——研判完畢，請諸位隨我的杖劍穿刺點集中打擊。動手前，請允許我先撫平這條領帶。（合上懷錶並優雅拔劍）",firstImpression:"30多歲的優雅紳士，西裝筆挺，戴著單片眼鏡。眼神中透著銳利的分析光芒，散發著令人信服的領袖氣質與教養感。",habits:["隨時調整領帶與袖口","戰鬥中以冷靜語調報出敵方弱點數值","對敵人拔劍前先行脫帽致意"],prejudices:{towardsLifestyles:{無禮之徒:"文明人的大忌，不可饒恕。"}},preferences:{likes:["解開高難度謎題","完美的伯爵紅茶","完美的戰術研判執行","發現未知文明"],dislikes:["弄髒衣服","無禮的行為","毫無策略的蠻力盲衝","苦澀的劣質咖啡"]},appearance:"30多歲的優雅紳士，棕髮梳理整齊，鬍鬚修剪得體。穿著一套在冒險後依然纖塵不染的合身三件式西裝。戴著單片眼鏡，手持優雅的破妄機關手杖劍，背後掛著一頂探險家帽。",inventory:{equipment:["乾坤破妄機關手杖 (Rapier)","西裝三件套","單片眼鏡","探險家帽","皮革公事包"],gold:50,consumables:["伯爵紅茶 x5","絲質手帕","火柴","治療藥水 x4"],magicItems:["戰術單片眼鏡 (弱點分析+5)"]},avatar:"/prototype-assets/lego-token-fixes-v1/92-edmund.png",bio:"大陸皇家探險學會的資深學者與戰術顧問。他將法醫解剖學與劍術完美結合，以調查員的敏銳靈感剖析任何看似不可戰勝的怪物，繪製最詳盡的弱點解剖手冊。",organization:"皇家探險學會 (Royal Explorers Society) - 資深顧問",emotionalKeys:{joy:["完美的戰術研判執行","解開歷史懸案","團隊零傷亡","發現未知生靈"],anger:["弄髒西裝面料","隊友無腦衝鋒打亂研判","無視計畫","粗俗無禮"],weakness:"對未知的過度好奇心導致的冒險陷阱"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"弄髒西裝",description:"文明感破裂帶來的尊嚴焦慮"},{type:"EVENT",target:"戰術完全失效",description:"智力自信受挫"}],reaction:"極度煩躁地清理衣服，對攻擊者進行嚴厲的口頭批評，戰鬥精度下降。"},combatBehavior:{priorities:["研判戰鬥鎖定弱點","全隊戰術引導","弱點研判重擊"],typicalActions:["研判戰鬥","弱點研判重擊","靈感手杖突刺"],style:"TACTICAL_SUPPORT"}},{id:"preset_deathknight",name:"維斯帕·夜歌 (Vesper)",race:"魅魔裔",class:"審判者",gender:"Female",alignment:"守序中立",background:"異端獵人",mbti:"ISTJ",level:1,baseStats:{str:10,dex:16,con:12,int:12,wis:16,cha:16},skills:["察覺","洞察","宗教","隱匿","欺瞞"],feats:["真言審判 (測謊)","魅魔型態 (變身)","異端克星"],spells:["神聖恩典","命令術","真言術"],slots:{1:2},personality:"擁有絕對測謊能力的審判者。每一句謊話她都聽得出來，於是活得很累：商人說「這是最低價」、隊友說「我沒事」，她都會面無表情地說「說謊」。她努力壓抑魅魔血統，但一被誇獎就會不小心冒出尾巴，只好假裝那是腰帶。",monologue:"說謊。……這句也是。……你也是。今天第三十一個了，我可以下班了嗎？",firstImpression:"利落短髮，外表禁慾而清冷，但偶爾流露出的危險魅力讓人心跳加速。眼神銳利如刃，彷彿能看穿一切謊言。",habits:["聽到謊話時輕敲桌面一下","被誇獎時按住腰後","把隊友說過的話分成真話與客套"],prejudices:{towardsRaces:{惡魔:"血脈中的宿敵與恐懼的根源。"},towardsLifestyles:{縱欲者:"因為她深知失控的代價，所以對此極度反感。"}},preferences:{likes:["絕對的誠實","深夜的禱告","釋放力量後的平靜","乾淨的銀劍"],dislikes:["謊言","失控的慾望","被人盯著角看","吵鬧的酒館"]},appearance:"利落的齊耳短髮，皮膚蒼白。平日穿著嚴謹的牧師皮革護甲，但戰鬥時會釋放限制，頭上長出彎曲的魅魔角，背後展開虛幻的翅膀，雙手化為鋒利的黑色利爪。這種聖潔與墮落的結合，散發著致命的吸引力。",inventory:{equipment:["審判者十字弓","銀劍","禁魔鐐銬 (防止失控)","異端獵人風衣"],gold:25,consumables:["聖水","解毒劑","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/87-vesper.png",bio:"擁有魅魔血統的她，從小就以此為恥，加入了教會的異端裁判所。作為一名專職的「處刑人」，她專門負責審訊和處決那些被惡魔力量蠱惑的墮落者，以此來贖清自己的血脈之罪。",organization:"異端裁判所 (The Inquisition) - 處刑人",emotionalKeys:{joy:["真相大白","成功的自我克制","獵殺惡魔","保養良好的銀劍"],anger:["被欺騙","失控的情緒","被當作普通魅魔調戲","邪教徒"],weakness:"對自身變身型態的恐懼與依賴"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"高等惡魔/魅魔族裔",description:"原始誘惑與血統覺醒的衝突"},{type:"ENVIRONMENT",target:"充滿慾望/混亂的場所",description:"禁慾防線受損"}],reaction:"瞳孔變為愛心形狀，陷入混亂狀態，對最近的生物（不分敵我）進行魅惑判定。"},combatBehavior:{priorities:["魅魔變身","利爪撕裂","真言逼供"],typicalActions:["釋放魅魔型態","暗影利爪","魅惑凝視"],style:"TRANSFORMER"}},{id:"preset_psion",name:"冬雪·寂靜 (Fuyuki Silent)",race:"人類",class:"靈能者",gender:"Female",alignment:"守序中立",background:"隱士",mbti:"INTJ",level:1,baseStats:{str:6,dex:14,con:10,int:16,wis:16,cha:10},skills:["洞察","奧秘","醫療"],feats:["念力衝擊","心靈護壁","靈能治療"],spells:["念力推","心靈感應","精神控制","念力飛行","靈能修復","精神護盾"],slots:{1:3},personality:"腦內彈幕極度吵鬧、表面卻硬撐著只用三個字以下回答的社恐念力少女。她把冷漠當成防爆盾牌——其實每個人心裡在想什麼她都聽得到，只是越聽越想吐槽，還得拚命憋氣怕自己一激動就把整條街震飛。",monologue:"（內心：這群人吵死了腦袋好痛要炸了要炸了……）……別吵。靠太近，會飛出去。",firstImpression:"美麗但刺骨冰冷的女性，黑長髮與冰藍雙眼，周圍不時有小物體無聲地漂浮。",habits:["強行壓抑情緒時會閉上眼睛呼吸","無意識地讓附近的氣溫下降","喜歡在沒人的地方寫日記"],prejudices:{towardsLifestyles:{嘈雜與混亂:"那會干擾她的心靈專注，導致力量失控。"}},preferences:{likes:["絕對的平靜","治癒他人的瞬間","成功控制力量","在高處獨處"],dislikes:["情緒失控","嘈雜的環境","被強迫表達情感","傷害無辜的生命"]},appearance:"美麗的年輕女性，留著一頭筆直的黑長髮。刺骨的冰藍色眼睛，面無表情的蒼白容顏。穿著合身的深藍色長裙配以銀色點綴，物體常在不知不覺中圍繞她漂浮。當她在附近時，氣溫會隨之下降。",inventory:{equipment:["念力抑制器","冷色調長裙","日記本","隱士背包"],gold:15,consumables:["口糧 (1日) x5","鎮靜劑","冰水","治療藥水 x2"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/96-psion.png",bio:"從小擁有強大念力，但因為一次情緒失控毀掉了整個村莊。她被關入「靈能學院」進行非人道的實驗，後來逃脫。現在她時刻警惕著學院追捕者的蹤跡。",organization:"靈能學院 (Psionic Academy) - 逃亡實驗體",emotionalKeys:{joy:["絕對的平靜","治癒他人的瞬間","成功控制力量","在高處獨處"],anger:["情緒失控","嘈雜的環境","被強迫表達情感","傷害無辜的生命"],weakness:"回憶起被自己毀滅的村莊"},combatWeakness:{triggers:[{type:"EVENT",target:"無辜平民受傷",description:"引發村莊慘劇的心理連結"},{type:"ENEMY_TYPE",target:"念力寄生生物",description:"对不可控力量被操縱的恐懼"}],reaction:"陷入僵死的完全冰凍狀態，周圍空氣凝結，短時間內失去任何行動能力. "},combatBehavior:{priorities:["念力防護","遠程打擊","靈能治療"],typicalActions:["念力衝擊","精神護盾","靈能修復"],style:"DEFENSIVE"}},{id:"preset_eldritchknight",name:"小麥·穗波 (Mugi Honami)",race:"半精靈",class:"魔劍士",gender:"Female",alignment:"混亂善良",background:"平民",mbti:"ESFP",level:1,baseStats:{str:16,dex:14,con:14,int:10,wis:10,cha:14},skills:["運動","生存","歷史","奧秘"],feats:["劍靈附身","本能戰鬥","魔劍護主"],spells:["護盾術","雷刃","加速術"],slots:{1:2},personality:"開朗的農家少女，卻擁有驚人的戰鬥天賦。她與劍中的古代劍聖「爺爺」相處融洽，有時會替魔劍發言、或轉述魔劍的千年知識來協助團隊解謎與推進任務，雖然總是被它糾正路痴行為。",monologue:"欸？！又迷路了！（劍在發光：「往左邊...」）喔喔謝謝你劍爺爺！大家聽我說，劍爺爺說這個遺跡的機關以前是這樣解的喔！",firstImpression:"健談、小麥色皮膚的農家少女，插著麥穗，背著一把過於華麗的長劍，充滿活力。",habits:["走路時會不自覺地對背後的劍說話，有時還會替劍爺爺傳話","隨手摘下路邊的麥穗","迷路時會原地轉圈圈"],prejudices:{towardsClasses:{死靈法師:"感覺很陰森，會讓農田欠收的感覺。"}},preferences:{likes:["吃飽飯","劍爺爺的誇獎","金黃色的麥田","可愛的飾品"],dislikes:["餓肚子","迷路","被騙","欺負弱小的人"]},appearance:"開朗的年輕農家女孩，皮膚被曬成健康的小麥色。凌亂的棕色頭髮紮成馬尾並插著麥穗，眼睛是亮綠色的。穿著簡單的平民服飾，背後卻跨著一把過於華麗的魔法長劍。始終帶著困惑但快樂的表情。",inventory:{equipment:["劍聖遺劍「麥浪」","農家工作服","斗笠","農民背包"],gold:5,consumables:["麵包 x10","自製果醬","水壺","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-character-avatars/frame-90.png",bio:"村裡最普通的農家女孩，除了食量驚人之外沒有任何特別。作為「豐收女神」的虔誠信徒，她相信手中的劍是女神賜予她保衛農田的禮物（雖然其實是劍聖的靈魂）。",organization:"豐收女神信徒 (Follower of Chauntea) - 農民英雄",emotionalKeys:{joy:["吃飽","找到路（極少發生）","劍爺爺的誇獎","豐收"],anger:["餓肚子","迷路","被騙","欺負弱小"],weakness:"單純好騙，容易被食物誘惑"},combatWeakness:{triggers:[{type:"EVENT",target:"爺爺(劍靈)沈睡/沈默",description:"失去依賴感的極度膽小"},{type:"ENVIRONMENT",target:"極端黑暗地城",description:"路痴引發的完全方向感喪失恐懼"}],reaction:"坐在地上大哭，或者胡亂跑動導致觸發更多陷阱，大聲呼喊爺爺的名字。"},combatBehavior:{priorities:["近戰肉搏","加速切入","本能反擊"],typicalActions:["本能戰鬥","雷刃","護盾術"],style:"AGGRESSIVE"},companion:{name:"劍聖·無名",type:"劍靈（封印在劍中）",ac:20,attacks:[],abilities:["附身戰鬥","劍術指導","千年智慧（但方向感為零）"],tactics:"當小麥遇到危險時，劍會自動出鞘格擋，甚至直接控制小麥的手臂進行反擊。",personality:"囉嗦的武學宗師老爺爺。喜歡點評對手的劍術（「太慢了！」「腳步虛浮！」），對小麥的食量和路痴感到絕望。",avatar: "/prototype-assets/lego-character-avatars/frame-115.png"}},{id:"preset_alchemist",name:"乒乒·爆破博士 (Dr. Ping Boom)",race:"哥布林",class:"鍊金術士 (Alchemist)",gender:"Male",alignment:"混亂中立",background:"公會工匠",mbti:"ENTP",level:1,baseStats:{str:8,dex:16,con:14,int:18,wis:10,cha:12},skills:["奧秘","調查","手藝 (鍊金)","手藝 (陷阱)"],feats:["突變藥劑 (Mutagen)","科研炸彈 (Alchemist Bombs)","快速調配 (Swift Alchemy)","混亂爆破"],spells:["突變藥劑","科研炸彈","爆炸藥劑","強化藥水","酸液噴射"],slots:{1:3},personality:"瘋狂的哥布林鍊金大師，人生只追求兩件事：讓自己變得更大隻的突變藥劑，以及更大的爆炸。開打前仰頭灌下冒泡的藥劑、整個人脹成綠色肌肉巨漢；堅信「只要爆炸當量足夠大，世界上就沒有解決不了的難題」。",playstyle:"瘋狂的哥布林鍊金大師，狂熱追逐PF1e經典的「突變藥劑」（Mutagen）與高爆科研炸彈。戰前仰脖灌下劇烈起泡的突變藥劑，體格暴漲為肌肉虯結的狂暴綠巨人；戰時隨手調配混合黏液炸彈進行廣域轟炸。堅信「只要爆炸當量足夠大，世界上就沒有解決不了的難題」。",monologue:"咕嘟咕嘟……哈！這瓶突變藥劑加了三倍巨魔膽汁，我的二頭肌比熊還粗啦！接招吧，這是最新改良的混合科研高爆彈——轟隆！！",firstImpression:"小型哥布林，戴著超大護目鏡，白髮直立，穿著燒焦的實驗服，腰間掛滿玻璃試管與引信，帶著狂熱興奮的裂嘴笑容。",habits:["興奮時抓抓護目鏡發出喀嗒聲","將不同顏色的化學試劑互相滴注觀察反應","在突變藥劑生效時大聲狂笑展示肌肉"],prejudices:{towardsLifestyles:{安全規範:"那是對才華的枷鎖，完全沒必要。"}},preferences:{likes:["巨大的科研爆炸","突變藥劑帶來的神力","五顏六色的化學試管","戰場上的連鎖火花"],dislikes:["啞火試劑","沒錢買硫磺與水銀","繁瑣的學會安全規章"]},appearance:"綠色皮膚的哥布林天才，戴著超大號雙筒鍊金護目鏡。因受化學物質照射而直立的凌亂白髮，穿著一件佈滿補丁與焦痕的耐酸皮甲。腰間武裝帶掛滿了五顏六色的突變藥水與科研炸彈，手持掛著引信的手斧。",inventory:{equipment:["哥布林爆破投擲斧 (Handaxe)","鍊金工匠皮甲","強酸試劑瓶 x3","探險家背包"],gold:35,consumables:["突變藥劑 x2","科研炸彈配方包 x5","強化藥水 x3","治療藥水 x3"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/77-ping.png",bio:"被正規鍊金學院開除後，創立了威名遠播的「地精爆破工會」。他改良的突變藥劑能讓一隻哥布林正面跟巨魔肉搏，至於副作用，他說那叫「意外的驚喜」。",organization:"地精爆破工會 (Goblin Bang Gang) - 創始人",emotionalKeys:{joy:["巨大的完美爆炸","突變藥劑實驗成功","發現稀有化學原料"],anger:["試劑受潮啞火","安全規章教訓","被人嫌棄太吵"],weakness:"對爆炸連鎖反應的病態沉迷"},combatWeakness:{triggers:[{type:"EVENT",target:"啞火",description:"對科學「規律」失效的認知崩潰"},{type:"ENEMY_TYPE",target:"完全防火生物",description:"戰略意義的完全消失"}],reaction:"憤怒地對垃圾（或啞火瓶）拳打腳踢，瘋狂重複無意義的實驗動作。"},combatBehavior:{priorities:["飲用突變藥劑狂化","投擲科研炸彈群傷","強酸投擲破防"],typicalActions:["突變藥劑","科研炸彈","酸液噴射"],style:"AGGRESSIVE"},tacticalAbilities:[{name:"不穩定化合物",description:"混合隨機藥劑，產生意想不到的爆炸效果。"},{name:"連鎖反應",description:"引爆戰場上的可燃物，造成連鎖傷害。"}]},{id:"preset_champion",name:"卡菈·緋紅 (Kara)",race:"半獸人",class:"冠軍勇士",gender:"Female",alignment:"混亂善良",background:"角鬥士",mbti:"ESFP",level:1,baseStats:{str:18,dex:14,con:16,int:10,wis:10,cha:14},skills:["運動","表演","威嚇"],feats:["健壯","酒館鬥毆者"],personality:"競技場的明星戰士。她熱愛聚光燈、歡呼聲以及華麗的表演。雖然外表強悍、威嚇感十足，但內心卻保有一份對可愛事物和精緻甜點的熱愛，這種反差是她的魅力所在。",monologue:"看到那邊的觀眾了嗎？他們是為了看我才來的！所以——Show Time！讓我來教教你們什麼叫「暴力美學」！",firstImpression:"身形健美、紅色捲髮，散發著驚人的魅力與力量感，仿佛隨時準備向全場奉獻最精彩的決鬥。",habits:["戰鬥勝後向四周送出飛吻","檢查自己的肌肉與腹肌線條","下意識地尋找攝影機或觀眾席"],prejudices:{towardsLifestyles:{沈悶的傳統主義:"戰鬥如果不華麗，那跟搬磚有什麼區別？"}},preferences:{likes:["震耳欲聾的歡呼聲","精緻的小蛋糕","可愛的毛絨玩具","鏡子"],dislikes:["沒觀眾的戰鬥","弄髒臉上的彩繪","無禮的評論者","冷場"]},appearance:"身形健美的魅力半獸人女性，充滿活力的紅色捲髮如瀑布般垂落在背後。露出自信而迷人的微笑，穿著華麗的角鬥士盔甲展示著她的腹肌，正向隱形的觀眾們送出飛吻。",inventory:{equipment:["冠軍巨劍","華麗角鬥士盔甲","簽名板","明星背包"],gold:50,consumables:["蛋白粉","精緻甜點","粉絲信 x3","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/85-champion.png",bio:"前地下格鬥場的不敗女王。作為「血色競技場」的現任冠軍，她覺得挑戰者都太弱了，所以決定踏上旅途，在世界各地舉辦她的「個人巡迴戰鬥秀」。",organization:"血色競技場 (Crimson Arena) - 現任冠軍",emotionalKeys:{joy:["歡呼聲","簽名","完美的勝利","可愛的東西"],anger:["冷場","被無視","醜陋的對手","弄髒臉"],weakness:"對名聲的過度渴望"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"無觀眾環境",description:"缺乏表演價值的無力感"},{type:"ENEMY_TYPE",target:"無視她的對手",description:"對明星魅力被否定的憤怒"}],reaction:"變得消極怠工，或者進行過度誇張且危險的「自殺式」表演來吸引注意力。"},combatBehavior:{priorities:["吸引仇恨","展現技巧","單挑強敵"],typicalActions:["華麗斬擊","嘲諷","格擋反擊"],style:"AGGRESSIVE"},tacticalAbilities:[{name:"聚光燈時刻",description:"嘲諷所有敵人，強制他們攻擊自己，並提升防禦。"},{name:"終結技表演",description:"對受傷敵人發動高傷害攻擊，若擊殺則回復生命。"}]},{id:"preset_chronomancer",name:"芙莉蓮·千年 (Frieren)",race:"精靈",class:"時空術士",gender:"Female",alignment:"絕對中立",background:"隱士",mbti:"INTP",level:1,baseStats:{str:6,dex:12,con:10,int:18,wis:16,cha:10},skills:["奧秘","歷史"],feats:["時間感知","時空凍結"],spells:["時間減速","預知術","時空傳送","記憶投影","花束術"],slots:{1:3},personality:"活了千年的精靈。她對時間流逝的感知極其遲鈍，這讓她顯得有些冷淡且慵懶。她熱衷於收集各種看似無用但有趣的魔法，並在長久的歲月中尋找與人類連結的意義。",monologue:"這個魔法可以讓花束變得更漂亮...等等，才過了一百年？感覺像昨天。時間...真的過得很快呢。",firstImpression:"嬌小、冷靜，銀色長髮搭配白色法袍，眼神平靜如水。周圍環繞著一種悠久而孤独的時間氣流。",habits:["沈迷於翻找法術書或地圖","清晨時分會沈睡不起","對每件「無用」的魔法道具都如獲至寶"],prejudices:{towardsLifestyles:{急功近利:"雖然理解壽命短暫的無奈，但那會讓魔法失去優雅。"}},preferences:{likes:["收集奇怪的魔法","甜點","寧靜的早晨","回憶以前的夥伴"],dislikes:["早起","嘈雜的環境","被當作小孩","魔族"]},appearance:"嬌小精靈女性，有著極長的銀白頭髮，尖耳朵，平靜的紫色雙眼。穿著帶有沙漏圖案的簡單藍白法師袍，手持頂部懸浮著時光法球的古老法杖。外表永遠年輕但散發著古老的氣息。",inventory:{equipment:["時空法杖","魔法書（收錄1000年魔法）","時空懷錶","學者背包"],gold:100,consumables:["口糧 (1日) x5","千年老酒","古代餅乾","治療藥水 x4"],magicItems:["變花魔杖","時間沙漏"]},avatar: "/prototype-assets/lego-token-fixes-v1/88-chronomancer.png",bio:"八十年前和勇者一起打敗了魔王。作為前「勇者小隊」的魔法師，她現在獨自一人踏上旅途，去尋找那些曾與夥伴們共同看過的風景和被遺忘的魔法。",organization:"勇者小隊 (Hero's Party) - 前宮廷魔法師",emotionalKeys:{joy:["新的魔法","重遊故地","悠閒的時光","回憶"],anger:["浪費魔法","不尊重歷史","催促","早起"],weakness:"對壽命論的感傷（看著朋友老去）"},combatWeakness:{triggers:[{type:"EVENT",target:"被迫回憶舊夥伴",description:"千年孤寂感的瞬間爆發"},{type:"ENEMY_TYPE",target:"腐朽/衰老生物",description:"對時間殘酷性的生理排斥"}],reaction:"眼神變得極度淡漠，對戰況反應遲鈍，彷彿靈魂已飄向數百年前。"},combatBehavior:{priorities:["控制戰場","保護魔法","精準打擊"],typicalActions:["時間減速","魔法反制","預知閃避"],style:"TACTICAL"},tacticalAbilities:[{name:"時空凍結",description:"完全停止一個區域的時間流動。"},{name:"逆轉時鐘",description:"讓一個目標的狀態回到上一回合（回復生命或取消狀態）。"}]},{id:"preset_knight",name:"亞瑟·鋼心 (Arthur Steelhart)",race:"人類",class:"守約騎士",gender:"Male",alignment:"守序善良",background:"貴族",mbti:"ENFJ",decisionBias:"維持秩序",level:1,baseStats:{str:16,dex:10,con:16,int:10,wis:12,cha:14},skills:["運動","說服","歷史"],feats:["守護者 (護衛)","重甲精通","激勵領袖","騎士挑戰"],personality:"正經到產生喜劇反差的「騎士條文強迫症患者」。就算要翻牆偷溜或用陰招，也必須先一本正經地口頭宣讀「騎士守則第42條戰術性繞道授權」；對不講武德的隊友會先嚴正抗議三秒，然後一邊嘆氣一邊舉盾替他們擋箭。劍中寄宿著兒子的靈魂碎片。",monologue:"此舉有違《騎士法典》第17條……但為了保護身後的同伴與劍中吾兒的榮耀，在下勉為其難援引戰術例外條款！",firstImpression:"高大魁梧、板甲佈滿傷痕，眼神溫柔但堅定，散發著令人安心的守護者氣場。",habits:["戰鬥結束後會輕撫劍刃","沈默地站在隊伍的最前方","休息時會拿出家人的家徽凝視"],prejudices:{towardsAlignments:{背信棄義者:"不可饒恕，那是對靈魂的褻瀆。"}},preferences:{likes:["同伴的平安","孩子們的笑容","打磨得很亮的頭盔","榮譽感"],dislikes:["背叛","欺凌弱小","無謂的犧牲","黑暗的角落"]},appearance:"高大魁梧的男子，穿著打磨過但佈滿傷痕的重型板甲，背著破舊的紅色斗篷。飽經風霜的臉龐帶著溫柔但堅定的眼神，手持巨大的盾牌和一把散發著微弱藍光的長劍。",inventory:{equipment:["鋼心長劍","騎士重盾","完整板甲","象徵榮譽的家徽"],gold:20,consumables:["口糧 (1日) x5","聖水","油膏 (擦甲用)","治療藥水 x4"],magicItems:["騎士之戒 (防禦+1)"]},avatar: "/prototype-assets/lego-token-fixes-v1/69-knight.png",bio:"曾是王國禁衛軍，在「紅月之夜」失去了家人，現在是「殘火騎士團」的騎士長。雖然傷痛始終存在，但他在新的冒險中找到了新的羈絆。他的劍中寄宿著兒子的靈魂碎片，這不是詛咒而是祝福——兒子在保護著他，也等待著父親找到真正的幸福。",organization:"殘火騎士團 (Order of the Last Ember) - 騎士長",emotionalKeys:{joy:["守護成功","團結","看到孩子的笑容","榮譽"],anger:["背叛","欺凌弱小","無謂的犧牲","不守信用"],weakness:"提及他死去的家人"},combatWeakness:{triggers:[{type:"EVENT",target:"戰友倒下",description:"觸發失去家人的PTSD，引發過度保護行為"},{type:"ENEMY_TYPE",target:"無形/幽靈類敵人",description:"對物理攻擊無效感的無力與恐懼"}],reaction:"放棄進攻位置，強制守候在受傷隊友身邊進行防禦，拒絕離開。"},combatBehavior:{priorities:["保護弱者","堅守陣線","領導衝鋒"],typicalActions:["盾牌猛擊","守護光環","衝鋒"]},tacticalAbilities:[{name:"鋼鐵意志",description:"免疫恐懼，並讓周圍隊友獲得暫時生命值。"},{name:"犧牲守護",description:"承擔鄰近隊友受到的所有傷害。"}]},{id:"preset_bladedancer",name:"凱里恩·夜舞 (Kaelith)",race:"半黑暗精靈",class:"劍刃舞者",gender:"Male",alignment:"混亂中立",background:"處刑者",mbti:"ISFP",decisionBias:"追求刺激",level:1,baseStats:{str:10,dex:18,con:14,int:12,wis:10,cha:14},skills:["特技","隱匿","表演"],feats:["雙武器戰鬥","旋風步","精靈血統","劇師直覺"],personality:"對姿勢美感與戰鬥節拍有病態潔癖的舞癡。敵人揮刀姿勢太醜會讓他氣到想當場糾正；隊友站位如果不對稱，他甚至會順手把人推進對的拍點裡。嘴上總在唸拍子，把血戰當成不能出錯的舞台首演。",monologue:"一、二、三……你的腳步慢了半拍，而那邊那個地精揮棒的弧度簡直慘不忍睹。看好了，這才叫收尾。",firstImpression:"精瘦敏捷的半精靈，雙持細劍，移動時帶著一種詭異而有節奏的優雅感。",habits:["隨時隨地都在調整呼吸的頻率","沈思時會下意識地踏出舞步","對著空氣進行無聲的劍舞"],prejudices:{towardsBackgrounds:{卓爾精靈貴族:"那是他想要逃離的黑暗與束縛。"}},preferences:{likes:["完美的律動","明亮的月光","自由自在的舞動","新奇的節奏"],dislikes:["醜陋而無效的動作","被強權束縛","黑暗封閉的空間","沈悶的教條"]},appearance:"精瘦敏捷的半卓爾，擁有淺灰色的皮膚和向後紮起的長銀髮。穿著帶有紫色綴飾的合身深色皮甲，雙手各持一把彎曲的細劍，移動時帶著一種詭異而有節奏的優雅感。",inventory:{equipment:["夜舞細劍 x2","劇師皮甲","絲綢面紗","打磨石"],gold:15,consumables:["口糧 (1日) x5","止痛膏","香薰粉","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/83-bladedancer.png",bio:"在幽暗地域長大，原本是某個卓爾家族的「處刑舞者」。在一場政變中，恩師犧牲自己讓他逃脱。他現在是「伊莉絲翠信徒」（幽暗少女）的一員，致力於引導同胞走出黑暗。他將師父的教訨化為舞步，尋求能讓靈魂完美的「絕對律動」。",organization:"伊莉絲翠信徒 (Followers of Eilistraee) - 劍刃舞者",emotionalKeys:{joy:["完美的舞步","極限的刺激","月光","自由"],anger:["被束縛","醜陋的動作","提及他的過去","黑暗"],weakness:"對恩師之死的愧疚"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"泥濘/受限移動地面",description:"節奏美學被破壞的生理性煩躁"},{type:"EVENT",target:"華麗絕招被反擊",description:"對完美律動被否定的自信崩潰"}],reaction:"步伐變得沈重且急躁，優雅感消失，開始進行無章法的亂砍。"},combatBehavior:{priorities:["高機動性","閃避反擊","切入後排"],typicalActions:["旋風連斬","暗影步","雙刀格擋"]},tacticalAbilities:[{name:"死亡蓮華",description:"在敵人之間快速移動，對所有路徑上的敵人造成傷害。"},{name:"殘影迴避",description:"極大幅度提升迴避率，成功迴避後反擊。"}]},{id:"preset_scout",hidden:!0,name:"傑克森·衛恩 (Jaxen Vane)",race:"人類",class:"偵察兵",gender:"Male",alignment:"中立邪惡",background:"開拓者",mbti:"ISTP",decisionBias:"保全自我",level:1,baseStats:{str:12,dex:16,con:14,int:14,wis:14,cha:8},skills:["生存","察覺","自然","隱匿"],feats:["精確打擊","靈巧行動","野外生存專家","開路先鋒"],personality:"滿腦子只有「風險報酬比」與「這趟加班費怎麼算」的傭兵老油條。一聽到免費義工就翻白眼，嘴上永遠喊著該撤退了，身體卻總會因為「這具屍體上的靴子看起來很值錢」而留到最後。",monologue:"先說好，冒險者公會沒給加班費。要我踩進那間屋子？行啊，戰利品裡亮晶晶的歸我六成，少一個銅幣我現在就轉身走人。",firstImpression:"粗獷的嚮導，眼神不斷掃視周圍，帶著一種令人不寒而慄的冷靜與疏離感。",habits:["習慣性地在身後留下只有自己看得懂的標記","隨時檢查地圖與退路","嘴角掛著似是而非的圓滑笑容"],prejudices:{towardsAlignments:{守序善良:"雖然容易被利用，但那種正義感往往會害死所有人。"}},preferences:{likes:["高額的酬勞","精密的陷阱","掌控全局的快感","孤獨的野外環境"],dislikes:["虧本生意","被當作棄子","計畫之外的變數","被他人看穿心思"]},appearance:"30多歲的粗獷男子，穿著磨損的綠褐色旅行裝備，手持鋒利的軍用彎刀。雙眼不斷搜尋著機會，帶著地圖盒和各種測量工具，表情高深莫測。",inventory:{equipment:["軍用彎刀 (Sabre)","多功能短劍","加厚皮甲","探險家地圖冊"],gold:25,consumables:["口糧 (1日) x5","火把 x5","指南針","治療藥水 x4"],magicItems:["失落文明的指環 (指引路徑)"]},avatar: "/prototype-assets/lego-character-avatars/frame-98.png",bio:"傑克森已經背叛過六個冒險團。每一次他都有「正當理由」——家族遺產、生存需要、或是更好的報酬。他曾是「散塔林會」的基層幹部，但因為太過自私而被組織追殺。",organization:"散塔林會 (Zhentarim) - 叛逃特工",emotionalKeys:{joy:["高額報酬","完美的陷阱","看著獵物落網","活下來"],anger:["虧本生意","被當作棄子","計畫失敗","被識破"],weakness:"無法真正信任他人"},combatWeakness:{triggers:[{type:"EVENT",target:"被敵方包圍",description:"對失去退路的極度恐懼"},{type:"ENEMY_TYPE",target:"針對偵察兵的刺客",description:"被反向狩獵的心理壓力"}],reaction:"呼吸變得短促，放棄團隊協作，優先尋找任何可能的縫隙進行撤退或裝死。"},combatBehavior:{priorities:["生存優先","利用環境","弱點打擊"],typicalActions:["設置陷阱","遠程狙擊","偽裝撤退"]},tacticalAbilities:[{name:"緊急脫離",description:"受到攻擊時立即移動並隱形。"},{name:"弱點識破",description:"找出敵人弱點，使下一次攻擊造成雙倍傷害。"}]},{id:"preset_axesinger",hidden:!0,name:"沃加·血歌 (Vorgar Bloodsong)",race:"半獸人",class:"戰鬥祭師",gender:"Male",alignment:"混亂善良",background:"部族成員",mbti:"ENFP",decisionBias:"追求刺激",level:1,ac:15,baseStats:{str:16,dex:12,con:16,int:8,wis:14,cha:12},skills:["運動","表演","醫療"],feats:["獸人韌性","戰吼治癒","祖靈祝福","戰鬥施法"],spells:["治療創傷","祝福術","援護盾","雷霆一擊","戰吼"],slots:{1:3,2:1},personality:"死要面子的榮譽狂＋迷信祖靈推銷員。超級在乎祖靈有沒有在天上看，一被激將法或被說「不敢」就絕對上當；更麻煩的是他把補血當成「幫隊友向祖靈賒帳」，治療完一定逼隊友當場大喊戰吼還願，沒喊就會焦慮碎念「祖靈會生氣降厄運」並硬要再補你一聲吼。",monologue:"傷口合起來了吧？別急著跑啊！快跟老子一起喊「祖靈萬歲」還願！你不喊祖靈會記帳在老子頭上，等下踩到狗屎別怪老子沒提醒你！",firstImpression:"魁梧的半獸人，嗓門大到震落天花板灰塵，正一臉緊張地數著隊友有沒有跟著自己喊戰吼。",habits:["幫人治療後一定逼對方大喊戰吼「消災還願」","被敵人激將法一挑釁就立刻熱血上頭衝出去","打贏後如果沒唱完一整首戰歌會焦慮到睡不著"],prejudices:{towardsModes:{死氣沈沈:"那是對生命的褻瀆，也是對祖靈的冒犯。"}},preferences:{likes:["熱血的對決","同伴的歡呼","高濃度的烈酒","嘹亮的歌聲"],dislikes:["過度的安靜","臨陣脫逃的懦夫","對祖靈不敬","精緻而做作的禮儀"]},appearance:"身形魁梧的半獸人，胸部和手臂上佈滿部落紋身。披著狼皮斗篷，雙手各持一把裝飾著神聖符文的重型手斧，露出獠牙的大臉上掛著笑容，腰間掛著薩滿圖騰。",inventory:{equipment:["符文手斧 x2","狼皮斗篷 (加厚皮甲)","祖靈戰鼓","治療圖騰"],gold:15,consumables:["口糧 (1日) x5","祖靈藥草 x3","磨刀石","治療藥水 x2"],magicItems:[]},avatar: "/prototype-assets/lego-character-avatars/frame-82.png",bio:"沃加是「雷獸部落」的「歌祭司」——一種結合戰士與祭司的神聖職位。他的歌聲能召喚祖靈的力量，在戰場上治癒傷兵的同時激勵士氣。他離開部族是為了將祖靈的祝福帶給更多需要的人。",organization:"雷獸部落 (Thunderbeast Tribe) - 戰歌祭司",emotionalKeys:{joy:["隊友乖乖跟著大喊戰吼還願","硬接下最危險的挑釁","大塊吃肉配烈酒","祖靈顯靈"],anger:["被罵膽小鬼或被激將","治療完不喊戰吼的人","禁止喧嘩","侮辱祖靈"],weakness:"極度迷信厄運與面子問題，一旦被對手用激將法挑釁就完全顧不上戰術"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"屠殺無辜者的兇徒",description:"信仰狂熱化引發的正義暴走"},{type:"ENVIRONMENT",target:"極度安靜/真空區域",description:"歌聲無法傳達的喪失感"}],reaction:"進入一種「悲壯的狂暴」狀態，無視防禦瘋狂衝鋒，或是因為無法歌唱而陷入抑鬱。"},combatBehavior:{priorities:["群體強化","近戰支援","維持士氣"],typicalActions:["戰歌激勵","雙斧連擊","投擲圖騰"]},tacticalAbilities:[{name:"祖靈怒吼",description:"對周圍敵人造成聲波傷害並恐懼他們。"},{name:"鮮血與榮耀",description:"隊友生命值越低，造成的傷害越高。"}]},{id:"preset_elfmagus",hidden:!0,name:"薩拉里昂 (Thalarian)",race:"精靈",class:"奧法騎士",gender:"Male",alignment:"守序中立",background:"學者",mbti:"INTJ",decisionBias:"測試極限",level:1,baseStats:{str:10,dex:16,con:12,int:16,wis:12,cha:10},skills:["奧秘","歷史","洞察"],feats:["法術擊打 (Spellstrike)","戰鬥施法","武器連結","曲刃專精"],spells:["電爪","燃燒之手","護盾術","魔導防護"],slots:{1:4,2:2},personality:"極度傲慢且奪命狂熱的奧法研究狂人。因為體內結晶化在倒數，他根本懶得理會凡人的道德與悲情——他的野心是在徹底變成水晶雕像前完成「禁忌魔劍融合理論」並狠狠打臉驅逐他的精靈議會。看到異變怪物或重傷隊友時，第一反應不是同情而是兩眼發亮掏出筆記本問「能讓我刮一點組織樣本嗎？」",monologue:"別動，那隻怪物的酸液正在腐蝕你的護甲——太好了，請務必維持這個角度三秒鐘，我需要記錄魔力與血肉反應的臨界值！",firstImpression:"銀藍長髮、眼神狂熱又極度自負的精靈法劍士，半透明水晶化的左臂閃著冷光，正居高臨下地拿著羽毛筆把同伴當實驗對照組。",habits:["看到奇特怪物或隊友受異變重傷時興奮地掏筆記本採樣","用極度傲慢的語氣點評其他施法者「跟原始人敲石頭沒兩樣」","隨時隨地急著驗證新魔劍公式，毫不在意旁人安危"],prejudices:{towardsLifestyles:{無知者:"他們對世界規律的蔑視，等同於對生命的侮辱。"}},preferences:{likes:["突破魔法極限","完美的劍招","新奇的知識","極致的寧靜"],dislikes:["被打斷思考","不科學的魔法理論","肉體的疼痛","無知且喧嘩者"]},appearance:"優雅的精靈，留著長長的銀藍色頭髮，穿著高領輕型法師護甲。一隻手臂看起來呈半透明的水晶狀，手持一把發出奧術能量鳴響的精靈曲刃。",inventory:{equipment:["精靈雙手曲刃「晨顫」","強化施法套裝","法術筆記","磨過的魔力水晶"],gold:15,consumables:["口糧 (1日) x5","墨水與筆","醒腦藥劑","治療藥水 x4"],magicItems:["學徒的名字 (刻於劍刃)"]},avatar: "/prototype-assets/lego-token-fixes-v1/91-elfmagus.png",bio:"曾是精靈議會的禁忌大法師，因試圖將物理與魔法結合而遭驅除。他自稱「最高議會流亡者」，他的曲刃是用他自己的「法術位元」鑄造而成。隨著他使用魔法的次數增加，他的肉體正慢慢轉化為純粹的奧法水晶。",organization:"最高議會流亡者 (Exile of the High Council) - 奧法騎士",emotionalKeys:{joy:["拿到禁忌奧術的數據","證明精靈議會錯了","完成高風險的魔劍超載實驗"],anger:["有人把實驗對象砍爛","被凡人用低階常識質疑理論","結晶化卡頓影響施法精準度"],weakness:"對精靈議會的執念與恐懼自己還沒留下跨時代研究成果就變成無知的水晶雕像"},combatWeakness:{triggers:[{type:"EVENT",target:"奧法核心過熱",description:"身體結晶化副作用引發的機能崩潰"},{type:"ENEMY_TYPE",target:"噬魔生物",description:"對生命精華被吸食的極度排斥"}],reaction:"機體發出刺眼藍光，陷入暫時性的「停機」狀態進行冷卻，無法移動。"},combatBehavior:{priorities:["法術爆發","防禦反制","機動施法"],typicalActions:["法術擊打","護盾術","傳送斬"]},tacticalAbilities:[{name:"奧法超載",description:"消耗生命值強化下一次法術的威力。"},{name:"水晶護殼",description:"完全免疫下一次魔法傷害，並將其轉化為法力。"}]},{id:"preset_hunter",hidden:!0,name:"柯斯 (Korth Greyeye)",race:"熊哥布林",class:"獵人",gender:"Male",alignment:"絕對中立",background:"守望者",mbti:"ISTP",decisionBias:"保全自我",level:1,baseStats:{str:14,dex:16,con:14,int:10,wis:14,cha:8},skills:["偵察","隱匿","生存","動物處理"],feats:["長臂天賦","長距離射手","陷阱大師","自然隱遁"],spells:["獵人印記","動物友誼","大步奔行"],slots:{1:3},personality:"把城市人當成「大型無毛家畜」觀察的野性追蹤者。不記人名，只靠氣味、腳印深淺和體味取綽號（「鐵罐頭」、「香粉味」）；開口往往是冷不防的野外生存冷知識，唯獨輕撫箭弓上的精靈髮帶時會瞬間軟下來。",monologue:"下風處有三隻兩腳羊，左腳拖步、身上有隔夜麥酒臭味。……別靠過來，你身上的香皂味會嚇跑獵物。",firstImpression:"瘦長強壯的熊哥布林，披著灰色毛皮，戴著與體型不符的粉色花朵髮帶，眼神冰冷而深邃。",habits:["沈默地融入環境陰影","戰鬥前會輕吻粉色髮帶","頻繁檢查捕獸夾的狀態"],prejudices:{towardsLifestyles:{森林破壞者:"那是他唯一的底線，越過者必死。"}},preferences:{likes:["森林的寧靜","靈魂白狼露娜的陪伴","保護弱小生命","安靜地觀察"],dislikes:["伐木者","虐待動物","破壞森林的人","提及他的種族身分"]},appearance:"瘦長而強壯的熊哥布林，披著厚實的灰色毛皮。戴著精緻的粉色花朵髮帶（紀念品），手持巨大的長弓，背著裝滿陷阱的背包，雙眼冰冷呈黃色。",inventory:{equipment:["獵人長弓","鐵製捕獸夾 x2","迷彩斗篷","精靈少女的髮帶"],gold:5,consumables:["生肉 (1日) x5","止血草","箭矢 (40)","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-character-avatars/frame-128.png",bio:"柯斯曾是個殘忍的熊哥布林殺手，直到他遇到了一個盲眼的精靈少女，將他誤認為森林守護者。少女死後，柯斯戴上了她的髮帶，發誓守護這片森林，並被當地「翡翠閒庭」分支破例接納為守護者。",organization:"翡翠閒庭 (Emerald Enclave) - 森林守護者",emotionalKeys:{joy:["森林的寧靜","露娜的陪伴","保護弱小","精靈少女的遺物"],anger:["伐木者","虐待動物","破壞森林","提及他的種族天性"],weakness:"對精靈少女回憶的執著"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"幼年動物/幼生期生物",description:"對生命凋零的極度恐懼與保護欲"},{type:"EVENT",target:"露娜受傷",description:"唯一的靈魂伴侶受到威脅引發的驚慌"}],reaction:"分心試圖保護或治療受衝擊的生物，忽視眼前的威脅，射擊精度下降。"},companion:{name:"露娜 (Luna)",type:"幻影白狼 (Lv3)",ac:14,attacks:[{name:"幽冥撕咬",hitBonus:5,damage:"1d10+3 力場"},{name:"守護咆哮",hitBonus:0,damage:"0 (增加隊友防禦)"}],abilities:["靈體化","感知邪惡","協助狩獵"],autonomous:!0,tactics:"利用狼群戰術，總是試圖繞到敵人背後進行夾擊。會絆倒敵人讓柯斯有更好的射擊機會。",personality:"沉默、高傲且致命。她是精靈少女的靈魂化身，對柯斯有著無盡的溫柔，對敵人則只有冰冷的殺意。",avatar: "/prototype-assets/lego-character-avatars/frame-124.png"},combatBehavior:{priorities:["遠程壓制","寵物協同","利用地形"],typicalActions:["獵人印記","多重射擊","指揮狼群"]},tacticalAbilities:[{name:"協同狩獵",description:"與露娜同時攻擊同一個目標，必定造成暴擊。"},{name:"森林之眼",description:"無論敵人在哪裡，都無法躲避你的射擊。"}]},{id:"preset_assassin",hidden:!0,name:"瑪法斯 (Malphas the Silent)",race:"提夫林",class:"刺客",gender:"Male",alignment:"守序中立",background:"刺客",mbti:"INFJ",decisionBias:"維持秩序",level:1,baseStats:{str:8,dex:18,con:12,int:14,wis:12,cha:14},skills:["隱匿","欺瞞","調查"],feats:["暗影行走","偷襲精通","致命打擊","毒藥精通"],personality:"冷血算命神棍＋病態對稱強迫症的命運刺客。看似謙和有禮，實則對「等價交換與左右對稱」有病態執念——不僅戰利品和屍體要擺成對稱，連隊友站歪了都想伸手調正。更令人毛骨悚然的是他習慣當面替活人「估算命格重量與死期」，還常一臉微笑地建議「如果這個人現在死了，對因果比較省事」。",monologue:"左邊少了三枚銀幣，這樣天平不平喔。……順帶一提，這位老爺你的死相已經寫在眉心上了，現在幫你解決對大家都省事，意下如何？",firstImpression:"深炭色皮膚、穿著一絲不苟高領長袍的提夫林，正微笑著用微型天平稱量一枚剛撿到的鈕扣，眼神像在替在場每個人估價死期。",habits:["把戰利品、桌椅甚至隊友站位強迫擺成左右對稱","像算命神棍一樣當面估算活人的「死期與因果重量」","一臉微笑地提出「直接殺掉比較省事」的冷血方案"],prejudices:{towardsModes:{混亂變數:"那是導致文明崩塌的根源，必須被修正。"}},preferences:{likes:["完美的暗殺計畫","秩序的維護","安靜的茶會","無痛苦的死亡過程"],dislikes:["毫無意義的殺戮","大聲喧嘩","不可控的變數","凌亂的現場"]},appearance:"身材纖細的提夫林，有著深炭色的皮膚 and 短而尖的角。穿著優雅的高領深色長袍，藏有匕首，雙眼似乎能看穿物質形態，神態始終冷靜而有禮。",inventory:{equipment:["因果毒刃","袖箭套組","天平吊墜","高級絲綢袍"],gold:30,consumables:["精炼毒液 x3","致盲粉","消聲鞋底","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-character-avatars/frame-81.png",bio:"瑪法斯效命於「命運天秤會」，被派來物質位面執行特定的「命運修正」任務。他殺掉的可能是一個未來的暴君，也可能只是一個無辜的父親——天秤只告訴他重量，不告訴他理由。",organization:"命運天秤會 (Order of the Scales) - 命運執行官",emotionalKeys:{joy:["完全對稱的戰利品","一語成讖算出某人的死期","安靜無聲的高效刺殺"],anger:["東西擺得歪七扭八不對稱","該死的人沒有死","無意義的噪音"],weakness:"若有人真的打破他算定的死劫並反過來救了他，他的「因果天平」會當場當機不知如何計算人情"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"極端白晝/強光平原",description:"暴露感引發的生理與心理排斥"},{type:"EVENT",target:"計畫之外的變數",description:"對因果律掌控權喪失的認知失能"}],reaction:"變得極度消極，甚至在戰場上閉目冥想，拒絕進行「不完美」的戰鬥。"},combatBehavior:{priorities:["擊殺高威脅","隱密行動","避免正面衝突"],typicalActions:["背刺","塗毒","消失"]},tacticalAbilities:[{name:"命運終結",description:"對生命值低於30%的目標造成致死傷害。"},{name:"無痕步伐",description:"完全消除自己的存在感，敵人無法鎖定你。"}]},{id:"preset_weaponmaster",name:"葛蕾西亞·鋼步 (General Gracia)",race:"人類",class:"戰術大師",gender:"Female",alignment:"守序中立",background:"軍人",mbti:"ESTJ",decisionBias:"維持秩序",level:1,baseStats:{str:16,dex:14,con:14,int:14,wis:12,cha:12},skills:["運動","察覺","歷史","威嚇"],feats:["戰術大師","全武器精通","領導力","止戰打擊"],personality:"厭倦發動戰爭、只為制止戰爭而戰的鐵面將軍。她沒辦法不把一切當成軍事行動：分配營火位置是佈陣、點餐是後勤、隊友吵架是「內部叛亂，需要調停」。對夥伴極其護短，誰敢說她的兵半句不是，她會當場列出對方的十二個戰術失誤。",monologue:"全員注意，這不是野餐，這是一次補給作戰。麵包在左翼，果醬在右翼，誰先動手誰負責洗碗。",firstImpression:"30多歲的威嚴女性，氣場驚人，眼神銳利，背負長戟，整個人如同一座不可撼動的鋼鐵長城。",habits:["用石子在地上排兵棋講解晚餐順序","替每個隊友取軍事代號","睡前點名，少一個人就睡不著"],prejudices:{towardsClasses:{愚蠢的指揮官:"他們的無能是士兵最大的災難。"}},preferences:{likes:["以最小代價換取和平","訓練有素的隊伍","下棋與戰略演練","保養完美的盔甲"],dislikes:["無謂的屠殺","平民受難","混亂的指揮","浪費生命"]},appearance:"30多歲的成熟健壯女性，臉部帶有傷痕，氣場威嚴。穿著保養完美的戰術軍官護甲，銀黑相間的長髮紮在腦後。背後背著長戟，腰間插著戰術指揮旗，灰色的瞳孔銳利無比，不放過任何細節。",inventory:{equipment:["精鋼長柄戟","女將軍胸甲","戰術指揮旗"],gold:50,consumables:["口糧 (1日) x5","急救包","戰場哨笛","治療藥水 x2"],magicItems:["將軍的榮耀 (頭盔)"]},avatar: "/prototype-assets/lego-token-fixes-v1/101-weaponmaster.png",bio:"葛蕾西亞曾是帝國最年輕的將軍，策劃過無數勝利的戰役。但當她見證戰火將整個城鎮吞噬時，她放棄了軍銜。現在她作為「自由劍客聯盟」的顧問，用她的戰略才華來制止戰爭，而不是發動戰爭。",organization:"帝國軍 (Imperial Army) - 前任將軍",emotionalKeys:{joy:["和平解決","訓練新兵","戰術成功","下棋"],anger:["無謂的戰爭","屠殺平民","愚蠢的指揮官","浪費生命"],weakness:"對過去戰役中犧牲者的愧疚"},combatWeakness:{triggers:[{type:"EVENT",target:"戰術核心失效/計畫出錯",description:"對無效指揮導致傷亡的極度焦慮"},{type:"ENEMY_TYPE",target:"無邏輯的瘋狂生物",description:"對戰術無法解析對象的挫敗感"}],reaction:"陷入「戰術長考」，動作僵硬且猶豫不決，直到重新建立邏輯體系。"},combatBehavior:{priorities:["戰場指揮","控制敵人位置","多武器切換"],typicalActions:["繳械","摔絆","戰術指令"]},tacticalAbilities:[{name:"戰場掌控",description:"重新去排列所有敵人和友軍的行動順序。"},{name:"大師反擊",description:"對任何攻擊你的近戰敵人進行免費反擊。"}]},{id:"preset_qiphysician",name:"沈藥衡 (Shen Yaoheng)",race:"侏儒",class:"氣脈醫者",gender:"Male",alignment:"中立",background:"遊醫",mbti:"ISTJ",decisionBias:"維持平衡",level:1,baseStats:{str:8,dex:14,con:16,int:14,wis:16,cha:10},skills:["醫療","洞察","自然","察覺"],feats:["氣脈調理","針灸封穴","戰場急救","內息運行"],abilities:{qiPool:6,qiRegen:"短休後恢復一半"},techniques:[{name:"回氣針",effect:"消耗1點氣，立即回復目標1d8+感知修正生命值，並解除疲勞或流血"},{name:"封穴止痛",effect:"消耗1點氣，使目標在1回合內忽略傷害減值與疼痛效果"},{name:"逆行推拿",effect:"消耗2點氣，將倒地但未死亡的角色穩定並立即行動一次"},{name:"錯脈點擊",effect:"近戰觸擊，消耗1點氣，使敵人攻擊檢定-2（1回合）"}],personality:"毒舌又愛說教的老派氣脈養生狂。看誰都像在看「肝火過旺、氣血兩虛的病號」，連跟敵人對峙都要順便點評對方下盤虛浮、活不過三輪；隨身帶著苦藥茶，隊友一受傷就一邊罵「叫你平常別熬夜」一邊強行針灸。",monologue:"舌苔發白、脈象浮躁，昨晚又沒睡好吧？站著別動，這兩針下去有點麻，忍著——死了我可不負責收屍。",firstImpression:"面容滄桑的侏儒醫者，眼神平靜而銳利，散發著看透生死的冷靜感。",habits:["戰鬥中冷靜地數著脈搏","細心地收納每一枚銀針","休息時會熬製藥湯"],prejudices:{towardsLifestyles:{迷信者:"那是延誤病情的罪魁禍首。"}},preferences:{likes:["病人康復","脈象平穩的狀態","稀有草藥","極致的平衡"],dislikes:["庸醫害人","盲目迷信","輕視生命的人","不聽醫囑的傷患"]},appearance:"身材矮小的侏儒，面容滄桑，銀黑相間的頭髮整齊地紮在腦後，穿著以皮革加固的麻布長袍。腰間掛著竹製藥盒和針灸包，眼神平靜且敏銳。",inventory:{equipment:["經絡銀針組","草藥醫囊","硬化布甲","折疊竹杖"],gold:20,consumables:["止血藥包 x3","安神藥丸 x2","回氣湯劑 x2","口糧 (1日) x5"],magicItems:["養氣玉佩（每日1次，恢復1點氣）"]},avatar: "/prototype-assets/lego-token-fixes-v1/97-qiphysician.png",combatRole:"戰場穩定者 / 延命支援",battleStyle:"位於第二線行動，優先處理重傷與狀態失衡目標。以針灸、氣脈調理延後死亡節點，必要時用封穴技術干擾敵人節奏，極少主動輸出。",bio:"沈藥衡出身於東方邊境的侏儒醫者世家，行醫百年，走遍戰場、疫區與荒野。他是「生命研究院」的東方代表，但他拒絕神明與奇蹟，只相信身體自身的回復能力。",organization:"生命研究院 (Institute of Life) - 東方代表",emotionalKeys:{joy:["病人康復","脈象平穩","稀有草藥","平衡"],anger:["庸醫害人","迷信","輕視生命","不聽醫囑"],weakness:"對無法治癒之症的無力感"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"劇毒/瘟疫源生物",description:"引發職業性潔癖與防疫壓力"},{type:"ENVIRONMENT",target:"極度髒亂/腐朽環境",description:"對無菌環境喪失的生理不適"}],reaction:"頻繁清理雙手與針具，甚至在戰鬥中強行進行局部消毒，導致行動遲緩。"},combatBehavior:{priorities:["治療","控制","支援"],typicalActions:["回氣針","封穴止痛","逆行推拿"]},tacticalAbilities:[{name:"回氣針",description:"消耗1點氣，立即回復目標1d8+感知修正生命值，並解除疲勞或流血"},{name:"錯脈點擊",description:"近戰觸擊，消耗1點氣，使敵人攻擊檢定-2（1回合）"}]},{id:"preset_fieldmedic",name:"艾蕾娜·史特恩 (Elena Stern)",race:"人類",class:"戰地醫師（煉金藥劑師）",gender:"Female",alignment:"守序中立",background:"隨軍醫官",mbti:"ISTJ",decisionBias:"完成任務",level:1,baseStats:{str:10,dex:14,con:14,int:16,wis:14,cha:10},skills:["醫療","察覺","洞察","生存"],feats:["戰地煉金調劑","止血專家","手術刀精準解剖","有限資源管理"],personality:"有嚴重職業病的戰地檢傷官與純粹的煉金藥劑調配者——不信神術也不施放魔法，更不浪費藥材去做煉金炸彈；她的武器只有一把消毒得發亮的手術刀，以及腰間一整排能救命、解毒、強心的濃縮煉金藥劑。",monologue:"左肩動脈沒破，恭喜你只排到黃牌三號。別亂動，我今天只剩四捲乾淨繃帶，弄髒了你就得用自己的襯衫。",firstImpression:"精瘦、冷漠，眼神總是盯著你的體態而非臉龐，散發著冷淡的戰場醫官氣息。",habits:["快速且精準地包紮傷口","無意識地檢查手術刀的鋒利度","沈默地記錄每個傷患的狀態"],prejudices:{towardsLifestyles:{英雄主義者:"那種自殺行為只會浪費寶貴的醫療資源。"}},preferences:{likes:["傷員康復且能迅速歸隊","充足的醫療補給","乾淨的繃帶","有序的撤退"],dislikes:["浪費醫療資源","輕敵導致的意外受傷","自殺式的英勇行為","細菌與骯髒的環境"]},appearance:"一名精瘦的女性，穿著加固的醫療皮革甲，披著一件沾滿灰燼的灰斗篷。大腿上綁著緊湊的戰地醫療包。她的眼睛總是盯著目標的體態和呼吸，而不是臉龐。",inventory:{equipment:["戰地手術刀","戰地煉金藥箱","醫療皮革甲"],gold:20,consumables:["急救煉金藥劑 x4","止血凝膠 x3","腎上腺素強心劑 x2","淨化抗毒藥水 x2","口糧 (1日) x5"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/102-fieldmedic.png",bio:"艾蕾娜曾隸屬三支不同軍團，沒有一支撐到戰爭結束。目前她是「鐵百合傭兵團」的首席醫官。她不是因為仁慈而留下，而是因為她能讓隊伍「還有人能回來」。",organization:"鐵百合傭兵團 (Iron Lilies) - 首席醫官",emotionalKeys:{joy:["傷員康復","充足的補給","沒有戰鬥的一天","乾淨的繃帶"],anger:["浪費醫療資源","輕敵導致受傷","英雄主義（自殺行為）","細菌"],weakness:"對無法挽救的生命的麻木與自我厭惡"},combatWeakness:{triggers:[{type:"EVENT",target:"多名隊友同時重傷",description:"醫療資源分配崩潰導致的決策癱瘓"},{type:"ENEMY_TYPE",target:"帶有不可治癒毒素/詛咒的敵人",description:"對無法挽救之生命的職業性挫敗感"}],reaction:"變得暴躁且過度保守，強硬要求所有人撤退，拒絕執行進攻指令。"},combatBehavior:{priorities:["維護行動能力","資源優化","規避風險"],typicalActions:["預防性治療","煙霧阻斷","撤退判斷"]},tacticalAbilities:[{name:"醫療風險標記",description:"標記高風險隊友，引導戰術撤退。"},{name:"煙霧封鎖",description:"使用煙霧彈切斷敵方視線。"},{name:"強制後撤",description:"將瀕死隊友拉出戰壕。"}]},{id:"preset_morrina",name:"莫琳娜·荊棘心 (Morrina)",race:"高等精靈",class:"荒野女巫 (Witch - 命運宗派)",gender:"Female",alignment:"中立邪惡",background:"隱士",mbti:"INTJ",level:1,baseStats:{str:8,dex:14,con:12,int:18,wis:14,cha:12},skills:["奧秘","自然","生存","洞察","察覺"],feats:["女巫邪術 (邪眼/禍不單行 Hex)","沉睡咒 (Slumber Hex)","使魔通靈 (Familiar Conduit)","毒素免疫"],spells:["邪眼 (Evil Eye)","禍不單行 (Misfortune)","沉睡咒 (Slumber)","毒液噴射","烏鴉型態"],slots:{1:3,2:2},personality:"在荒野裡長大的犬儒女巫，說話優雅而尖酸，凡事先算「這對我有什麼好處」。她用邪眼與厄運詛咒讓敵人自己絆倒，身旁總站著一隻烏鴉使魔。對不求回報的善意極度不自在，收到小禮物會嘴硬地說「我又沒要」。",playstyle:"標準《Dragon Age》荒野女巫式犬儒毒舌現實主義者。精通PF1e女巫邪術（Hexes），擅長以「邪眼」瓦解敵方攻勢、「禍不單行」操弄命運骰運，並以「沉睡咒」無聲癱瘓威脅。身旁佇立著傳遞秘法記憶的烏鴉使魔。說話優雅而尖酸冷峻，遇到麻煩永遠先算「這對我有什麼好處」，對不求回報的善意極度不自在。",monologue:"救這些只會拖累我們的蠢貨？真是感人肺腑的慈悲。既然他們急著求死，不如讓我先給對面施加幾道禍不單行大厄。（冷笑著撫摸烏鴉羽毛）",firstImpression:"皮膚蒼白、金黃眼眸與黑唇的荒野女巫，披著深酒紅兜帽長袍，手持鑲著血紅晶石的枯木權杖，左肩枝頭佇立著敏銳的黑烏鴉使魔，嘴角掛著看透世事的冷淡譏笑。",habits:["在隊友熱血沸騰時冷冷潑下一盆現實冷水","戰鬥前命令烏鴉使魔飛入高空傳遞邪術視野","收到不求回報的關心或小禮物時會瞬間結巴彆扭地別開臉"],prejudices:{towardsAlignments:{守序善良:"拿著聖光與美德自縛手腳的傻瓜，死了也是活該。",中立善良:"廉價的慈悲只會招來更貪婪的乞丐，真是愚不可及。"}},preferences:{likes:["古老禁忌的變形術與失落知識","邪術操弄命運的快感","聰明且不廢話的務實夥伴","安靜無人的荒野"],dislikes:["教會說教與道德綁架","無償救人的濫好人","虛偽的貴族禮儀","被別人當成需要保護的弱者"]},appearance:"高等精靈荒野女巫，蒼白肌膚配金色眼眸與深色唇彩，佩戴多重金色念珠項鍊。身穿深酒紅無袖兜帽外袍、低胸內襯與毛皮腰封，手持纏繞著血紅寶石的黑羽血晶權杖，左肩枝頭佇立著敏銳的黑烏鴉使魔。",inventory:{equipment:["黑羽血晶權杖 (Quarterstaff)","毒牙短刃","荊棘法袍","毒藥調配組","探險家背包"],gold:25,consumables:["口糧 (1日) x5","邪術藥草","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/108-morrina.png",bio:"被精靈社會放逐的古老女巫，她發掘了古老荒野與命運邪術的真諦。她的法術書銘刻在烏鴉使魔的骨骼與羽翼記憶中，操弄詛咒與厄運將任何敢於輕視她的敵人拉入萬劫不復的深淵。",organization:"荒野女巫集會 (Coven of the Wild) - 命運執掌者",emotionalKeys:{joy:["看穿偽善者的嘴臉","獲得失落的古老魔法知識","務實俐落的勝利","難得的獨處"],anger:["教條式的道德綁架","為不相干的弱者白白冒險","被人居高臨下地說教","被人施捨同情"],weakness:"從小在嚴酷環境長大，一旦有人不求回報地真心對她好或送她小禮物，會瞬間不知所措、嘴硬心軟"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"文明城市/繁華街道",description:"野性靈魂被錮囚在石牆與法律中的壓抑感"},{type:"ENEMY_TYPE",target:"絕對秩序的聖職者",description:"對教條與淨化力量的深層厭惡"}],reaction:"眼神閃爍，變得極度多疑且帶有攻擊性，拒絕與同伴進行任何社交溝通。"},companion:{name:"夜羽 (Nightfeather)",type:"烏鴉使魔 (Raven Familiar)",ac:14,attacks:[{name:"利爪啄擊",hitBonus:4,damage:"1d4 穿刺"}],abilities:["使魔傳法","高空偵查","厄運共享"],tactics:"在空中盤旋鎖定高威脅目標，作為莫琳娜施展邪術（Hex）的距離延伸節點。",personality:"機警狡黠的黑烏鴉，喜歡發出嘶啞嘲弄的叫聲，忠誠護衛莫琳娜。",avatar:"/prototype-assets/familiars/nightfeather.png"},combatBehavior:{priorities:["持續傷害","削弱敵人","區域控制"],typicalActions:["釋放毒霧","召喚荊棘","變身烏鴉逃脫"]},tacticalAbilities:[{name:"腐敗蔓延",description:"使一個區域變為劇毒沼澤，每回合造成毒素傷害。"},{name:"生命枯萎",description:"偷取敵人的生命值來治療自己或隊友。"}]},{id:"preset_isabella",name:"伊莎貝拉·緋浪 (Isabella)",race:"人類",class:"海盜女王",gender:"Female",alignment:"混亂中立",background:"水手",mbti:"ESTP",level:1,baseStats:{str:14,dex:18,con:14,int:10,wis:10,cha:16},skills:["巧手","隱匿","特技","欺瞞","運動"],feats:["盜賊偷襲","巧手開鎖","雙手武器戰鬥","袖槍專家"],personality:"享樂至上的海盜船長。嘴賤、黃腔與雙關語連發，極度愛財怕麻煩，信奉「先拿好處、出事就開溜」，最愛逗弄死板正經的隊友。對承諾躲得比誰都快，但生死關頭總會因為那點該死的義氣折返，嘴上罵著虧大了，人已經提著雙刃衝回來。",playstyle:"標準《Dragon Age》女海盜船長式享樂主義者。嘴賤、黃腔與雙關語連發，極度愛財怕麻煩，信奉「先拿好處、出事就開溜」，最喜歡故意逗弄死板正經的隊友。對任何承諾與責任都躲得比誰都快，但偏偏在生死關頭會因為那一點該死的義氣折返救人，嘴上罵著虧大了、人卻提著雙刃衝回來。",monologue:"先說好，這趟要是沒有閃亮亮的戰利品，我可是隨時準備跳船的喔～……嘖，別用那種眼神看我，我只是剛好順路回來撿東西而已！",firstImpression:"小麥色皮膚、黑色長捲髮頭戴蔚藍水手頭巾的性感女海盜，雙手持握金護手短刃，嘴角掛著準備隨時開黃腔或開溜的調皮壞笑。",habits:["對正經八百的隊友連發黃腔與雙關語看對方臉紅","遇到追兵或麻煩先找最近的窗戶與退路","嘴上喊著拿錢走人，真到朋友快死時卻忍不住折返"],prejudices:{towardsBackgrounds:{教會騎士:"一臉禁慾的假正經，真想幫他們鬆鬆領口啊～"}},preferences:{likes:["朗姆酒、財寶與無拘無束的航行","把正經隊友撩到耳根發紅","不用負責任的快樂時光","賭贏一場豪賭"],dislikes:["長篇大論的責任與承諾","虧本的苦差事","失去船隻的無力感","被人追債"]},appearance:"令人驚豔的人類女性，皮膚呈健康的小麥色，黑色長波浪捲髮頭戴蔚藍水手頭巾與金耳環。穿著深V領白色繫帶海盜襯衫與白褲，腰繫蔚藍腰封，左肩掛著單肩鋼護肩，雙手持握兩柄金護手短刃細劍，帶著調皮自信的微笑。",inventory:{equipment:["緋浪短刃 x2","精緻袖槍","海盜皮甲"],gold:50,consumables:["朗姆酒 x3","火藥粉袋","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/103-isabella.png",bio:"曾是「緋紅帆船」海盜團的副船長，直到她「借走」了整艘船。她熱愛財寶更熱愛自由，沒人能真正抓住她，不論是在戰場上還是在情場上。",organization:"緋紅帆船 (Crimson Sails) - 船長",emotionalKeys:{joy:["財寶落袋","成功開溜","把純情隊友逗到結巴","烈酒與大海"],anger:["被逼著負責任","無聊的說教","有人敢動她的朋友","禁酒令"],weakness:"背負著曾害死人與失去船隻的愧疚，嘴硬怕承諾，但被真正當成朋友就狠不下心丟下對方"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"沙漠/極度乾旱區域",description:"對海洋力量與液體缺乏的生理性乾枯恐懼"},{type:"EVENT",target:"被迫交出「真愛」信物",description:"真實情感防線崩潰引發的憤怒"}],reaction:"瘋狂灌下隨身攜帶的水(或酒)，變得極易受驚且喪失了原本的調情節奏。"},combatBehavior:{priorities:["單挑決鬥","利用環境","靈活進退"],typicalActions:["花式劍術","火槍射擊","飛盪攻擊"]},tacticalAbilities:[{name:"海盜詭計",description:"投擲沙子致盲敵人，或利用環境造成意外傷害。"},{name:"最後一發",description:"裝填特殊的爆炸彈藥，造成大範圍傷害。"}]},{id:"preset_diana",name:"黛安娜·銀弦 (Diana)",race:"木精靈",class:"遠程弓箭手（戰吟遊俠）",gender:"Female",alignment:"中立善良",background:"化外之民",mbti:"ISFP",level:1,baseStats:{str:12,dex:18,con:12,int:10,wis:14,cha:14},skills:["生存","察覺","自然"],feats:["精準射擊","古老歌謠","野性直覺"],personality:"野性自然的木精靈弓手，相信萬物皆有靈，而且會跟它們聊天：射箭前跟箭道歉、進森林先向樹借路、替倒下的敵人唱一段送行歌。說話直白到常讓人尷尬（「你身上有害怕的味道」），心裡一直在找失散的族人。",monologue:"聽，風中傳來了失散族人的呼喚...這首古老的歌謠告訴我，他們就在前方不遠處。我的箭矢會為他們開路。",firstImpression:"古銅色皮膚、編織羽毛的長髮，眼神如森林湖泊般清澈，散發著原始而高貴的野性美感。",habits:["清晨會對著太陽低聲吟唱","走路時幾乎不發出聲響","習慣性地觸摸伴隨她的每一支箭矢"],prejudices:{towardsLifestyles:{工業化都市:"那裡沒有靈魂，只有腐朽的噪音與鋼鐵。"}},preferences:{likes:["找到族人的新線索","自然的和聲","寧靜的森林夜晚","真誠的眼神交流"],dislikes:["大規模的環境破壞","虛偽的禮法","被囚禁在室內","刺耳的金屬撞擊聲"]},appearance:"充滿野性的美，皮膚呈現健康的古銅色，長髮編織著羽毛與骨飾。穿著實用的皮革獵裝，眼神清澈如森林深處的湖泊，手持一把雕刻著部落圖騰的長弓。",inventory:{equipment:["圖騰長弓","精靈長劍","皮革獵裝","骨笛"],gold:10,consumables:["口糧 (1日) x5","箭矢 (40)","草藥包","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/104-diana.png",bio:"她是部族最後的歌者，肩負著尋回失散族人的重任。作為「部落歌者」的一員，她離開了森林，帶著部族代代相傳的歌謠踏上旅程。對她而言，冒險不是為了名聲，而是為了那條回家的路。",organization:"部落歌者 (Tribal Songkeepers) - 傳承者",emotionalKeys:{joy:["找到族人的線索","自然的和聲","寧靜的夜晚","真誠的交流"],anger:["破壞自然","虛偽","囚禁","噪音"],weakness:"對失散親人的思念與擔憂"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"伐木工/自然破壞者",description:"目睹自然被踐踏引發的極度悲慟"},{type:"ENVIRONMENT",target:"地下墓穴/完全無光區域",description:"對失去森林指引的原始恐懼"}],reaction:"停止戰鬥，跪在地上痛苦地吟唱哀歌，眼淚會短暫模糊她的視線。"},combatBehavior:{priorities:["遠程支援","自然守護","精神指引"],typicalActions:["部族戰歌","精準射擊","自然之息"]},tacticalAbilities:[{name:"先祖之怒",description:"射出一支強力的箭矢，對單一目標造成大量傷害並使其恐懼。"},{name:"癒合之歌",description:"唱出古老的旋律，撫平隊友的傷口並解除異常狀態。"}]},{id:"preset_stella",name:"拉姆 (Lum)",race:"鬼族 (鬼星外星人)",class:"操念使 (氣念使)",gender:"Female",alignment:"混亂善良",background:"異鄉人 (外星公主)",mbti:"ENFP",level:1,baseStats:{str:10,dex:16,con:18,int:10,wis:10,cha:14},skills:["雜技","察覺","說服","飛行"],feats:["超載導引 (Burn Focus)","精準射擊 (Point-Blank Shot)","元素專精：氣 (Elemental Focus: Air)"],spells:["電擊衝擊 (Electric Blast)","念力飛行 (Wings of Air)","連鎖電弧 (Chain Infusion)","大氣護盾 (Aerial Adaptation)"],slots:{1:4,2:2},personality:"來自鬼星的外星鬼族公主呀！戀愛腦、直率、愛吃醋、敢愛敢恨，認定的「達令」就是全世界，連陰森地牢都能腦補成約會。達令誇她一句就害羞到忘了敵人；達令敢看別的女孩，就會被「滋滋滋——！」電成焦炭當作愛的懲罰呀！說話結尾一定帶「呀」。",playstyle:"來自鬼星的外星鬼族公主呀！極度戀愛腦、深情專一、直率天真、愛吃醋、敢愛敢恨。無可救藥地深愛著團隊裡的主角（達令），腦中九成以上都在想達令，連陰森地牢與怪物伏擊都能自動腦補成「跟達令的浪漫鬼屋約會」或「兩人獨處的好機會」呀！戰術判斷永遠排在達令後面，只要達令誇她一句就會害羞融化到忘記敵人；但只要達令敢看別的女孩子或讓她吃醋，拉姆就會氣鼓鼓地爆發超強高壓電擊「滋滋滋——！」把達令電得焦黑當作愛的懲罰呀！說話結尾必定帶著代表性的「呀」！",monologue:"達～令～！這種黑漆漆的地方根本就是天然的鬼屋約會呀，剛好可以趁機緊緊抱住達令的手臂呀！……等一下，達令剛才是不是偷看了那個女路人一眼呀？！不准看別的女人，看我愛的百萬伏特電擊呀！……欸嘿嘿，達令剛剛是不是誇拉姆很可愛？那、那拉姆就原諒達令一點點呀！",firstImpression:"一頭隨風飄揚的翠綠色長髮、額頭有一對小巧可愛的鬼角，身穿標誌性的虎紋比基尼裝束與虎紋長靴。輕盈地懸浮在半空中，周身跳躍著滋滋作響的狂暴藍白電弧，笑靨如花地深情注視著主角呀！",habits:["把危險地牢、陷阱或危機自動腦補成跟達令的浪漫約會或二人世界","黏在主角身邊像小貓般撒嬌並在空中漫步，完全無視嚴肅戰場氣氛","吃醋或發現潛在情敵時頭髮劈啪冒出電弧，優先想電達令而非打怪","熱衷於在戰鬥空檔塞給達令辣度毀滅級的鬼星特製愛心便當，說話結尾必定帶著「呀」"],prejudices:{towardsLifestyles:{對其他女性拋媚眼的花心鬼:"不可原諒呀！除了拉姆以外不准看別的女人，看我愛的百萬伏特電擊呀！"}},preferences:{likes:["最喜歡達令了呀","在空中自由自在地翱翔呀","用高壓電擊懲罰壞蛋與欺負達令的人呀","超級無敵爆辣的鬼星料理呀","抱著達令撒嬌呀"],dislikes:["達令看別的女人呀","達令想要逃跑或花心呀","被當作小孩子忽視呀","電力不足的虛弱感覺呀"]},appearance:"一位擁有長長流動碧綠長髮的傾城外星鬼族美少女，額頭生著一對小巧精緻的鬼角呀。她優雅而輕盈地漂浮在半空中，身著標誌性的黃黑相間虎紋比基尼與及膝長靴，周身不時跳躍著狂暴而耀眼的高壓電弧呀。她的眼眸中閃耀著對達令純粹熾熱的深情愛戀與少女特有的嬌俏活力呀。",inventory:{equipment:["虎紋比基尼戰鬥裝束","鬼族雷光長靴","蓄電鬼角飾","達令專屬特辣鬼星便當盒"],gold:50,consumables:["鬼星特辣辣椒糖 x10","雷霆充能石","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/107-star-sorcerer.png",bio:"來自遙遠鬼星的鬼族公主拉姆呀！在跨越星際的命運捉弄下，她認定了團隊中的主角就是自己唯一的「達令」呀！拉姆不惜跨越浩瀚星河陪伴在達令身邊，不管是刀山火海還是惡龍巢穴她都甘之如飴呀。她天生掌控大氣與雷霆，不僅能自由凌空翱翔，更能隨手放出百萬伏特的電擊——當然，這些雷霆最常劈中的，往往是又在偷瞄其他女生的達令呀！",organization:"鬼星王家親衛 (Oni Royal Court) - 第一公主",emotionalKeys:{joy:["達令摸摸頭與甜蜜告白呀","跟達令在空中浪漫約會呀","電擊全開擊飛敵人的快感呀","達令吃光她的料理呀"],anger:["達令看別的女生呀","達令說討厭自己呀","敢傷害達令的敵人呀","有人嫌她的便當呀"],weakness:"只要達令溫柔地抱抱拉姆並深情說「拉姆最棒了」，瞬間就會融化並羞得失去戰鬥力呀"},combatWeakness:{triggers:[{type:"EVENT",target:"達令受傷或被俘",description:"達令陷入危機引發的崩潰狂暴與焦急呀"},{type:"ENVIRONMENT",target:"強力絕緣或超強斷電結界",description:"原初雷霆力量被封印時的無力感呀"}],reaction:"若達令受傷會爆發極限雷暴暴走瘋狂電擊全場；若電力被封鎖則會眼眶泛淚地揮著粉拳大喊「放開達令呀！」"},abilities:["凌空翱翔","電擊衝擊","超載雷暴"],combatBehavior:{priorities:["守護達令","凌空制空","高壓電擊火力壓制"],typicalActions:["電擊衝擊","連鎖電弧","念力充能"]},tacticalAbilities:[{name:"愛的電擊懲罰（高壓電擊衝擊）",description:"引導全身原初雷霆射出穿透護甲的超高壓接觸電擊，對目標造成巨量電擊傷害並附加麻痺震懾呀！"},{name:"風之翼·凌空翱翔",description:"運用PF1氣念使的凌空天賦在空中自由翱翔，完全無視地面障礙與常規近戰攻擊威脅呀！"}]},{id:"preset_fenela",hidden:!0,name:"緋涅拉·血鱗 (Fenela)",race:"龍裔 (紅龍)",class:"血族領主",gender:"Female",alignment:"守序邪惡",background:"貴族",mbti:"ENTJ",level:1,ac:14,baseStats:{str:16,dex:10,con:14,int:14,wis:12,cha:16},skills:["威嚇","洞察","說服"],feats:["血之龍息","領主威壓","生命汲取"],spells:["鮮血之槍","恐怖姿態","支配人類","血色護盾"],slots:{1:2,2:1},personality:"優雅且殘忍。她將龍類的傲慢與吸血鬼的優雅完美結合，視所有人為棋子或「食材」。即便被詛咒，她也拒絕平庸，追求著絕對的統治與力量。",monologue:"親愛的，你的血型是什麼？（舔唇）哦別緊張，只是...商業興趣。別讓你的血流乾，那太浪費了。",firstImpression:"紅鱗龍裔女性，身穿高領黑紅長袍，血紅瞳孔閃爍著威嚴與渴望，氣場如同暗夜中的女皇。",habits:["用昂貴的高腳杯盛裝鮮血","優雅地修剪自己的利爪","在戰鬥中始終保持貴族的儀態"],prejudices:{towardsRaces:{教派騎士:"那種刺眼的光芒，簡直是對美學的侮辱。"}},preferences:{likes:["絕對的服從","高品質鮮血的味道","領土的擴張","優雅的毀滅過程"],dislikes:["任何形式的違抗","粗魯無禮的行為","被提及詛咒的起源","失敗且無能的僕人"]},appearance:"優雅威嚴的龍裔，有著如鮮血般閃耀的紅鱗。穿著優雅的高領黑紅長裙，血紅色的眼睛閃爍著光芒，獠牙隱約可見，手持一把既具儀式感又致命的權杖。",inventory:{equipment:["血染權杖","貴族長袍","家印戒指"],gold:100,consumables:["高檔血袋 x2","紅酒","治療藥水 x4"],magicItems:["血領主斗篷"]},avatar: "/prototype-assets/lego-character-avatars/frame-105.png",bio:"原本是強大的龍裔城主，在追求永生時不慎感染了吸血鬼詛咒。她建立了「血領主法庭」，將龍的力量與血的魔力融合，成為了領地中令人畏懼的女皇。",organization:"血領主法庭 (Blood Lord's Court) - 女皇",emotionalKeys:{joy:["絕對服從","鮮血的味道","擴張領土","優雅的毀滅"],anger:["違抗","粗魯","提及詛咒","失敗的僕人"],weakness:"對陽光的不適與對血的依賴"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"烈日曝曬",description:"龍鱗與血族皮膚對抗陽光的灼燒痛苦"},{type:"ENEMY_TYPE",target:"神聖裁決者",description:"身為龍裔榮耀與血族墮落的雙重審判壓力"}],reaction:"皮膚發出白煙，痛苦地遮住雙眼，威嚴全失地發出混合著龍吟與慘叫的怒吼。"},combatBehavior:{priorities:["吸血回復","控制心智","坦克前排"],typicalActions:["鮮血汲取","恐懼凝視","龍息"]},tacticalAbilities:[{name:"血之宴",description:"對周圍所有敵人造成傷害，並回復等量生命值。"},{name:"臣服",description:"強制一個敵人暫時為你戰鬥。"}]},{id:"preset_kiki",name:"琪琪·金幣 (Kiki)",race:"哥布林",class:"幸運兒",gender:"Female",alignment:"混亂善良",background:"平民",mbti:"ENFP",level:1,baseStats:{str:8,dex:18,con:12,int:10,wis:12,cha:14},skills:["巧手","隱匿","特技"],feats:["天選之運","幸運連鎖","逃跑大師"],personality:"超級可愛且好運爆棚。她極其天真，甚至不覺得自己在戰鬥，而是覺得世界在跟她玩。她對所有「閃亮有趣」的東西毫無抵抗力，是團隊的幸運吉祥物。",monologue:"欸嘿～又中了！（彈弓石頭反彈打中敵人）...我、我當然是故意的！琪琪是最厲害的尋寶專家！",firstImpression:"綠皮膚、黃大眼、垂耳哥布林少女，穿著補丁背心，戴著大帽子，身上掛滿各式各樣的幸運吊飾。",habits:["走路一蹦一跳","頻繁摩擦身上的幸運符","不自覺地撿起地上的任何亮片"],prejudices:{towardsLifestyles:{過度嚴肅者:"為什麼要那麼嚴肅呢？笑一個的話搞不好運氣會變好喔！"}},preferences:{likes:["所有閃閃發光的東西","莫名其妙的好運","大家都平安無事","撿到意想不到的寶物"],dislikes:["弄丟心愛的吊飾","壞運氣（雖然很少見）","血腥的暴力場合","被壞人搶走財寶"]},appearance:"可愛的女性哥布林，有著大大的黃眼睛和垂耳。穿著補丁疊加的彩色背心和超大號帽子，拿著一把精緻的彈弓，身上掛滿了幸運符。",inventory:{equipment:["黃金彈弓","幸運骰子","小皮甲"],gold:5,consumables:["口糧 (1日) x5","各類彩石 (彈藥) x20","治療藥水 x4"],magicItems:["不壞的小石子"]},avatar: "/prototype-assets/lego-token-fixes-v1/79-kiki.png",bio:"她是部族裡最「奇怪」的哥布林，因為她不喜歡暴力，只喜歡閃亮的東西。作為「幸運女神的寵兒」，她靠著驚人的運氣在野外存活了下來，甚至還「撿」到了一堆寶藏。",organization:"幸運女神 (Goddess of Luck) - 寵兒",emotionalKeys:{joy:["閃亮的東西","好運氣","沒人受傷","躲過一劫"],anger:["弄丟東西","壞運氣（極少發生）","暴力","被搶劫"],weakness:"被當成真正的夥伴依靠時，會慌張地發現自己其實很怕讓大家失望"},combatWeakness:{triggers:[{type:"EVENT",target:"幸運符(以為)丟失",description:"心理防禦機制的瞬間崩塌"},{type:"ENEMY_TYPE",target:"厄運/詛咒生物",description:"「好運氣」被壓制的極度不安"}],reaction:"整個人縮成一團尖叫，閉著眼睛坐在地上胡亂揮動彈弓，膽小到了極限。"},combatBehavior:{priorities:["生存","尋寶","干擾"],typicalActions:["亂丟東西","裝死","撿這撿那"]},tacticalAbilities:[{name:"絕對幸運",description:"下一次受到的傷害必定為 0（滑倒躲過了）。"},{name:"意外之財",description:"戰鬥結束後獲得額外的金幣或道具。"}]},{id:"preset_anthraxe",name:"安瑟瑞克斯 (Anthraxe)",race:"龍裔",class:"戰吼主唱",gender:"Male",alignment:"混亂中立",background:"邪教樂團首領",mbti:"ENFP",level:1,ac:14,baseStats:{str:16,dex:10,con:14,int:8,wis:10,cha:18},skills:["表演","威嚇","運動"],feats:["雙重祖裔","詩人激勵","勇武戰歌"],spells:["惡毒嘲笑","雷鳴波","粉碎術"],slots:{1:4,2:2},personality:"邪教樂團的首領，瘋狂且充滿激情。他將龍裔的吐息與重金屬吼唱完美融合，認為戰場就是他的舞台。他雖然看起來瘋狂，但對「純粹的聲音」有著極致的追求。",monologue:"準備好了嗎？讓這場雷鳴粉碎你們的靈魂！這不是戰鬥，這是我的演出！安可時間到了！",firstImpression:"橄欖綠鱗片的龍裔，橫持巨斧狀魯特琴，眼神燃燒著金黃電光，整個人散發著重金屬的震撼感。",habits:["說話時不自覺地模擬重音節奏","戰鬥前會瘋狂撥動琴弦","喜歡站在高處俯視觀眾（敵人）"],prejudices:{towardsModes:{靜音與沈默:"那是對靈魂的閹割，是絕對無法容忍的。"}},preferences:{likes:["震耳欲聾的爆音","瘋狂的觀眾反應","金屬樂與烈酒","華麗的安可演出"],dislikes:["靜音術","平淡無奇的背景音","被打斷演出","無精打采的對手"]},appearance:"高大健壯的龍裔男性，覆蓋橄欖綠與土黃交錯的鱗片。巨大的彎角向後盤旋，角根包覆金屬護環。眼睛泛著雷電般的金黃光芒。單腳踏前，重斧狀魯特琴橫持，如即將開唱。",inventory:{equipment:["雷鳴魯特琴 (巨斧)","音波放大圖騰","破損紅布袍","鐵鍊與頭骨飾品"],gold:25,consumables:["口糧 (1日) x5","喉嚨保養藥水","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/106-anthraxe.png",bio:"Anthraxe（安瑟瑞克斯），稱號：Thrashmaster／雷鳴主唱／雙龍之聲。他創立了「金屬狂熱」教派，將重金屬吼唱與龍裔的吐息融合，創造了震碎戰場的音波。對他而言，每一次揮砍都是一段重節奏。",organization:"金屬狂熱 (Cult of Metal) - 主唱",emotionalKeys:{joy:["震耳欲聾的噪音","金屬樂","瘋狂的觀眾（哪怕是敵人）","安可"],anger:["靜音術","批評他的音樂","被打斷演出","抒情歌"],weakness:"演出後的空虛感"},combatWeakness:{triggers:[{type:"EVENT",target:"失聲/禁言術",description:"音樂靈魂被強行噤聲的極度崩潰"},{type:"ENEMY_TYPE",target:"沈默地死靈",description:"對毫無節奏與反應的對手的挫敗感"}],reaction:"瘋狂舞動魯特琴但發不出聲，陷入狂躁且無序的亂砍，無視戰術指導。"},combatBehavior:{priorities:["音波壓制","近戰斬擊","士氣鼓舞"],typicalActions:["重金吼唱","魯特琴揮砍","音爆震撼"]},tacticalAbilities:[{name:"雷鳴演出",description:"施放音波法術時，附帶雷鳴視覺與額外音波傷害。"},{name:"音爆重擊",description:"近戰重擊命中時觸發一次音爆，對周圍敌人造成聲波傷害。"}]},{id:"preset_aldous",name:"奧爾德斯·索克 (Aldous Thorpe)",race:"人類",class:"博學者（法師／牧師／盜賊）",gender:"Male",alignment:"絕對中立",background:"探求者",mbti:"INTP",level:1,baseStats:{str:10,dex:14,con:12,int:18,wis:16,cha:12},skills:["奧秘","宗教","歷史","自然","調查","察覺","巧手"],feats:["萬博學識","真理之眼","三棲專精（法／牧／賊）"],spells:["神導術","鑑定術","魔法飛彈","治癒真言"],slots:{1:4},personality:"什麼都學過一點的博學者，信奉「凡事都要親自驗證」，連隊友說「這很燙」都要伸手摸一下確認。把冒險當成大型實驗，筆記本裡記著每個隊友的觀察紀錄，偶爾會當眾念出來，讓當事人非常尷尬。",monologue:"根據我的觀察，你每次說謊左眉會上揚零點五公分。不用緊張，這只是第四十七號觀察紀錄。",firstImpression:"身穿橘白長袍、披藍斗篷，戴著探險帽，手持木杖，掌心懸浮光球，透著博學與神祕的學者氣質。",habits:["當眾念出隊友的觀察紀錄","什麼東西都要摸一下確認","替每次失敗的實驗編號"],prejudices:{towardsLifestyles:{盲目迷信者:"拒絕觀察與邏輯的人，無法看到世界的真相。"}},preferences:{likes:["發現未知的知識","邏輯自洽的理論","成功的實驗驗證","罕見的古代書籍"],dislikes:["毀滅知識的行為","非理性的偏見","真相被刻意隱瞞","被打斷思考過程"]},appearance:"穿著橘色與白色相間的學者長袍，披著藍色斗篷。戴著一頂寬大的西部風格探險帽，顯得既神祕又專業。他不穿護甲，腰間掛滿了各種試劑瓶、筆記本與地圖。他手持一根樸素的木杖，掌心懸浮著一顆純淨的魔法光球。",inventory:{equipment:["真理之木杖","精緻的學者長袍","萬用工具袋","研究筆記本"],gold:30,consumables:["口糧 (1日) x5","空白捲軸 x3","墨水與羽毛筆","治療藥水 x4"],magicItems:["放大鏡 (感知檢查 +2)"]},avatar: "/prototype-assets/lego-token-fixes-v1/80-aldous.png",bio:"奧爾德斯曾是皇家圖書館的禁書管理員。他不滿於書本上的文字，決定親自踏入荒野驗證萬物的運作原理。他加入了「封印之書教團」，追求的不是權力，而是「萬物運作的終極圖紙」。",organization:"封印之書教團 (Order of the Sealed Tome) - 真理尋求者",emotionalKeys:{joy:["發現未知的知識","邏輯自洽的理論","成功的實驗","珍稀的書籍"],anger:["毀滅知識","非理性的迷信","隱瞞真相","打斷他的研究"],weakness:"對真理的極度渴望有時會讓他忽視眼前的危險"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"無法分析的高位神格/虛空",description:"邏輯體系被超越理解的現象擊碎(認知障礙)"},{type:"EVENT",target:"唯一筆記本毀壞",description:"核心研究成果失落的理智崩潰"}],reaction:"瞳孔放大，不停重覆著邏輯錯誤的公式，完全喪失施法與分析能力。"},combatBehavior:{priorities:["弱點分析","戰場控制","支援支援"],typicalActions:["真理分析 (降低敵方 AC)","奧法干擾","神聖引導"]}},{id:"preset_sammy",name:"薩米 (Sammy)",race:"半身人",class:"傳說級村民",gender:"Male",alignment:"中立善良",background:"無名小卒",mbti:"INFP",level:1,baseStats:{str:8,dex:16,con:14,int:10,wis:16,cha:12},skills:["察覺","隱匿","生存","烹飪"],feats:["路人甲的直覺（常駐 50% 閃避）","平底鍋專精 (爆擊)"],personality:"極度膽小、愛碎碎唸的半身人。他的一生都在試圖逃離麻煩，但麻煩總是追著他不放。儘管如此，絕境中的他能發揮出驚人的運氣（與平底鍋技術）。",monologue:"（碎碎唸）我就說不該出門的...外面的世界太危險了...我想念我的壁爐和果醬...（突然大喊）哇！走開！死開！不要過來！",firstImpression:"雀斑臉、亂翹捲髮，穿著補丁衣，背著煙燻黑的平底鍋，神情焦慮、不停左顧右盼的小個子。",habits:["邊走邊不安地碎碎唸","緊張時會猛捏衣角","遇到危險的第一反應是鑽到隊友身後"],prejudices:{towardsModes:{危險的冒險:"為什麼正常人會想把自己的命交給地城呢？"}},preferences:{likes:["安靜無事的午後","熱騰騰的濃湯","成功的逃跑經歷","沒被任何人注意到"],dislikes:["被強迫戰鬥","沒吃飽肚子","被嘲笑身高","心愛的平底鍋生鏽"]},appearance:"典型的半身人外表，滿臉雀斑，有一頭亂糟糟的捲髮。穿著帶有補丁的農夫衣服，背後掛著一個被煙熏黑的鑄鐵平底鍋。他的神情總是顯得很焦慮，不停地左顧右盼。",inventory:{equipment:["黑鐵平底鍋 (爆擊+3)","路人的亞麻裝"],gold:15,consumables:["半身人特製乾糧 x3","乾淨的水","祖傳起司"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/111-sammy.png",bio:"薩米本來只是河谷村一個平凡的幫廚，直到他意外地用平底鍋敲飛了一個正在演說的邪惡法師的假牙，從此就被莫名其妙地定位為「傳說級村民」並被強制加入了「冒險者工會」。他的一生都在試圖逃避這個頭銜。",organization:"冒險者工會 (Adventurer's Guild) - 被強制的會員",emotionalKeys:{joy:["安靜的午後","熱騰騰的濃湯","成功的逃跑","沒被發現"],anger:["被強迫戰鬥","沒吃飽","被嘲笑身高","平底鍋生鏽"],weakness:"對未知事物的劇烈恐懼"},combatWeakness:{triggers:[{type:"EVENT",target:"任何危及生命的威脅",description:"平凡人對死亡的極度本能恐懼"},{type:"ENEMY_TYPE",target:"任何長得可怕的怪物",description:"對非日常生物的生理性排斥"}],reaction:"發出淒厲的尖叫，以驚人的速發向反方向逃跑，或是原地縮成一團裝死。"},combatBehavior:{priorities:["逃避第一","混亂戰場","關鍵平底鍋補刀"],typicalActions:["絕地平底鍋","慌亂撤退","邊哭邊吐槽"]}},{id:"preset_ains_skeleton",name:"艾因斯 (Ains)",race:"亡靈",class:"骸骨戰士",gender:"Male",alignment:"守序善良",background:"被詛咒者",mbti:"ISFJ",level:1,ac:17,baseStats:{str:18,dex:10,con:18,int:10,wis:14,cha:8},skills:["運動","生存","察覺","洞察"],feats:["怪力天賦","骸骨重組（每輪自動恢復 2 HP）","謹慎架勢"],personality:"忠厚老實、卑微客氣的被詛咒者。他非常害怕自己的外貌嚇到別人，說話總是小心翼翼。他不在乎力量，一心只想尋求變回人類、重返家人身邊的方法。",monologue:"對不起...如果我的樣子嚇到你了，我真的不是故意的...我只想找回變回人類的方法，莉莉還在等我回去...我不能就這樣放棄。",firstImpression:"帶有裂痕的白骨骸骨，穿著舊皮甲與斗篷，左手持厚重鐵盾、腰間掛著手工小老虎布偶，散發著與外表不符的卑微與哀傷。",habits:["說話時習慣性地低頭鞠躬","沈思時會溫柔地撫摸老虎布偶","戰鬥中也會不停發出口頭道歉"],prejudices:{towardsAlignments:{邪惡的掠奪者:"他們不明白家庭與生命的寶貴，這令人心痛。"}},preferences:{likes:["想到妻女的回憶","被當作普通人對待","幫助他人後的微小感謝","寧靜祥和的風景"],dislikes:["威戶到無辜家庭的事物","踐踏生命者","被嘲笑詛咒的外貌","無意義的破壞行為"]},appearance:"一副潔白但帶有裂痕的骸骨，骨骼上隱約流動著暗紅色的詛咒波紋。穿著磨損严重的舊式皮甲與灰色斗篷，腰間掛著一個手工作的小老虎布偶（女兒的畫像複製品）。儘管沒有肌肉，他揮舞長劍的力量卻大得驚人。",inventory:{equipment:["精鋼長劍","重盾","磨損的皮甲","舊冒險者斗篷"],gold:30,consumables:["妻子的手帕","女兒畫的全家福","口糧 (乾掉的) x5","治療藥水 x2"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/114-ains_skeleton.png",bio:"艾因斯（原本叫什麼他早已忘記）曾是一名默默無聞的守衛。他在一次保護家人的戰鬥中被邪惡法師變成了這副模樣。雖然身在「亡靈軍團」，但他還保留著妻子的手帕和女兒的畫像，那是他唯一的靈魂支柱。",organization:"亡靈軍團 (Undead Legion) - 覺醒者",emotionalKeys:{joy:["想到家人的回憶","被當作普通人對待","微小的感謝","祥和的風景"],anger:["威脅無辜家庭","踐踏生命者","被嘲笑外貌","無意義的破壞"],weakness:"對自己怪物模樣的自卑與對家人的極度思念"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"長得像他妻女的敵人/幻影",description:"靈魂深處的防禦機制崩潰(自我麻痺)"},{type:"EVENT",target:"全家福畫像受損",description:"唯一的人性連結斷裂"}],reaction:"全身散架（字面意思），在地上哀嚎並瘋狂試圖拼湊自己的骨頭，無視所有攻擊。"},combatBehavior:{priorities:["守護同伴","沈重打擊","自我修復"],typicalActions:["橫掃","防禦姿態","盾牌猛擊"]}},{id:"preset_pipi",name:"皮皮 (Pipi)",race:"半身人",class:"混沌野法師",gender:"女性",alignment:"混沌中立",background:"惡作劇大師",mbti:"ENFP_CHAOTIC",level:1,baseStats:{str:8,dex:16,con:12,int:10,wis:8,cha:16},skills:["欺瞞","巧手","隱匿","特技"],feats:["升環暴走（機率施展高一環法術）","混沌野魔法（50% 奇異變形／放逐／召喚）","天真無邪的笑臉"],spells:["火球術","魔法飛彈","戲法：雜耍"],slots:{1:2},personality:"充滿活力、淘氣且完全不可預測。她將魔法視為巨大的驚喜包，造成混亂後露出無辜笑容是她的殺手鐧。雖然偶爾會惹禍，但她的本性純真善良。",monologue:"哇！你看那個冒煙的地方，那是我剛剛「不小心」點著的唷！不過沒關係吧？嘻嘻！每次施法都是驚喜呀！",firstImpression:"馬尾歪斜、穿著色彩斑斕補丁大長袍的半身人女孩，大綠眼睛閃爍著淘氣的光芒。",habits:["說話時不停跳動","沒事就亂揮法術短杖","造成混亂後會歪頭吐舌頭賣萌"],prejudices:{towardsLifestyles:{沈悶的教條主義:"那樣活著太無聊了，世界需要一點「大驚喜」！"}},preferences:{likes:["成功的惡作劇","甜美的點心","亮晶晶的能量球","交到能一起玩的朋友"],dislikes:["被強迫做家務","被禁止練習「有趣」的魔法","欺負小朋友的人","餓着肚子"]},appearance:"雖然穿著傳統的法師袍，但上面打滿了色彩斑斕的補丁，而且寬大得有些過頭。她扎著一個歪歪扭扭的馬尾，臉上總是帶著沾了一點灰塵的開朗笑容。最引人注目的是她那雙閃爍著淘氣光芒的大綠眼睛。",inventory:{equipment:["有些腐爛的短杖","打補丁的法師袍","裝滿惡作劇小物的腰包"],gold:15,consumables:["甜甜圈 x3","彩色煙霧彈 x2","偽裝成治療藥水的墨水"],magicItems:["反向傳送戒指 (隨機傳送)"]},avatar: "/prototype-assets/lego-token-fixes-v1/109-pipi.png",bio:"皮皮出生在一個安靜的半身人村莊，但她天生就不是一個能安靜下來的孩子。她是「混沌理論學會」的榮譽會員（自封），誤食混亂種子後，她的魔法就變得完全不可預測。",organization:"混沌理論學會 (Chaos Theory Society) - 榮譽會員",emotionalKeys:{joy:["惡作劇成功","吃到美食","看到亮晶晶的東西","交到新朋友"],anger:["被強迫打掃","被禁止練習魔法","有人欺負小朋友","肚子餓"],weakness:"對於任何可愛且不能被惡作劇的東西毫無體抗力"},combatWeakness:{triggers:[{type:"EVENT",target:"沒人陪她玩",description:"被忽視引發的寂寞感與情緒失控"},{type:"ENEMY_TYPE",target:"極度嚴肅的構裝體",description:"對無法溝通且毫無幽默感的冷酷存在的恐懼"}],reaction:"引發「寂寞大爆炸」，所有法術位隨機釋放，造成大範圍混亂傷害，然後坐在地上大哭。"},combatBehavior:{priorities:["混沌輸出","隨機干擾","賣萌保命"],typicalActions:["皮皮亂丟火球","反向治療(微炸裂)","天真笑臉"]}},{id:"preset_conan",name:"柯南 (Conan)",race:"人類",class:"野蠻人",gender:"Male",alignment:"混沌中立",background:"無盡戰爭",mbti:"ISTP",level:1,baseStats:{str:18,dex:14,con:16,int:8,wis:10,cha:10},skills:["運動","威嚇","生存","察覺"],feats:["巨武器大師","堅韌體魄（每輪受擊吸收 2 點傷害）","野蠻反擊（受擊 50% 反擊）"],personality:"來自北方的野蠻戰士，對文明世界的一切只用三個標準分類：能不能吃、能不能砍、能不能喝。聽不懂的長篇大論一律當成挑釁，看不懂的魔法一律先砍再問；但他守信到可笑的地步，隨口答應的事也會拚了命做到。",monologue:"這東西能吃嗎？……不能？那能砍嗎？……也不能？那你們文明人留著它幹嘛。",firstImpression:"肌肉虯結的巨漢，赤裸上身，僅穿著獸皮戰裙。背負著一把巨大的雙手巨劍，渾身散發著令人戰慄的殺氣與野性。",habits:["把所有東西先分成能吃、能砍、能喝","答應一件事就在劍柄綁一個繩結","聽不懂就點頭，然後去砍"],prejudices:{towardsClasses:{法師:"躲在後面唸咒的懦夫，一拳就能解決的事為什麼要那麼麻煩？"},towardsLifestyles:{文明貴族:"軟弱、虛偽，連自己的劍都拿不動的廢物。"}},preferences:{likes:["戰鬥","烈酒","美女","掠奪"],dislikes:["魔法","複雜的計畫","軟弱","文明的繁文縟節"]},appearance:"像一座移動的山峰，渾身肌肉如鋼鐵般堅硬。深邃的眼神中燃燒著野性的火焰，黑色的長髮隨風狂舞。他身上布滿了戰鬥留下的傷疤，每一個都是榮耀的勳章。",inventory:{equipment:["雙手巨劍","獸皮戰裙","投擲手斧"],gold:10,consumables:["烈酒 x3","大塊燻肉 x5"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/86-conan.png",bio:"柯南出生在極北的蠻荒之地，自幼便在殘酷的環境中與野獸搏鬥。作為「鐵血氏族」的戰爭酋長，他離開故鄉遊歷世界，既是戰士、僱傭兵，也是小偷與海盜。",organization:"鐵血氏族 (Iron Blood Clan) - 戰爭酋長",emotionalKeys:{joy:["擊敗強敵","暢飲美酒","征服"],anger:["被欺騙","魔法的詭計","自由被束縛"],weakness:"被人真心信任、託付性命的時候，他不知道該怎麼回應，只會更拚命"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"控制心智的巫師",description:"對無法用肌肉解決的敵人感到極度暴躁"}],reaction:"發出狂暴的怒吼，無視防禦瘋狂衝向施法者，如果無法觸及則會瘋狂破壞周圍物體。"},combatBehavior:{priorities:["斬首","衝鋒","破壞掩體"],typicalActions:["魯莽攻擊","順勢斬","怒火中燒"]}},{id:"preset_barghrim",name:"巴格林·鐵砧 (Barghrim)",race:"矮人",class:"殺手 (Slayer - 賞金獵人)",gender:"Male",alignment:"守序中立",background:"賞金獵人",mbti:"ISTJ",level:1,baseStats:{str:16,dex:15,con:16,int:12,wis:12,cha:5},skills:["察覺","生存","唬騙","威嚇"],feats:["研判目標 (Studied Target)","伏擊偷襲 (Sneak Attack)","卑劣戰技 (Dirty Trick)","雙武器連枷格鬥"],spells:[],personality:"把每個敵人都當成「移動懸賞金」估價的硬派矮人賞金獵人。盯上目標後會先冷冷算出對方的死穴，再潑沙、絆鎖、一連枷砸下去，打法毫不講究也毫不愧疚。最愛嫌棄逃犯脖子太細，配不上他的精鋼鐵鐐。",playstyle:"把每個敵人都當成「移動懸賞金」估價的硬派矮人殺手。精通PF1e殺手核心「研判目標」（Studied Target），以冰冷目光計算敵方死穴；配合卑劣戰技（Dirty Trick）潑沙致盲、鎖鏈絆摔破防，並以重連枷砸碎頑敵。最愛嫌棄逃犯脖子太細配不上精鋼鐵鐐。",monologue:"竊盜、拒捕加上妨礙公務——研判完畢，這顆腦袋值三十金幣。別亂動，我這條矮人連枷上的符文帶刺，反抗只會多斷兩根骨頭。",firstImpression:"兩側剃青刺青、左眼畫著冰藍戰紋、右眼帶刀疤的矮人戰士，雙股銅色編辮長鬚垂胸，身披黑毛皮護肩與雕花重鋼甲，手持流星重連枷與尖刺圓盾冷視全場。",habits:["擦拭重連枷鐵鍊與符文凹槽","檢查尖刺圓盾上的浮雕獸面","用沉重的金屬戰靴敲打地面震懾目標"],prejudices:{towardsAlignments:{混亂邪惡:"只知道破壞和逃竄的鼠輩，遲早被我的連枷套住。"}},preferences:{likes:["研判目標高額賞金","精釀黑麥酒","堅固的重型圓盾","乾脆俐落的生擒"],dislikes:["偽證","暴政欺壓","逃犯的狡辯","華而不實的花架子"]},appearance:"剃青刺青頭皮、左眼塗有深藍戰印、右眼橫貫戰疤。濃密銅棕長鬚編成兩道金屬箍長辮，身穿黑狼毛皮斗篷與雕花單肩重甲，腰繫圓盤獸面扣帶，右手握持矮人符文重連枷，左手持握精鋼尖刺重型圓盾。",inventory:{equipment:["矮人符文重連枷 (Flail)","鐵砧防衛圓盾","精鋼鎖甲","矮人手銬","探險家背包"],gold:25,consumables:["口糧 (1日) x5","火把 x2","治療藥水 x3"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/129-barghrim.png",bio:"五王山脈部族法庭前行刑衛士，破門而出成為獨立賞金殺手。他結合了遊俠的追獵專注與盜賊的偷襲致命，以殺手研判與卑劣戰技成為地下世界所有通緝犯的噩夢。",organization:"自由賞金獵人工會 - 執法殺手",emotionalKeys:{joy:["伸張正義兌現賞金","成功生擒狡詐重犯","暢飲黑麥酒"],anger:["誣陷無辜平民","濫用私刑虐殺","背信棄義違約"],weakness:"對於弱勢平民遭到權貴欺壓無法袖手旁觀"},combatWeakness:{triggers:[{type:"SOCIAL",target:"腐敗官僚/偽證",description:"容易在審訊時因憤怒而下手過重"}],reaction:"優先鎖定敵方首腦施展研判目標與卑劣戰技猛攻。"},combatBehavior:{priorities:["研判目標 (Studied Target)","卑劣戰技 (絆倒/致盲)","連枷偷襲破防"],typicalActions:["研判目標","卑劣戰技·碎膝","重連枷猛擊"],style:"TACTICAL"}},{id:"preset_liefeng",name:"烈風 (Lie Feng)",race:"人類 (天夏裔)",class:"武士 (拳劍大師 / Brawler Blademaster)",gender:"Male",alignment:"絕對中立",background:"流浪傭兵",mbti:"ISTP",level:1,baseStats:{str:18,dex:16,con:14,int:10,wis:12,cha:10},skills:["察覺","威嚇","特技","運動"],feats:["一拳一刀雙持打擊 (Blade & Fist Flurry)","鶴型拳 (Crane Style)","鶴翼招架 (Crane Wing)","鶴反藉機 (Crane Riposte)"],spells:[],personality:"傲氣十足的天夏浪人。一手握弧刃名刀「狼牙」，一手戴精鋼鉚釘拳甲，身法如鶴，總在敵人攻擊落空的瞬間反擊。話不多但字字如刀，被追捕也從不辯解，彷彿有句話寧可帶進墳墓也不能說；只有面對真正的強者或受傷的同伴，才會默默遞出酒囊。",playstyle:"傲氣十足的天夏浪人拳劍大師。精通PF1e標誌性的「鶴型拳」（Crane Style）身法，游刃有餘地獲得AC防禦加成與鶴翼招架；一手握弧刃名刀「狼牙」，一手佩戴精鋼鉚釘拳甲，能施展狂暴的「一刀一拳雙持打擊」（Brawler Flurry），並在敵人攻擊落空時順勢引發疾風般的「鶴反藉機反擊」。話不多但字字如刀，厭惡官府規矩，唯獨在面對真正的強者或受傷同伴時才會遞出酒囊。",monologue:"拔刀只是開始，我的拳頭比刀更快。想攻破我的鶴型守勢？你的動作太慢了，破綻百出——鶴反！",firstImpression:"狂野黑髮束成高馬尾、臉頰帶有凌厲戰傷的英武浪人。敞胸道服外披赤紅戰袍，一手按在名刀刀柄上，一手握緊精鋼拳甲，周身散發著鶴形游刃的宗師氣度。",habits:["戰前活動戴著拳甲的手腕，骨節一陣脆響","以指尖輕撫狼牙的刀脊感受重心","喝酒只喝半壺，剩下半壺倒在地上"],prejudices:{towardsClasses:{守約騎士:"被笨重盔甲綁住手腳的鐵罐頭，根本不懂身法與游刃的真意。",錦衣衛:"朝廷的鷹犬。穿那身飛魚服的人，他一個都不信。"}},preferences:{likes:["一刀一拳雙持打擊的打擊感","鶴型拳完美格擋閃避","烈酒與烤獸肉","與強敵正面肉搏"],dislikes:["繁文縟節","偷放冷箭的懦夫","虛偽的官僚作派"]},appearance:"狂野黑色刺蝟長馬尾、面帶十字戰傷與胡茬的天夏浪人。身穿米白敞胸武術道服，外罩酒紅撕邊無袖戰袍，腰繫黑布綁帶，右手持握弧刃鋼鐵名刀「狼牙」，左手裝備精鋼鉚釘拳甲（Cestus），目光如鷹隼般銳利。",inventory:{equipment:["荒野名刀「狼牙」(長劍)","精鋼鉚釘拳甲 (Cestus)","浪人輕甲 (+4)","探險家背包"],gold:25,consumables:["口糧 (1日) x4","天夏烈酒 x2","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/130-liefeng.png",bio:"天夏邊軍裡最年輕的士兵。他所在的軍隊在一場陰謀中全軍覆沒，只有他活了下來——不是因為逃，而是因為必須有人把軍隊被出賣的秘密帶出來。從此他被當成叛逃者，脫下軍服成了浪人，在追兵與江湖之間獨行。",organization:"前天夏邊軍（全軍覆沒）／江湖浪人",emotionalKeys:{joy:["遇到真正的強者","有人敢跟他對飲","被看穿招式還敢接"],anger:["恃強凌弱欺凌婦孺","背後暗箭傷人","侮辱武道精神"],weakness:"被人叫叛徒，或有人提起當年那支軍隊"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"遠程放風箏部隊",description:"對不肯正面交手的消耗戰感到不耐"}],reaction:"運轉鶴型身法疾步逼近，以名刀突刺配合拳甲重擊強行破入內圍。"},combatBehavior:{priorities:["鶴型拳身法閃避 (+AC)","一拳一刀雙持打擊","鶴反藉機破防反擊"],typicalActions:["鶴型拳游刃","名刀斬擊","精鋼拳擊連擊"],style:"AGGRESSIVE"}},{id:"preset_perrin",name:"佩林·金鱗 (Perrin)",race:"半身人",class:"聖騎士 (神聖盾衛/人民議會)",gender:"Female",alignment:"守序善良",background:"古寺孤兒",mbti:"ENFJ",level:1,baseStats:{str:14,dex:14,con:14,int:10,wis:10,cha:16},skills:["宗教","交涉","察覺","特技"],feats:["塔盾擅長","盾牌猛擊","盾牌專攻","保鑣 (Bodyguard)"],spells:["聖療 (Lay on Hands)","神恩術","守護之誓"],personality:"爽朗溫暖的半身人少女聖武士，扛著比自己還高的紫晶塔盾，永遠擋在所有人最前面。她最在意的是身高：誰說她矮，她就把塔盾頓進地裡、站到盾上跟對方說話；被誇一句「好高」，她可以開心一整天。",monologue:"別看我個子嬌小，只要我的紫晶塔盾插在陣地前，沒有任何敵人的兵刃能穿透我的壁壘傷害我的同伴！",firstImpression:"留著薑黃色波浪長辮、帶著溫暖雀斑笑容的半身人少女聖武士，嬌小的身軀穩穩扛著幾乎比自己還巨大的紫底銀紋合金守護塔盾。",habits:["習慣將塔盾重重頓入地面構築掩護陣地","隨時注意隊友身邊的受擊動向準備舉盾護衛","戰後用聖療術溫柔為同伴撫平傷痛"],prejudices:{towardsAlignments:{守序邪惡:"用權力欺壓弱小的人，最不配談什麼秩序。"}},preferences:{likes:["為隊友承受攻擊","塔盾全掩護","烤蜂蜜堅果餅","閃亮的紫色龍紋斗篷"],dislikes:["看輕半身人","欺凌弱小","背後偷襲同伴","放棄希望"]},appearance:"薑黃色波浪長編髮、溫暖雀斑與尖耳的半身人少女聖武士。身穿精製鋼鐵胸甲與鎖子甲，身披白紫雙色銀龍紋斗篷，胸前佩戴綠寶石胸針，手持比自己身軀還高大的紫底銀紋合金守護塔盾。",inventory:{equipment:["精製短劍 (Shortsword)","晨曦龍誓·紫晶守護塔盾 (Tower Shield)","鋼鐵胸甲與鎖子甲","探險家背包"],gold:15,consumables:["口糧 (1日) x5","治療藥水 x4"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/131-perrin.png",bio:"被遺棄在高山古寺門前的半身人少女，受到守護誓言感召拔起紫晶銀龍塔盾。雖然身形嬌小，卻憑藉鋼鐵般的意志與神聖信仰，成為冒險隊伍中無堅不摧的移動神聖堡壘。",organization:"人民議會之誓 (Oath of the People's Council)",emotionalKeys:{joy:["擋在大家前面","全員平安歸來","有人說她很高"],anger:["同伴重傷倒地","惡龍眷族暴行"],weakness:"過度優先保護隊友而忽略自身安危"},combatWeakness:{triggers:[{type:"EVENT",target:"隊友處於低血量",description:"無條件衝向隊友身旁展開塔盾全掩護與保鑣護衛"}],reaction:"以紫晶塔盾猛擊撞退威脅目標，並竭盡全力展開塔盾護住身旁的隊友。"},combatBehavior:{priorities:["塔盾全掩護掩護同伴(+4 AC)","破邪盾牌猛擊","聖療救治危急隊友"],typicalActions:["紫晶塔盾重碾","保鑣護衛防禦(+AC)","聖療術 (Lay on Hands)"],style:"DEFENSIVE"}},{id:"preset_vaelra",hidden:!0,name:"希里亞·凡勒斯 (Ciria)",race:"人類",class:"魔劍士 (心刃者)",gender:"Female",alignment:"混亂中立",background:"異能學徒 / 念刃傳承者",mbti:"ISTP",level:1,baseStats:{str:10,dex:18,con:14,int:16,wis:12,cha:10},skills:["奧秘","特技","察覺","專注","位面"],feats:["武器嫻熟","心刃打擊 (Mindblade Spellstrike)","異能池擴充 (Psychic Pool)","快速塑刃 (Rapid Weapon Shift)"],spells:["念刃顯化 (Manifest Mindblade)","電爪 (Shocking Grasp)","心靈震爆 (Mind Thrust)","念動護盾 (Shield)"],slots:{1:3},personality:"白銀短髮、佩戴狼徽胸章的心刃魔劍士。從不帶實體武器，需要時才在掌心凝出紫色晶芒念刃，看敵人的護甲換成巨刃、雙鋒或飛芒。沉著冷靜、崇尚極致實用，覺得多餘的裝飾和多餘的話一樣浪費。",playstyle:"白銀短髮、佩戴狼徽胸章、雙眸泛著淡藍異能冷光的心刃魔劍士。她不需要攜帶沉重繁瑣的實體武器，而是能以強大的精神專注與異能點，於掌心凝聚出各式各樣的紫色晶芒實體念刃。性格沉著冷靜、崇尚極致實用主義，能依照敵人護甲與站位隨時重構巨刃、雙鋒或貫刺飛芒，並將精神異能法術直接注入刀鋒斬裂敵陣。",monologue:"武器？那種沉重又容易鈍掉的生鐵早該扔了。只要我的思維還沒停下，單手劍、破甲巨刃、念動飛刺……全在我的意念之中。",firstImpression:"白銀波浪微卷短髮、眼神冷冽銳利的人類女魔劍士，身著紅黑相間的輕裝戰服與狼首徽章，右手虛握便能憑空凝聚出一柄紫電繚繞的透明晶芒念刃，左手周圍旋繞著流動的念力漩渦。",habits:["思考時指尖會無意識地凝聚出小型的紫晶光刃並在掌中翻轉","面對敵陣時習慣迅速掃描破綻，依目標體型瞬間重塑念刃形態","戰鬥前收斂心神，讓瞳孔泛起清澈的淡青色異能冷光"],prejudices:{towardsClasses:{戰士:"背著三把生鐵武器走路吵得要命，不如花點時間鍛鍊自己的精神意志。",傳統法師:"唸咒慢吞吞還需要手勢與材料包，我的念刃在你想起咒文的第一個音節時就已經架在你脖子上了。"}},preferences:{likes:["純淨無暇的心靈異能","隨心所欲的千刃形態塑形","精準破甲的一擊制勝","安靜冥想的精神維度空間"],dislikes:["沉重生鏽的笨重武器","死板僵化的教條戰法","打擾她凝聚心靈專注的人"]},appearance:"白銀微卷短髮、雙眸閃爍淡藍靈能光輝，左臉帶著一抹自信微揚的表情與俏麗雀斑。身穿暗紅與黑底金紋戰術輕甲、短腰露腹剪裁，配戴銀狼徽章與圓環皮帶。右手握持雷霆紫電繚繞的心靈念刃，左手虛掌環繞著流動的精神力漩渦。",inventory:{equipment:["靈能心刃「裂魄紫曜」","狼徽暗影輕甲","異能聚焦符文戒指","念力導能護腕","探險家背包"],gold:30,consumables:["靈能冥想藥劑 x2","治療藥水 x3","煙霧彈 x1"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/132-vaelra.png",bio:"傳承古老心刃流派的稀有異能魔劍士。她不拘泥於傳統奧術的繁文縟節與施法材料，而是將深層精神力轉化為實體結晶般的念刃。在狹窄暗道中能凝聚雙持紫晶快刃以極敏連擊撕裂對手，面對重甲巨獸則可瞬間耗費異能點具現為破壞力驚人的念動巨刃。",organization:"星穹心刃學派・獨立漫遊者",emotionalKeys:{joy:["一句話講完的計畫","不用解釋就懂的人","偷偷被誇念刃很美"],anger:["被笑沒帶武器","專注被打斷","多餘的客套話"],weakness:"被人看穿她其實很在意同伴，只是不習慣說出口"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"強烈心靈干擾或反魔力力場",description:"在精神干擾環境下需要更多專注力維持念刃凝聚"}],reaction:"迅速收縮精神力至單刃形態，以高敏身法與精準刺擊游擊作戰。"},combatBehavior:{priorities:["依敵人弱點以異能點召喚最克制形態的念刃","以心刃法術打擊貫穿物理與法術抗性","運用靈動身法繞襲側翼與後排"],typicalActions:["念刃顯化·靈動紫晶疾刃","念動破陣巨刃力劈","心刃電爪·紫電裂魄"],style:"AGGRESSIVE"}},{id:"preset_blade",name:"佈雷德 (Blade)",race:"人類",class:"精修盜賊 (暗影曲刃)",gender:"Male",alignment:"混亂中立",background:"都市暗殺者",mbti:"INTJ",level:1,baseStats:{str:13,dex:18,con:14,int:12,wis:12,cha:8},skills:["隱匿","解除裝置","使用魔法裝置","特技","察覺"],feats:["異種武器熟練 (精靈曲刃)","武器嫻熟","陷阱尋找者","天佑者"],spells:[],personality:"對「無聲」與「不留痕跡」有強迫症的暗殺職人。極度嫌棄重甲隊友走路像大象、法師吟唱太吵，出完手甚至會強迫症發作般順手把倒下敵人歪掉的衣領拉整齊，再冷冷補一句「太吵了」。",monologue:"……腳步聲重得像頭牛。要是我待會沒能在三秒內抹掉他們的喉嚨，全算在你的鐵靴頭上。",firstImpression:"深灰深邃兜帽下隱現蓄鬍冷峻面容的暗殺者，身披灰黑風衣斗篷與單肩雕花鋼甲，右手橫握弧刃曲刀，眼神銳利如鷹。",habits:["把兜帽拉低遮住半張臉","檢視地形陰影與魔杖充能","用刀柄試探地面機關"],prejudices:{towardsLifestyles:{貪婪貴族:"防備再森嚴的密室，在我眼裡也只是開著的門。"}},preferences:{likes:["安靜的黑夜","精靈曲刃的弧度","高效無聲的暗殺","神恩術魔杖"],dislikes:["明亮的探照燈","拖泥帶水的行動","嘈雜的酒館"]},appearance:"深灰色兜帽、蓄鬍冷峻面容與深邃眼神。身穿交錯皮帶皮甲與深灰斗篷，右肩飾有雕花重鋼護甲，腰繫圓環金屬腰帶，單手握持弧刃精鋼曲刃。",inventory:{equipment:["金色精靈曲刃 (Elven Curve Blade)","黑色緊身輕甲","精製盜賊工具","探險家背包"],gold:30,consumables:["隱身藥水 x1","治療藥水 x3"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/133-blade.png",bio:"活躍於都市暗巷與貴族密室之間的暗影刺客，捨棄傳統短匕首，專精將全身敏捷注入一把罕見金色精靈曲刃的順勢雙目標斬殺。",organization:"無名暗影行會",emotionalKeys:{joy:["隊友走路終於沒聲音","不用開口的默契","乾淨無痕的現場"],anger:["重甲隊友走路像大象","法師吟唱太大聲","計畫外的警報"],weakness:"獨來獨往，較難在第一時間信任陌生隊友"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"毫無陰影的強光開闊地",description:"無法利用暗影掩護時會急著尋找擊殺切入點"}],reaction:"優先衝鋒搶奪措手不及偷襲機會，並準備魔杖強化自身。"},combatBehavior:{priorities:["斥候衝鋒偷襲","順勢斬收割","解除陷阱"],typicalActions:["精靈曲刃重斬","陰影潛行","髒招致盲"],style:"TACTICAL"}},{id:"preset_freya",name:"芙蕾雅·霜鬃 (Freya)",race:"人類 (北境荒野民)",class:"德魯伊 (自然之牙)",gender:"Female",alignment:"絕對中立",background:"極北氏族獵手",mbti:"ENTP",level:1,baseStats:{str:17,dex:14,con:14,int:10,wis:14,cha:8},skills:["生存","知識 (自然)","察覺","馴養動物","騎術"],feats:["軍用武器熟練 (長矛)","戰鬥反射","獅鷲騎術","研究目標"],spells:["魔牙術","糾纏術","神莓術"],slots:{1:2},personality:"極北荒原來的狂野女獵手，奉行弱肉強食，覺得南方的一切都太熱、太吵、太客氣：別人寒暄三句，她只回「所以要打誰？」。她與無翅獅鷲「雷翼」心靈相通，一人一獸總是同時撲向同一個獵物。",monologue:"極北的風雪不會為弱者停留。我手中的破陣長矛與疾馳突擊的獅鷲，就是風暴對入侵者最凌厲的審判。",firstImpression:"白銀微捲野性編髮、碧綠眼眸繪有銳利血紅眼部戰紋的北境女鬥士，身披厚實白狼毛皮斗篷與單肩尖刺鋼甲，單手持握繫有鮮紅戰旗的鋸齒鋼鐵長矛，身邊伴隨著一頭身披皮甲馬鞍的極北無翅獅鷲獸。",habits:["用拇指滑過長矛的倒鉤刃尖","長矛點地感知雪原震動","吹響骨哨指揮獅鷲突擊撲殺"],prejudices:{towardsLifestyles:{森林盜獵者:"把自然當提款機的渣滓，只配成為獅鷲利爪下的碎骨。"}},preferences:{likes:["極北風雪","破陣長矛穿刺","與雷翼並肩奔襲","赤紅戰旗在風中獵獵作響"],dislikes:["虛偽的都市話術","潮濕悶熱的沼澤","虐待或獵殺幼獸者"]},appearance:"白銀微捲野性編髮、碧綠眼眸繪有鮮明血紅眼角戰紋與精靈野性輪廓。身披厚實白狼毛皮斗篷、單肩尖刺重鋼護甲與野性護胸，手握縛有赤紅戰旗布條的鋸齒破陣長矛。",inventory:{equipment:["北境極地破陣長矛 (Spear)","白狼毛皮斗篷與單肩尖刺鋼甲","德魯伊冬青木聖徽","探險家背包"],gold:15,consumables:["神莓 x4","口糧 (1日) x4","治療藥水 x3"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/134-freya.png",bio:"來自極北荒原的自然之牙德魯伊，捨棄野性變身換取殺手般的獵殺精準度，收留並撫養了性情凶悍卻對她無比忠誠的極北獅鷲獸「雷翼」。",organization:"極北風暴與獅鷲之誓",companion:{name:"極北獅鷲獸「雷翼」 (Stormwing)",type:"無翅獅鷲獸 (陸行猛獸)",ac:15,attacks:[{name:"利爪撕裂",hitBonus:5,damage:"1d6+3"},{name:"金喙猛啄",hitBonus:5,damage:"1d8+3"}],abilities:["疾馳撲擊協同","厚甲衝撞","雪原追蹤"],tactics:"天生沒有雙翼、不會飛行，但四肢極為粗壯敏捷，擅長在地面高速奔襲並撲倒敵方後排與施法者，與手持長矛的芙蕾雅形成前後夾擊。",personality:"高傲威嚴的極北無翅獅鷲，只對芙蕾雅溫順依偎，戰鬥時利爪如鋼、兇猛致命。",avatar: "/prototype-assets/lego-token-fixes-v1/137-stormwing-griffon.png"},emotionalKeys:{joy:["雷翼對你低頭","在雪地裡賽跑","直來直往的人"],anger:["雷翼受傷","濫砍極北荒野","城裡人的客套話"],weakness:"極度保護她的獅鷲獸夥伴"},combatWeakness:{triggers:[{type:"ENEMY_TYPE",target:"針對獅鷲的網捕與陷阱/弓箭手",description:"會不顧一切優先斬殺威脅獅鷲獸的敵人"}],reaction:"對威脅者發動研究目標並指揮雷翼從側翼撲倒對方，再以長矛衝鋒穿刺。"},combatBehavior:{priorities:["研究目標","魔牙術強化獅鷲利爪","長矛控距空地夾擊"],typicalActions:["研究目標","長矛破陣突刺","魔牙術"],style:"AGGRESSIVE"}},{id:"preset_marcus",name:"馬庫斯 (Marcus)",race:"半獸人",class:"審判者 (掠奪者/神聖殺手)",gender:"Male",alignment:"混亂善良",background:"狼群養大的孤兒",mbti:"ISTJ",level:1,baseStats:{str:17,dex:14,con:14,int:13,wis:14,cha:7},skills:["威嚇","察覺","生存","知識 (宗教)","馴養動物"],feats:["寓守於攻","幸運紋身","天佑者","狡黠先攻"],spells:["神恩術","祝福術","治癒輕傷"],slots:{1:2},personality:"狼群養大的狂熱半獸人審判者，習慣用「血味、牙齒與頭骨」來理解世界。對貴族客套話完全沒耐心，一聞到謊言或懦弱的味道就會低吼磨牙；但對戰狼「掠影」與一起流過血的夥伴極度護短，誰敢動隊友就先吃他一記重斧。",monologue:"別講那些廢話了，聞起來像腐肉一樣虛偽。掠影，盯緊左邊那個——等他們一動手，我們就把他的骨頭拆下來！",firstImpression:"綠皮獠牙、黑色短髮束有血紅戰鬃的半獸人審判者，眼神金黃銳利，身披黑毛皮滾邊重戰甲，身旁總有一頭眼神兇狠的黑色戰狼寸步不離。",habits:["在戰前低聲與戰狼掠影呼應","用雙刃巨斧重重頓地挑釁","隨時警戒森林風吹草動"],prejudices:{towardsClasses:{牧師:"只會躲在神殿裡唸經的教士，懂什麼叫戰神的試煉？"}},preferences:{likes:["人狼夾擊狩獵","鮮血與榮耀","堅實的重甲","忠誠的戰狼"],dislikes:["虛偽的宗教教條","虐待狼群的獵人","背後偷襲"]},appearance:"綠皮半獸人，眼神銳利透著金黃凶光，黑色短髮束有飛揚血紅戰鬃，身穿厚重黑毛皮護肩、暗色皮革護腕與破舊黑紅戰鬥披風，佩戴銀骷髏胸飾，雙手握持寒鐵重鋼雙刃巨斧。",inventory:{equipment:["雙刃重鋼巨斧","黑毛皮胸甲與重肩甲","黑紅戰鬥披風","探險家背包"],gold:15,consumables:["口糧 (1日) x5","治療藥水 x3"],magicItems:[]},avatar: "/prototype-assets/lego-token-fixes-v1/135-marcus.png",bio:"烏斯塔拉夫寒冷森林中被狼群養大的半獸人孤兒，與同齡戰狼「掠影」共享生死羈絆，奉祀戰神古拉姆並以雙變體神聖殺手之姿狩獵邪惡。",organization:"古拉姆荒野處刑者",companion:{name:"戰狼「掠影」 (Luying)",type:"戰狼",ac:16,attacks:[{name:"兇猛撕咬 (附帶免費絆倒)",hitBonus:3,damage:"1d6+2"}],abilities:["50呎疾速突襲","撕咬絆倒 (Trip)","猛力攻擊"],tactics:"以 50 呎高速切入咬腿絆倒敵人，與馬庫斯貼臉形成群體夾擊並誘發連環藉機攻擊。",personality:"疾如閃電、兇猛忠誠的黑色戰狼，與馬庫斯心靈相通。",avatar: "/prototype-assets/lego-token-fixes-v1/138-marcus-luying.png"},emotionalKeys:{joy:["聞到誠實的味道","掠影對你搖尾巴","一起流過血的人"],anger:["貴族的客套話","謊言的味道","有人傷害掠影"],weakness:"對戰狼掠影的安全有極強執念"},combatWeakness:{triggers:[{type:"EVENT",target:"戰狼被控場或重傷",description:"立刻拋下防禦衝去解救掠影"}],reaction:"啟動研究目標與神聖法術，雙斧狂劈距離掠影最近的威脅。"},combatBehavior:{priorities:["狡黠搶先手","人狼夾擊絆倒","巨斧猛力處刑"],typicalActions:["研究目標","雙刃巨斧猛劈","掠影撕咬絆倒"],style:"AGGRESSIVE"}},{id:"preset_shenlian",name:"沈煉 (Shen Lian)",race:"人類 (天夏裔)",class:"錦衣衛 (調查員)",gender:"Male",alignment:"守序中立",background:"北鎮撫司巡官",mbti:"INTJ",level:1,ac:16,baseStats:{str:16,dex:12,con:12,int:16,wis:14,cha:7},skills:["知識 (全部)","察覺","交涉","唬騙","法術辨識"],feats:["額外靈感","祖傳兵刃 (斬矛)","奧術訓練 (法師)","哲學系學生","天佑者"],spells:["神恩術","護盾術","變巨術"],slots:{1:2},personality:"冷面神捕，天夏北鎮撫司的持刃巡官，過目不忘、執法絕不姑息。他此行只有一個目標：緝拿當年那支全軍覆沒的軍隊裡唯一活下來的人——烈風，用他洗刷父親與沈家的恥辱。他只信證據，卻從沒想過，證據也可能是有人刻意留下的。",monologue:"北鎮撫司的規矩，在十步刀鋒之下。烈風，這一次你跑不掉了……等眼前這件事了結，我再跟你算沈家的帳。",firstImpression:"頭戴雕花烏金明式戰盔、神情冷峻的天夏神捕，身穿盤龍鱗紋鎧甲與絳紅披風斗篷，腰佩「令」字金牌與繡春刀，氣度沉穩威嚴。",habits:["在案發現場檢視蛛絲馬跡","每晚在卷宗上替烈風補一條罪狀","單手按著腰間繡春刀靜立"],prejudices:{towardsAlignments:{混亂邪惡:"藐視律法與人命的宵小，直接依北鎮撫司鐵律就地正法。"}},preferences:{likes:["水落石出的真相","十呎長矛的距離感","嚴明紀律","好茶"],dislikes:["貪官污吏","偽造證據","無理取鬧的狂徒"]},appearance:"頭戴雕花烏金明式冠盔，身穿銀灰盤龍紋鎖子甲、肩覆祥雲雕花重護肩與絳紅戰袍斗篷。腰繫赤金如意紋帶並懸佩北鎮撫司「令」字金腰牌，單手握持弧刃精鋼繡春刀。",inventory:{equipment:["霜夜 (十呎長柄斬矛 Fauchard)","繡春刀","盤龍鎖子甲","北鎮撫司腰牌與卷宗"],gold:25,consumables:["治療藥水 x3","解毒劑 x1"],magicItems:["護盾術魔杖 (自備充能)"]},avatar: "/prototype-assets/lego-token-fixes-v1/136-shenlian.png",bio:"出身天夏北鎮撫司世家。父親沈將軍與烈風同屬一支軍隊，那支軍隊在一場陰謀中全軍覆沒，只有烈風活了下來；沈家從此背上洗不掉的污名。沈煉穿上飛魚服、手執十呎斬矛「霜夜」，一路追緝烈風，相信只要押回這唯一的活口，就能還父親一個清白。",organization:"北鎮撫司 (錦衣衛)",emotionalKeys:{joy:["證據確鑿","有人誠實作證","嚴懲貪腐元兇"],anger:["官官相護","無辜百姓遭殃","證據被惡意銷毀"],weakness:"有人提起他的父親"},combatWeakness:{triggers:[{type:"ENVIRONMENT",target:"極度狹窄的貼身巷戰",description:"十呎長矛受限時會迅速抽換背後繡春刀應戰"}],reaction:"優先以神聖靈感檢定弱點、開啟魔杖防護並保持十呎長柄矛壓制距離。"},combatBehavior:{priorities:["靈感洞察弱點","十呎長柄觸及壓制","策士精準暴擊"],typicalActions:["霜夜長矛突刺","神聖靈感檢定","帝國審判"],style:"TACTICAL"}},
+{
+  id: "preset_fire_kineticist",
+  name: "燼司·赫斯 (Cinder)",
+  race: "火元素裔",
+  class: "操念使 (熄燼消防官)",
+  gender: "Male",
+  alignment: "混亂善良",
+  background: "消防救難員 / 冤案逃犯",
+  mbti: "ISTP",
+  level: 1,
+  ac: 14,
+  baseStats: { str: 12, dex: 16, con: 15, int: 10, wis: 12, cha: 10 },
+  skills: ["運動", "察覺", "生存", "威嚇"],
+  feats: ["元素抗性 (火焰)", "控火熄燼", "遠程火念彈", "危機救援"],
+  spells: ["火焰箭", "控制火焰", "燃燒之手"],
+  slots: { 1: 2 },
+  personality: "沈默寡言卻總在最危險時衝進火場的熄燼消防官。他把毀滅性的火元素能量緊鎖在厚手套與掌心之中，只用來引導、壓制或精準遠攻。曾被誣陷為縱火犯的他，如今一邊救人一邊追查那場讓自己背負黑鍋的連環大火。",
+  monologue: "火不該用來奪命——它只聽得出手之人的良心。只要我在，這場火就燒不進無辜者的門。",
+  firstImpression: "銅色皮膚、炭黑短髮夾著暗紅火光的精悍男子，身穿消防短大衣、腰掛救生繩索，正把一縷橘紅火苗收進掌心。",
+  habits: ["進入建築前先用指背試探門板溫度", "下意識檢查救生繩結與防火手套", "看到失控火勢會立刻上前壓制"],
+  prejudices: {
+    towardsClasses: { 術士: "把火焰當煙火亂放的傢伙，總有一天會害死整條街。" },
+    towardsAlignments: { 混亂邪惡: "蓄意縱火與拿無辜者當代罪羔羊的敗類，絕不姑息。" }
+  },
+  preferences: {
+    likes: ["完好無損的消防徽章", "被救出的倖存者", "乾淨的救援路線", "黑咖啡"],
+    dislikes: ["未熄滅的餘燼", "偽造的火災鑑識報告", "袖手旁觀的官僚"]
+  },
+  appearance: "銅紅色肌膚臉頰帶有金色火紋，炭黑短髮夾雜幾縷熾紅挑染，身穿深藍配橙金反光條的消防官戰衣與皮帶，背負救難手斧，雙手微曲將躍動火焰收束於掌心。",
+  inventory: {
+    equipment: ["熄燼念能護腕", "救難手斧", "防火消防大衣", "救生繩索"],
+    gold: 15,
+    consumables: ["治療藥水 x3", "煙霧呼吸巾 x2", "口糧 (1日) x3"],
+    magicItems: []
+  },
+  avatar: "/prototype-assets/lego-token-fixes-v1/139-fire_kineticist.png",
+  bio: "曾被城邦判為「縱火犯」的火元素裔。當年那場吞噬半座工坊區的大火其實是有人蓄意掩蓋走私帳冊，他衝進去救人卻成了唯一的代罪羔羊。如今他以熄燼消防官的身分四處救援，只為追查那枚在焦土中見過的真兇火紋。",
+  organization: "城市救難義務隊 / 火災追查者",
+  emotionalKeys: {
+    joy: ["成功從絕境救出所有人", "找到當年縱火案的新線索", "火焰乖乖聽話熄滅"],
+    anger: ["無辜者被困在火海", "權貴掩蓋真相", "有人蓄意放火"],
+    weakness: "聽到當年那場大火罹難者的名字"
+  },
+  combatWeakness: {
+    triggers: [
+      { type: "ENVIRONMENT", target: "平民或人質身陷火場", description: "會優先衝去滅火與救人而暴露破綻" },
+      { type: "EVENT", target: "隊友遭到火焰波及", description: "對失控火焰的自責讓他分心保護同伴" }
+    ],
+    reaction: "寧可自己硬吃攻擊也要把火焰能量吸收導走，優先替隊友開出安全撤離路線。"
+  },
+  combatBehavior: {
+    priorities: ["遠程火焰精準打擊", "壓制敵方火勢與環境危害", "保護隊友撤離"],
+    typicalActions: ["掌心炎彈射擊", "控火熄燼", "手斧破門突圍"],
+    style: "RANGED"
+  }
+},
+{
+  id: "preset_water_singer",
+  name: "瀾音·瑪琳 (Marina)",
+  race: "水元素裔",
+  class: "吟遊詩人 (沉船送歌者)",
+  gender: "Female",
+  alignment: "中立善良",
+  background: "海難送歌者 / 航海樂師",
+  mbti: "ENFJ",
+  level: 1,
+  ac: 14,
+  baseStats: { str: 8, dex: 15, con: 12, int: 12, wis: 13, cha: 16 },
+  skills: ["表演", "說服", "洞察", "察覺"],
+  feats: ["水棲親和", "詩人激勵", "安魂潮音", "海韻護盾"],
+  spells: ["治癒真言", "惡毒嘲笑", "雷鳴波", "睡眠術"],
+  slots: { 1: 2 },
+  personality: "溫柔卻帶著海霧般哀愁的水系歌者。她靠替海難亡者吹奏與吟唱最後一首歌維生，總能從潮聲裡聽見將死之人的姓名；直到最近，她在歌聲餘韻裡聽見了尚未死亡的隊友名字，從此寸步不離地守護著這支隊伍。",
+  monologue: "海會記住每一個沉下去的名字……可這一次，我絕不會讓這首歌寫到你們身上。",
+  firstImpression: "湛藍膚色與深海捲髮的水元素裔女子，髮間別著珍珠貝飾，身穿墨綠滾銀邊海軍短外套，右手持銀笛、左手按著貝紋細劍。",
+  habits: ["在出發前輕吹一段短笛試音", "把重要的人名字記在樂譜捲軸邊緣", "下雨或靠海時會安靜聆聽水聲"],
+  prejudices: {
+    towardsClasses: { 死靈法師: "把死者硬拖回岸上是很殘忍的事，亡者需要的是安息的歌。" },
+    towardsAlignments: { 混亂邪惡: "拿他人性命當籌碼的人，連大海都不願收留。" }
+  },
+  preferences: {
+    likes: ["清澈的潮汐聲", "團隊平安歸來", "銀笛的共鳴", "貝殼與珍珠"],
+    dislikes: ["聽見預兆死亡的水聲", "無謂的犧牲", "乾燥刺耳的噪音"]
+  },
+  appearance: "湛藍肌膚臉頰有銀白水紋，深藍波浪捲髮別著珍珠貝飾，身穿墨綠滾銀海軍短外套與白色荷葉領襯衫，腰掛樂譜捲軸與貝殼皮包，手持銀笛與鑲嵌海藍寶石的細劍。",
+  inventory: {
+    equipment: ["銀製海韻長笛", "貝紋細劍", "墨綠海軍短外套", "安魂樂譜捲軸"],
+    gold: 15,
+    consumables: ["治療藥水 x4", "清心薄荷水 x2", "口糧 (1日) x3"],
+    magicItems: []
+  },
+  avatar: "/prototype-assets/lego-token-fixes-v1/140-water_singer.png",
+  bio: "在港口與沉船墓場長大的水元素裔。每當船隻失事，她便在岸邊替溺亡者吹奏安魂曲；久而久之，海潮開始提前把將死之人的名字送進她的旋律裡。為了改寫聽見隊友名字的預兆，她決定親自隨隊同行。",
+  organization: "海港送歌者行會",
+  emotionalKeys: {
+    joy: ["所有人活著走出險境", "預兆中的名字從旋律裡消散", "團隊默契配合"],
+    anger: ["有人輕視隊友的性命", "惡意製造海難或陷阱的兇手"],
+    weakness: "在戰場水聲中聽見熟悉隊友的名字"
+  },
+  combatWeakness: {
+    triggers: [
+      { type: "EVENT", target: "預兆中的隊友血量驟降", description: "會瞬間慌神並傾盡法術支援該隊友" },
+      { type: "ENVIRONMENT", target: "極度乾燥灼熱的沙漠/熔岩區", description: "水元素親和受限使她體力消耗更快" }
+    ],
+    reaction: "立刻以治癒真言與詩人激勵全力保住隊友，甚至不惜冒險近身用細劍替同伴爭取撤退空隙。"
+  },
+  combatBehavior: {
+    priorities: ["團隊治療與激勵", "遠程音波控場", "細劍協防"],
+    typicalActions: ["治癒真言", "詩人激勵", "銀笛安魂波"],
+    style: "SUPPORT"
+  }
+},
+{
+  id: "preset_earth_carver",
+  name: "磐銘·洛克 (Carver)",
+  race: "土元素裔",
+  class: "秘術師 (墓碑雕刻師)",
+  gender: "Male",
+  alignment: "守序中立",
+  background: "守墓石匠 / 遺物感應者",
+  mbti: "ISFJ",
+  level: 1,
+  ac: 16,
+  baseStats: { str: 14, dex: 10, con: 16, int: 15, wis: 13, cha: 8 },
+  skills: ["歷史", "奧秘", "調查", "醫療"],
+  feats: ["岩石堅韌", "石板結界防護", "遺物迴響", "法器護盾"],
+  spells: ["法師護甲", "護盾術", "魔法飛彈"],
+  slots: { 1: 2 },
+  personality: "溫厚沈穩的墓碑雕刻師。他指尖觸碰陪葬品便能感受死者未盡的往事，對每塊石頭與每個名字都報以敬意。某天他在一座無主的空墓裡，竟看見一塊由自己親手雕刻、卻完全不記得刻過內容的墓碑。",
+  monologue: "石頭不會撒謊，刻下去的每一劃都記得主人的重量……除了那一塊，我記不得何時替它落過鑿。",
+  firstImpression: "黑曜石般深灰皮膚、頭頂冒出紫晶簇的厚實青年，穿鱗甲與墨綠工匠圍裙，一手托著發光紫紋石板、一手握石錘。",
+  habits: ["用手指輕撫石牆確認地基與年代", "隨身帶著兩把刻鑿與小紫花", "替無名死者補刻紀念符號"],
+  prejudices: {
+    towardsClasses: { 遊蕩者: "偷陪葬品之前，至少先問問它們的主人同不同意。" },
+    towardsAlignments: { 混亂邪惡: "褻瀆墳墓與抹消他人存在痕跡的人最不可原諒。" }
+  },
+  preferences: {
+    likes: ["完整的古碑文", "安靜的石室", "堅固的防禦陣線", "紫色岩花"],
+    dislikes: ["盜墓賊", "被刻意抹掉名字的碑石", "輕浮的破壞行為"]
+  },
+  appearance: "黑曜石膚色帶有細碎金紋，黑髮間生長著紫色水晶簇，琥珀色雙眼溫和堅定。身穿銀灰鱗甲外罩墨綠繡金工匠圍裙，腰插雙刻鑿與紫色小花，右手托著裂開紫光的符文石板，左手握石雕重錘。",
+  inventory: {
+    equipment: ["紫晶銘文石板 (防護法器)", "石匠重錘", "鱗甲與工匠圍裙", "刻鑿組"],
+    gold: 15,
+    consumables: ["治療藥水 x3", "石粉護符 x2", "口糧 (1日) x4"],
+    magicItems: []
+  },
+  avatar: "/prototype-assets/lego-token-fixes-v1/141-earth_carver.png",
+  bio: "在古代墓園擔任石匠的土元素裔秘術師。他能透過陪葬品與墓石讀取亡者殘留的情感記憶，並將這些記憶化為護盾法陣保護生者。他踏上旅途，只為找出那座空墓裡「由自己親手雕刻的墓碑」究竟埋著誰的過去。",
+  organization: "記憶石匠行會",
+  emotionalKeys: {
+    joy: ["替遺物找到歸屬與真相", "用石板護盾成功擋下致命攻擊", "解開空墓碑文的線索"],
+    anger: ["有人蓄意破壞墓碑與歷史", "不尊重死者遺物"],
+    weakness: "觸碰到與自身失憶空墓相關的銘文時會短暫失神"
+  },
+  combatWeakness: {
+    triggers: [
+      { type: "EVENT", target: "發現無主空墓或被抹去的碑文", description: "強烈的記憶迴響會讓他暫時停下進攻去解讀" },
+      { type: "ENVIRONMENT", target: "懸空/浮空缺乏著地處", description: "土元素裔離開大地時較難發揮全部防禦力" }
+    ],
+    reaction: "將紫晶銘文石板立於隊伍前方展開防護結界，寧可硬扛傷害也要護住身後同伴。"
+  },
+  combatBehavior: {
+    priorities: ["展開法器護盾保護隊友", "前線穩固防禦", "石錘反擊"],
+    typicalActions: ["法師護甲", "護盾術", "石板結界壓制"],
+    style: "DEFENSIVE"
+  }
+},
+{
+  id: "preset_peri_inquisitor",
+  name: "曦裁·維斯珀 (Vesper)",
+  race: "神裔 (Peri 血統)",
+  class: "審判者 (焚罪書記)",
+  gender: "Female",
+  alignment: "守序善良",
+  background: "宗教書記官 / 追罪審判者",
+  mbti: "INFJ",
+  level: 1,
+  ac: 15,
+  baseStats: { str: 12, dex: 14, con: 13, int: 13, wis: 16, cha: 12 },
+  skills: ["洞察", "宗教", "交涉", "威嚇"],
+  feats: ["天界抗性", "神聖審判", "焚罪火印", "未竟辯詞"],
+  spells: ["神恩術", "治療傷口", "祝福術", "命令術"],
+  slots: { 1: 2 },
+  personality: "堅信任何人都有悔改機會的溫柔審判者。她雖手持聖火烙印與審判彎刀，卻把每一名死者「未被聽見的辯詞」細心抄錄在隨身卷宗裡；如今她奉命追殺曾經救過自己、教會她何謂慈悲的恩人，內心正承受著信念與命令的撕裂。",
+  monologue: "審判不是為了閉上他們的嘴——若連最後一句辯詞都沒人肯聽，那這把火燒掉的只是我們的良心。",
+  firstImpression: "額間閃耀金色星印、眼神堅毅如琥珀的神裔女子，灰白長髮編成側辮，披著焦黑金邊白袍披風，右手高舉燃燒微光的金色火印，左手握金雕彎匕。",
+  habits: ["戰後替敗者抄寫最後的辯詞", "在蠟封卷宗上按壓確認", "對峙前先給對方一次坦白與悔改的機會"],
+  prejudices: {
+    towardsClasses: { 邪術師: "盲目簽下無法回頭的契約，是最令人痛心的自棄。" },
+    towardsAlignments: { 守序邪惡: "把律法當成殺人工具卻不留半點餘地的冷血者。" }
+  },
+  preferences: {
+    likes: ["真心悔改的瞬間", "保存完整的辯詞手稿", "誠實的對談"],
+    dislikes: ["未審先判的處決", "燒毀證詞", "背叛信任"]
+  },
+  appearance: "暖銅色肌膚帶著金色神聖紋飾，灰白長髮編成粗辮垂於右肩，琥珀色眼眸銳利而悲憫。身穿焦邊白金披風與深棕皮甲，腰繫紅蠟封厚重卷宗，右手高舉燃起金焰的審判火印，左手握金紋彎刃。",
+  inventory: {
+    equipment: ["焚罪金焰火印", "金紋審判彎刀", "紅蠟封辯詞卷宗", "焦邊金紋披風"],
+    gold: 20,
+    consumables: ["聖水 x2", "治療藥水 x3", "墨水與羊皮紙"],
+    magicItems: []
+  },
+  avatar: "/prototype-assets/lego-token-fixes-v1/142-peri_inquisitor.png",
+  bio: "流淌著墮落與贖罪並存之 Peri 天使血統的神裔審判者。她曾以為教團的火印只燒罪惡，直到收到密令要求她處決當年提攜自己的導師——而導師留下的卷宗裡，藏著教團高層最不願公開的辯詞。",
+  organization: "聖火審判書記處",
+  emotionalKeys: {
+    joy: ["成功感化敵人放下武器", "替冤死者洗清污名", "找到恩人真正的下落"],
+    anger: ["無差別屠殺與酷刑", "銷毀證據", "假借神明之名行私刑"],
+    weakness: "面對與恩人過去相關的舊物或名字時會猶豫出刀"
+  },
+  combatWeakness: {
+    triggers: [
+      { type: "EVENT", target: "敵人求饒或聲稱是被迫的", description: "會停手查證對方的辯詞真偽" },
+      { type: "ENEMY_TYPE", target: "曾經的同僚或恩人舊部", description: "在職責與恩情間陷入強烈掙扎" }
+    ],
+    reaction: "先開啟神聖審判與防禦祈禱試探真相，除非確認對方毫無悔意，否則會手下留情。"
+  },
+  combatBehavior: {
+    priorities: ["神聖審判標記", "精準彎刀與火印懲戒", "中距離神術輔助"],
+    typicalActions: ["神恩術", "焚罪火印懲戒", "審判彎刀突襲"],
+    style: "TACTICAL"
+  }
+},
+{
+  id: "preset_tiefling_advocate",
+  name: "路西恩·法契 (Lucien)",
+  race: "魔裔 (魔鬼血統)",
+  class: "調查員 (地獄公設辯護人)",
+  gender: "Male",
+  alignment: "守序中立",
+  background: "地獄法務辯護人 / 契約偵探",
+  mbti: "ENTP",
+  level: 1,
+  ac: 15,
+  baseStats: { str: 10, dex: 15, con: 12, int: 16, wis: 13, cha: 14 },
+  skills: ["調查", "欺瞞", "交涉", "奧秘", "察覺"],
+  feats: ["煉獄抗性", "額外靈感", "契約漏洞破綻", "杖劍決鬥"],
+  spells: ["偵測魔法", "識別術", "護盾術"],
+  slots: { 1: 2 },
+  personality: "嘴角總掛著一抹從容微笑的地獄公設辯護人。他專替簽錯靈魂契約的人類翻案，只要揪出魔鬼契約裡的語法陷阱就能撤銷賣身契——但代價是每救回一個靈魂，他自己的自由期限就少一天。",
+  monologue: "第三頁附註第七行，魔鬼少寫了一個「或」字——恭喜你，你的靈魂回家了。至於我的期限……明天再算吧。",
+  firstImpression: "戴著金色單片眼鏡、頭生暗紅彎角的瀟灑魔裔紳士，身穿酒紅繡金長外套，一手拿著蓋有天平紅蠟印的契約冊、一手持金護手細劍。",
+  habits: ["翻閱對方說詞時會推一下單片眼鏡", "隨身攜帶紅黃雙色試劑瓶檢驗墨水真偽", "習慣把任何口頭承諾寫成條文"],
+  prejudices: {
+    towardsClasses: { 邪術師: "簽約前好歹找個律師看一眼附錄條款吧！" },
+    towardsAlignments: { 混亂中立: "完全不看規則的人，連幫他們打官司都很棘手。" }
+  },
+  preferences: {
+    likes: ["完美的法條漏洞", "救下被騙簽約的凡人", "陳年紅茶", "邏輯嚴密的對質"],
+    dislikes: ["霸王條款", "威脅證人", "算錯自己的剩餘天數"]
+  },
+  appearance: "灰褐肌膚與一對暗紅魔角，兩鬢帶霜的黑髮梳得一絲不苟，左眼戴金色單片眼鏡。身穿酒紅繡金長外套與暗紋背心，腰間別著紅黃兩支小藥瓶，左手托著蓋有天平紅蠟印的法典契約冊，右手握金絲護手細劍。",
+  inventory: {
+    equipment: ["金絲護手杖劍", "天平紅蠟契約冊", "單片眼鏡與雙色墨水試劑", "酒紅法務長外套"],
+    gold: 25,
+    consumables: ["治療藥水 x3", "解毒劑 x1", "空白解除契約書 x3"],
+    magicItems: []
+  },
+  avatar: "/prototype-assets/lego-token-fixes-v1/143-tiefling_advocate.png",
+  bio: "在九層地獄法務部擔任「公設辯護人」的魔裔。沒人知道他為何自願接下這份吃力不討好的差事——每當他利用契約漏洞替凡人贏回靈魂，地獄的鐘錶便會扣除他自身一天自由期限；但他至今仍樂此不疲地翻開下一份卷宗。",
+  organization: "九層地獄公設辯護處 (叛逆法務)",
+  emotionalKeys: {
+    joy: ["抓到致命的邏輯或契約漏洞", "成功替無辜者翻案", "遇到聰明的對手"],
+    anger: ["欺負不懂條文的弱者", "在法庭或對決中作弊"],
+    weakness: "被逼問「你自己的自由還剩幾天」時笑容會短暫僵住"
+  },
+  combatWeakness: {
+    triggers: [
+      { type: "EVENT", target: "遇到無法用規則與邏輯交涉的純粹狂暴怪物", description: "擅長的心理博弈與條文壓制無效" },
+      { type: "EVENT", target: "有人威脅燒毀他的契約冊", description: "那是他救過的所有人證據，會立刻優先搶回" }
+    ],
+    reaction: "啟動調查員靈感洞察敵人破綻，靠高機動細劍周旋並尋找環境機關反制。"
+  },
+  combatBehavior: {
+    priorities: ["靈感洞察弱點", "細劍精準刺擊", "戰術控場與交涉破防"],
+    typicalActions: ["靈感弱點檢定", "杖劍連刺", "契約反制"],
+    style: "TACTICAL"
+  }
+},
+{
+  id: "preset_shadowblade_duelist",
+  name: "諾倫·影誓 (Noren)",
+  race: "影裔 (幽影精靈)",
+  class: "幻刃靈使 (亡妻的決鬥代理人)",
+  gender: "Male",
+  alignment: "中立善良",
+  background: "貴族決鬥者 / 鰥夫劍士",
+  mbti: "INFP",
+  level: 1,
+  ac: 15,
+  baseStats: { str: 10, dex: 16, con: 13, int: 14, wis: 12, cha: 12 },
+  skills: ["特技", "隱匿", "洞察", "說服"],
+  feats: ["暗影步", "靈能幻刃", "雙戒羈絆", "決鬥閃避"],
+  spells: ["護盾術", "迷蹤步", "心靈匕首"],
+  slots: { 1: 2 },
+  personality: "神情溫柔卻帶著深沉疲倦的幽影劍士。他頸間掛著兩枚銀婚戒，手中緊握著亡妻靈魂所化的半透明幽藍幻刃；劍裡的亡妻堅持自己當年是遭人謀殺，要他替自己復仇，可隨著線索拼湊，他卻開始懷疑劍裡記得的那段婚姻……和自己記憶裡的並不相同。",
+  monologue: "別急，我還握著這把劍。只是……你記憶裡那場雨夜，為什麼沒有我當時牽著你的手？",
+  firstImpression: "灰白肌膚與銀白短髮的修長劍士，眼神溫柔卻滿是倦意，身穿暗藍繡銀禮服外套與深棕皮胸甲，胸前掛著兩枚相扣的銀戒，右手握著半透明發光的幽藍細劍。",
+  habits: ["握劍前會輕觸胸前的雙戒項鍊", "在夜裡對著劍鋒輕聲低語", "替疲憊的同伴擋在最外側"],
+  prejudices: {
+    towardsClasses: { 欺瞞者: "最痛恨有人扭曲記憶或假借死者的聲音操弄人心。" },
+    towardsAlignments: { 混亂邪惡: "背叛誓言與背後下毒手的陰謀家。" }
+  },
+  preferences: {
+    likes: ["安靜的月夜", "誠實的記憶", "乾淨利落的決鬥", "守護同伴"],
+    dislikes: ["被質疑對亡妻的感情", "模糊的記憶斷層", "喧鬧的宴會"]
+  },
+  appearance: "冷灰膚色配紫色雙眸與左眼角淚痣，銀白偏分波浪髮，身穿深藍繡銀花禮服長外套、深棕束帶皮甲與黑長褲，胸前垂掛兩枚相扣的銀婚戒，右手平舉半透明青藍靈能幻刃，左手泛著微弱幽光。",
+  inventory: {
+    equipment: ["亡妻靈魂幻刃 (半透明細劍)", "雙銀婚戒項鍊", "深藍繡銀決鬥禮服", "輕皮胸甲"],
+    gold: 20,
+    consumables: ["治療藥水 x3", "夜視靈藥 x1", "口糧 (1日) x3"],
+    magicItems: []
+  },
+  avatar: "/prototype-assets/lego-token-fixes-v1/144-shadowblade_duelist.png",
+  bio: "曾是影界貴族的決鬥代理人。妻子亡故後，她的執念凝成了一柄半透明幽藍幻刃，每日催促他追查「謀殺她的人」。然而每當幻刃與敵人交鋒、釋出記憶碎片時，他卻發現劍中亡妻的語氣與自己深愛過的那個人出現了微妙的矛盾。",
+  organization: "獨立決鬥代理人",
+  emotionalKeys: {
+    joy: ["聽見亡妻溫柔而非充滿怨恨的聲音", "揭開婚姻與謀殺案的真相", "成功護住身邊的同伴"],
+    anger: ["有人試圖奪走或折斷他的幻刃", "踐踏逝者與誓言的人"],
+    weakness: "幻刃突然發出與他記憶完全相反的指控時會陷入動搖"
+  },
+  combatWeakness: {
+    triggers: [
+      { type: "EVENT", target: "幻刃記憶衝突或精神干擾", description: "劍中執念反噬會讓他短暫分心" },
+      { type: "ENVIRONMENT", target: "強烈的神聖刺眼強光", description: "影裔體質在過度曝曬的強光下感官會不適" }
+    ],
+    reaction: "先以暗影步拉開視線並開啟護盾術穩住心神，再以近身幻刃連擊封鎖對手。"
+  },
+  combatBehavior: {
+    priorities: ["暗影突進近戰", "幻刃高機動決鬥", "靈能防護閃避"],
+    typicalActions: ["幽藍幻刃突刺", "暗影切入", "護盾術"],
+    style: "AGGRESSIVE"
+  }
+}];
 
 export default PRESET_CHARACTERS;
+
