@@ -63,6 +63,7 @@ const Tactical3DArena = I.lazy(() =>
     throw err;
   })
 );
+const ThreeStoryStage = I.lazy(() => import("./tactical3d/ThreeStoryStage.jsx"));
 
 const Ep = {
     guild_hall: [
@@ -36898,6 +36899,7 @@ function yA({
   onToggleFamiliar: T = null,
   onStageClick: z = null,
   style: L = null,
+  threeStorySession = null,
   children: q,
 }) {
   const F = Is(a),
@@ -37505,12 +37507,22 @@ function yA({
         facing: ga,
       },
       children: [
-        n.jsx("div", {
-          className: "stage-world",
-          style: ys,
-          children: n.jsxs("div", {
-            ref: ce,
-            className: pe ? "stage-board-3d" : "stage-board-2d",
+        threeStorySession
+          ? n.jsx(I.Suspense, {
+              fallback: null,
+              children: n.jsx(ThreeStoryStage, {
+                session: threeStorySession,
+                activeId: A,
+                speechBubble: (k && A && k[A]) || S || null,
+                onBubbleClick: H,
+              }),
+            })
+          : n.jsx("div", {
+              className: "stage-world",
+              style: ys,
+              children: n.jsxs("div", {
+                ref: ce,
+                className: pe ? "stage-board-3d" : "stage-board-2d",
             style: Et,
             onPointerDown: (P) => {
               P.target.closest(".standee") ||
@@ -61605,6 +61617,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                     children: [
                       Ve &&
                         n.jsx(yA, {
+                          threeStorySession: ue === "theater" ? s : null,
                           style:
                             ue === "theater"
                               ? void 0

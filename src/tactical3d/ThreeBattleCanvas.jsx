@@ -347,6 +347,7 @@ export default function ThreeBattleCanvas({
   onClickTile,
   onRightClickTile,
   onActiveScreenPos,
+  storyMode = false,
 }) {
   const hostRef = useRef(null);
   const latestPropsRef = useRef({});
@@ -379,6 +380,7 @@ export default function ThreeBattleCanvas({
     onClickTile,
     onRightClickTile,
     onActiveScreenPos,
+    storyMode,
   };
 
   // Auto-recenter pan smoothly on turn change or manual recenter click
@@ -2263,7 +2265,7 @@ export default function ThreeBattleCanvas({
           const conds = Object.keys(u.conditions || {});
           const isCur = u.id === activeUnitId;
           const isHov = u.id === hoveredUnitId;
-          const showFull = isCur || isHov || Boolean(u.telegraphing) || u.hp === 0;
+          const showFull = storyMode || isCur || isHov || Boolean(u.telegraphing) || u.hp === 0;
           return (
             <div
               key={u.id}
@@ -2275,14 +2277,16 @@ export default function ThreeBattleCanvas({
             >
               {showFull && (
                 <div className="tac3d-uh-top">
-                  <span className="tac3d-uh-name">{u.name.slice(0, 6)}</span>
+                  <span className="tac3d-uh-name">{storyMode && isCur && u.side === "hero" ? "👑 " : ""}{u.name.slice(0, 6)}</span>
                   {u.footprint === 2 && <span className="tac3d-uh-tag">2×2</span>}
                   {u.hp === 0 && <span className="tac3d-uh-tag is-ko">昏迷</span>}
                 </div>
               )}
-              <div className="tac3d-uh-bar">
-                <div className="tac3d-uh-fill" style={{ width: `${hpPct}%` }} />
-              </div>
+              {!storyMode && (
+                <div className="tac3d-uh-bar">
+                  <div className="tac3d-uh-fill" style={{ width: `${hpPct}%` }} />
+                </div>
+              )}
               {u.telegraphing && (
                 <div className="tac3d-uh-conds">
                   <span style={{ background: "#b45309", color: "#fef3c7", borderColor: "#f59e0b" }}>⚠️蓄力重踏</span>
