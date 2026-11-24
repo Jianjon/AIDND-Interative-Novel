@@ -63998,6 +63998,24 @@ function Zu() {
         onOpenAiSettings: r ? void 0 : H,
         onOpenTactics3d: (payload = null) => {
           if (payload?.storyContext) {
+            if (Array.isArray(payload.storyContext?.session?.cast)) {
+              payload = {
+                ...payload,
+                storyContext: {
+                  ...payload.storyContext,
+                  session: {
+                    ...payload.storyContext.session,
+                    cast: payload.storyContext.session.cast.map((c) => {
+                      if (!c || (c.image && !String(c.image).includes("lego_standees_packed"))) return c;
+                      const resolved = Ps(c);
+                      return resolved?.image && !String(resolved.image).includes("lego_standees_packed")
+                        ? { ...c, image: resolved.image }
+                        : c;
+                    }),
+                  },
+                },
+              };
+            }
             triggerCombatTransition(
               "enter",
               {

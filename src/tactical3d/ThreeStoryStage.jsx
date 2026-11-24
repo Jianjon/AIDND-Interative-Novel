@@ -305,7 +305,7 @@ export default function ThreeStoryStage({
   useEffect(() => {
     if (!battle) return;
     const propsList = (battle.map?.props || []).filter((p) => !p.broken);
-    const castList = (battle.units || []).filter((u) => u.side !== "hero" && !u.dead && u.hp > 0);
+    const castList = (battle.units || []).filter((u) => u.side !== "hero" && !u.isAmbientNpc && !u.dead && u.hp > 0);
     const summary = (battle.units || [])
       .filter((u) => u.side === "hero" && !u.dead)
       .map((u) => {
@@ -349,6 +349,11 @@ export default function ThreeStoryStage({
       );
       if (clickedUnit) {
         if (clickedUnit.side === "hero") {
+          const ex = battle.map?.exitCell;
+          if (clickedUnit.id === leaderUnit?.id && ex && x === ex.x && y === ex.y) {
+            setExitPrompt(ex);
+            return;
+          }
           setLeaderStoryId(clickedUnit.storyId || clickedUnit.id);
           showHint(`🦶 切換控制：${clickedUnit.name}（剩餘移動 ${clickedUnit.turn?.movementLeft ?? clickedUnit.speedCells ?? 6} 格）`);
         } else if (clickedUnit.isAmbientNpc) {

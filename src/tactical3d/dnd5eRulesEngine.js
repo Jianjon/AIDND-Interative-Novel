@@ -1665,7 +1665,11 @@ export function createBattleState({
   map.drops = [];
   if (Array.isArray(blueprint?.interactables) && blueprint.interactables.length > 0) {
     const usedPropCoords = new Set((map.props || []).map((p) => `${p.x},${p.y}`));
-    const spawnCoords = new Set([...(map.heroSpawns || []), ...(map.foeSpawns || [])].map((s) => `${s.x},${s.y}`));
+    const spawnCoords = new Set([
+      ...(map.heroSpawns || []).map((s) => `${s.x},${s.y}`),
+      ...(map.foeSpawns || []).map((s) => `${s.x},${s.y}`),
+      ...(map.exitCell ? [`${map.exitCell.x},${map.exitCell.y}`] : []),
+    ]);
     blueprint.interactables.slice(0, 3).forEach((item, idx) => {
       if (!item?.name) return;
       const existing = (map.props || []).find((p) => p.interactable && !p.completed && (p.kind === item.kind || idx === 0));
@@ -1693,6 +1697,8 @@ export function createBattleState({
             const k = `${px},${py}`;
             if (tile && tile.walkable && !usedPropCoords.has(k) && !spawnCoords.has(k)) {
               usedPropCoords.add(k);
+              const fallbackVisual = (map.props || []).find((p) => p.kind === item.kind && p.imgIntact) ||
+                (map.props || []).find((p) => p.imgIntact);
               map.props.push({
                 id: `story_prop_${idx}_${px}_${py}`,
                 kind: item.kind || "crystal",
@@ -1701,11 +1707,16 @@ export function createBattleState({
                 y: py,
                 h: tile.h || 0.5,
                 walkable: false,
+                blocksMove: false,
                 blocksSight: false,
                 cover: "half",
                 hp: 15,
                 maxHp: 15,
                 broken: false,
+                imgIntact: fallbackVisual?.imgIntact || "/prototype-assets/lego-props-v1/props_wooden_barrel_s0.png",
+                imgBroken: fallbackVisual?.imgBroken || "/prototype-assets/lego-props-v1/props_wooden_barrel_s1.png",
+                scaleW: fallbackVisual?.scaleW || 0.85,
+                scaleH: fallbackVisual?.scaleH || 0.85,
                 interactable: true,
                 isObjective: true,
                 dc: Number.isFinite(item.dc) ? item.dc : 12,
