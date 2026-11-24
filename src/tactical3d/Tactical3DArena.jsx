@@ -363,6 +363,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
   const [drawerTab, setDrawerTab] = useState("main");
   const [zoomCmd, setZoomCmd] = useState(null);
+  const [dockExpanded, setDockExpanded] = useState(false);
   const [activeScreenPos, setActiveScreenPos] = useState(null);
   const [upcastSlot, setUpcastSlot] = useState(null);
   const [useSmite, setUseSmite] = useState(false);
@@ -2577,10 +2578,28 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
               ))}
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span className="tac3d-desktop-hint" style={{ color: "#94a3b8" }}>
-                右鍵角色快捷選單 · 右鍵拖曳平移 · Q/E 旋轉 · Space 結束
-              </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              {activeUnit.side === "hero" && !dockExpanded && activeUnit.weapons?.[0] && (
+                <button
+                  type="button"
+                  disabled={(activeUnit.turn?.actionLeft || 0) <= 0 && (activeUnit.turn?.attacksLeft || 0) <= 0}
+                  className={`tac3d-btn${actionMode.kind === "weapon" && actionMode.weaponId === activeUnit.weapons[0].id ? " is-on" : ""}`}
+                  onClick={() => setActionMode({ kind: "weapon", weaponId: activeUnit.weapons[0].id, asBonus: false })}
+                  title="快速選取主手武器攻擊（或右鍵角色開啟兩層式指令選單）"
+                >
+                  {activeUnit.weapons[0].isRanged ? "🏹" : "⚔️"} {activeUnit.weapons[0].name}
+                </button>
+              )}
+              {activeUnit.side === "hero" && (
+                <button
+                  type="button"
+                  className="tac3d-btn"
+                  onClick={() => setDockExpanded((v) => !v)}
+                  title="展開／收合完整 D&D 5e 武器、法術與特技面板（也可直接右鍵角色選招）"
+                >
+                  {dockExpanded ? "▼ 收合面板" : "▲ 完整面板"}
+                </button>
+              )}
               {activeUnit.side === "hero" && (
                 <button
                   type="button"
@@ -2593,7 +2612,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
             </div>
           </div>
 
-          {activeUnit.side === "hero" ? (
+          {activeUnit.side === "hero" && dockExpanded ? (
             <div className="tac3d-dock-main">
               {/* Pinned Movement + Stand Up + Shout */}
               <div className="tac3d-actions-row">

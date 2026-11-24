@@ -53586,6 +53586,7 @@ function Q0({
     [Rt, Kt] = I.useState("all"),
     [fa, _a] = I.useState(null),
     [dt, Tt] = I.useState(!1),
+    [cardYielded, setCardYielded] = I.useState(!1),
     ga = !!(ze || D || gt);
   (I.useEffect(() => {
     St && St(ga);
@@ -54436,9 +54437,28 @@ function Q0({
     },
     _t = () => {
       if (ie || !_e) return null;
+      const isYielded = cardYielded && !_e.centerStage;
       const w = n.jsxs("div", {
-        className: `theater-floating-stage-card card-type-${_e.cardType}${_e.centerStage ? " is-center-stage" : ""}`,
-        onClick: vt ? ta : void 0,
+        className: `theater-floating-stage-card card-type-${_e.cardType}${_e.centerStage ? " is-center-stage" : ""}${isYielded ? " is-yielded" : ""}`,
+        style: isYielded
+          ? {
+              opacity: 0.36,
+              maxHeight: "48px",
+              overflow: "hidden",
+              cursor: "pointer",
+              transition: "opacity 0.2s ease, max-height 0.2s ease",
+            }
+          : {
+              transition: "opacity 0.2s ease, max-height 0.2s ease",
+            },
+        title: isYielded ? "點擊恢復顯示劇情字幕卡" : void 0,
+        onClick: isYielded
+          ? (X) => {
+              (X.stopPropagation(), setCardYielded(!1));
+            }
+          : vt
+            ? ta
+            : void 0,
         onPointerDown: (X) => X.stopPropagation(),
         onWheel: (X) => X.stopPropagation(),
         children: [
@@ -54482,6 +54502,16 @@ function Q0({
                             _e.pages.length,
                             " 頁",
                           ],
+                        }),
+                      !_e.centerStage &&
+                        n.jsx("button", {
+                          type: "button",
+                          className: "quiet-button",
+                          title: isYielded ? "展開字幕卡" : "暫時收合字幕卡以查看地圖",
+                          onClick: (X) => {
+                            (X.stopPropagation(), setCardYielded((prev) => !prev));
+                          },
+                          children: isYielded ? "📖 顯示" : "👁️ 暫隱",
                         }),
                       n.jsx("button", {
                         type: "button",
@@ -54538,6 +54568,19 @@ function Q0({
           })
         : w;
     };
+  I.useEffect(() => {
+    setCardYielded(!1);
+  }, [_e == null ? void 0 : _e.title, _e == null ? void 0 : _e.categoryTag, ye]);
+  I.useEffect(() => {
+    if (!_e || (_e == null ? void 0 : _e.centerStage)) return;
+    const onCanvasDown = (ev) => {
+      if (ev.target && ev.target.tagName === "CANVAS") {
+        setCardYielded(!0);
+      }
+    };
+    window.addEventListener("pointerdown", onCanvasDown, { passive: !0 });
+    return () => window.removeEventListener("pointerdown", onCanvasDown);
+  }, [!!_e, _e == null ? void 0 : _e.centerStage]);
   return n.jsxs("div", {
     className: `stage-modes-hud mode-${e}`,
     children: [
@@ -58740,6 +58783,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
     [combatPromptDismissedKey, setCombatPromptDismissedKey] = I.useState(""),
     [showGearModal, setShowGearModal] = I.useState(!1),
     [gearHeroId, setGearHeroId] = I.useState(null),
+    [showTopMenu, setShowTopMenu] = I.useState(!1),
     handleApply3dAndNarrate = I.useCallback(
       async (summary, autoNarrate = false) => {
         r((prev) => applyBattleSummaryToSession(prev, summary));
@@ -61544,16 +61588,8 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
               ],
             }),
             n.jsxs("nav", {
+              style: { position: "relative" },
               children: [
-                n.jsx("span", {
-                  className: "quiet-button view-mode-btn is-active",
-                  style: { cursor: "default", opacity: 0.92 },
-                  title:
-                    ue === "classic"
-                      ? "目前為【經典版（2.5D 格線）】獨立模式；請回模組選單或使用 ?mode=theater 連結進入劇院版"
-                      : "目前為【劇院＋戰鬥版（3D）】獨立模式；請回模組選單或使用 ?mode=classic 連結進入經典版",
-                  children: ue === "classic" ? "🏛️ 經典版" : "🎭 劇院＋戰鬥版",
-                }),
                 ue === "theater" &&
                   isCombatActive(s) &&
                   onOpenTactics3d &&
@@ -61567,40 +61603,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                         onApply: handleApply3dAndNarrate,
                       }),
                     title: "目前正在戰鬥中！點擊立即帶入當前隊伍、敵人、天氣與光影進入 3D 戰棋結算",
-                    children: "⚔️ 進入 3D 戰棋開戰",
-                  }),
-                n.jsx("button", {
-                  className: "quiet-button",
-                  onClick: () => Ie((f) => !f),
-                  children: Ve ? "收起地圖" : "展開地圖",
-                }),
-                n.jsx("button", {
-                  type: "button",
-                  className: `quiet-button sound-toggle ${j.sound ? "sound-on" : "sound-off"}`,
-                  onClick: () => x((f) => ({ ...f, sound: !f.sound })),
-                  children: j.sound ? "🔊 音樂：開" : "🔇 音樂：靜音",
-                }),
-                j.sound &&
-                  n.jsx("select", {
-                    className: "bgm-inline-select",
-                    value: j.bgmTrack || "auto",
-                    title: "切換情境背景音樂",
-                    "aria-label": "切換情境背景音樂",
-                    onChange: (f) =>
-                      x((C) => ({ ...C, bgmTrack: f.target.value })),
-                    children: Ki.map((f) =>
-                      n.jsx(
-                        "option",
-                        {
-                          value: f.key,
-                          children:
-                            f.key === "auto"
-                              ? `自動：${pe.replace(/（.*）/, "") || "依情境"}`
-                              : f.label.replace(/（.*）/, ""),
-                        },
-                        f.key,
-                      ),
-                    ),
+                    children: "⚔️ 進入 3D 戰棋",
                   }),
                 n.jsx("button", {
                   type: "button",
@@ -61610,6 +61613,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                       ? { borderColor: "#fbbf24", color: "#fde68a", fontWeight: 700 }
                       : void 0,
                   onClick: () => {
+                    setShowTopMenu(!1);
                     setGearHeroId((prev) => prev || s?.heroes?.[0]?.id || null);
                     setShowGearModal((v) => !v);
                   },
@@ -61623,30 +61627,114 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                   className: "quiet-button",
                   "aria-expanded": q,
                   onClick: () => {
-                    (F((f) => !f), L(!1));
+                    (setShowTopMenu(!1), F((f) => !f), L(!1));
                   },
                   children:
-                    p.status === "syncing" ? "☁️ 同步中…" : "☁️ 雲端存檔",
+                    p.status === "syncing" ? "☁️ 同步中…" : "💾 存檔",
                 }),
                 n.jsx("button", {
-                  className: "quiet-button",
-                  "aria-expanded": z,
+                  type: "button",
+                  className: `quiet-button${showTopMenu ? " is-active" : ""}`,
+                  "aria-expanded": showTopMenu,
                   onClick: () => {
-                    (L((f) => !f), F(!1));
+                    (setShowTopMenu((v) => !v), F(!1));
                   },
-                  children: "設定",
+                  children: "⚙️ 選單",
                 }),
-                a &&
-                  n.jsx("button", {
-                    className: "quiet-button",
-                    onClick: a,
-                    children: "API Key",
+                showTopMenu &&
+                  n.jsxs("div", {
+                    style: {
+                      position: "absolute",
+                      top: "calc(100% + 8px)",
+                      right: 0,
+                      zIndex: 90,
+                      minWidth: 230,
+                      padding: 10,
+                      borderRadius: 10,
+                      background: "rgba(12, 18, 28, 0.97)",
+                      border: "1px solid rgba(148, 163, 184, 0.35)",
+                      boxShadow: "0 16px 40px rgba(0,0,0,0.65)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                    },
+                    children: [
+                      n.jsx("div", {
+                        style: { fontSize: 11, color: "#94a3b8", padding: "2px 6px" },
+                        children: ue === "classic" ? "目前模式：🏛️ 經典版 (2.5D)" : "目前模式：🎭 劇院＋戰鬥版 (3D)",
+                      }),
+                      n.jsx("button", {
+                        type: "button",
+                        className: "quiet-button",
+                        style: { justifyContent: "flex-start", width: "100%" },
+                        onClick: () => {
+                          Ie((f) => !f);
+                          setShowTopMenu(!1);
+                        },
+                        children: Ve ? "🗺️ 收起地圖" : "🗺️ 展開地圖",
+                      }),
+                      n.jsx("button", {
+                        type: "button",
+                        className: `quiet-button sound-toggle ${j.sound ? "sound-on" : "sound-off"}`,
+                        style: { justifyContent: "flex-start", width: "100%" },
+                        onClick: () => x((f) => ({ ...f, sound: !f.sound })),
+                        children: j.sound ? "🔊 音樂：開" : "🔇 音樂：靜音",
+                      }),
+                      j.sound &&
+                        n.jsx("select", {
+                          className: "bgm-inline-select",
+                          style: { width: "100%" },
+                          value: j.bgmTrack || "auto",
+                          title: "切換情境背景音樂",
+                          "aria-label": "切換情境背景音樂",
+                          onChange: (f) =>
+                            x((C) => ({ ...C, bgmTrack: f.target.value })),
+                          children: Ki.map((f) =>
+                            n.jsx(
+                              "option",
+                              {
+                                value: f.key,
+                                children:
+                                  f.key === "auto"
+                                    ? `自動：${pe.replace(/（.*）/, "") || "依情境"}`
+                                    : f.label.replace(/（.*）/, ""),
+                              },
+                              f.key,
+                            ),
+                          ),
+                        }),
+                      n.jsx("button", {
+                        type: "button",
+                        className: "quiet-button",
+                        style: { justifyContent: "flex-start", width: "100%" },
+                        onClick: () => {
+                          (L((f) => !f), F(!1), setShowTopMenu(!1));
+                        },
+                        children: "🛠️ 遊戲設定",
+                      }),
+                      a &&
+                        n.jsx("button", {
+                          type: "button",
+                          className: "quiet-button",
+                          style: { justifyContent: "flex-start", width: "100%" },
+                          onClick: () => {
+                            setShowTopMenu(!1);
+                            a();
+                          },
+                          children: "🔑 設定 API Key",
+                        }),
+                      n.jsx("button", {
+                        type: "button",
+                        className: "quiet-button",
+                        style: { justifyContent: "flex-start", width: "100%" },
+                        onClick: () => {
+                          setShowTopMenu(!1);
+                          i("modules");
+                        },
+                        children: "📖 回首頁／換模組",
+                      }),
+                    ],
                   }),
-                n.jsx("button", {
-                  className: "quiet-button",
-                  onClick: () => i("modules"),
-                  children: "換模組",
-                }),
               ],
             }),
             q &&
@@ -63332,7 +63420,51 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
               }),
             });
           })(),
+        (h || showGearModal) &&
+          s &&
+          n.jsxs("div", {
+            style: {
+              position: "fixed",
+              top: 10,
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 1010,
+              display: "inline-flex",
+              gap: 6,
+              padding: "4px 6px",
+              borderRadius: 999,
+              background: "rgba(9, 14, 22, 0.94)",
+              border: "1px solid rgba(251, 191, 36, 0.45)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.65)",
+            },
+            children: [
+              n.jsx("button", {
+                type: "button",
+                className: `quiet-button${h && !showGearModal ? " is-active" : ""}`,
+                style: h && !showGearModal ? { borderColor: "#fbbf24", color: "#fde68a", fontWeight: 700, padding: "4px 12px" } : { padding: "4px 12px" },
+                onClick: () => {
+                  const targetId = gearHeroId || h || s.heroes?.[0]?.id || null;
+                  setShowGearModal(!1);
+                  if (targetId) M(targetId);
+                },
+                children: "📜 角色屬性與技能",
+              }),
+              n.jsx("button", {
+                type: "button",
+                className: `quiet-button${showGearModal ? " is-active" : ""}`,
+                style: showGearModal ? { borderColor: "#fbbf24", color: "#fde68a", fontWeight: 700, padding: "4px 12px" } : { padding: "4px 12px" },
+                onClick: () => {
+                  const targetId = h || gearHeroId || s.heroes?.[0]?.id || null;
+                  M(null);
+                  setGearHeroId(targetId);
+                  setShowGearModal(!0);
+                },
+                children: `🎒 裝備與戰利品 (${(s.lootStash || []).length})`,
+              }),
+            ],
+          }),
         h &&
+          !showGearModal &&
           Xe.find((f) => f.id === h) &&
           n.jsx(
             Dc,

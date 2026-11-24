@@ -361,61 +361,71 @@ export default function ThreeStoryStage({
         />
       )}
 
-      {/* Lightweight 3D Individual Movement Controls (top-left) */}
+      {/* Compact Single View Capsule + Hero Movement Badge (top-left) */}
       <div
         style={{
           position: "absolute",
-          left: 14,
-          top: 52,
+          left: 12,
+          top: 48,
           zIndex: 30,
           display: "flex",
           flexWrap: "wrap",
           alignItems: "center",
           gap: 6,
-          maxWidth: "calc(100% - 380px)",
+          maxWidth: "calc(100% - 260px)",
           pointerEvents: "auto",
         }}
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <button
-          type="button"
+        <div
           className="stage-pill-btn"
-          onClick={() => setRotation((r) => (r + 1) % 4)}
-          title="旋轉 45° 3D 舞台視角"
+          style={{ display: "inline-flex", alignItems: "center", gap: 2, padding: "2px 6px" }}
+          role="group"
+          aria-label="3D 視角控制"
         >
-          ↻ 旋轉視角
-        </button>
-        <button
-          type="button"
-          className="stage-pill-btn"
-          onClick={() => setRecenterToken((t) => t + 1)}
-          title="重設鏡頭至舞台中央"
-        >
-          🎯 置中
-        </button>
-        <button
-          type="button"
-          className="stage-pill-btn"
-          onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: -0.9 })}
-          title="放大 3D 舞台地圖"
-        >
-          🔍＋ 放大
-        </button>
-        <button
-          type="button"
-          className="stage-pill-btn"
-          onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: 0.9 })}
-          title="縮小 3D 舞台地圖"
-        >
-          🔍－ 縮小
-        </button>
+          <button
+            type="button"
+            style={{ background: "transparent", border: 0, color: "inherit", padding: "2px 5px", cursor: "pointer" }}
+            onClick={() => setRotation((r) => (r + 1) % 4)}
+            title="旋轉 45° 3D 舞台視角"
+          >
+            ↻
+          </button>
+          <span style={{ opacity: 0.3 }}>|</span>
+          <button
+            type="button"
+            style={{ background: "transparent", border: 0, color: "inherit", padding: "2px 5px", cursor: "pointer" }}
+            onClick={() => setRecenterToken((t) => t + 1)}
+            title="重設鏡頭至舞台中央"
+          >
+            🎯
+          </button>
+          <span style={{ opacity: 0.3 }}>|</span>
+          <button
+            type="button"
+            style={{ background: "transparent", border: 0, color: "inherit", padding: "2px 5px", cursor: "pointer", fontWeight: 700 }}
+            onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: -0.9 })}
+            title="放大 3D 舞台地圖"
+          >
+            ＋
+          </button>
+          <span style={{ opacity: 0.3 }}>|</span>
+          <button
+            type="button"
+            style={{ background: "transparent", border: 0, color: "inherit", padding: "2px 5px", cursor: "pointer", fontWeight: 700 }}
+            onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: 0.9 })}
+            title="縮小 3D 舞台地圖"
+          >
+            －
+          </button>
+        </div>
         {leaderUnit && (
           <span
             className="stage-pill-btn"
-            style={{ borderColor: "#38bdf8", color: "#e0f2fe", cursor: "default" }}
+            style={{ borderColor: "#38bdf8", color: "#e0f2fe", cursor: "default", padding: "3px 9px" }}
             title="藍格為可自由移動範圍；點擊角色切換操作，點擊藍格移動，點擊相鄰物件可互動"
           >
-            🦶 {leaderUnit.name}（剩 {leaderUnit.turn?.movementLeft ?? leaderUnit.speedCells ?? 6} 格）
+            🦶 {leaderUnit.name} · {leaderUnit.turn?.movementLeft ?? leaderUnit.speedCells ?? 6}格
           </span>
         )}
         {localHint && (
