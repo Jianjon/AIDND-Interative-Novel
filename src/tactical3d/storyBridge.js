@@ -311,6 +311,14 @@ export function mapStorySessionTo3DConfig(session) {
     blueprint,
     seed: ((Number(session?.turn) || 1) * 37 + 101) % 9999,
     placeName: session?.place?.name || session?.map || "當前劇情場景",
+    storySummary: {
+      nodeTitle: session?.node?.title || "",
+      situation: session?.node?.situation || "",
+      recentLogs: (Array.isArray(session?.log) ? session.log : [])
+        .slice(-3)
+        .map((l) => l?.text)
+        .filter(Boolean),
+    },
   };
 }
 
@@ -372,11 +380,15 @@ export function applyBattleSummaryToSession(session, summary) {
     : summary.vipProtected
       ? "👑 成功護送保護目標安全存活"
       : "";
+  const beatsNote = Array.isArray(summary.scriptBeats) && summary.scriptBeats.length > 0
+    ? `關鍵對話：${summary.scriptBeats.slice(0, 3).join(" / ")}`
+    : "";
   const extraNotes = [
     capturedList ? `俘虜：${capturedList}` : "",
     surrenderedList ? `投降：${surrenderedList}` : "",
     objList ? `達成戰場目標：${objList}` : "",
     vipNote,
+    beatsNote,
   ]
     .filter(Boolean)
     .join("；");
@@ -399,6 +411,167 @@ export function applyBattleSummaryToSession(session, summary) {
     log: nextLog,
     lastTacticalSummary: summary,
   };
+}
+
+export function buildFallbackBattleScript({ storyContext = null, battle = null } = {}) {
+  const heroes = (battle?.units || []).filter((u) => u.side === "hero" && !u.isNpcAlly);
+  const foes = (battle?.units || []).filter((u) => u.side === "foe");
+  const leadHero = heroes[0]?.name || storyContext?.partyPresets?.[0]?.name || "我方隊長";
+  const secondHero = heroes[1]?.name || storyContext?.partyPresets?.[1]?.name || leadHero;
+  const leadFoe = foes[0]?.name || storyContext?.foeSpecs?.[0]?.name || "敵方頭目";
+  const objProp = (battle?.map?.props || []).find((p) => p.interactable || p.isObjective);
+  const objName = storyContext?.blueprint?.objectiveName || objProp?.name || "戰場關鍵目標";
+  const placeName = storyContext?.placeName || battle?.map?.name || "戰場";
+
+  return {
+    missionGoal: objProp
+      ? `擊退敵軍並處理【${objName}】`
+      : `制伏【${placeName}】的敵方勢力`,
+    opening: [
+      {
+        speaker: leadHero,
+        side: "hero",
+        line: objProp
+          ? `大家注意陣型！這場必須壓制敵人並掌控【${objName}】，別讓他們包抄！`
+          : `全體戒備！就在「${placeName}」解決他們，彼此照應別落單！`,
+      },
+      {
+        speaker: leadFoe,
+        side: "foe",
+        line: `哼，自投羅網的傢伙！把他們全部包圍起來，一個都別放走！`,
+      },
+    ],
+    triggers: {
+      foeHalfHp: {
+        speaker: leadFoe,
+        side: "foe",
+        line: `該死……這群傢伙比想像中難纏！都給我全力壓上去！`,
+      },
+      heroDown: {
+        speaker: secondHero,
+        side: "hero",
+        line: `撐住！馬上掩護倒下的同伴，別讓敵人補刀！`,
+      },
+      waveArrive: {
+        speaker: leadFoe,
+        side: "foe",
+        line: `援軍到了！看你們這下還往哪裡逃！`,
+      },
+    },
+    propLine: {
+      speaker: secondHero,
+      side: "hero",
+      line: `【${objName}】已經處理妥當！趁現在擴大戰果！`,
+    },
+    ending: {
+      victory: [
+        {
+          speaker: leadHero,
+          side: "hero",
+          line: `總算穩住局面了……大家檢查傷勢與戰利品，準備回到正題。`,
+        },
+      ],
+      retreat: [
+        {
+          speaker: leadHero,
+          side: "hero",
+          line: `戰況不利，全隊依序撤離重整！`,
+        },
+      ],
+      defeat: [
+        {
+          speaker: leadFoe,
+          side: "foe",
+          line: `不自量力的蠢貨……這場戰鬥是我們贏了。`,
+        },
+      ],
+    },
+  };
+}
+
+export async function adjudicateBattleScriptWithAI(sampler, { storyContext = null, battle = null } = {}) {
+  const fallback = buildFallbackBattleScript({ storyContext, battle });
+  if (typeof sampler !== "function") return fallback;
+
+  const heroList = (battle?.units || [])
+    .filter((u) => u.side === "hero" && !u.isNpcAlly)
+    .map((h) => `${h.name}(${h.className})`)
+    .join("、");
+  const foeList = (battle?.units || [])
+    .filter((u) => u.side === "foe")
+    .map((f) => f.name)
+    .slice(0, 4)
+    .join("、");
+  const objProp = (battle?.map?.props || []).find((p) => p.interactable || p.isObjective);
+  const sitText = [
+    storyContext?.placeName,
+    storyContext?.storySummary?.nodeTitle,
+    storyContext?.storySummary?.situation,
+    ...(storyContext?.storySummary?.recentLogs || []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .slice(0, 480);
+
+  const prompt = `你是 D&D 跑團劇本總監。請根據目前劇情與戰場配置，為即將開打的戰棋寫出簡短有力的角色宣言、敵人放話、戰中關鍵轉折台詞、互動物件台詞與戰後收尾台詞。
+劇情背景：「${sitText || battle?.map?.name || "冒險戰場"}」
+我方英雄：${heroList || "冒險者小隊"}
+敵方單位：${foeList || "敵方伏兵"}
+關鍵目標物件：${objProp?.name || storyContext?.blueprint?.objectiveName || "無"}
+請只回傳嚴格 JSON（每句台詞 12～32 字，符合角色口吻）：
+{
+  "missionGoal": "18字內明確戰鬥目的",
+  "opening": [
+    {"speaker":"英雄名","side":"hero","line":"戰前宣言或交代目的"},
+    {"speaker":"敵方名","side":"foe","line":"敵人開戰放話"}
+  ],
+  "triggers": {
+    "foeHalfHp": {"speaker":"敵方名","side":"foe","line":"敵方頭目半血不甘放話"},
+    "heroDown": {"speaker":"隊友名","side":"hero","line":"見隊友倒地的關切呼喊"},
+    "waveArrive": {"speaker":"敵方名","side":"foe","line":"援軍登場時的喊話"}
+  },
+  "propLine": {"speaker":"英雄名","side":"hero","line":"成功互動/破壞關鍵物件後的台詞"},
+  "ending": {
+    "victory": [{"speaker":"英雄名","side":"hero","line":"勝利後收尾台詞"}],
+    "retreat": [{"speaker":"英雄名","side":"hero","line":"撤退時台詞"}],
+    "defeat": [{"speaker":"敵方名","side":"foe","line":"我方全滅時敵方台詞"}]
+  }
+}`;
+
+  try {
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 4000));
+    const res = await Promise.race([sampler(prompt, { modelTier: "quick" }), timeoutPromise]);
+    const raw = String(res?.text || "");
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return fallback;
+    const parsed = JSON.parse(match[0]);
+    const cleanLine = (item, fb) =>
+      item && typeof item.line === "string" && item.line.trim()
+        ? { speaker: String(item.speaker || fb.speaker), side: item.side === "foe" ? "foe" : "hero", line: item.line.trim() }
+        : fb;
+    const cleanArr = (arr, fbArr) =>
+      Array.isArray(arr) && arr.length > 0
+        ? arr.slice(0, 3).map((x, idx) => cleanLine(x, fbArr[idx] || fbArr[0]))
+        : fbArr;
+
+    return {
+      missionGoal: typeof parsed.missionGoal === "string" && parsed.missionGoal.trim() ? parsed.missionGoal.trim() : fallback.missionGoal,
+      opening: cleanArr(parsed.opening, fallback.opening),
+      triggers: {
+        foeHalfHp: cleanLine(parsed.triggers?.foeHalfHp, fallback.triggers.foeHalfHp),
+        heroDown: cleanLine(parsed.triggers?.heroDown, fallback.triggers.heroDown),
+        waveArrive: cleanLine(parsed.triggers?.waveArrive, fallback.triggers.waveArrive),
+      },
+      propLine: cleanLine(parsed.propLine, fallback.propLine),
+      ending: {
+        victory: cleanArr(parsed.ending?.victory, fallback.ending.victory),
+        retreat: cleanArr(parsed.ending?.retreat, fallback.ending.retreat),
+        defeat: cleanArr(parsed.ending?.defeat, fallback.ending.defeat),
+      },
+    };
+  } catch {
+    return fallback;
+  }
 }
 
 export async function adjudicateTacticalShoutWithAI(sampler, battle, actor, playerText) {

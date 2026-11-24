@@ -31,7 +31,11 @@ import {
   endUnitTurn,
   exportBattleSummary,
 } from "./dnd5eRulesEngine.js";
-import { adjudicateTacticalShoutWithAI } from "./storyBridge.js";
+import {
+  adjudicateTacticalShoutWithAI,
+  adjudicateBattleScriptWithAI,
+  buildFallbackBattleScript,
+} from "./storyBridge.js";
 import ThreeBattleCanvas from "./ThreeBattleCanvas.jsx";
 import TacticalDiceModal from "./TacticalDiceModal.jsx";
 import { playTacticalSfx } from "./combatSfx.js";
@@ -373,9 +377,26 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
   const [lastDiceRoll, setLastDiceRoll] = useState(null);
   const [diceQueue, setDiceQueue] = useState([]);
   const [diceAnimOn, setDiceAnimOn] = useState(true);
+  const [dialogueQueue, setDialogueQueue] = useState([]);
+  const [dialoguePhase, setDialoguePhase] = useState("idle"); // idle | opening | ending
+  const [midDialogue, setMidDialogue] = useState(null);
+  const [missionGoal, setMissionGoal] = useState("");
+  const midDialogueTimerRef = useRef(null);
+  const endedScriptFiredRef = useRef(false);
   const diceTimerRef = useRef(null);
   const handleDiceComplete = useCallback(() => {
     setDiceQueue((q) => q.slice(1));
+  }, []);
+  const handleAdvanceDialogue = useCallback(() => {
+    setDialogueQueue((q) => {
+      const next = q.slice(1);
+      if (next.length === 0) setDialoguePhase("idle");
+      return next;
+    });
+  }, []);
+  const handleSkipDialogue = useCallback(() => {
+    setDialogueQueue([]);
+    setDialoguePhase("idle");
   }, []);
   const [copiedJson, setCopiedJson] = useState(false);
   const [shoutOpen, setShoutOpen] = useState(false);
@@ -427,6 +448,12 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
       if (!evList || evList.length === 0) return;
       const stamp = `${Date.now()}_${Math.random()}`;
       setEventsBatch(evList.map((e, i) => ({ ...e, _uid: `${stamp}_${i}` })));
+      const dlgEv = [...evList].reverse().find((e) => e.type === "dialogue");
+      if (dlgEv) {
+        setMidDialogue(dlgEv);
+        if (midDialogueTimerRef.current) clearTimeout(midDialogueTimerRef.current);
+        midDialogueTimerRef.current = setTimeout(() => setMidDialogue(null), 4200);
+      }
       const diceEvents = evList.filter((e) => e.type === "dice" && e.side !== "enemy");
       if (diceEvents.length > 0) {
         const latestDice = diceEvents[diceEvents.length - 1];
@@ -501,6 +528,15 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
         blueprint: mergedBlueprint,
       });
       const first = getActiveUnit(created);
+      const fallbackScript = buildFallbackBattleScript({ storyContext, battle: created });
+      created.battleScript = fallbackScript;
+      endedScriptFiredRef.current = false;
+      setMissionGoal(fallbackScript.missionGoal || "");
+      setDialogueQueue(fallbackScript.opening || []);
+      setDialoguePhase(fallbackScript.opening?.length > 0 ? "opening" : "idle");
+      setMidDialogue(null);
+      setDiceQueue([]);
+      setLastDiceRoll(null);
       setBattle(created);
       setActionMode({ kind: "move" });
       setDockTab(chooseDefaultActionTab(first));
@@ -510,8 +546,26 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
       setActionFeedback("");
       setCopiedJson(false);
       setRecenterToken((t) => t + 1);
+
+      if (typeof sampler === "function") {
+        adjudicateBattleScriptWithAI(sampler, { storyContext, battle: created }).then((aiScript) => {
+          if (!aiScript) return;
+          setBattle((prev) => {
+            if (!prev || prev !== battleRef.current) return prev;
+            prev.battleScript = aiScript;
+            return prev;
+          });
+          setMissionGoal(aiScript.missionGoal || "");
+          setDialoguePhase((curPhase) => {
+            if (curPhase === "opening" && Array.isArray(aiScript.opening) && aiScript.opening.length > 0) {
+              setDialogueQueue(aiScript.opening);
+            }
+            return curPhase;
+          });
+        });
+      }
     },
-    [allyPack, ambushMode, blueprintHint, foeFormation, foePack, foeWaves, heroFormation, lightingId, objectivePreset, paceMode, partyLevel, pickedHeroIds, scenarioId, seed, storyContext, weatherId]
+    [allyPack, ambushMode, blueprintHint, foeFormation, foePack, foeWaves, heroFormation, lightingId, objectivePreset, paceMode, partyLevel, pickedHeroIds, sampler, scenarioId, seed, storyContext, weatherId]
   );
 
   const autoStartedRef = useRef(false);
@@ -571,10 +625,23 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
     return () => window.removeEventListener("keydown", onKey);
   }, [hasBattle, handleEndHeroTurn]);
 
+  // Trigger post-battle closing dialogue once when battle ends
+  useEffect(() => {
+    if (!battle?.ended || endedScriptFiredRef.current) return;
+    endedScriptFiredRef.current = true;
+    const outcomeKey = battle.outcome === "retreat" ? "retreat" : battle.outcome === "defeat" ? "defeat" : "victory";
+    const lines = battle.battleScript?.ending?.[outcomeKey] || [];
+    if (lines.length > 0) {
+      setDialogueQueue(lines);
+      setDialoguePhase("ending");
+    }
+  }, [battle?.ended, battle?.outcome, battle?.battleScript]);
+
   // Automatic turn runner for Enemy AI or Unconscious / Stunned / Surprised units
   const waitingDiceAnim = diceAnimOn && diceQueue.length > 0;
+  const waitingDialogue = dialoguePhase === "opening" || dialoguePhase === "ending";
   const autoTurnKey =
-    battle && !battle.ended && !waitingDiceAnim && activeUnit && (activeUnit.side === "foe" || activeUnit.turn?.autoSkip)
+    battle && !battle.ended && !waitingDiceAnim && !waitingDialogue && activeUnit && (activeUnit.side === "foe" || activeUnit.turn?.autoSkip)
       ? `${battle.round}_${battle.turnIndex}_${activeUnit.id}_${Boolean(activeUnit.turn?.autoSkip)}`
       : "";
 
@@ -2150,8 +2217,95 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
           </div>
         </aside>
 
+        {/* Opening / Closing Tactical Dialogue Bar */}
+        {dialogueQueue.length > 0 && (dialoguePhase === "opening" || dialoguePhase === "ending") && (
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              bottom: 18,
+              transform: "translateX(-50%)",
+              zIndex: 42,
+              width: "min(94vw, 640px)",
+              background:
+                dialogueQueue[0].side === "foe"
+                  ? "linear-gradient(180deg, rgba(44, 13, 21, 0.96), rgba(22, 7, 12, 0.97))"
+                  : "linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(9, 14, 24, 0.97))",
+              border: `1.5px solid ${dialogueQueue[0].side === "foe" ? "#fb7185" : "#dcaf73"}`,
+              borderRadius: 12,
+              padding: "12px 16px",
+              boxShadow: "0 18px 45px rgba(0, 0, 0, 0.78)",
+              color: "#f8fafc",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  letterSpacing: "0.08em",
+                  color: dialogueQueue[0].side === "foe" ? "#fda4af" : "#fbbf24",
+                }}
+              >
+                {dialoguePhase === "opening" ? "⚔️ 開戰宣言" : "📜 戰後對話"} · {dialogueQueue[0].speaker}
+              </span>
+              {missionGoal && dialoguePhase === "opening" && (
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    color: "#bae6fd",
+                    background: "rgba(14, 116, 144, 0.28)",
+                    border: "1px solid rgba(56, 189, 248, 0.35)",
+                    padding: "2px 8px",
+                    borderRadius: 99,
+                  }}
+                >
+                  🎯 目標：{missionGoal}
+                </span>
+              )}
+            </div>
+            <div style={{ fontSize: 14, lineHeight: 1.55, color: "#f1f5f9", marginBottom: 10 }}>
+              「{dialogueQueue[0].line}」
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <button type="button" className="tac3d-btn" onClick={handleSkipDialogue}>
+                跳過
+              </button>
+              <button type="button" className="tac3d-btn is-primary" onClick={handleAdvanceDialogue}>
+                {dialogueQueue.length > 1
+                  ? `下一句 (${dialogueQueue.length - 1})`
+                  : dialoguePhase === "opening"
+                    ? "⚔️ 開始戰鬥！"
+                    : "✓ 進入戰果結算"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Mid-Battle Lightweight Triggered Subtitle */}
+        {midDialogue && dialoguePhase === "idle" && (
+          <div
+            className="tac3d-toast"
+            style={{
+              top: lastDiceRoll ? 74 : 42,
+              background: midDialogue.side === "foe" ? "rgba(44, 13, 21, 0.94)" : "rgba(15, 23, 42, 0.94)",
+              borderColor: midDialogue.side === "foe" ? "#fb7185" : "#fbbf24",
+              color: "#f8fafc",
+              maxWidth: "min(90vw, 560px)",
+              fontSize: 12,
+              fontWeight: 600,
+              textAlign: "center",
+            }}
+          >
+            <strong style={{ color: midDialogue.side === "foe" ? "#fda4af" : "#fde047" }}>
+              💬 {midDialogue.speaker}：
+            </strong>
+            「{midDialogue.line}」
+          </div>
+        )}
+
         {/* Victory / Defeat Modal with AI Handoff Summary JSON */}
-        {battle.ended && summaryJson && (
+        {battle.ended && summaryJson && dialoguePhase !== "ending" && (
           <div className="tac3d-modal-backdrop">
             <div className="tac3d-modal-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>

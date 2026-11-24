@@ -2361,6 +2361,42 @@ function spawnEnemyLootDrop(battle, target, events) {
   events.push({ type: "float", x: target.x, y: target.y, z: getUnitBaseH(battle, target) + 1.65, text: `🎁 掉落：${name}`, color: "#fde047" });
 }
 
+function triggerBattleScriptLine(battle, key, speakerUnitOverride = null, events = []) {
+  const script = battle?.battleScript;
+  if (!script || !events) return;
+  if (!battle._scriptFired) battle._scriptFired = {};
+  if (battle._scriptFired[key]) return;
+
+  const entry = key === "propLine" ? script.propLine : script.triggers?.[key];
+  if (!entry || !entry.line) return;
+  battle._scriptFired[key] = true;
+
+  const speaker = speakerUnitOverride?.name || entry.speaker || "隊伍";
+  const side = speakerUnitOverride?.side || (entry.side === "foe" ? "foe" : "hero");
+  const unit =
+    speakerUnitOverride ||
+    battle.units.find((u) => !u.dead && u.hp > 0 && u.name === speaker) ||
+    battle.units.find((u) => !u.dead && u.hp > 0 && u.side === side);
+
+  events.push({ type: "dialogue", key, speaker, side, line: entry.line });
+  if (unit) {
+    events.push({
+      type: "bubble",
+      unitId: unit.id,
+      x: unit.x,
+      y: unit.y,
+      z: getUnitBaseH(battle, unit) + 1.55,
+      text: entry.line,
+      side,
+      priority: 3,
+      durationMs: 3800,
+    });
+  }
+  if (!battle._scriptBeats) battle._scriptBeats = [];
+  battle._scriptBeats.push(`${speaker}：「${entry.line}」`);
+  battle.logs.push(`💬 ${speaker}：「${entry.line}」`);
+}
+
 function emitSpeechBubble(battle, unit, triggerKey, events) {
   if (!battle || !unit || !events || unit.dead || (unit.hp <= 0 && triggerKey !== "low_hp")) return;
   if (triggerKey === "low_hp" && unit._lowHpBarked) return;
@@ -2481,6 +2517,9 @@ function applyDamageToUnit(battle, target, rawDmg, damageType, isCrit = false, e
       if (target.hp > 0 && target.side === "foe" && target.hp <= Math.ceil(target.maxHp * 0.35)) {
         emitSpeechBubble(battle, target, "low_hp", events);
       }
+      if (target.hp > 0 && target.side === "foe" && target.hp <= Math.ceil(target.maxHp * 0.5)) {
+        triggerBattleScriptLine(battle, "foeHalfHp", target, events);
+      }
 
       if (target.hp === 0) {
         clearConcentration(battle, target);
@@ -2490,6 +2529,7 @@ function applyDamageToUnit(battle, target, rawDmg, damageType, isCrit = false, e
           target.deathSaves = { success: 0, fail: 0, stabilized: false };
           events.push({ type: "float", x: target.x, y: target.y, z: getUnitBaseH(battle, target) + 1.4, text: "倒地瀕死！", color: "#fb923c" });
           battle.logs.push(`🩸 ${target.name} HP 歸 0 昏迷瀕死！（需隊友急救或擲死亡豁免）`);
+          triggerBattleScriptLine(battle, "heroDown", null, events);
         } else if (battle.nonLethal) {
           target.captured = true;
           target.conditions.Unconscious = 99;
@@ -4296,6 +4336,7 @@ export function endUnitTurn(battle) {
   if (!battle || battle.ended || checkBattleOutcome(battle)) {
     return { events: [], battleEnded: true };
   }
+  const roundEvents = [];
   const prev = getActiveUnit(battle);
   if (prev) {
     prev.turn = null;
@@ -4341,6 +4382,7 @@ export function endUnitTurn(battle) {
             battle.initiativeOrder.push(rf.id);
             battle.initiativeRolls[rf.id] = 11;
             battle.logs.push(`📣 劇情伏兵現身！敵方【${rf.name}】從戰場邊緣加入戰鬥！`);
+            triggerBattleScriptLine(battle, "waveArrive", rf, roundEvents);
           }
         }
       }
@@ -4366,11 +4408,11 @@ export function endUnitTurn(battle) {
     if (candidate && !candidate.dead && (candidate.side === "hero" || candidate.hp > 0)) {
       battle.turnIndex = nextIdx;
       const turnInfo = beginActiveTurn(battle);
-      return turnInfo;
+      return { ...turnInfo, events: [...roundEvents, ...(turnInfo.events || [])] };
     }
   }
 
-  return { events: [], battleEnded: checkBattleOutcome(battle) };
+  return { events: roundEvents, battleEnded: checkBattleOutcome(battle) };
 }
 
 export function decideAllyTurn(battle, allyId) {
@@ -4782,6 +4824,9 @@ export function executePropInteract(battle, actorId, propId) {
   }
 
   battle.logs.push(`🎯 ${actor.name} 【${skillLabel}】檢定 ${total} ≥ DC ${dc}，成功互動【${prop.name}】！${prop.rewardDesc || ""}`);
+  if (prop.isObjective || prop.interactable) {
+    triggerBattleScriptLine(battle, "propLine", actor, events);
+  }
   emitSpeechBubble(battle, actor, "interact_ok", events);
   checkBattleOutcome(battle);
   return { ok: true, success: true, events };
@@ -5107,6 +5152,7 @@ export function exportBattleSummary(battle) {
     completedObjectives,
     totalXp: foes.filter((f) => f.hp <= 0).reduce((acc, f) => acc + (f.xp || 50), 0),
     suggestedLootTier: lootGuide?.maxRarity || "uncommon",
+    scriptBeats: battle._scriptBeats || [],
     recentLogs: battle.logs.slice(-8),
   };
 }
