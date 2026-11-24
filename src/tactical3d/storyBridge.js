@@ -245,12 +245,31 @@ function inferInteractableRewardFromText(txt = "") {
   return "weaken_foes";
 }
 
-function inferInteractableKindFromText(txt = "", skill = "") {
-  if (/油|酒|火藥|炸|爆|燃/.test(txt)) return "oil_barrel";
-  if (/祭壇|神龕|聖|宗教|祈禱|淨化/.test(txt) || /宗教/.test(skill)) return "altar";
-  if (/門|鎖|籠|柵|閥|閘|橋|繩|索|機關/.test(txt) || /巧手/.test(skill)) return "gate";
-  if (/推|撞|石|柱|箱|車|桶|倒/.test(txt) || /運動/.test(skill)) return "boulder";
-  return "crystal";
+const THEME_DEFAULT_PROP_KIND = {
+  tavern_brawl: "oil_barrel",
+  ship_deck: "oil_barrel",
+  volcanic_forge: "boulder",
+  haunted_crypt: "altar",
+  urban_alley: "gate",
+  castle_throne: "altar",
+  forest_ambush: "boulder",
+  underground_river: "gate",
+  swamp_ruins: "altar",
+  desert_canyon: "boulder",
+  frost_citadel: "crystal",
+  coral_underwater: "crystal",
+  mountain_cliff: "boulder",
+  chasm_sanctum: "crystal",
+  troll_grotto: "boulder",
+  cave_ambush: "boulder",
+};
+
+function inferInteractableKindFromText(txt = "", skill = "", scenarioId = "") {
+  if (/油|酒|火藥|炸|爆|燃|藥水|蒸餾|桶/.test(txt)) return "oil_barrel";
+  if (/祭壇|神龕|聖|宗教|祈禱|淨化|壁爐|雕像|靈/.test(txt) || /宗教/.test(skill)) return "altar";
+  if (/門|鎖|籠|柵|閥|閘|橋|繩|索|機關|櫃|箱|桌|窗/.test(txt) || /巧手/.test(skill)) return "gate";
+  if (/推|撞|石|柱|箱|車|桶|倒|牆|木/.test(txt) || /運動/.test(skill)) return "boulder";
+  return THEME_DEFAULT_PROP_KIND[scenarioId] || "crystal";
 }
 
 function inferActionLabelFromText(txt = "", skill = "") {
@@ -289,7 +308,7 @@ function inferTrapOnFailFromText(txt = "") {
   return { kind: "poison_dart", size, targetOffset };
 }
 
-function buildStoryInteractables(node) {
+function buildStoryInteractables(node, scenarioId = "") {
   const tacInters = Array.isArray(node?.tactical?.interactables) ? node.tactical.interactables : null;
   if (tacInters && tacInters.length > 0) {
     return tacInters.map((item) => {
@@ -317,7 +336,7 @@ function buildStoryInteractables(node) {
     const shortName = rawTitle.length > 16 ? rawTitle.slice(0, 16) : rawTitle || `${skill}戰術互動`;
     const txt = `${app?.type || ""} ${app?.outcome || ""}`;
     derived.push({
-      kind: inferInteractableKindFromText(txt, skill),
+      kind: inferInteractableKindFromText(txt, skill, scenarioId),
       name: shortName,
       skill,
       dc: Number.isFinite(dc) ? dc : 12,
@@ -361,7 +380,7 @@ export function mapStorySessionTo3DConfig(session, opts = {}) {
           foeFormation: VALID_FOE_FORMATIONS.has(tac?.foeFormation) ? tac.foeFormation : textBlueprint?.foeFormation || "auto",
           foeWaves: typeof tac?.foeWaves === "boolean" ? tac.foeWaves : Boolean(textBlueprint?.foeWaves),
           objectiveName: tac?.objectiveName || textBlueprint?.objectiveName || undefined,
-          interactables: buildStoryInteractables(session?.node),
+          interactables: buildStoryInteractables(session?.node, scenarioId),
           tabletopMapId: tac?.tabletopMap || session?.node?.map || undefined,
         }
       : null;
@@ -854,4 +873,52 @@ export async function adjudicateTacticalShoutWithAI(sampler, battle, actor, play
   } catch {
     return null;
   }
+}
+
+const AMBIENT_NPCS_BY_SCENARIO = {
+  tavern_brawl: [
+    { name: "矮人酒客", role: "常客", avatar: "/prototype-assets/lego-creatures-v1/dwarf_thane.png", line: "這杯麥酒今天喝起來有點辣喉嚨……" },
+    { name: "流浪吟遊詩人", role: "樂師", avatar: "/prototype-assets/lego-creatures-v1/villager_merchant.png", line: "等你們解決麻煩，我免費替你們編首英雄詩！" },
+    { name: "微醺旅人", role: "商旅", avatar: "/prototype-assets/lego-creatures-v1/town_commoner_boy.png", line: "剛剛地板底下好像有什麼東西在晃動……" },
+  ],
+  ship_deck: [
+    { name: "甲板水手", role: "船員", avatar: "/prototype-assets/lego-creatures-v1/pirate_duelist.png", line: "繩索都固定好了，隨時可以拉帆或放下跳板！" },
+    { name: "老練舵手", role: "舵手", avatar: "/prototype-assets/lego-creatures-v1/viking_elder_warrior.png", line: "風向不太對勁，大家站穩別被浪打下海了。" },
+    { name: "碼頭搬運工", role: "苦力", avatar: "/prototype-assets/lego-creatures-v1/village_farmer_pitchfork.png", line: "這批貨箱沉得要命，裡面到底裝了什麼？" },
+  ],
+  urban_alley: [
+    { name: "巡邏衛兵", role: "城防衛兵", avatar: "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png", line: "最近街區不太平靜，你們經過巷口要多留神。" },
+    { name: "街角商販", role: "攤販", avatar: "/prototype-assets/lego-creatures-v1/villager_merchant.png", line: "要買乾糧還是火把？我這兒都有現貨！" },
+    { name: "好奇市民", role: "居民", avatar: "/prototype-assets/lego-creatures-v1/town_commoner_boy.png", line: "聽說昨晚那邊傳來怪聲，我可不敢靠太近。" },
+  ],
+  castle_throne: [
+    { name: "宮廷侍從", role: "侍從", avatar: "/prototype-assets/lego-creatures-v1/white_gown_noble_maiden.png", line: "請保持肅靜，長官與貴族們正在議事。" },
+    { name: "殿前衛士", role: "近衛", avatar: "/prototype-assets/lego-creatures-v1/paladin_golden_crusader.png", line: "一切通行都需經過守衛檢視。" },
+    { name: "宮廷學者", role: "文官", avatar: "/prototype-assets/lego-creatures-v1/green_scholar.png", line: "古籍裡的記載也許能替你們指點迷津。" },
+  ],
+  forest_ambush: [
+    { name: "巡林斥候", role: "斥候", avatar: "/prototype-assets/lego-creatures-v1/robin_hood_ranger.png", line: "前面灌木叢有剛折斷的樹枝，小心埋伏。" },
+    { name: "草藥採集者", role: "採藥人", avatar: "/prototype-assets/lego-creatures-v1/village_hermit_beggar.png", line: "這片林子的霧氣越來越重，早點穿過出口比較安全。" },
+  ],
+  haunted_crypt: [
+    { name: "謹慎的考古學徒", role: "學徒", avatar: "/prototype-assets/lego-creatures-v1/green_scholar.png", line: "別亂碰那些沒見過的石碑……會出事的。" },
+    { name: "持燈守墓人", role: "守墓人", avatar: "/prototype-assets/lego-creatures-v1/viking_elder_warrior.png", line: "深處的石門最近自己開開關關，邪門得很。" },
+  ],
+  volcanic_forge: [
+    { name: "矮人學徒鐵匠", role: "鐵匠", avatar: "/prototype-assets/lego-creatures-v1/village_smith_craftsman.png", line: "爐溫高得嚇人，小心別踩到流出的熔渣！" },
+    { name: "老練礦工", role: "礦工", avatar: "/prototype-assets/lego-creatures-v1/dwarven_hammer_smith.png", line: "前面的通風口好像被什麼堵住了。" },
+  ],
+  coral_underwater: [
+    { name: "海灣潛水夫", role: "漁民", avatar: "/prototype-assets/lego-creatures-v1/pirate_duelist.png", line: "潮水退了以後，那些珊瑚縫裡冒出不少怪東西。" },
+    { name: "海岸哨兵", role: "哨兵", avatar: "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png", line: "海霧裡的視線很差，沿著礁石邊緣走吧。" },
+  ],
+};
+
+export function getAmbientNpcsForScenario(scenarioId = "cave_ambush") {
+  const list = AMBIENT_NPCS_BY_SCENARIO[scenarioId];
+  if (Array.isArray(list) && list.length > 0) return list;
+  return [
+    { name: "隨行嚮導", role: "嚮導", avatar: "/prototype-assets/lego-creatures-v1/ranger_strider.png", line: "前方就是離開這片區域的出口，準備好再過去吧。" },
+    { name: "商隊哨兵", role: "哨兵", avatar: "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png", line: "我會幫忙看著後方，你們放心調查周圍。" },
+  ];
 }

@@ -2202,6 +2202,65 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
     }
   }
 
+  const EXIT_LABEL_BY_SCENARIO = {
+    tavern_brawl: "酒館階梯出口",
+    ship_deck: "船舷跳板出口",
+    volcanic_forge: "鍛造通道出口",
+    haunted_crypt: "墓室石門出口",
+    urban_alley: "街區巷口",
+    castle_throne: "殿堂大門出口",
+    forest_ambush: "林間小徑出口",
+    underground_river: "暗河石橋出口",
+    swamp_ruins: "沼澤遺跡出口",
+    desert_canyon: "峽谷隘口",
+    frost_citadel: "冰堡通道出口",
+    coral_underwater: "珊瑚海灣出口",
+    mountain_cliff: "山道出口",
+    chasm_sanctum: "裂隙聖殿出口",
+    troll_grotto: "洞穴出口",
+    cave_ambush: "洞窟出口",
+  };
+  let exitCell = null;
+  {
+    const start = heroSpawns[0] || { x: Math.floor(MAP_COLS / 2), y: MAP_ROWS - 2 };
+    const blockedSet = new Set([
+      ...heroSpawns.map((s) => `${s.x},${s.y}`),
+      ...foeSpawns.map((s) => `${s.x},${s.y}`),
+      ...props.filter((p) => !p.broken).map((p) => `${p.x},${p.y}`),
+    ]);
+    const visited = new Set([`${start.x},${start.y}`]);
+    const queue = [{ x: start.x, y: start.y, d: 0 }];
+    const candidates = [];
+    while (queue.length > 0) {
+      const cur = queue.shift();
+      const key = `${cur.x},${cur.y}`;
+      const cell = grid[cur.y]?.[cur.x];
+      if (cell?.walkable && !cell.blocksMove && !blockedSet.has(key)) {
+        const isEdge =
+          cur.x <= 2 || cur.x >= MAP_COLS - 3 || cur.y <= 2 || cur.y >= MAP_ROWS - 3;
+        const score = cur.d + (isEdge ? 4 : 0) + (cur.y <= 3 ? 2 : 0);
+        candidates.push({ x: cur.x, y: cur.y, score });
+      }
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = cur.x + dx;
+        const ny = cur.y + dy;
+        const nk = `${nx},${ny}`;
+        if (nx < 0 || nx >= MAP_COLS || ny < 0 || ny >= MAP_ROWS || visited.has(nk)) continue;
+        const nc = grid[ny]?.[nx];
+        if (!nc || !nc.walkable || nc.blocksMove) continue;
+        visited.add(nk);
+        queue.push({ x: nx, y: ny, d: cur.d + 1 });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    const chosenExit = candidates[0] || foeSpawns[0] || { x: Math.floor(MAP_COLS / 2), y: 2 };
+    exitCell = {
+      x: chosenExit.x,
+      y: chosenExit.y,
+      label: EXIT_LABEL_BY_SCENARIO[scenario.id] || "區域出口",
+    };
+  }
+
   return {
     scenarioId: scenario.id,
     name: bp?.title || scenario.name,
@@ -2222,6 +2281,7 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
     props,
     heroSpawns,
     foeSpawns,
+    exitCell,
     defaultFoes,
     wallCount,
     connected: bfs.connected,

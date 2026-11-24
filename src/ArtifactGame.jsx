@@ -36927,6 +36927,7 @@ function yA({
   lightingMood: h = "daylight",
   sceneTransition: M = null,
   onExplorationLoot = null,
+  onReachExit = null,
   stageProps: j = [],
   overlay: x = null,
   onToggleFamiliar: T = null,
@@ -37623,6 +37624,7 @@ function yA({
                 speechBubble: (k && A && k[A]) || S || null,
                 onBubbleClick: H,
                 onExplorationLoot,
+                onReachExit,
               }),
             })
           : n.jsx("div", {
@@ -61995,9 +61997,61 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                     children: [
                       Ve &&
                         n.jsx(yA, {
-                          threeStorySession: ue === "theater" ? s : null,
+                          threeStorySession:
+                            ue === "theater" && s
+                              ? {
+                                  ...s,
+                                  cast: Array.isArray(s.cast)
+                                    ? s.cast.map((c) => {
+                                        if (
+                                          !c ||
+                                          (c.image &&
+                                            !String(c.image).includes(
+                                              "lego_standees_packed",
+                                            ))
+                                        )
+                                          return c;
+                                        const resolved = Ps(c);
+                                        return resolved?.image &&
+                                          !String(resolved.image).includes(
+                                            "lego_standees_packed",
+                                          )
+                                          ? { ...c, image: resolved.image }
+                                          : c;
+                                      })
+                                    : s.cast,
+                                }
+                              : null,
                           focusedHeroId: ue === "theater" ? $a : null,
                           isPickingActions: ue === "theater" ? wa : false,
+                          onReachExit:
+                            ue === "theater"
+                              ? (exitCell) => {
+                                  r((prev) =>
+                                    prev
+                                      ? {
+                                          ...prev,
+                                          log: [
+                                            ...(Array.isArray(prev.log)
+                                              ? prev.log
+                                              : []),
+                                            {
+                                              id: `exit_${Date.now()}`,
+                                              kind: "gm",
+                                              text: `🚪 隊伍走向【${(exitCell && exitCell.label) || "區域出口"}】，準備離開此處前往下一幕。`,
+                                            },
+                                          ],
+                                        }
+                                      : prev,
+                                  );
+                                  if (y) V(null);
+                                  if (!S && s) {
+                                    if (kc(s)) ia();
+                                    else if (!s.options) ma();
+                                    else Ge("🚪 已抵達區域出口，請在右側選擇行動推進下一幕！");
+                                  }
+                                }
+                              : null,
                           onExplorationLoot:
                             ue === "theater"
                               ? (chestLoot, propObj, actorUnit) => {

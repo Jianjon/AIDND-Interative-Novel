@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./tactical3d.css";
 import ThreeBattleCanvas from "./ThreeBattleCanvas.jsx";
 import TacticalDiceModal from "./TacticalDiceModal.jsx";
-import { mapStorySessionTo3DConfig } from "./storyBridge.js";
+import { mapStorySessionTo3DConfig, getAmbientNpcsForScenario } from "./storyBridge.js";
 import {
   createBattleState,
   computeReachable3D,
@@ -57,6 +57,7 @@ export default function ThreeStoryStage({
   onSelectProp = null,
   onPositionsChange = null,
   onExplorationLoot = null,
+  onReachExit = null,
 }) {
   const [rotation, setRotation] = useState(0);
   const [recenterToken, setRecenterToken] = useState(0);
@@ -66,6 +67,7 @@ export default function ThreeStoryStage({
   const [leaderStoryId, setLeaderStoryId] = useState(null);
   const [activeScreenPos, setActiveScreenPos] = useState(null);
   const [activeDiceRoll, setActiveDiceRoll] = useState(null);
+  const [exitPrompt, setExitPrompt] = useState(null);
   const [localHint, setLocalHint] = useState("");
   const hintTimerRef = useRef(null);
 
@@ -103,10 +105,11 @@ export default function ThreeStoryStage({
   ]);
 
   const [battle, setBattle] = useState(null);
-  const mapKey = `${session?.map || "default"}_${session?.node?.id || "0"}`;
+  const mapKey = `${session?.moduleKey || "mod"}_${session?.act || 1}_${session?.map || "default"}`;
 
   useEffect(() => {
     if (!cfg) return;
+    setExitPrompt(null);
     const isSurpriseAmbush = cfg.ambushMode === "foe_surprise";
     const created = createBattleState({
       scenarioId: cfg.scenarioId || "cave_ambush",
@@ -137,6 +140,62 @@ export default function ThreeStoryStage({
       }
       u.turn = { ...(u.turn || {}), movementLeft: u.speedCells || 6, actionLeft: 1, bonusLeft: 1 };
     }
+
+    // Populate 2-3 theme-matched ambient NPCs so maps feel lively without crowding combat
+    const ambientTemplates = getAmbientNpcsForScenario(cfg.scenarioId || "cave_ambush");
+    if (ambientTemplates.length > 0 && created.map?.grid) {
+      const grid = created.map.grid;
+      const rows = grid.length;
+      const cols = grid[0]?.length || 0;
+      const occupied = new Set([
+        ...created.units.map((u) => `${u.x},${u.y}`),
+        ...(created.map.props || []).filter((p) => !p.broken).map((p) => `${p.x},${p.y}`),
+        ...(created.map.exitCell ? [`${created.map.exitCell.x},${created.map.exitCell.y}`] : []),
+      ]);
+      const existingNames = new Set(created.units.map((u) => u.name));
+      ambientTemplates.slice(0, 3).forEach((tpl, aIdx) => {
+        if (existingNames.has(tpl.name)) return;
+        let spot = null;
+        let bestScore = -Infinity;
+        for (let y = 2; y < rows - 2; y++) {
+          for (let x = 2; x < cols - 2; x++) {
+            const c = grid[y]?.[x];
+            if (!c || !c.walkable || c.blocksMove || occupied.has(`${x},${y}`)) continue;
+            // Spread ambient NPCs across the room
+            const hash = ((x * 7 + y * 13 + aIdx * 19 + (cfg.seed || 1)) % 29);
+            if (hash > bestScore) {
+              bestScore = hash;
+              spot = { x, y };
+            }
+          }
+        }
+        if (spot) {
+          occupied.add(`${spot.x},${spot.y}`);
+          created.units.push({
+            id: `ambient_npc_${aIdx}_${cfg.scenarioId}`,
+            side: "ally",
+            allyRole: "vip",
+            isAmbientNpc: true,
+            ambientLine: tpl.line,
+            name: tpl.name,
+            className: tpl.role || "路人",
+            avatar: tpl.avatar,
+            x: spot.x,
+            y: spot.y,
+            hp: 16,
+            maxHp: 16,
+            ac: 10,
+            speedCells: 6,
+            footprint: 1,
+            dead: false,
+            conditions: {},
+            mods: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 },
+            turn: { movementLeft: 6, actionLeft: 1, bonusLeft: 1 },
+          });
+        }
+      });
+    }
+
     setBattle(created);
     const firstHero = created.units.find((u) => u.side === "hero" && !u.dead);
     if (firstHero) setLeaderStoryId((prev) => focusedHeroId || prev || firstHero.storyId || firstHero.id);
@@ -292,6 +351,8 @@ export default function ThreeStoryStage({
         if (clickedUnit.side === "hero") {
           setLeaderStoryId(clickedUnit.storyId || clickedUnit.id);
           showHint(`🦶 切換控制：${clickedUnit.name}（剩餘移動 ${clickedUnit.turn?.movementLeft ?? clickedUnit.speedCells ?? 6} 格）`);
+        } else if (clickedUnit.isAmbientNpc) {
+          showHint(`💬 ${clickedUnit.name}（${clickedUnit.className || "路人"}）：「${clickedUnit.ambientLine || "……"}」`);
         } else {
           if (onSelectUnit) onSelectUnit(clickedUnit);
           else showHint(`👁️ ${clickedUnit.name}（HP ${clickedUnit.hp}/${clickedUnit.maxHp}）`);
@@ -366,7 +427,13 @@ export default function ThreeStoryStage({
       const stamp = `${Date.now()}_${Math.random()}`;
       setBattle(next);
       setEventsBatch([{ type: "move", unitId: nextLeader.id, path, _uid: `${stamp}_0` }]);
-      showHint(`🦶 ${nextLeader.name} 已移動（剩 ${nextLeader.turn.movementLeft} 格）`);
+      const ex = next.map?.exitCell;
+      if (ex && x === ex.x && y === ex.y) {
+        setExitPrompt(ex);
+        showHint(`🚪 已抵達【${ex.label || "區域出口"}】！`);
+      } else {
+        showHint(`🦶 ${nextLeader.name} 已移動（剩 ${nextLeader.turn.movementLeft} 格）`);
+      }
     },
     [battle, leaderUnit, activeDiceRoll, onSelectProp, onSelectUnit, showHint]
   );
@@ -425,6 +492,78 @@ export default function ThreeStoryStage({
             <span>{speechBubble.totalPages > 1 ? `${speechBubble.page}/${speechBubble.totalPages} · ` : ""}點擊繼續 ▶</span>
           </div>
           <div>{speechBubble.text}</div>
+        </div>
+      )}
+
+      {/* Exit Arrival Confirmation Card */}
+      {exitPrompt && (
+        <div
+          role="dialog"
+          aria-label="區域出口確認"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 48,
+            width: "min(360px, calc(100% - 32px))",
+            padding: "16px 18px",
+            borderRadius: 12,
+            background: "rgba(9, 15, 24, 0.96)",
+            border: "1.5px solid rgba(52, 211, 153, 0.85)",
+            boxShadow: "0 18px 44px rgba(0, 0, 0, 0.85)",
+            color: "#f8fafc",
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 15, fontWeight: 700, color: "#6ee7b7" }}>
+            <span>🚪</span>
+            <span>抵達【{exitPrompt.label || "區域出口"}】</span>
+          </div>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "#cbd5e1" }}>
+            你已走到本幕地圖的出口。要繼續留在原地探索／與 NPC 互動，還是直接前往下一幕？
+          </p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => setExitPrompt(null)}
+              style={{
+                padding: "7px 12px",
+                borderRadius: 7,
+                border: "1px solid rgba(148, 163, 184, 0.4)",
+                background: "rgba(15, 23, 42, 0.85)",
+                color: "#cbd5e1",
+                fontSize: 12.5,
+                cursor: "pointer",
+              }}
+            >
+              繼續探索原地
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const ex = exitPrompt;
+                setExitPrompt(null);
+                if (onReachExit) onReachExit(ex);
+              }}
+              style={{
+                padding: "7px 14px",
+                borderRadius: 7,
+                border: "1px solid rgba(52, 211, 153, 0.8)",
+                background: "linear-gradient(135deg, #059669, #10b981)",
+                color: "#fff",
+                fontSize: 12.5,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              前往下一幕 ▶
+            </button>
+          </div>
         </div>
       )}
 

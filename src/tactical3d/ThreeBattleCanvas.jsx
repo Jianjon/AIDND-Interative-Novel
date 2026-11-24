@@ -904,6 +904,72 @@ export default function ThreeBattleCanvas({
           }
         }
 
+        // Map Exit Portal Ring + Upright Beacon Label (story next-act / combat retreat)
+        if (map.exitCell && Number.isInteger(map.exitCell.x) && Number.isInteger(map.exitCell.y)) {
+          const ex = map.exitCell;
+          const eh = map.grid[ex.y]?.[ex.x]?.h ?? 1;
+          const exitColor = latestPropsRef.current.storyMode ? 0x34d399 : 0xfbbf24;
+          const ringMesh = new THREE.Mesh(
+            new THREE.RingGeometry(0.28, 0.44, 24),
+            new THREE.MeshBasicMaterial({
+              color: exitColor,
+              side: THREE.DoubleSide,
+              transparent: true,
+              opacity: 0.88,
+            })
+          );
+          ringMesh.rotation.x = -Math.PI / 2;
+          ringMesh.position.set(ex.x, eh * ELEV_H + 0.035, ex.y);
+          tileGroup.add(ringMesh);
+
+          const innerDisc = new THREE.Mesh(
+            new THREE.CircleGeometry(0.26, 20),
+            new THREE.MeshBasicMaterial({
+              color: exitColor,
+              transparent: true,
+              opacity: 0.22,
+              side: THREE.DoubleSide,
+            })
+          );
+          innerDisc.rotation.x = -Math.PI / 2;
+          innerDisc.position.set(ex.x, eh * ELEV_H + 0.03, ex.y);
+          tileGroup.add(innerDisc);
+
+          const exLight = new THREE.PointLight(exitColor, 1.8, 4.5);
+          exLight.position.set(ex.x, eh * ELEV_H + 0.75, ex.y);
+          lightGroup.add(exLight);
+          pointLights.push({ light: exLight, base: 1.8, flicker: true, phase: 1.7 });
+
+          if (typeof document !== "undefined") {
+            const cvs = document.createElement("canvas");
+            cvs.width = 256;
+            cvs.height = 64;
+            const ctx2 = cvs.getContext("2d");
+            if (ctx2) {
+              ctx2.fillStyle = "rgba(8, 15, 24, 0.86)";
+              ctx2.strokeStyle = latestPropsRef.current.storyMode ? "#34d399" : "#fbbf24";
+              ctx2.lineWidth = 4;
+              ctx2.beginPath();
+              ctx2.roundRect(8, 8, 240, 48, 14);
+              ctx2.fill();
+              ctx2.stroke();
+              ctx2.fillStyle = "#f8fafc";
+              ctx2.font = "bold 24px sans-serif";
+              ctx2.textAlign = "center";
+              ctx2.textBaseline = "middle";
+              ctx2.fillText(`🚪 ${String(ex.label || "出口").slice(0, 8)}`, 128, 33);
+              const spTex = new THREE.CanvasTexture(cvs);
+              spTex.colorSpace = THREE.SRGBColorSpace;
+              const spMat = new THREE.SpriteMaterial({ map: spTex, transparent: true, depthTest: false });
+              const sp = new THREE.Sprite(spMat);
+              sp.scale.set(1.45, 0.36, 1);
+              sp.position.set(ex.x, eh * ELEV_H + 1.05, ex.y);
+              sp.renderOrder = 25;
+              tileGroup.add(sp);
+            }
+          }
+        }
+
         // Dual-State 2D Cutout Props (s0 -> s1 on destruction, auto-scaled by size/gridSize/aspect)
         for (const p of map.props || []) {
           const baseW = p.scaleW || 0.95;
