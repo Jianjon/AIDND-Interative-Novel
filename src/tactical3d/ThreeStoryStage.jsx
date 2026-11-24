@@ -183,6 +183,9 @@ export default function ThreeStoryStage({
           x: u.x,
           y: u.y,
           h: battle.map?.grid?.[u.y]?.[u.x]?.h ?? 1,
+          passivePerception: 10 + (u.skillBonuses?.perception ?? u.mods?.wis ?? 0),
+          passiveArcana: 10 + (u.skillBonuses?.arcana ?? u.mods?.int ?? 0),
+          passiveReligion: 10 + (u.skillBonuses?.religion ?? u.mods?.wis ?? 0),
           nearbyProps,
           nearbyCast,
         };
