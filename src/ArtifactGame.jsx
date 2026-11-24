@@ -61591,18 +61591,36 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
               style: { position: "relative" },
               children: [
                 ue === "theater" &&
-                  isCombatActive(s) &&
+                  s &&
                   onOpenTactics3d &&
                   n.jsx("button", {
                     type: "button",
-                    className: "quiet-button is-active",
-                    style: { borderColor: "#f59e0b", color: "#fbbf24", fontWeight: 700 },
-                    onClick: () =>
+                    className: `quiet-button${isCombatActive(s) || (s?.node?.foes?.length > 0) ? " is-active" : ""}`,
+                    style:
+                      isCombatActive(s) || (s?.node?.foes?.length > 0)
+                        ? { borderColor: "#f59e0b", color: "#fbbf24", fontWeight: 700 }
+                        : { borderColor: "rgba(245, 158, 11, 0.45)", color: "#fde68a" },
+                    onClick: () => {
+                      const enrichedSession = Array.isArray(s?.cast)
+                        ? {
+                            ...s,
+                            cast: s.cast.map((c) => {
+                              if (!c || (c.image && !String(c.image).includes("lego_standees_packed"))) return c;
+                              const resolved = Ps(c);
+                              return resolved?.image && !String(resolved.image).includes("lego_standees_packed")
+                                ? { ...c, image: resolved.image }
+                                : c;
+                            }),
+                          }
+                        : s;
                       onOpenTactics3d({
-                        storyContext: mapStorySessionTo3DConfig(s),
+                        storyContext: mapStorySessionTo3DConfig(enrichedSession),
                         onApply: handleApply3dAndNarrate,
-                      }),
-                    title: "目前正在戰鬥中！點擊立即帶入當前隊伍、敵人、天氣與光影進入 3D 戰棋結算",
+                      });
+                    },
+                    title: isCombatActive(s)
+                      ? "目前正在戰鬥中！點擊立即帶入當前隊伍、敵人、天氣與光影進入 3D 戰棋結算"
+                      : "隨時帶入目前場景、隊伍與地形進入 3D 戰棋戰鬥模式",
                     children: "⚔️ 進入 3D 戰棋",
                   }),
                 n.jsx("button", {
@@ -61769,7 +61787,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
               children: [
                 ue === "theater" &&
                   s?.stage === "scene" &&
-                  isCombatActive(s) &&
+                  (isCombatActive(s) || (Array.isArray(s?.node?.foes) && s.node.foes.length > 0)) &&
                   combatPromptDismissedKey !== `${s.turn}_${s.map}` &&
                   !S &&
                   n.jsxs("div", {
