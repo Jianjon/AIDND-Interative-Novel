@@ -61261,13 +61261,14 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                       type: "button",
                       className: `quiet-button view-mode-btn${ue === "theater" ? " is-active" : ""}`,
                       title:
-                        "【劇院沉浸】全景大舞台地圖，底部浮動毛玻璃字幕與發言者大立繪",
+                        "【劇院＋戰鬥】全景大舞台地圖，底部浮動毛玻璃字幕與發言者大立繪，支援進入 3D 戰棋戰鬥模式",
                       onClick: () => Kt("theater"),
-                      children: "🎭 劇院",
+                      children: "🎭 劇院＋戰鬥",
                     }),
                   ],
                 }),
-                isCombatActive(s) &&
+                ue === "theater" &&
+                  isCombatActive(s) &&
                   onOpenTactics3d &&
                   n.jsx("button", {
                     type: "button",
@@ -61374,7 +61375,8 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
             n.jsxs("section", {
               className: "adventure-stage",
               children: [
-                s?.stage === "scene" &&
+                ue === "theater" &&
+                  s?.stage === "scene" &&
                   isCombatActive(s) &&
                   combatPromptDismissedKey !== `${s.turn}_${s.map}` &&
                   !S &&
