@@ -36900,6 +36900,8 @@ function yA({
   onStageClick: z = null,
   style: L = null,
   threeStorySession = null,
+  focusedHeroId = null,
+  isPickingActions = false,
   snapGrid = null,
   children: q,
 }) {
@@ -37544,6 +37546,9 @@ function yA({
               children: n.jsx(ThreeStoryStage, {
                 session: threeStorySession,
                 activeId: A,
+                focusedHeroId,
+                isPicking: isPickingActions,
+                turnKey: threeStorySession?.turn || 1,
                 speechBubble: (k && A && k[A]) || S || null,
                 onBubbleClick: H,
               }),
@@ -61666,6 +61671,8 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                       Ve &&
                         n.jsx(yA, {
                           threeStorySession: ue === "theater" ? s : null,
+                          focusedHeroId: ue === "theater" ? $a : null,
+                          isPickingActions: ue === "theater" ? wa : false,
                           snapGrid: ue === "classic" ? tacCtx?.grid || null : null,
                           style:
                             ue === "theater"

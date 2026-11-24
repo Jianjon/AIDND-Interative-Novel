@@ -20,8 +20,8 @@ function cloneExplorationBattle(b) {
   };
 }
 
-function findPath3D(battle, unit, tx, ty) {
-  const reach = computeReachable3D(battle, { ...unit, turn: { ...(unit.turn || {}), movementLeft: 28 } });
+function findPathFromReach(reach, unit, tx, ty) {
+  if (!reach) return null;
   const key = `${tx},${ty}`;
   if (!reach.has(key)) return null;
   const path = [];
@@ -43,6 +43,9 @@ function findPath3D(battle, unit, tx, ty) {
 export default function ThreeStoryStage({
   session,
   activeId = null,
+  focusedHeroId = null,
+  isPicking = false,
+  turnKey = 1,
   speechBubble = null,
   onBubbleClick = null,
   onSelectUnit = null,
@@ -53,7 +56,6 @@ export default function ThreeStoryStage({
   const [hoverTile, setHoverTile] = useState(null);
   const [eventsBatch, setEventsBatch] = useState([]);
   const [leaderStoryId, setLeaderStoryId] = useState(null);
-  const [followMode, setFollowMode] = useState(true);
   const [activeScreenPos, setActiveScreenPos] = useState(null);
   const [localHint, setLocalHint] = useState("");
   const hintTimerRef = useRef(null);
@@ -70,6 +72,13 @@ export default function ThreeStoryStage({
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
     };
   }, []);
+
+  // Sync active controllable hero with the right sidebar's sequential hero picker (Hero 1 -> 2 -> 3 -> 4)
+  useEffect(() => {
+    if (focusedHeroId) {
+      setLeaderStoryId(focusedHeroId);
+    }
+  }, [focusedHeroId]);
 
   const cfg = useMemo(() => {
     if (!session) return null;
@@ -102,7 +111,6 @@ export default function ThreeStoryStage({
       blueprint: cfg.blueprint,
       ambushMode: "normal",
     });
-    // Tag heroes with original story hero IDs so Theater activeId maps 1:1
     const livingHeroes = (session?.heroes || []).filter((h) => h && !h.dead);
     let hIdx = 0;
     for (const u of created.units) {
@@ -113,12 +121,26 @@ export default function ThreeStoryStage({
         const matched = cfg.foeSpecs.find((fs) => fs.name === u.name);
         if (matched?.storyCastId) u.storyId = matched.storyCastId;
       }
-      u.turn = { ...(u.turn || {}), movementLeft: 28, actionLeft: 1, bonusLeft: 1 };
+      u.turn = { ...(u.turn || {}), movementLeft: u.speedCells || 6, actionLeft: 1, bonusLeft: 1 };
     }
     setBattle(created);
     const firstHero = created.units.find((u) => u.side === "hero" && !u.dead);
-    if (firstHero) setLeaderStoryId((prev) => prev || firstHero.storyId || firstHero.id);
+    if (firstHero) setLeaderStoryId((prev) => focusedHeroId || prev || firstHero.storyId || firstHero.id);
   }, [mapKey]);
+
+  // Refresh movement points at the start of each new planning turn (turnKey)
+  useEffect(() => {
+    setBattle((prev) => {
+      if (!prev) return prev;
+      const next = cloneExplorationBattle(prev);
+      for (const u of next.units) {
+        if (u.side === "hero" && !u.dead) {
+          u.turn = { ...(u.turn || {}), movementLeft: u.speedCells || 6, actionLeft: 1, bonusLeft: 1 };
+        }
+      }
+      return next;
+    });
+  }, [turnKey]);
 
   const leaderUnit = useMemo(() => {
     if (!battle) return null;
@@ -138,6 +160,13 @@ export default function ThreeStoryStage({
     return leaderUnit;
   }, [battle, activeId, leaderUnit]);
 
+  // Show movement range (blue cells) for the currently focused hero when picking/moving
+  const reachableMap = useMemo(() => {
+    if (!battle || !leaderUnit || speechBubble) return null;
+    if ((leaderUnit.turn?.movementLeft || 0) <= 0) return null;
+    return computeReachable3D(battle, leaderUnit);
+  }, [battle, leaderUnit, speechBubble]);
+
   const handleClickTile = useCallback(
     (x, y) => {
       if (!battle) return;
@@ -147,7 +176,7 @@ export default function ThreeStoryStage({
       if (clickedUnit) {
         if (clickedUnit.side === "hero") {
           setLeaderStoryId(clickedUnit.storyId || clickedUnit.id);
-          showHint(`👑 切換領隊：${clickedUnit.name}`);
+          showHint(`🦶 切換控制：${clickedUnit.name}（剩餘移動 ${clickedUnit.turn?.movementLeft ?? clickedUnit.speedCells ?? 6} 格）`);
         } else {
           if (onSelectUnit) onSelectUnit(clickedUnit);
           else showHint(`👁️ ${clickedUnit.name}（HP ${clickedUnit.hp}/${clickedUnit.maxHp}）`);
@@ -162,19 +191,19 @@ export default function ThreeStoryStage({
           if (dist <= 1) {
             const next = cloneExplorationBattle(battle);
             const actor = next.units.find((u) => u.id === leaderUnit.id);
-            if (actor) actor.turn = { actionLeft: 1, bonusLeft: 1, movementLeft: 28 };
+            if (actor) actor.turn = { ...(actor.turn || {}), actionLeft: 1, bonusLeft: 1 };
             const res = executePropInteract(next, leaderUnit.id, clickedProp.id);
             if (res.ok) {
               setBattle(next);
               const stamp = `${Date.now()}_${Math.random()}`;
               setEventsBatch((res.events || []).map((e, i) => ({ ...e, _uid: `${stamp}_${i}` })));
-              showHint(res.success ? `✨ ${clickedProp.rewardDesc || "互動成功！"}` : `🔍 ${clickedProp.name} 檢定未過，可再試一次`);
+              showHint(res.success ? `✨ ${clickedProp.rewardDesc || "互動成功！"}` : `🔍 ${clickedProp.name} 檢定未過`);
               return;
             }
           }
         }
         if (onSelectProp) onSelectProp(clickedProp);
-        else showHint(`🔍 【${clickedProp.name}】(${clickedProp.skillName || "運動/巧手"} DC ${clickedProp.dc || 10}) — 走近至相鄰格點擊即可檢定`);
+        else showHint(`🔍 【${clickedProp.name}】(${clickedProp.skillName || "運動/巧手"} DC ${clickedProp.dc || 10}) — 走到相鄰格點擊即可檢定`);
         return;
       }
 
@@ -182,9 +211,11 @@ export default function ThreeStoryStage({
       const tile = battle.map?.grid?.[y]?.[x];
       if (!tile || !tile.walkable) return;
 
-      const path = findPath3D(battle, leaderUnit, x, y);
-      if (!path || path.length < 2) {
-        showHint("無法到達該方塊");
+      const reach = computeReachable3D(battle, leaderUnit);
+      const entry = reach.get(`${x},${y}`);
+      const path = findPathFromReach(reach, leaderUnit, x, y);
+      if (!entry || !path || path.length < 2) {
+        showHint("超出此角色本輪移動範圍，或地形受阻");
         return;
       }
 
@@ -192,37 +223,17 @@ export default function ThreeStoryStage({
       const nextLeader = next.units.find((u) => u.id === leaderUnit.id);
       if (!nextLeader) return;
 
-      const prevTrail = [{ x: nextLeader.x, y: nextLeader.y }, ...path.slice(1, -1)].reverse();
+      // Individual movement ONLY (只要分開走，不統一跟隨)
       nextLeader.x = x;
       nextLeader.y = y;
-
-      const evs = [{ type: "move", unitId: nextLeader.id, path }];
-
-      // Follow Mode (🤝 一起走) vs Solo Split Mode (🔀 分開走)
-      if (followMode) {
-        const followers = next.units.filter((u) => u.side === "hero" && !u.dead && u.id !== nextLeader.id);
-        const occupied = new Set([`${x},${y}`]);
-        followers.forEach((f, idx) => {
-          const candidate = prevTrail[idx] || prevTrail[prevTrail.length - 1];
-          if (!candidate) return;
-          const cKey = `${candidate.x},${candidate.y}`;
-          if (!occupied.has(cKey) && next.map?.grid?.[candidate.y]?.[candidate.x]?.walkable) {
-            const fPath = findPath3D(next, f, candidate.x, candidate.y);
-            if (fPath && fPath.length >= 2) {
-              occupied.add(cKey);
-              f.x = candidate.x;
-              f.y = candidate.y;
-              evs.push({ type: "move", unitId: f.id, path: fPath });
-            }
-          }
-        });
-      }
+      nextLeader.turn.movementLeft = Math.max(0, (nextLeader.turn?.movementLeft ?? 6) - (entry.cost || 1));
 
       const stamp = `${Date.now()}_${Math.random()}`;
       setBattle(next);
-      setEventsBatch(evs.map((e, i) => ({ ...e, _uid: `${stamp}_${i}` })));
+      setEventsBatch([{ type: "move", unitId: nextLeader.id, path, _uid: `${stamp}_0` }]);
+      showHint(`🦶 ${nextLeader.name} 移動完畢（剩 ${nextLeader.turn.movementLeft} 格）→ 請於右側選擇他的行動`);
     },
-    [battle, followMode, leaderUnit, onSelectProp, onSelectUnit, showHint]
+    [battle, leaderUnit, onSelectProp, onSelectUnit, showHint]
   );
 
   if (!battle) return null;
@@ -232,7 +243,7 @@ export default function ThreeStoryStage({
       <ThreeBattleCanvas
         battle={battle}
         activeUnitId={speakerUnit?.id || leaderUnit?.id || null}
-        reachableMap={null}
+        reachableMap={reachableMap}
         targetKeys={null}
         hoverTile={hoverTile}
         hoverForecast={null}
@@ -246,7 +257,7 @@ export default function ThreeStoryStage({
         storyMode={true}
       />
 
-      {/* Upright Screen-Space Projected Speech Bubble (never tilted 45 deg) */}
+      {/* Upright Screen-Space Projected Speech Bubble */}
       {speechBubble && activeScreenPos && (
         <div
           role="status"
@@ -275,15 +286,13 @@ export default function ThreeStoryStage({
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4, fontSize: 11, color: "#fbbf24" }}>
             <strong>{speechBubble.name}</strong>
-            {speechBubble.totalPages > 1 && (
-              <span>{speechBubble.page}/{speechBubble.totalPages}</span>
-            )}
+            <span>{speechBubble.totalPages > 1 ? `${speechBubble.page}/${speechBubble.totalPages} · ` : ""}點擊繼續 ▶</span>
           </div>
           <div>{speechBubble.text}</div>
         </div>
       )}
 
-      {/* Lightweight 3D Story Stage Controls (top-left, clear of bottom director bar) */}
+      {/* Lightweight 3D Individual Movement Controls (top-left) */}
       <div
         style={{
           position: "absolute",
@@ -315,28 +324,13 @@ export default function ThreeStoryStage({
         >
           🎯 置中
         </button>
-        <button
-          type="button"
-          className="stage-pill-btn"
-          style={followMode ? { borderColor: "#38bdf8", color: "#bae6fd" } : { borderColor: "#f59e0b", color: "#fde68a" }}
-          onClick={() => {
-            setFollowMode((v) => {
-              const nv = !v;
-              showHint(nv ? "🤝 切換為【一起走】：領隊帶隊，隊友自動跟隨" : "🔀 切換為【分開走】：可點選各角色獨立移動分頭行動");
-              return nv;
-            });
-          }}
-          title="切換探索移動方式：一起走（全隊跟隨領隊）或分開走（各角色獨立走位）"
-        >
-          {followMode ? "🤝 一起走" : "🔀 分開走"}
-        </button>
         {leaderUnit && (
           <span
             className="stage-pill-btn"
-            style={{ cursor: "default", opacity: 0.92 }}
-            title="點擊地板自由移動（0 AI 延遲）；點擊其他隊友可切換操作角色"
+            style={{ borderColor: "#38bdf8", color: "#e0f2fe", cursor: "default" }}
+            title="藍格為本輪可移動範圍；移動後請在右側選擇此角色的行動，全部角色完成後送出給 AI"
           >
-            👑 {leaderUnit.name} · 點方塊移動
+            🦶 {leaderUnit.name}（剩 {leaderUnit.turn?.movementLeft ?? leaderUnit.speedCells ?? 6} 格）{isPicking ? "· 移動後選右側行動" : ""}
           </span>
         )}
         {localHint && (
