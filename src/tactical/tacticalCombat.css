@@ -11,14 +11,15 @@
 }
 
 .tac-grid-lines line {
-  stroke: rgba(246, 229, 186, 0.14);
-  stroke-width: 0.14;
+  stroke: rgba(250, 232, 185, 0.34);
+  stroke-width: 1px;
   vector-effect: non-scaling-stroke;
 }
 
 .tactical-grid-overlay.has-painted-grid .tac-grid-lines line {
-  stroke: rgba(246, 229, 186, 0.055);
-  stroke-dasharray: 0.6 1.4;
+  stroke: rgba(250, 232, 185, 0.24);
+  stroke-width: 1px;
+  stroke-dasharray: 4 3;
 }
 
 .tac-cell {
