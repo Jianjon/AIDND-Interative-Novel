@@ -51,6 +51,7 @@ export default function ThreeStoryStage({
   onBubbleClick = null,
   onSelectUnit = null,
   onSelectProp = null,
+  onPositionsChange = null,
 }) {
   const [rotation, setRotation] = useState(0);
   const [recenterToken, setRecenterToken] = useState(0);
@@ -161,6 +162,34 @@ export default function ThreeStoryStage({
     }
     return leaderUnit;
   }, [battle, activeId, leaderUnit]);
+
+  // Report each hero's 3D coordinates + nearby props & NPCs/foes so AI generates context-aware next-turn options
+  useEffect(() => {
+    if (!battle) return;
+    const propsList = (battle.map?.props || []).filter((p) => !p.broken);
+    const castList = (battle.units || []).filter((u) => u.side !== "hero" && !u.dead && u.hp > 0);
+    const summary = (battle.units || [])
+      .filter((u) => u.side === "hero" && !u.dead)
+      .map((u) => {
+        const nearbyProps = propsList
+          .map((p) => ({ name: p.name, skill: p.skillName || "巧手/運動", dc: p.dc || 10, dist: Math.max(Math.abs(u.x - p.x), Math.abs(u.y - p.y)) }))
+          .filter((p) => p.dist <= 2);
+        const nearbyCast = castList
+          .map((c) => ({ name: c.name, dist: Math.max(Math.abs(u.x - c.x), Math.abs(u.y - c.y)) }))
+          .filter((c) => c.dist <= 3);
+        return {
+          heroId: u.storyId || u.id,
+          name: u.name,
+          x: u.x,
+          y: u.y,
+          h: battle.map?.grid?.[u.y]?.[u.x]?.h ?? 1,
+          nearbyProps,
+          nearbyCast,
+        };
+      });
+    if (typeof window !== "undefined") window.__aidndStage3dSummary = summary;
+    if (onPositionsChange) onPositionsChange(summary);
+  }, [battle, onPositionsChange]);
 
   // Show movement range (blue cells) for the currently focused hero when picking/moving
   const reachableMap = useMemo(() => {

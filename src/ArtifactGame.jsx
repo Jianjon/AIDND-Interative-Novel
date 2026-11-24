@@ -49954,11 +49954,25 @@ function H0(e, t, a) {
     isBEdition =
       typeof window !== "undefined" &&
       (new URLSearchParams(window.location.search).get("mode") === "theater" ||
-        localStorage.getItem("table-view-mode") === "theater");
+        localStorage.getItem("table-view-mode") === "theater"),
+    stage3dList =
+      isBEdition && typeof window !== "undefined" && Array.isArray(window.__aidndStage3dSummary)
+        ? window.__aidndStage3dSummary
+        : [],
+    stage3dBlock = stage3dList.length
+      ? `【3D 舞台即時站位與鄰近目標（請據此描寫互動，並於下一輪 options 生成針對鄰近物件／人物的專屬選項）】
+${stage3dList
+  .map((u) => {
+    const pTxt = (u.nearbyProps || []).map((p) => `${p.name}(${p.skill} DC ${p.dc}, 距${p.dist}格)`).join("、");
+    const cTxt = (u.nearbyCast || []).map((c) => `${c.name}(距${c.dist}格)`).join("、");
+    return `- ${u.name}：位於(${u.x},${u.y}) 高${u.h}${pTxt ? `｜鄰近物件：${pTxt}` : ""}${cTxt ? `｜鄰近人物：${cTxt}` : ""}`;
+  })
+  .join("\n")}\n`
+      : "";
   return `你是繁體中文桌上角色扮演遊戲的主持人，正在帶模組「${jt(e).title}」。這一輪每個人要做的事已經決定，骰子也已經擲完。請把這一輪演出來。骰子的結果不能更改，也不能寫成別的結果。
 ${
   isBEdition
-    ? `【B 版 3D 劇院節奏要求】請完整保留故事主線內容、事件前後因果連貫與分支後果（flags／線索／不同處理方式的結果差異），不可省略關鍵劇情；僅精簡「角色重複的自我心理描述與無關緊要的寒暄意見」，讓劇情重點清楚、前後呼應。\n`
+    ? `【B 版 3D 劇院節奏要求】請完整保留故事主線內容、事件前後因果連貫與分支後果（flags／線索／不同處理方式的結果差異），不可省略關鍵劇情；僅精簡「角色重複的自我心理描述與無關緊要的寒暄意見」，讓劇情重點清楚、前後呼應。每一輪結尾（不只開場）請自然帶出一句簡短的「環境或感知提示」（例如誰的察覺／奧秘感應到某方向有異樣、機關微光或埋伏動靜），作為下一輪探索與走位線索。\n${stage3dBlock}`
     : ""
 }【桌面現況（唯一權威）】${JSON.stringify(Li(e))}
 【隊伍這一輪的行動與骰子結果】
