@@ -63386,7 +63386,35 @@ function Zu() {
     [u, m] = I.useState(i.claudeKey),
     [_, b] = I.useState(i.geminiKey),
     [showTactics3d, setShowTactics3d] = I.useState(!1),
-    [tactics3dPayload, setTactics3dPayload] = I.useState(null);
+    [tactics3dPayload, setTactics3dPayload] = I.useState(null),
+    [combatTransition, setCombatTransition] = I.useState(null),
+    combatTransTimerRef = I.useRef([]);
+  const triggerCombatTransition = (mode, info = {}, onMidpoint = null) => {
+    combatTransTimerRef.current.forEach((id) => clearTimeout(id));
+    combatTransTimerRef.current = [];
+    setCombatTransition({
+      mode,
+      title: info.title || (mode === "enter" ? "⚔️ 進入戰鬥" : "🏆 結束戰鬥"),
+      subtitle:
+        info.subtitle ||
+        (mode === "enter"
+          ? "ROLL INITIATIVE · 同地展開 3D 戰術回合"
+          : "COMBAT ENDED · 返回跑團舞台"),
+    });
+    if (typeof onMidpoint === "function") {
+      combatTransTimerRef.current.push(
+        setTimeout(onMidpoint, mode === "enter" ? 420 : 120),
+      );
+    }
+    combatTransTimerRef.current.push(
+      setTimeout(() => setCombatTransition(null), mode === "enter" ? 1350 : 1250),
+    );
+  };
+  I.useEffect(() => {
+    return () => {
+      combatTransTimerRef.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
   I.useEffect(() => {
     var O, y;
     let N = !0;
@@ -63433,8 +63461,22 @@ function Zu() {
         ready: a,
         onOpenAiSettings: r ? void 0 : H,
         onOpenTactics3d: (payload = null) => {
-          setTactics3dPayload(payload || null);
-          setShowTactics3d(!0);
+          if (payload?.storyContext) {
+            triggerCombatTransition(
+              "enter",
+              {
+                title: "⚔️ 進入戰鬥",
+                subtitle: `${payload.storyContext.mapLabel || payload.storyContext.placeName || "同地遭遇戰"} · ROLL INITIATIVE`,
+              },
+              () => {
+                setTactics3dPayload(payload);
+                setShowTactics3d(!0);
+              },
+            );
+          } else {
+            setTactics3dPayload(payload || null);
+            setShowTactics3d(!0);
+          }
         },
       }),
       showTactics3d &&
@@ -63459,15 +63501,66 @@ function Zu() {
             onApplyToStory: tactics3dPayload?.onApply
               ? (summary, autoNarrate = false) => {
                   tactics3dPayload.onApply(summary, autoNarrate);
-                  setShowTactics3d(!1);
-                  setTactics3dPayload(null);
+                  const exitTitle =
+                    summary?.outcome === "victory"
+                      ? "🏆 結束戰鬥 · 勝利"
+                      : summary?.outcome === "retreat"
+                        ? "🛡️ 結束戰鬥 · 撤離"
+                        : "⚔️ 結束戰鬥";
+                  triggerCombatTransition(
+                    "exit",
+                    {
+                      title: exitTitle,
+                      subtitle: "COMBAT ENDED · 返回同地跑團舞台",
+                    },
+                    () => {
+                      setShowTactics3d(!1);
+                      setTactics3dPayload(null);
+                    },
+                  );
                 }
               : null,
             onExit: () => {
-              setShowTactics3d(!1);
-              setTactics3dPayload(null);
+              if (tactics3dPayload?.storyContext) {
+                triggerCombatTransition(
+                  "exit",
+                  {
+                    title: "🛡️ 結束戰鬥",
+                    subtitle: "COMBAT ENDED · 返回跑團舞台",
+                  },
+                  () => {
+                    setShowTactics3d(!1);
+                    setTactics3dPayload(null);
+                  },
+                );
+              } else {
+                setShowTactics3d(!1);
+                setTactics3dPayload(null);
+              }
             },
           }),
+        }),
+      combatTransition &&
+        n.jsxs("div", {
+          className: `combat-transition-overlay is-${combatTransition.mode}`,
+          role: "status",
+          "aria-live": "polite",
+          children: [
+            n.jsx("div", { className: "combat-transition-slash" }),
+            n.jsxs("div", {
+              className: "combat-transition-card",
+              children: [
+                n.jsx("h2", {
+                  className: "combat-transition-title",
+                  children: combatTransition.title,
+                }),
+                n.jsx("p", {
+                  className: "combat-transition-sub",
+                  children: combatTransition.subtitle,
+                }),
+              ],
+            }),
+          ],
         }),
       g &&
         n.jsx("div", {

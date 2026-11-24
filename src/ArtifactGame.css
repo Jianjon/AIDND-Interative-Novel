@@ -70,3 +70,86 @@
 .layout-mode-theater .standee-speech-bubble.is-compact-dots {
   display: none !important;
 }
+
+/* Combat Enter / Exit Transition Overlay */
+@keyframes combatCurtainFade {
+  0% { opacity: 0; }
+  16% { opacity: 1; }
+  76% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes combatSlashSweep {
+  0% { transform: translateX(-110%) skewX(-18deg); opacity: 0; }
+  25% { opacity: 0.95; }
+  75% { opacity: 0.85; }
+  100% { transform: translateX(110%) skewX(-18deg); opacity: 0; }
+}
+@keyframes combatBannerPop {
+  0% { opacity: 0; transform: scale(0.86) translateY(8px); letter-spacing: 0.36em; }
+  22% { opacity: 1; transform: scale(1.03) translateY(0); letter-spacing: 0.22em; }
+  80% { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.22em; }
+  100% { opacity: 0; transform: scale(1.06) translateY(-6px); letter-spacing: 0.28em; }
+}
+.combat-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: combatCurtainFade 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.combat-transition-overlay.is-enter {
+  background: radial-gradient(circle at center, rgba(127, 29, 29, 0.42) 0%, rgba(9, 13, 20, 0.88) 70%);
+}
+.combat-transition-overlay.is-exit {
+  animation-duration: 1.25s;
+  background: radial-gradient(circle at center, rgba(180, 120, 40, 0.32) 0%, rgba(9, 13, 20, 0.86) 72%);
+}
+.combat-transition-slash {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.28) 35%, rgba(254, 240, 138, 0.52) 50%, rgba(245, 158, 11, 0.28) 65%, transparent 100%);
+  border-top: 1px solid rgba(253, 224, 71, 0.45);
+  border-bottom: 1px solid rgba(253, 224, 71, 0.45);
+  animation: combatSlashSweep 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.combat-transition-overlay.is-enter .combat-transition-slash {
+  background: linear-gradient(90deg, transparent 0%, rgba(220, 38, 38, 0.32) 35%, rgba(251, 191, 36, 0.55) 50%, rgba(220, 38, 38, 0.32) 65%, transparent 100%);
+  border-top-color: rgba(248, 113, 113, 0.55);
+  border-bottom-color: rgba(248, 113, 113, 0.55);
+}
+.combat-transition-card {
+  position: relative;
+  text-align: center;
+  padding: 22px 44px;
+  border-radius: 14px;
+  background: rgba(10, 15, 24, 0.88);
+  border: 1.5px solid rgba(251, 191, 36, 0.65);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.82), inset 0 0 24px rgba(251, 191, 36, 0.14);
+  animation: combatBannerPop 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.combat-transition-overlay.is-enter .combat-transition-card {
+  border-color: rgba(248, 113, 113, 0.72);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), inset 0 0 28px rgba(220, 38, 38, 0.22);
+}
+.combat-transition-title {
+  margin: 0;
+  font-family: Georgia, "Noto Serif TC", serif;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 800;
+  color: #fef3c7;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.9);
+}
+.combat-transition-sub {
+  margin: 8px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  opacity: 0.92;
+}
