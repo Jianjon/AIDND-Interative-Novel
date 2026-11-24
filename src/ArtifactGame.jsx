@@ -58734,7 +58734,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
           const captured = (summary.capturedFoes || []).map((f) => f.name).join("、");
           const surrendered = (summary.surrenderedFoes || []).map((f) => f.name).join("、");
           const objs = (summary.completedObjectives || []).map((o) => o.name).join("、");
-          const prompt = `你是 D&D 跑團主持人（DM）。隊伍剛在「${summary.scenarioName || "戰場"}」完成一場 3D 戰棋戰鬥（結果：${outcomeTxt}，歷經 ${summary.rounds || 1} 輪，獲得 ${summary.totalXp || 0} XP${captured ? `，俘虜：${captured}` : ""}${surrendered ? `，投降：${surrendered}` : ""}${objs ? `，完成目標：${objs}` : ""}，建議戰利品等級：${summary.suggestedLootTier || "uncommon"}）。請用 100~160 字繁體中文生動描寫戰後現場、戰利品或俘虜處置，並自然帶出下一步行動鉤子。`;
+          const prompt = `你是 D&D 跑團主持人（DM）。隊伍剛在「${summary.scenarioName || "戰場"}」完成一場 3D 戰棋戰鬥（結果：${outcomeTxt}，歷經 ${summary.rounds || 1} 輪，獲得 ${summary.totalXp || 0} XP${captured ? `，俘虜：${captured}` : ""}${surrendered ? `，投降：${surrendered}` : ""}${objs ? `，完成目標：${objs}` : ""}，建議戰利品等級：${summary.suggestedLootTier || "uncommon"}）。請用 100~160 字繁體中文描寫戰後現場、戰利品或俘虜處置，並在結尾依隊伍取10被動感知給出一句簡短的環境或線索提示（Hint），引導下一輪探索。`;
           const res = await T(prompt, { modelTier: "quick" });
           const text = String(res?.text || "").trim();
           if (text) {

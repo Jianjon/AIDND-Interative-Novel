@@ -407,6 +407,41 @@ export function mapStorySessionTo3DConfig(session) {
           }))
         : null;
 
+  const buildPreBattleHintLine = () => {
+    const bestHero = [...livingHeroes].sort((a, b) => {
+      const wa = Math.floor(((a.attributes?.wis ?? 10) - 10) / 2);
+      const wb = Math.floor(((b.attributes?.wis ?? 10) - 10) / 2);
+      return wb - wa;
+    })[0];
+    const heroName = bestHero?.name ? String(bestHero.name).split(/[（(]/)[0].trim() : "隊伍";
+    const wisMod = Math.floor((((bestHero?.attributes?.wis ?? 12) - 10) / 2));
+    const passiveVal = 10 + Math.max(0, wisMod) + Math.max(2, Math.ceil((partyLevel || 3) / 4) + 1);
+    const firstInter = blueprint?.interactables?.[0];
+    if (firstInter?.name) {
+      return `💡 戰前感知（${heroName} 取10被動察覺 ${passiveVal}）：注意到場上有【${firstInter.name}】（${firstInter.skill || "運動/巧手"} DC ${firstInter.dc || 12}），靠近互動可${firstInter.rewardDesc || "取得戰術優勢！"}`;
+    }
+    if (ambushMode === "foe_surprise") {
+      return `💡 戰前感知（${heroName} 取10被動察覺 ${passiveVal}）：察覺兩側陰影與高地有伏兵氣息，開戰務必先穩住陣型！`;
+    }
+    if (tac?.namedFoes?.[0]?.name) {
+      return `💡 戰前感知（${heroName} 取10被動察覺 ${passiveVal}）：鎖定強敵【${tac.namedFoes[0].name}】，善用方塊高低差與夾擊集中突破！`;
+    }
+    return `💡 戰前感知（${heroName} 取10被動察覺 ${passiveVal}）：留意周圍地形高低差與場地物件，先佔領有利位置再集火！`;
+  };
+
+  const preBattleHint = { speaker: "戰前感知提示", side: "hero", line: buildPreBattleHintLine() };
+  const mergedScript = tac?.script
+    ? {
+        ...tac.script,
+        opening: Array.isArray(tac.script.opening)
+          ? [...tac.script.opening, preBattleHint]
+          : [preBattleHint],
+      }
+    : {
+        missionGoal: blueprint?.objectiveName || `擊敗敵軍，完成【${session?.node?.title || "戰鬥遭遇"}】`,
+        opening: [preBattleHint],
+      };
+
   return {
     scenarioId,
     weather,
@@ -418,7 +453,7 @@ export function mapStorySessionTo3DConfig(session) {
     foeSpecs,
     allySpecs: mergedAllies,
     blueprint,
-    presetScript: tac?.script || null,
+    presetScript: mergedScript,
     seed: ((Number(session?.turn) || 1) * 37 + 101) % 9999,
     placeName: session?.place?.name || session?.map || "當前劇情場景",
     storySummary: {
