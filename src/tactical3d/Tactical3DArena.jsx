@@ -362,6 +362,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
   const [drawerTab, setDrawerTab] = useState("main");
+  const [zoomCmd, setZoomCmd] = useState(null);
   const [activeScreenPos, setActiveScreenPos] = useState(null);
   const [upcastSlot, setUpcastSlot] = useState(null);
   const [useSmite, setUseSmite] = useState(false);
@@ -1546,6 +1547,24 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
           <span className="tac3d-pill" style={{ borderColor: "#f59e0b", color: "#fbbf24", fontWeight: 700 }}>
             第 {battle.round} 輪
           </span>
+          <button
+            type="button"
+            className="tac3d-btn"
+            style={{ padding: "2px 8px", fontSize: 11 }}
+            onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: -0.9 })}
+            title="放大 3D 戰場地圖"
+          >
+            🔍＋
+          </button>
+          <button
+            type="button"
+            className="tac3d-btn"
+            style={{ padding: "2px 8px", fontSize: 11 }}
+            onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: 0.9 })}
+            title="縮小 3D 戰場地圖"
+          >
+            🔍－
+          </button>
           {(() => {
             const wObj = WEATHER_PRESETS.find((w) => w.id === battle.map?.weather);
             const lObj = LIGHTING_PRESETS.find((l) => l.id === battle.map?.lighting);
@@ -1704,6 +1723,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
           rotation={rotation}
           cutaway={cutaway}
           recenterToken={recenterToken}
+          zoomCmd={zoomCmd}
           eventsBatch={eventsBatch}
           onHoverTile={setHoverTile}
           onClickTile={handleClickTile}

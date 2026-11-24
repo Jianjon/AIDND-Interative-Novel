@@ -4991,6 +4991,46 @@ export function executePropInteract(battle, actorId, propId) {
     return { ok: false, reason: "本回合已無可用主動作" };
   }
 
+  if (prop.trapDiscovered && !prop.trapDisarmed && !prop.trapTriggered) {
+    const sleightBonus = Math.max(actor.mods?.dex ?? 1, actor.skillBonuses?.sleight ?? -99) + (isRogue ? 2 : 0);
+    const d1 = rollDie(battle.rng, 20);
+    const d2 = isRogue ? rollDie(battle.rng, 20) : d1;
+    const d20Disarm = Math.max(d1, d2);
+    const disarmTotal = d20Disarm + sleightBonus;
+    const disarmDc = prop.trapOnFail?.disarmDc || prop.dc || 12;
+    const disarmEvents = [
+      {
+        type: "dice",
+        side: "hero",
+        role: "check",
+        actorName: actor.name,
+        targetName: prop.name,
+        actionName: isRogue ? "盜賊巧手解除陷阱" : "巧手解除陷阱",
+        d20: d20Disarm,
+        advState: isRogue ? "advantage" : "normal",
+        rolls: isRogue ? [d1, d2] : [d1],
+        modTotal: sleightBonus,
+        modifiers: [`巧手 (${sleightBonus >= 0 ? "+" : ""}${sleightBonus})`],
+        total: disarmTotal,
+        targetValue: disarmDc,
+        targetLabel: "DC",
+        formula: `1d20(${d20Disarm}) + 巧手(+${sleightBonus}) = ${disarmTotal} vs DC ${disarmDc}`,
+        hit: disarmTotal >= disarmDc,
+        crit: d20Disarm === 20,
+      },
+    ];
+    if (disarmTotal >= disarmDc) {
+      prop.trapDisarmed = true;
+      prop.trapOnFail = null;
+      disarmEvents.push({ type: "float", x: prop.x, y: prop.y, z: 1.65, text: "🔓 陷阱已解除!", color: "#34d399" });
+      battle.logs.push(`🔓 ${actor.name} 俐落拆除了【${prop.name}】的陷阱機關（${disarmTotal} ≥ DC ${disarmDc}）！`);
+      return { ok: true, success: true, trapDisarmed: true, events: disarmEvents };
+    }
+    disarmEvents.push({ type: "float", x: prop.x, y: prop.y, z: 1.65, text: `解除未果 (${disarmTotal}/${disarmDc})`, color: "#fbbf24" });
+    battle.logs.push(`🔍 ${actor.name} 嘗試解除【${prop.name}】陷阱未果（${disarmTotal} < DC ${disarmDc}），但小心避開了觸發！`);
+    return { ok: true, success: false, trapDiscovered: true, events: disarmEvents };
+  }
+
   // Stat-appropriate skill routing based on story skill or prop type
   const resolveSkillSpec = () => {
     const explicit = String(prop.skillName || prop.skill || "").trim();
@@ -5058,29 +5098,51 @@ export function executePropInteract(battle, actorId, propId) {
   }
 
   if (!(prop.requiresKey && hasRequiredKey) && total < dc) {
-    if (prop.trapOnFail && !prop.trapTriggered) {
+    if (prop.trapOnFail && !prop.trapTriggered && !prop.trapDisarmed) {
+      const trap = prop.trapOnFail;
+      const detectDc = trap.detectDc || 12;
+      const passivePerc = 10 + (actor.skillBonuses?.perception ?? actor.mods?.wis ?? 0) + (actor.hasAlert ? 4 : 0);
+      const evadeBonus = Math.max(actor.skillBonuses?.perception ?? 0, actor.skillBonuses?.acrobatics ?? actor.mods?.dex ?? 0) + (actor.hasAlert ? 3 : 0);
+      const evadeRoll = rollDie(battle.rng, 20) + evadeBonus;
+      if (passivePerc >= detectDc + 2 || evadeRoll >= detectDc) {
+        prop.trapDiscovered = true;
+        events.push({ type: "float", x: prop.x, y: prop.y, z: 1.75, text: "👁️ 發現陷阱! 可解除", color: "#fbbf24" });
+        battle.logs.push(`👁️ ${actor.name} 警覺地發現並避開了【${prop.name}】的隱藏陷阱（未觸發）！可由盜賊／巧手解除。`);
+        return { ok: true, success: false, trapDiscovered: true, events };
+      }
+
       prop.trapTriggered = true;
-      const tKind = prop.trapOnFail.kind || "poison_dart";
-      const tDmg = rollDie(battle.rng, 6);
-      actor.hp = Math.max(1, actor.hp - tDmg);
+      const tKind = trap.kind || "poison_dart";
+      const tSize = trap.size || "small";
+      const radius = tSize === "large" ? 2 : tSize === "medium" ? 1 : 0;
+      const tx = Math.max(0, Math.min(MAP_COLS - 1, trap.targetX ?? prop.x + (trap.targetOffset?.dx || 0)));
+      const ty = Math.max(0, Math.min(MAP_ROWS - 1, trap.targetY ?? prop.y + (trap.targetOffset?.dy || 0)));
+      const tDmg = rollDie(battle.rng, tSize === "large" ? 8 : 6);
+
       if (tKind === "poison_vent" || tKind === "fire_burst") {
         const surf = tKind === "poison_vent" ? "poison" : "fire";
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dx = -1; dx <= 1; dx++) {
-            const tile = battle.map.grid[prop.y + dy]?.[prop.x + dx];
+        for (let dy = -radius; dy <= radius; dy++) {
+          for (let dx = -radius; dx <= radius; dx++) {
+            const tile = battle.map.grid[ty + dy]?.[tx + dx];
             if (tile?.walkable) {
               tile.surface = surf;
               tile.surfaceRounds = 3;
             }
           }
         }
-      } else if (tKind === "snare") {
-        actor.conditions.Restrained = Math.max(actor.conditions.Restrained || 0, 1);
-      } else {
-        actor.conditions.Poisoned = Math.max(actor.conditions.Poisoned || 0, 2);
       }
-      events.push({ type: "float", x: prop.x, y: prop.y, z: 1.65, text: `⚠️ 觸動陷阱! -${tDmg}`, color: "#ef4444" });
-      battle.logs.push(`⚠️ 【陷阱觸發】${actor.name} 操作【${prop.name}】失敗（${total} < DC ${dc}），觸動了隱藏機關，受到 ${tDmg} 點傷害！`);
+      const hitUnits = battle.units.filter(
+        (u) => !u.dead && u.hp > 0 && Math.max(Math.abs(u.x - tx), Math.abs(u.y - ty)) <= radius
+      );
+      if (hitUnits.length === 0 && radius === 0) hitUnits.push(actor);
+      for (const hu of hitUnits) {
+        hu.hp = Math.max(1, hu.hp - tDmg);
+        if (tKind === "snare") hu.conditions.Restrained = Math.max(hu.conditions.Restrained || 0, 1);
+        else if (tKind !== "fire_burst") hu.conditions.Poisoned = Math.max(hu.conditions.Poisoned || 0, 2);
+      }
+      const sizeLbl = tSize === "large" ? "大型" : tSize === "medium" ? "中型" : "小型";
+      events.push({ type: "float", x: tx, y: ty, z: 1.65, text: `⚠️ ${sizeLbl}陷阱觸發! -${tDmg}`, color: "#ef4444" });
+      battle.logs.push(`⚠️ 【${sizeLbl}陷阱觸發】${actor.name} 操作【${prop.name}】失敗（${total} < DC ${dc}），在 (${tx},${ty}) 引發陷阱，範圍內目標受 ${tDmg} 點傷害！`);
     } else if (d20 === 1) {
       const chip = rollDie(battle.rng, 4);
       actor.hp = Math.max(1, actor.hp - chip);

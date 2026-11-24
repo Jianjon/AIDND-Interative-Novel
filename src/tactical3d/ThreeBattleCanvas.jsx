@@ -342,6 +342,7 @@ export default function ThreeBattleCanvas({
   rotation = 0,
   cutaway = true,
   recenterToken = 0,
+  zoomCmd = null,
   eventsBatch = [],
   onHoverTile,
   onClickTile,
@@ -353,6 +354,7 @@ export default function ThreeBattleCanvas({
   const latestPropsRef = useRef({});
   const unitHudRefs = useRef(new Map());
   const resetPanRef = useRef(false);
+  const pendingZoomRef = useRef(0);
   const stateRef = useRef({
     eventsQueue: [],
     floats: [],
@@ -387,6 +389,12 @@ export default function ThreeBattleCanvas({
   useEffect(() => {
     resetPanRef.current = true;
   }, [activeUnitId, recenterToken]);
+
+  useEffect(() => {
+    if (zoomCmd && Number.isFinite(zoomCmd.delta)) {
+      pendingZoomRef.current += zoomCmd.delta;
+    }
+  }, [zoomCmd]);
 
   // Enqueue newly emitted tactical combat events
   useEffect(() => {
@@ -1297,7 +1305,7 @@ export default function ThreeBattleCanvas({
 
       const onWheel = (ev) => {
         ev.preventDefault();
-        frustumHalf = Math.max(3.6, Math.min(10.5, frustumHalf + ev.deltaY * 0.004));
+        frustumHalf = Math.max(2.2, Math.min(11.5, frustumHalf + ev.deltaY * 0.004));
         const a = (container.clientWidth || 900) / (container.clientHeight || 600);
         camera.left = -frustumHalf * a;
         camera.right = frustumHalf * a;
@@ -1398,6 +1406,16 @@ export default function ThreeBattleCanvas({
           if (resetPanRef.current) {
             panOffset.set(0, 0, 0);
             resetPanRef.current = false;
+          }
+          if (pendingZoomRef.current !== 0) {
+            frustumHalf = Math.max(2.2, Math.min(11.5, frustumHalf + pendingZoomRef.current));
+            pendingZoomRef.current = 0;
+            const a = (container.clientWidth || 900) / (container.clientHeight || 600);
+            camera.left = -frustumHalf * a;
+            camera.right = frustumHalf * a;
+            camera.top = frustumHalf;
+            camera.bottom = -frustumHalf;
+            camera.updateProjectionMatrix();
           }
 
           // Smooth 4-way 90deg orbit + active focus

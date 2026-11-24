@@ -275,10 +275,16 @@ function inferDualStateEffectFromText(txt = "") {
 
 function inferTrapOnFailFromText(txt = "") {
   if (!/陷阱|毒針|機關鎖|暗箭|絆索|地雷/.test(txt)) return undefined;
-  if (/毒氣|毒霧/.test(txt)) return { kind: "poison_vent" };
-  if (/火|炸|燃/.test(txt)) return { kind: "fire_burst" };
-  if (/絆索|網|夾|困/.test(txt)) return { kind: "snare" };
-  return { kind: "poison_dart" };
+  const size = /大型|巨型|大範圍|落石|群體/.test(txt)
+    ? "large"
+    : /區域|範圍|噴發|毒霧|火網/.test(txt)
+      ? "medium"
+      : "small";
+  const targetOffset = /門口|通道|後方|對面|旁/.test(txt) ? { dx: 1, dy: 0 } : undefined;
+  if (/毒氣|毒霧/.test(txt)) return { kind: "poison_vent", size, targetOffset };
+  if (/火|炸|燃/.test(txt)) return { kind: "fire_burst", size, targetOffset };
+  if (/絆索|網|夾|困/.test(txt)) return { kind: "snare", size, targetOffset };
+  return { kind: "poison_dart", size, targetOffset };
 }
 
 function buildStoryInteractables(node) {

@@ -56,6 +56,7 @@ export default function ThreeStoryStage({
 }) {
   const [rotation, setRotation] = useState(0);
   const [recenterToken, setRecenterToken] = useState(0);
+  const [zoomCmd, setZoomCmd] = useState(null);
   const [hoverTile, setHoverTile] = useState(null);
   const [eventsBatch, setEventsBatch] = useState([]);
   const [leaderStoryId, setLeaderStoryId] = useState(null);
@@ -307,6 +308,7 @@ export default function ThreeStoryStage({
         rotation={rotation}
         cutaway={true}
         recenterToken={recenterToken}
+        zoomCmd={zoomCmd}
         eventsBatch={eventsBatch}
         onHoverTile={(x, y) => setHoverTile({ x, y })}
         onClickTile={handleClickTile}
@@ -388,6 +390,22 @@ export default function ThreeStoryStage({
           title="重設鏡頭至舞台中央"
         >
           🎯 置中
+        </button>
+        <button
+          type="button"
+          className="stage-pill-btn"
+          onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: -0.9 })}
+          title="放大 3D 舞台地圖"
+        >
+          🔍＋ 放大
+        </button>
+        <button
+          type="button"
+          className="stage-pill-btn"
+          onClick={() => setZoomCmd({ seq: Date.now() + Math.random(), delta: 0.9 })}
+          title="縮小 3D 舞台地圖"
+        >
+          🔍－ 縮小
         </button>
         {leaderUnit && (
           <span
