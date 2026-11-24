@@ -992,12 +992,24 @@ export default function ThreeBattleCanvas({
             const d = b.y2 - b.y1 + 1;
             const cx = (b.x1 + b.x2) / 2;
             const cz = (b.y1 + b.y2) / 2;
-            const wh = b.wallHeight || 1.6;
+            const wh = b.wallHeight || 1.65;
+            if (b.solid) {
+              const wallMat = new THREE.MeshStandardMaterial({
+                color: b.wallColor || 0x7c583c,
+                roughness: 0.88,
+                metalness: 0.05,
+              });
+              const bodyMesh = new THREE.Mesh(new THREE.BoxGeometry(w - 0.08, wh, d - 0.08), wallMat);
+              bodyMesh.position.set(cx, 1 * ELEV_H + wh / 2, cz);
+              bodyMesh.castShadow = true;
+              bodyMesh.receiveShadow = true;
+              tileGroup.add(bodyMesh);
+            }
             const roofGroup = new THREE.Group();
             const roofMat = new THREE.MeshStandardMaterial({
               color: b.roofColor || 0x3b4d63,
-              transparent: true,
-              opacity: 0.9,
+              transparent: !b.solid,
+              opacity: b.solid ? 1.0 : 0.9,
               roughness: 0.78,
               side: THREE.DoubleSide,
             });
@@ -1014,8 +1026,28 @@ export default function ThreeBattleCanvas({
             rightSlope.castShadow = true;
             roofGroup.add(leftSlope, rightSlope);
             tileGroup.add(roofGroup);
-            buildingVisuals.push({ b, roofMat, roofGroup });
+            if (!b.solid) {
+              buildingVisuals.push({ b, roofMat, roofGroup });
+            }
           }
+        }
+
+        // 1/2-width thin walls, parapets & half-blocks
+        for (const hb of map.halfBlocks || []) {
+          const baseH = (hb.h ?? map.grid[hb.y]?.[hb.x]?.h ?? 1) * ELEV_H;
+          const bh = hb.height || 0.45;
+          const hbMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(hb.w || 0.48, bh, hb.d || 0.48),
+            new THREE.MeshStandardMaterial({
+              color: hb.color || 0x94a3b8,
+              roughness: 0.85,
+              metalness: 0.06,
+            })
+          );
+          hbMesh.position.set(hb.x + (hb.dx || 0), baseH + bh / 2, hb.y + (hb.dz || 0));
+          hbMesh.castShadow = true;
+          hbMesh.receiveShadow = true;
+          tileGroup.add(hbMesh);
         }
 
         // Map Point Lights (torches, lanterns, harbor beacons)

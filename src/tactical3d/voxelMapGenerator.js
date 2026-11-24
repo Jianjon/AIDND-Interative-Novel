@@ -1,4 +1,5 @@
 import { LEGO_PROPS_CATALOG } from "./legoPropsCatalog.js";
+import { TABLETOP_MAPS_CATALOG, TABLETOP_MAP_ALIASES } from "./tabletopMapsCatalog.js";
 
 export const MAP_COLS = 16;
 export const MAP_ROWS = 12;
@@ -978,7 +979,11 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
   let buildings = null;
   let scenicProps = null;
   let mapLights = null;
-  const tabletopId = bp?.tabletopMapId || (scenarioId === "harbour_fort" ? "harbour_fort" : null);
+  let halfBlocks = null;
+  const isProceduralScenario = TACTICAL3D_SCENARIOS.some((s) => s.id === scenarioId);
+  const rawTabletopId = bp?.tabletopMapId || (!isProceduralScenario && TABLETOP_MAPS_CATALOG[scenarioId] ? scenarioId : null);
+  const tabletopId = rawTabletopId ? TABLETOP_MAP_ALIASES[rawTabletopId] || rawTabletopId : null;
+  const tabletopEntry = tabletopId ? TABLETOP_MAPS_CATALOG[tabletopId] || TABLETOP_MAPS_CATALOG[rawTabletopId] : null;
 
   if (tabletopId === "harbour_fort" && bp?.layout !== "twin_ships") {
     // 1:1 3D HD-2D conversion of /prototype-assets/table-maps/harbour_fort.jpg (16x12)
@@ -1060,11 +1065,12 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
       { id: "sc_dock_chest", name: "棧橋工具箱", x: 1.5, y: 6.3, img: "/prototype-assets/lego-props-v2/components/prop_021_01_s0.png", scaleW: 0.72, scaleH: 0.72, h: 1 },
       { id: "sc_east_dock_barrel", name: "漁獲木桶", x: 14.5, y: 4.2, img: "/prototype-assets/lego-props-v2/components/prop_024_03_s0.png", scaleW: 0.72, scaleH: 0.72, h: 1 },
     ];
-    // 3D Architectural Buildings (roof auto-fades when heroes enter) + Harbor Crane
+    // 3D Architectural Buildings (15ft = 3-unit tall solid exterior cubes) & Harbor Crane
     buildings = [
       {
         id: "hf_warehouse",
         kind: "house",
+        solid: true,
         name: "港邊倉屋",
         x1: 10,
         y1: 5,
@@ -1073,20 +1079,19 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
         wallHeight: 1.65,
         roofColor: 0x3b4d63,
         wallColor: 0x7c583c,
-        doorAt: { x: 10, y: 7 },
       },
       {
         id: "hf_bastion",
         kind: "house",
+        solid: true,
         name: "港邊石堡哨所",
         x1: 0,
         y1: 9,
         x2: 3,
         y2: 11,
-        wallHeight: 1.55,
+        wallHeight: 1.65,
         roofColor: 0x475569,
         wallColor: 0x64748b,
-        doorAt: { x: 2, y: 9 },
       },
       {
         id: "hf_crane",
@@ -1098,6 +1103,17 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
         targetX: 3.2,
         targetY: 3.3,
       },
+    ];
+    // 1/2-width thin parapets, pier posts & dockside half-blocks
+    halfBlocks = [
+      { x: 6, y: 3, h: 2, w: 0.96, d: 0.24, dx: 0, dz: -0.36, height: 0.42, color: 0xcbd5e1 },
+      { x: 8, y: 3, h: 2, w: 0.96, d: 0.24, dx: 0, dz: -0.36, height: 0.42, color: 0xcbd5e1 },
+      { x: 9, y: 3, h: 2, w: 0.96, d: 0.24, dx: 0, dz: -0.36, height: 0.42, color: 0xcbd5e1 },
+      { x: 6, y: 4, h: 2, w: 0.24, d: 0.96, dx: -0.36, dz: 0, height: 0.42, color: 0xcbd5e1 },
+      { x: 6, y: 5, h: 2, w: 0.24, d: 0.96, dx: -0.36, dz: 0, height: 0.42, color: 0xcbd5e1 },
+      { x: 0, y: 5, h: 1, w: 0.46, d: 0.46, dx: -0.25, dz: -0.25, height: 0.55, color: 0x7c583c },
+      { x: 5, y: 3, h: 1, w: 0.46, d: 0.46, dx: 0.25, dz: 0.25, height: 0.55, color: 0x7c583c },
+      { x: 9, y: 3, h: 1, w: 0.46, d: 0.46, dx: -0.25, dz: 0.25, height: 0.55, color: 0x7c583c },
     ];
     mapLights = [
       { x: 7.2, y: 6.2, h: 1.4, color: 0xff9d47, intensity: 2.2, distance: 6.5 },
@@ -1120,6 +1136,149 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
       { x: 14, y: 2 },
       { x: 7, y: 4 },
     ];
+  } else if (tabletopEntry && bp?.layout !== "twin_ships") {
+    // Universal 80% Skeleton Converter: any tabletop map -> 3D voxel + 15ft solid buildings + 1/2-width walls
+    tabletopBackdrop = tabletopEntry.image;
+    const isWaterBiome = /harbour|ship|pier|river|sewer|marsh|lake|sea|bridge|island|swamp|dock|cove/i.test(
+      tabletopEntry.id
+    );
+
+    let maskAt = () => 0;
+    if (tabletopEntry.bitmask && typeof atob === "function") {
+      try {
+        const raw = atob(tabletopEntry.bitmask);
+        const bytes = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+        maskAt = (mx, my) => {
+          const idx = my * 48 + mx;
+          return (bytes[idx >> 3] >> (7 - (idx & 7))) & 1;
+        };
+      } catch {
+        maskAt = () => 0;
+      }
+    }
+
+    for (let y = 0; y < MAP_ROWS; y++) {
+      for (let x = 0; x < MAP_COLS; x++) {
+        let hits = 0;
+        for (let sy = 0; sy < 2; sy++) {
+          for (let sx = 0; sx < 3; sx++) {
+            const mx = Math.min(47, Math.floor((x / MAP_COLS) * 48) + sx);
+            const my = Math.min(31, Math.floor((y / MAP_ROWS) * 32) + sy);
+            if (maskAt(mx, my)) hits++;
+          }
+        }
+        if (hits >= 4) {
+          setTile(x, y, isWaterBiome ? "water" : "wall", isWaterBiome ? 0 : 3, isWaterBiome ? "water" : "none");
+        } else {
+          setTile(x, y, "floor", 1, "none");
+        }
+      }
+    }
+
+    const blocks = tabletopEntry.ground?.block || [];
+    buildings = [];
+    halfBlocks = [];
+    blocks.forEach((rect, idx) => {
+      if (!Array.isArray(rect) || rect.length < 4) return;
+      const [x1p, y1p, x2p, y2p] = rect;
+      const bx1 = Math.max(0, Math.min(MAP_COLS - 1, Math.floor((x1p / 100) * MAP_COLS)));
+      const by1 = Math.max(0, Math.min(MAP_ROWS - 1, Math.floor((y1p / 100) * MAP_ROWS)));
+      const bx2 = Math.max(bx1, Math.min(MAP_COLS - 1, Math.ceil((x2p / 100) * MAP_COLS) - 1));
+      const by2 = Math.max(by1, Math.min(MAP_ROWS - 1, Math.ceil((y2p / 100) * MAP_ROWS) - 1));
+      const bw = bx2 - bx1 + 1;
+      const bd = by2 - by1 + 1;
+      if (bw <= 1 && bd <= 1) {
+        halfBlocks.push({
+          x: bx1,
+          y: by1,
+          h: 1,
+          w: 0.48,
+          d: 0.48,
+          dx: 0,
+          dz: 0,
+          height: 0.85,
+          color: 0x64748b,
+        });
+        return;
+      }
+      for (let py = by1; py <= by2; py++) {
+        for (let px = bx1; px <= bx2; px++) {
+          setTile(px, py, "wall", 3, "none");
+        }
+      }
+      buildings.push({
+        id: `${tabletopEntry.id}_bldg_${idx}`,
+        kind: "house",
+        solid: true,
+        name: "建築量體",
+        x1: bx1,
+        y1: by1,
+        x2: bx2,
+        y2: by2,
+        wallHeight: 1.65,
+        roofColor: idx % 2 === 0 ? 0x3b4d63 : 0x574c41,
+        wallColor: 0x64748b,
+      });
+    });
+
+    for (const rect of tabletopEntry.ground?.clear || []) {
+      if (!Array.isArray(rect) || rect.length < 4) continue;
+      const [x1p, y1p, x2p, y2p] = rect;
+      const cx1 = Math.max(0, Math.floor((x1p / 100) * MAP_COLS));
+      const cy1 = Math.max(0, Math.floor((y1p / 100) * MAP_ROWS));
+      const cx2 = Math.min(MAP_COLS - 1, Math.ceil((x2p / 100) * MAP_COLS) - 1);
+      const cy2 = Math.min(MAP_ROWS - 1, Math.ceil((y2p / 100) * MAP_ROWS) - 1);
+      for (let py = cy1; py <= cy2; py++) {
+        for (let px = cx1; px <= cx2; px++) {
+          setTile(px, py, "floor", 1, "none");
+        }
+      }
+    }
+
+    for (let y = 1; y < MAP_ROWS - 1; y++) {
+      for (let x = 1; x < MAP_COLS - 1; x++) {
+        if (grid[y][x].type !== "floor") continue;
+        if (grid[y - 1]?.[x]?.type === "wall" && (x + y) % 3 === 0) {
+          halfBlocks.push({ x, y, h: 1, w: 0.96, d: 0.22, dx: 0, dz: -0.38, height: 0.45, color: 0x94a3b8 });
+        }
+      }
+    }
+
+    const spotCells = (tabletopEntry.spots || [])
+      .map((sp) => ({
+        label: String(sp[0] || ""),
+        x: Math.max(1, Math.min(MAP_COLS - 2, Math.round((sp[1] / 100) * (MAP_COLS - 1)))),
+        y: Math.max(1, Math.min(MAP_ROWS - 2, Math.round((sp[2] / 100) * (MAP_ROWS - 1)))),
+      }))
+      .filter((s) => grid[s.y]?.[s.x]?.type === "floor");
+
+    const entrySpot = spotCells.find((s) => /入口|門|南|下/.test(s.label)) || spotCells[0] || { x: 4, y: 9 };
+    const deepSpot = spotCells.find((s) => /深處|中央|台|祭壇/.test(s.label)) || spotCells[spotCells.length - 1] || { x: 11, y: 3 };
+
+    const collectNearbyFloor = (cx, cy, count) => {
+      const out = [];
+      for (let r = 0; r <= 5 && out.length < count; r++) {
+        for (let dy = -r; dy <= r && out.length < count; dy++) {
+          for (let dx = -r; dx <= r && out.length < count; dx++) {
+            const tx = cx + dx;
+            const ty = cy + dy;
+            if (!inMapBounds(tx, ty)) continue;
+            if (grid[ty][tx].type === "floor" && !out.some((o) => o.x === tx && o.y === ty)) {
+              out.push({ x: tx, y: ty });
+            }
+          }
+        }
+      }
+      return out;
+    };
+
+    const hCand = collectNearbyFloor(entrySpot.x, entrySpot.y, 5);
+    if (hCand.length >= 4) heroSpawns = hCand;
+    const fCand = collectNearbyFloor(deepSpot.x, deepSpot.y, 6).filter(
+      (c) => !heroSpawns.some((h) => h.x === c.x && h.y === c.y)
+    );
+    if (fCand.length >= 4) foeSpawns = fCand;
   } else if (bp?.layout === "twin_ships") {
     // Two ships on open ocean connected by twin wooden boarding planks
     for (let y = 0; y < MAP_ROWS; y++) {
@@ -2009,6 +2168,7 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
     ...(buildings ? { buildings } : {}),
     ...(scenicProps ? { scenicProps } : {}),
     ...(mapLights ? { lights: mapLights } : {}),
+    ...(halfBlocks ? { halfBlocks } : {}),
   };
 }
 
