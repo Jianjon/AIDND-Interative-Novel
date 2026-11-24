@@ -986,8 +986,7 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
   const tabletopEntry = tabletopId ? TABLETOP_MAPS_CATALOG[tabletopId] || TABLETOP_MAPS_CATALOG[rawTabletopId] : null;
 
   if (tabletopId === "harbour_fort" && bp?.layout !== "twin_ships") {
-    // 1:1 3D HD-2D conversion of /prototype-assets/table-maps/harbour_fort.jpg (16x12)
-    tabletopBackdrop = "/prototype-assets/table-maps/harbour_fort.jpg";
+    // 1:1 3D HD-2D voxel terrain layout of harbour_fort (using unified 3D voxel textures)
     for (let y = 0; y < MAP_ROWS; y++) {
       for (let x = 0; x < MAP_COLS; x++) {
         setTile(x, y, "floor", 1, "none");
@@ -1137,8 +1136,7 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
       { x: 7, y: 4 },
     ];
   } else if (tabletopEntry && bp?.layout !== "twin_ships") {
-    // Universal 80% Skeleton Converter: any tabletop map -> 3D voxel + 15ft solid buildings + 1/2-width walls
-    tabletopBackdrop = tabletopEntry.image;
+    // Universal 80% Skeleton Converter: tabletop layout -> unified 3D voxel + 15ft solid buildings + 1/2-width walls
     const isWaterBiome = /harbour|ship|pier|river|sewer|marsh|lake|sea|bridge|island|swamp|dock|cove/i.test(
       tabletopEntry.id
     );

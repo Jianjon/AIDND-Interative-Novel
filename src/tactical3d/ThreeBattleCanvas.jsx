@@ -1628,7 +1628,7 @@ export default function ThreeBattleCanvas({
                           ? 0x4ade80
                           : null
                 : null;
-            if (auraColor !== null) {
+            if (!latestPropsRef.current.storyMode && auraColor !== null) {
               const isPalOrBard = Boolean(u.isPaladin || (u.isBard && u.activeSong));
               if (!vis.auraRing) {
                 const aGeo = new THREE.RingGeometry(0.45, 0.58, 28);

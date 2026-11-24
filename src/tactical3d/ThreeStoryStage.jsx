@@ -53,6 +53,7 @@ export default function ThreeStoryStage({
   const [hoverTile, setHoverTile] = useState(null);
   const [eventsBatch, setEventsBatch] = useState([]);
   const [leaderStoryId, setLeaderStoryId] = useState(null);
+  const [followMode, setFollowMode] = useState(true);
   const [activeScreenPos, setActiveScreenPos] = useState(null);
   const [localHint, setLocalHint] = useState("");
   const hintTimerRef = useRef(null);
@@ -197,29 +198,31 @@ export default function ThreeStoryStage({
 
       const evs = [{ type: "move", unitId: nextLeader.id, path }];
 
-      // Auto-follow party members 1-2 steps behind leader (0 AI)
-      const followers = next.units.filter((u) => u.side === "hero" && !u.dead && u.id !== nextLeader.id);
-      const occupied = new Set([`${x},${y}`]);
-      followers.forEach((f, idx) => {
-        const candidate = prevTrail[idx] || prevTrail[prevTrail.length - 1];
-        if (!candidate) return;
-        const cKey = `${candidate.x},${candidate.y}`;
-        if (!occupied.has(cKey) && next.map?.grid?.[candidate.y]?.[candidate.x]?.walkable) {
-          const fPath = findPath3D(next, f, candidate.x, candidate.y);
-          if (fPath && fPath.length >= 2) {
-            occupied.add(cKey);
-            f.x = candidate.x;
-            f.y = candidate.y;
-            evs.push({ type: "move", unitId: f.id, path: fPath });
+      // Follow Mode (🤝 一起走) vs Solo Split Mode (🔀 分開走)
+      if (followMode) {
+        const followers = next.units.filter((u) => u.side === "hero" && !u.dead && u.id !== nextLeader.id);
+        const occupied = new Set([`${x},${y}`]);
+        followers.forEach((f, idx) => {
+          const candidate = prevTrail[idx] || prevTrail[prevTrail.length - 1];
+          if (!candidate) return;
+          const cKey = `${candidate.x},${candidate.y}`;
+          if (!occupied.has(cKey) && next.map?.grid?.[candidate.y]?.[candidate.x]?.walkable) {
+            const fPath = findPath3D(next, f, candidate.x, candidate.y);
+            if (fPath && fPath.length >= 2) {
+              occupied.add(cKey);
+              f.x = candidate.x;
+              f.y = candidate.y;
+              evs.push({ type: "move", unitId: f.id, path: fPath });
+            }
           }
-        }
-      });
+        });
+      }
 
       const stamp = `${Date.now()}_${Math.random()}`;
       setBattle(next);
       setEventsBatch(evs.map((e, i) => ({ ...e, _uid: `${stamp}_${i}` })));
     },
-    [battle, leaderUnit, onSelectProp, onSelectUnit, showHint]
+    [battle, followMode, leaderUnit, onSelectProp, onSelectUnit, showHint]
   );
 
   if (!battle) return null;
@@ -280,16 +283,18 @@ export default function ThreeStoryStage({
         </div>
       )}
 
-      {/* Lightweight 3D Story Stage Controls */}
+      {/* Lightweight 3D Story Stage Controls (top-left, clear of bottom director bar) */}
       <div
         style={{
           position: "absolute",
-          left: 12,
-          bottom: 12,
+          left: 14,
+          top: 52,
           zIndex: 30,
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "center",
           gap: 6,
+          maxWidth: "calc(100% - 380px)",
           pointerEvents: "auto",
         }}
         onPointerDown={(e) => e.stopPropagation()}
@@ -310,11 +315,26 @@ export default function ThreeStoryStage({
         >
           🎯 置中
         </button>
+        <button
+          type="button"
+          className="stage-pill-btn"
+          style={followMode ? { borderColor: "#38bdf8", color: "#bae6fd" } : { borderColor: "#f59e0b", color: "#fde68a" }}
+          onClick={() => {
+            setFollowMode((v) => {
+              const nv = !v;
+              showHint(nv ? "🤝 切換為【一起走】：領隊帶隊，隊友自動跟隨" : "🔀 切換為【分開走】：可點選各角色獨立移動分頭行動");
+              return nv;
+            });
+          }}
+          title="切換探索移動方式：一起走（全隊跟隨領隊）或分開走（各角色獨立走位）"
+        >
+          {followMode ? "🤝 一起走" : "🔀 分開走"}
+        </button>
         {leaderUnit && (
           <span
             className="stage-pill-btn"
             style={{ cursor: "default", opacity: 0.92 }}
-            title="點擊地板自由移動（0 AI 延遲）；點擊隊友可切換領隊"
+            title="點擊地板自由移動（0 AI 延遲）；點擊其他隊友可切換操作角色"
           >
             👑 {leaderUnit.name} · 點方塊移動
           </span>
