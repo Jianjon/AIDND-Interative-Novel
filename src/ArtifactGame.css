@@ -44,3 +44,28 @@
     aspect-ratio: unset !important;
   }
 }
+
+/* Theater + Combat mode: 45-degree isometric angle matching 3D Tactical Arena & full-stage presence */
+.layout-mode-theater .table-stage.mode-25d {
+  perspective: 960px !important;
+  perspective-origin: 50% 46% !important;
+}
+.layout-mode-theater .table-stage.mode-25d .stage-board-3d {
+  transform: rotateX(48deg) rotateZ(-45deg) scale(1.08) !important;
+}
+.layout-mode-theater .table-stage.mode-25d .standee {
+  transform: translate(-50%, -82%) rotateZ(45deg) rotateX(-48deg);
+  transform-origin: 50% 82%;
+}
+.layout-mode-theater .table-stage.mode-25d .stage-prop {
+  transform: translate(-50%, -94%) rotateZ(45deg) rotateX(-48deg);
+  transform-origin: 50% 94%;
+}
+.layout-mode-theater .table-stage.mode-25d .stage-prop:hover,
+.layout-mode-theater .table-stage.mode-25d .stage-prop:focus-visible,
+.layout-mode-theater .table-stage.mode-25d .stage-prop[data-on="true"] {
+  transform: translate(-50%, -96%) rotateZ(45deg) rotateX(-48deg) scale(1.08);
+}
+.layout-mode-theater .standee-speech-bubble.is-compact-dots {
+  display: none !important;
+}

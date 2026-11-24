@@ -61645,8 +61645,9 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                                 ? void 0
                                 : ee.customSpots) || {}
                             : Oe.customSpots || s.customSpots || {},
-                          tacticalOverlay: tacCtx.isCombat
-                            ? n.jsx(TacticalGridOverlay, {
+                          tacticalOverlay:
+                            ue === "classic" && tacCtx.isCombat
+                              ? n.jsx(TacticalGridOverlay, {
                                 isCombat: tacCtx.isCombat,
                                 grid: tacCtx.grid,
                                 hasPaintedGrid: tacCtx.hasPaintedGrid,
@@ -61671,9 +61672,10 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                           animatedSpots: tacAnimatedSpots,
                           steppingActorId: y && y.phase === "moving" && fe ? fe.actor : null,
                           actionAnim: tacActionAnim,
-                          tacticalStances: tacCtx.isCombat
-                            ? (y ? Oe.tacticalStances : s.tacticalStances) || null
-                            : null,
+                          tacticalStances:
+                            ue === "classic" && tacCtx.isCombat
+                              ? (y ? Oe.tacticalStances : s.tacticalStances) || null
+                              : null,
                           sceneStaging: Ze
                             ? ((Te = ae.current) == null
                                 ? void 0
