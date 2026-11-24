@@ -49920,7 +49920,7 @@ function H0(e, t, a) {
   return `你是繁體中文桌上角色扮演遊戲的主持人，正在帶模組「${jt(e).title}」。這一輪每個人要做的事已經決定，骰子也已經擲完。請把這一輪演出來。骰子的結果不能更改，也不能寫成別的結果。
 ${
   isBEdition
-    ? `【B 版 3D 劇院節奏要求】目前為 3D 視覺探索模式，每段敘事請精簡控制在 35～60 字以內，直接表達行動成敗結果、環境變化與一句精煉角色對白；大幅減少角色的自我心理描述、冗長感嘆與重複意見，優先推動劇情前進。\n`
+    ? `【B 版 3D 劇院節奏要求】請完整保留故事主線內容、事件前後因果連貫與分支後果（flags／線索／不同處理方式的結果差異），不可省略關鍵劇情；僅精簡「角色重複的自我心理描述與無關緊要的寒暄意見」，讓劇情重點清楚、前後呼應。\n`
     : ""
 }【桌面現況（唯一權威）】${JSON.stringify(Li(e))}
 【隊伍這一輪的行動與骰子結果】
@@ -53083,7 +53083,14 @@ function Y0({
     const modList = (a.parts || []).map(
       (pt) => `${pt.label} (${pt.value >= 0 ? "+" : ""}${pt.value})`,
     );
-    const outcomeLine = e.outcome || e.text || "";
+    const actionLine =
+      e.intent ||
+      e.actionText ||
+      e.lead ||
+      e.text ||
+      e.tacticalMove?.summaryText ||
+      `${e.name || "角色"}執行${u}`;
+    const outcomeLine = e.outcome || e.resultText || e.text || "";
     const rollPayload = {
       type: "dice",
       side: e.side || "hero",
@@ -53091,6 +53098,7 @@ function Y0({
       actorName: e.name || "角色",
       targetName: e.targetName || e.place || "劇情檢定",
       actionName: u,
+      actionSummary: actionLine,
       d20: Number(a.natural) || 10,
       advState: a.advState || "normal",
       rolls: [Number(a.natural) || 10],

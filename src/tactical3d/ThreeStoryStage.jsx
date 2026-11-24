@@ -203,6 +203,7 @@ export default function ThreeStoryStage({
               if (diceEv) {
                 setActiveDiceRoll({
                   ...diceEv,
+                  actionSummary: `${leaderUnit.name} 靠近【${clickedProp.name}】並嘗試進行${diceEv.actionName || "技能檢定"}`,
                   outcomeText: res.success
                     ? `【檢定成功】${clickedProp.rewardDesc || "物件互動成功！"}`
                     : `【檢定失敗】${clickedProp.name} 暫時無法啟動，可再試一次。`,

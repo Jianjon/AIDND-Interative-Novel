@@ -204,6 +204,24 @@ export default function TacticalDiceModal({ roll, onComplete }) {
               <span style={{ color: "#94a3b8", fontWeight: 500, fontSize: 13 }}> → {roll.targetName}</span>
             ) : null}
           </div>
+          {roll.actionSummary && (
+            <div
+              style={{
+                marginTop: 6,
+                padding: "5px 10px",
+                borderRadius: 7,
+                background: "rgba(30, 41, 59, 0.72)",
+                border: "1px solid rgba(148, 163, 184, 0.25)",
+                color: "#e2e8f0",
+                fontSize: 12,
+                lineHeight: 1.45,
+                textAlign: "left",
+              }}
+            >
+              <strong style={{ color: "#38bdf8" }}>🎯 行動方式：</strong>
+              {roll.actionSummary}
+            </div>
+          )}
         </div>
 
         {/* Multi-Die Only Stage (e.g. Magic Missile 3d4 / Cure Wounds 1d8) */}
