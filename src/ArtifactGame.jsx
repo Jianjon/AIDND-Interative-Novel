@@ -37337,8 +37337,17 @@ function yA({
     pe,
   );
   I.useEffect(() => {
-    $ && Ee.current !== ba && ((Ee.current = ba), Ke(ta.zoom), Ae(ta.pan));
-  }, [ba, $, ta.zoom, ta.pan]);
+    if ($ && Ee.current !== ba) {
+      Ee.current = ba;
+      if (!threeStorySession) {
+        Ke(1);
+        Ae([0, 0]);
+      } else {
+        Ke(ta.zoom);
+        Ae(ta.pan);
+      }
+    }
+  }, [ba, $, ta.zoom, ta.pan, threeStorySession]);
   const hs = (P, Y, ie) => {
       if ((!ie && !(Y != null && Y.companionId)) || P.button !== 0) return;
       const wt = ce.current;
@@ -37492,7 +37501,9 @@ function yA({
     );
   }, [ut]);
   const Pt = (P) => {
-      if (P.button !== 2 && P.button !== 1) return;
+      const uiSelector = ".stage-modes-hud, .adventure-sidebar, .stage-floating-drawer, .stage-drawer-backdrop, .drawer-body, .theater-floating-stage-card, .theater-dice-stage-overlay, .soul-inspector-hud, .prop-card, .stage-zoom-controls, .stage-transition-curtain, button, a, input, select";
+      if (P.target?.closest && P.target.closest(uiSelector)) return;
+      if (P.button !== 2 && P.button !== 1 && (P.button !== 0 || P.target?.closest?.(".standee, .stage-prop"))) return;
       P.preventDefault();
       const Y = P.clientX,
         ie = P.clientY,
@@ -37510,6 +37521,32 @@ function yA({
       (window.addEventListener("mousemove", $t),
         window.addEventListener("mouseup", Ht));
     },
+    PtTouch = (P) => {
+      if (!P.touches || P.touches.length !== 1) return;
+      const uiSelector = ".stage-modes-hud, .adventure-sidebar, .stage-floating-drawer, .stage-drawer-backdrop, .drawer-body, .theater-floating-stage-card, .theater-dice-stage-overlay, .soul-inspector-hud, .prop-card, .stage-zoom-controls, .stage-transition-curtain, button, a, input, select";
+      if (P.target?.closest && P.target.closest(uiSelector)) return;
+      const t0 = P.touches[0];
+      const Y = t0.clientX,
+        ie = t0.clientY,
+        wt = na,
+        _t = ia;
+      Ye(!0);
+      const onMove = (ev) => {
+          if (!ev.touches || ev.touches.length !== 1) return;
+          ev.preventDefault();
+          const cur = ev.touches[0];
+          Ae([wt + (cur.clientX - Y), _t + (cur.clientY - ie)]);
+        },
+        onEnd = () => {
+          (Ye(!1),
+            window.removeEventListener("touchmove", onMove),
+            window.removeEventListener("touchend", onEnd),
+            window.removeEventListener("touchcancel", onEnd));
+        };
+      (window.addEventListener("touchmove", onMove, { passive: !1 }),
+        window.addEventListener("touchend", onEnd),
+        window.addEventListener("touchcancel", onEnd));
+    },
     ys = {
       position: "absolute",
       inset: 0,
@@ -37520,12 +37557,13 @@ function yA({
     };
   return n.jsx("div", {
     ref: R,
-    style: L,
+    style: { ...(L || {}), touchAction: "none" },
     className: `table-stage${pe ? " mode-25d" : ""}${Ue ? " is-panning" : ""}${_ && A ? " has-spotlight" : ""}${h && h !== "daylight" ? ` mood-${h}` : ""}`,
     role: "img",
     "aria-label": `場景：${t || e}`,
     onContextMenu: (P) => P.preventDefault(),
     onMouseDown: Pt,
+    onTouchStart: PtTouch,
     onClick: () => {
       (Ne(null), z && z());
     },
