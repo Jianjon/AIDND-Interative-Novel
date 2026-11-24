@@ -58897,7 +58897,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
       )
         try {
           const G = Ro(f.autosave);
-          G && !dt.current && ((dt.current = G), r(G), i("table"));
+          G && !dt.current && ((dt.current = G), r(G));
         } catch {}
     }, []),
     _e = I.useCallback(
@@ -58950,7 +58950,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                   (((Re = Pe.log) == null ? void 0 : Re.length) || 0);
             bt &&
               (f || (!ve.current && Ct)) &&
-              ((dt.current = bt), r(bt), i("table"));
+              ((dt.current = bt), r(bt), f && i("table"));
           } catch {}
         else f && ((dt.current = null), r(null), i("modules"));
         return C;
@@ -59889,7 +59889,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
               n.jsx("p", {
                 className: "lede",
                 children:
-                  "選一個模組，或請主持人依你的想法寫一場新的冒險。故事從序幕開始；替每個角色挑一個他自己想到的做法，或自己寫。骰子一次擲完，主持人把這一輪一段一段演給你看。",
+                  "AI 主持的 D&D 5e 桌上角色扮演冒險：依序選擇「① 遊玩方式 → ② 劇本模組 → ③ 隊伍角色」即可出發。每輪決定四位角色的行動、擲骰演繹劇情，或隨時讀取／儲存雲端進度。",
               }),
             ],
           }),
@@ -59900,34 +59900,20 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                 n.jsxs("button", {
                   className: "primary-action",
                   onClick: () => i("table"),
-                  children: ["繼續：", jt(s).title, " →"],
+                  children: [
+                    "▶ 繼續：",
+                    jt(s).title,
+                    `（第 ${s.turn || 1} 輪） →`,
+                  ],
                 }),
-              n.jsxs("div", {
-                className: "view-mode-switcher",
-                role: "group",
-                "aria-label": "遊玩模式選擇",
-                children: [
-                  n.jsx("button", {
-                    type: "button",
-                    className: `quiet-button view-mode-btn${ue === "classic" ? " is-active" : ""}`,
-                    title: "經典版（2.5D 格線跑團桌，獨立連結 ?mode=classic）",
-                    onClick: () => Kt("classic"),
-                    children: "🏛️ 經典版",
-                  }),
-                  n.jsx("button", {
-                    type: "button",
-                    className: `quiet-button view-mode-btn${ue === "theater" ? " is-active" : ""}`,
-                    title: "劇院＋戰鬥版（3D HD-2D 探索與戰棋，獨立連結 ?mode=theater）",
-                    onClick: () => Kt("theater"),
-                    children: "🎭 劇院＋戰鬥版",
-                  }),
-                ],
-              }),
               n.jsx("button", {
-                type: "button",
-                className: `quiet-button sound-toggle ${j.sound ? "sound-on" : "sound-off"}`,
-                onClick: () => x((te) => ({ ...te, sound: !te.sound })),
-                children: j.sound ? "🔊 音樂：開" : "🔇 音樂：靜音",
+                className: s ? "quiet-button" : "primary-action",
+                "aria-expanded": q,
+                onClick: () => F((te) => !te),
+                children:
+                  p.status === "syncing"
+                    ? "💾 存檔同步中…"
+                    : `💾 讀取／儲存存檔${c ? ` (${c})` : ""}`,
               }),
               n.jsx("button", {
                 type: "button",
@@ -59937,13 +59923,10 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                 children: "⚔️ 3D 戰棋實驗場",
               }),
               n.jsx("button", {
-                className: "quiet-button",
-                "aria-expanded": q,
-                onClick: () => F((te) => !te),
-                children:
-                  p.status === "syncing"
-                    ? "☁️ 同步中…"
-                    : `☁️ 雲端存檔${c ? ` (${c})` : ""}`,
+                type: "button",
+                className: `quiet-button sound-toggle ${j.sound ? "sound-on" : "sound-off"}`,
+                onClick: () => x((te) => ({ ...te, sound: !te.sound })),
+                children: j.sound ? "🔊 音樂：開" : "🔇 音樂：靜音",
               }),
               q &&
                 n.jsx(jc, {
@@ -59953,6 +59936,119 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                   onLoad: Ht,
                   onClose: () => F(!1),
                 }),
+            ],
+          }),
+          n.jsxs("section", {
+            style: {
+              marginTop: 18,
+              marginBottom: 18,
+              padding: "14px 16px",
+              borderRadius: 12,
+              background: "rgba(15, 23, 42, 0.55)",
+              border: "1px solid rgba(148, 163, 184, 0.2)",
+            },
+            children: [
+              n.jsxs("div", {
+                style: {
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                  marginBottom: 12,
+                },
+                children: [
+                  n.jsx("strong", {
+                    style: { color: "#fde68a", fontSize: 14, letterSpacing: "0.04em" },
+                    children: "① 選擇遊玩方式",
+                  }),
+                  n.jsx("span", {
+                    style: { fontSize: 12, color: "#94a3b8" },
+                    children: "開團流程：① 遊玩方式 → ② 挑選劇本 → ③ 選擇角色與隊伍",
+                  }),
+                ],
+              }),
+              n.jsxs("div", {
+                style: {
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                  gap: 10,
+                },
+                children: [
+                  n.jsxs("button", {
+                    type: "button",
+                    onClick: () => Kt("classic"),
+                    style: {
+                      textAlign: "left",
+                      padding: "12px 14px",
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      background: ue === "classic" ? "rgba(217, 119, 6, 0.16)" : "rgba(30, 41, 59, 0.55)",
+                      border: ue === "classic" ? "1.5px solid #fbbf24" : "1px solid rgba(148, 163, 184, 0.25)",
+                      color: "#f8fafc",
+                    },
+                    children: [
+                      n.jsxs("div", {
+                        style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 },
+                        children: [
+                          n.jsx("strong", { style: { fontSize: 14, color: ue === "classic" ? "#fde68a" : "#e2e8f0" }, children: "🏛️ 經典版（A 版）" }),
+                          ue === "classic" && n.jsx("span", { style: { fontSize: 11, color: "#fbbf24", fontWeight: 700 }, children: "✓ 已選擇" }),
+                        ],
+                      }),
+                      n.jsx("div", {
+                        style: { fontSize: 12, color: "#cbd5e1", lineHeight: 1.55 },
+                        children: "2.5D 格線跑團桌＋完整文字演出與戰術紀錄，節奏輕快、適合經典跑團體驗。",
+                      }),
+                    ],
+                  }),
+                  n.jsxs("button", {
+                    type: "button",
+                    onClick: () => Kt("theater"),
+                    style: {
+                      textAlign: "left",
+                      padding: "12px 14px",
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      background: ue === "theater" ? "rgba(217, 119, 6, 0.16)" : "rgba(30, 41, 59, 0.55)",
+                      border: ue === "theater" ? "1.5px solid #fbbf24" : "1px solid rgba(148, 163, 184, 0.25)",
+                      color: "#f8fafc",
+                    },
+                    children: [
+                      n.jsxs("div", {
+                        style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 },
+                        children: [
+                          n.jsx("strong", { style: { fontSize: 14, color: ue === "theater" ? "#fde68a" : "#e2e8f0" }, children: "🎭 劇院＋戰鬥版（B 版）" }),
+                          ue === "theater" && n.jsx("span", { style: { fontSize: 11, color: "#fbbf24", fontWeight: 700 }, children: "✓ 已選擇" }),
+                        ],
+                      }),
+                      n.jsx("div", {
+                        style: { fontSize: 12, color: "#cbd5e1", lineHeight: 1.55 },
+                        children: "3D HD-2D 自由移動探索、寶箱 d100 抽獎與機關陷阱，開戰無縫進入 3D 戰棋。",
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+          n.jsxs("div", {
+            style: {
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
+              marginBottom: 8,
+            },
+            children: [
+              n.jsxs("strong", {
+                style: { color: "#fde68a", fontSize: 14, letterSpacing: "0.04em" },
+                children: ["② 挑選劇本模組（共 ", f.length, " 個）"],
+              }),
+              n.jsx("span", {
+                style: { fontSize: 12, color: "#94a3b8" },
+                children: "選定劇本並設定難度後，下一步即進入 ③ 選擇角色與隊伍",
+              }),
             ],
           }),
           n.jsxs("div", {
@@ -60356,7 +60452,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
               : n.jsx("button", {
                   className: "primary-action",
                   onClick: () => i("party"),
-                  children: "選隊伍 →",
+                  children: "③ 選擇隊伍角色 →",
                 }),
           }),
           u.carry
