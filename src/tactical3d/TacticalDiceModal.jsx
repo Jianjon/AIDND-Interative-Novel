@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import PolyhedralDiceStage3D from "./PolyhedralDie3D.jsx";
 
 function getDiePalette(sides, isCrit, isFumble) {
@@ -24,6 +24,8 @@ function getDiePalette(sides, isCrit, isFumble) {
 export default function TacticalDiceModal({ roll, onComplete }) {
   const [phase, setPhase] = useState("rolling"); // rolling -> reveal -> dmg_roll -> outcome
   const [dmgRolling, setDmgRolling] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   const isMultiOnly = roll?.role === "damage" || roll?.role === "heal";
   const hasDmgDice = Array.isArray(roll?.dmgDice) && roll.dmgDice.length > 0;
@@ -64,18 +66,18 @@ export default function TacticalDiceModal({ roll, onComplete }) {
       clearTimeout(tOutcome);
       if (tDmgSettle) clearTimeout(tDmgSettle);
     };
-  }, [roll, onComplete, isMultiOnly, hasDmgDice]);
+  }, [roll, isMultiOnly, hasDmgDice]);
 
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === " " || e.key === "Enter" || e.key === "Escape") {
         e.preventDefault();
-        onComplete?.();
+        onCompleteRef.current?.();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onComplete]);
+  }, []);
 
   const isEnemyAttack = roll?.side === "foe" || roll?.role === "enemy_attack";
   const isDefense = roll?.role === "defense";

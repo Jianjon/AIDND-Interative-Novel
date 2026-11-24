@@ -333,7 +333,7 @@ function buildStoryInteractables(node) {
   return derived.length > 0 ? derived : undefined;
 }
 
-export function mapStorySessionTo3DConfig(session) {
+export function mapStorySessionTo3DConfig(session, opts = {}) {
   if (!session) return null;
   const tac = session?.node?.tactical || null;
   const scenarioId = tac?.scenarioId || inferScenarioIdFromSession(session);
@@ -424,30 +424,38 @@ export function mapStorySessionTo3DConfig(session) {
   }
 
   const situationTxt = `${session?.node?.title || ""} ${session?.node?.situation || ""}`;
+  const includeAllNpcs = Boolean(opts?.includeAllPresentNpcs);
   const activeAllies = (session?.cast || []).filter((c) => {
     if (!c || !c.present) return false;
     if (["倒下", "死亡", "逃走", "離開"].includes(c.status)) return false;
     if (c.hp !== undefined && c.hp <= 0) return false;
     if (c.kind === "ally") return true;
     if (c.kind === "npc") {
+      if (includeAllNpcs) return true;
       return /護送|保護|隨行|同行|友軍|衛兵|商旅|領袖|協助|並肩|人質|受困/.test(
         `${c.role || ""} ${c.note || ""} ${c.status || ""} ${situationTxt}`
       );
     }
     return false;
   });
-  const allySpecs = activeAllies.slice(0, 2).map((a) => {
+  const allySpecs = activeAllies.slice(0, includeAllNpcs ? 6 : 2).map((a) => {
     const roleTxt = `${a.role || ""} ${a.name || ""} ${a.note || ""}`;
-    const isVip = /護送|被保護|保護|商旅|學者|村長|平民|人質|vip|受困/.test(roleTxt);
+    const isCombatGuard = /衛兵|護衛|戰士|傭兵|騎士|遊俠|法師|牧師|弓手|士兵/.test(roleTxt);
+    const isVip = a.kind === "npc" ? !isCombatGuard : /護送|被保護|保護|商旅|學者|村長|平民|人質|vip|受困/.test(roleTxt);
+    const inferredToken =
+      !a.image && !a.avatar && !a.spriteHint
+        ? findCreatureToken({ query: `${a.name || ""} ${a.role || ""}` })
+        : null;
     return {
       storyCastId: a.id,
+      catalogId: a.catalogId || a.templateId || inferredToken?.id || undefined,
       name: a.name,
-      className: a.role || (isVip ? "被保護人" : "友軍護衛"),
+      className: a.role || (isVip ? "NPC" : "友軍護衛"),
       allyRole: isVip ? "vip" : "combat",
       ranged: /弓|弩|法|牧|遊俠/.test(roleTxt),
       hp: Number.isFinite(a.hp) ? a.hp : undefined,
       maxHp: Number.isFinite(a.maxHp) ? a.maxHp : undefined,
-      avatar: a.image || a.avatar || a.spriteHint || undefined,
+      avatar: a.image || a.avatar || a.spriteHint || inferredToken?.image || undefined,
     };
   });
 

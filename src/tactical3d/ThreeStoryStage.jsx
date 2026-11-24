@@ -24,7 +24,11 @@ function cloneExplorationBattle(b) {
 function findPathFromReach(reach, unit, tx, ty) {
   if (!reach) return null;
   const key = `${tx},${ty}`;
-  if (!reach.has(key)) return null;
+  const entry = reach.get(key);
+  if (!entry) return null;
+  if (Array.isArray(entry.path) && entry.path.length >= 2) {
+    return entry.path;
+  }
   const path = [];
   let curKey = key;
   const visited = new Set();
@@ -32,8 +36,8 @@ function findPathFromReach(reach, unit, tx, ty) {
     visited.add(curKey);
     const [cx, cy] = curKey.split(",").map(Number);
     path.unshift({ x: cx, y: cy });
-    const entry = reach.get(curKey);
-    curKey = entry?.parent || null;
+    const e = reach.get(curKey);
+    curKey = e?.parent || null;
   }
   if (path.length === 0 || path[0].x !== unit.x || path[0].y !== unit.y) {
     path.unshift({ x: unit.x, y: unit.y });
@@ -87,7 +91,7 @@ export default function ThreeStoryStage({
 
   const cfg = useMemo(() => {
     if (!session) return null;
-    return mapStorySessionTo3DConfig(session);
+    return mapStorySessionTo3DConfig(session, { includeAllPresentNpcs: true });
   }, [
     session?.map,
     session?.node?.id,
@@ -95,7 +99,7 @@ export default function ThreeStoryStage({
     session?.sceneMood?.lighting,
     session?.sceneMood?.ambient,
     session?.heroes?.length,
-    session?.cast?.length,
+    session?.cast,
   ]);
 
   const [battle, setBattle] = useState(null);
@@ -127,6 +131,9 @@ export default function ThreeStoryStage({
       } else if (u.side === "foe" && cfg.foeSpecs?.[0]) {
         const matched = cfg.foeSpecs.find((fs) => fs.name === u.name);
         if (matched?.storyCastId) u.storyId = matched.storyCastId;
+      } else if (u.side === "ally" && cfg.allySpecs?.length) {
+        const matched = cfg.allySpecs.find((as) => as.name === u.name);
+        if (matched?.storyCastId) u.storyId = matched.storyCastId;
       }
       u.turn = { ...(u.turn || {}), movementLeft: u.speedCells || 6, actionLeft: 1, bonusLeft: 1 };
     }
@@ -134,6 +141,74 @@ export default function ThreeStoryStage({
     const firstHero = created.units.find((u) => u.side === "hero" && !u.dead);
     if (firstHero) setLeaderStoryId((prev) => focusedHeroId || prev || firstHero.storyId || firstHero.id);
   }, [mapKey]);
+
+  // Sync newly-present NPCs/allies into the current map without regenerating terrain
+  useEffect(() => {
+    if (!cfg?.allySpecs?.length) return;
+    setBattle((prev) => {
+      if (!prev || !prev.map?.grid) return prev;
+      const existingNames = new Set(prev.units.map((u) => u.name));
+      const existingIds = new Set(prev.units.map((u) => u.storyId).filter(Boolean));
+      const missingAllies = cfg.allySpecs.filter(
+        (as) => as?.name && !existingNames.has(as.name) && !(as.storyCastId && existingIds.has(as.storyCastId))
+      );
+      if (missingAllies.length === 0) return prev;
+
+      const next = cloneExplorationBattle(prev);
+      const grid = next.map.grid;
+      const rows = grid.length;
+      const cols = grid[0]?.length || 0;
+      const occupied = new Set(next.units.filter((u) => !u.dead).map((u) => `${u.x},${u.y}`));
+      const heroRef = next.units.find((u) => u.side === "hero" && !u.dead) || { x: Math.floor(cols / 2), y: Math.floor(rows / 2) };
+
+      const findFreeTile = () => {
+        let best = null;
+        let bestScore = Infinity;
+        for (let y = 1; y < rows - 1; y++) {
+          for (let x = 1; x < cols - 1; x++) {
+            const cell = grid[y]?.[x];
+            if (!cell || !cell.walkable || cell.blocksMove || occupied.has(`${x},${y}`)) continue;
+            const d = Math.hypot(x - heroRef.x, y - heroRef.y);
+            // Prefer 2-5 tiles away from hero so NPCs stand naturally nearby
+            const score = Math.abs(d - 3);
+            if (score < bestScore) {
+              bestScore = score;
+              best = { x, y };
+            }
+          }
+        }
+        return best;
+      };
+
+      for (const spec of missingAllies) {
+        const spot = findFreeTile();
+        if (!spot) break;
+        occupied.add(`${spot.x},${spot.y}`);
+        next.units.push({
+          id: `ally_sync_${spec.storyCastId || Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          storyId: spec.storyCastId || undefined,
+          side: "ally",
+          allyRole: spec.allyRole || "vip",
+          name: spec.name,
+          className: spec.className || "NPC",
+          avatar: spec.avatar || undefined,
+          catalogId: spec.catalogId || undefined,
+          x: spot.x,
+          y: spot.y,
+          hp: spec.hp ?? 22,
+          maxHp: spec.maxHp ?? 22,
+          ac: 12,
+          speedCells: 6,
+          footprint: 1,
+          dead: false,
+          conditions: {},
+          mods: { str: 0, dex: 1, con: 1, int: 0, wis: 1, cha: 1 },
+          turn: { movementLeft: 6, actionLeft: 1, bonusLeft: 1 },
+        });
+      }
+      return next;
+    });
+  }, [cfg]);
 
   // Refresh movement points at the start of each new planning turn (turnKey)
   useEffect(() => {
@@ -207,7 +282,7 @@ export default function ThreeStoryStage({
 
   const handleClickTile = useCallback(
     (pt) => {
-      if (!battle || !pt) return;
+      if (!battle || !pt || activeDiceRoll) return;
       const { x, y } = pt;
       if (!Number.isInteger(x) || !Number.isInteger(y)) return;
       const clickedUnit = battle.units.find(
@@ -293,7 +368,7 @@ export default function ThreeStoryStage({
       setEventsBatch([{ type: "move", unitId: nextLeader.id, path, _uid: `${stamp}_0` }]);
       showHint(`🦶 ${nextLeader.name} 已移動（剩 ${nextLeader.turn.movementLeft} 格）`);
     },
-    [battle, leaderUnit, onSelectProp, onSelectUnit, showHint]
+    [battle, leaderUnit, activeDiceRoll, onSelectProp, onSelectUnit, showHint]
   );
 
   if (!battle) return null;

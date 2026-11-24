@@ -49339,7 +49339,7 @@ ${Oi}`
 ${Fd}
 ${dn}
 要求：
-- intro：120 到 220 個字的敘事，${e.prelude ? "任務談定之後、出發之前的這段時間：隊伍待在哪裡、周圍的人在做什麼、委託人還在不在。" : ""}像小說一樣寫隊伍怎麼來到這裡、現場看得到聽得到聞得到什麼、在場人物的樣子與神情。先寫抵達與察覺，危險只給徵兆，不要一開場就開打；停在局面上，不要替玩家決定，不要提到規則或骰子。
+- intro：20 到 30 個字以內的簡短場景介紹（只點出眼前環境氛圍與關鍵焦點，精煉有畫面感，不要長篇大論、不要直接開打或替玩家決定，不要提到規則或骰子）。
 - talk：三到五句對白，接在 intro 之後，而且是一段連貫的對話：第一句由某個角色對 intro 裡的某個具體細節（人物、物件、氣味、異狀）起頭，之後每一句都接著上一句回應（附和、反駁、吐槽、追問、轉移話題）。隊伍角色依各自的個性與目前的 partyChemistry（${Wr(e)}）開口，不可重複 recentLinesToAvoid 裡的句子或重演初見面的客套；在場的人物也可以搭話或挑釁。who 填角色或人物的 id，line 是他說的話（不加引號，40 字內）。每個人的口吻要分得出來。
 - path：隊伍現在的位置，由大到小兩到三層，例如 ["凡戴爾外圍","三豬小徑","三叉路口"]。
 - spot：${Es(e.map) ? `這一幕隊伍在地圖上的哪個地點，從 scene.placesOnMap 選一個名字（${Es(e.map)}）。` : "寫 null。"}隊伍永遠一起行動。
@@ -51715,6 +51715,7 @@ function N0(e, t) {
   ((y = t.path) != null && y.length && (a.path = t.path),
     t.map &&
       t.map !== a.map &&
+      (!a.map || t.status !== "ongoing") &&
       ((a.map = t.map), delete a.spot, delete a.customSpots, delete a.tacticalStances));
   const c = t.spot && Gs(a.map, t.spot);
   if (c && c.id !== a.spot) {
@@ -52197,7 +52198,7 @@ async function I0(e, t, { signal: a, onText: s } = {}) {
         jt(o).title,
         ((N = u.place) == null ? void 0 : N.name) || u.node.title,
       ].filter(Boolean);
-  const m = W(r.intro, 500),
+  const m = W(r.intro, 80),
     _ = br(r.talk, o, 5);
   if (m) {
     o.log.push({ id: o.log.length + 1, kind: "gm", text: m, ai: !0 });
@@ -52216,7 +52217,7 @@ async function I0(e, t, { signal: a, onText: s } = {}) {
     const h = o.cast.find((M) => M.name === v.name || qe(M) === v.name);
     h && (h.present = !0);
   }
-  const b = QA(o, { map: Fr(r.map), castTokens: r.castTokens });
+  const b = QA(o, { map: e.prelude && e.map ? e.map : Fr(r.map), castTokens: r.castTokens });
   (b.map && (o.map = b.map),
     Array.isArray(b.cast) && b.cast.length && (o.cast = b.cast),
     (o.sceneStaging = await ZA(o, t, { signal: a })));
@@ -54513,14 +54514,6 @@ function Q0({
                           },
                           children: isYielded ? "📖 顯示" : "👁️ 暫隱",
                         }),
-                      n.jsx("button", {
-                        type: "button",
-                        className: "quiet-button",
-                        onClick: (X) => {
-                          (X.stopPropagation(), Ve(!0));
-                        },
-                        children: "📄 全文",
-                      }),
                     ],
                   }),
                 ],
@@ -54536,14 +54529,7 @@ function Q0({
                 className: "stage-card-foot",
                 onClick: (X) => X.stopPropagation(),
                 children: [
-                  ia
-                    ? n.jsx("button", {
-                        type: "button",
-                        className: "quiet-button",
-                        onClick: ma(na),
-                        children: "◂ 上一頁",
-                      })
-                    : n.jsx("span", {}),
+                  n.jsx("span", {}),
                   Pt &&
                     !Pt.disabled &&
                     n.jsx("button", {
@@ -55530,23 +55516,53 @@ function Q0({
           className: `theater-floating-director-pill${E && he ? " is-action-collapsed-pill" : ""}`,
           role: "region",
           "aria-label": "事件導演播放控制列",
+          style: E && he
+            ? void 0
+            : {
+                width: "min(760px, calc(100% - 28px))",
+                minHeight: "48px",
+                height: "48px",
+                left: "50%",
+                right: "auto",
+                bottom: "12px",
+                transform: "translateX(-50%)",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+              },
           onClick: (w) => w.stopPropagation(),
           onPointerDown: (w) => w.stopPropagation(),
           onWheel: (w) => w.stopPropagation(),
           children: [
             n.jsxs("div", {
               className: "director-pill-status",
+              style: {
+                minWidth: 0,
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                overflow: "hidden",
+              },
               children: [
                 n.jsx("span", {
                   className: `status-indicator-dot${ga ? " is-paused" : p ? " is-playing" : H ? " is-busy" : " is-ready"}`,
+                  style: { flexShrink: 0 },
                 }),
-                n.jsx("strong", { children: ys }),
+                n.jsx("strong", {
+                  style: {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  },
+                  children: ys,
+                }),
                 p &&
                   l &&
                   ["outcome", "done"].includes(p.phase) &&
                   n.jsxs("button", {
                     type: "button",
                     className: `settled-roll-mini-pill deg-${ht.degree || "direct"}`,
+                    style: { flexShrink: 0 },
                     onClick: () => mt((w) => !w),
                     title: "點擊重看本段大型擲骰與修正值演出",
                     children: [
@@ -55560,33 +55576,15 @@ function Q0({
             }),
             n.jsxs("div", {
               className: "director-pill-actions",
+              style: { flexShrink: 0 },
               children: [
                 (p || b) &&
-                  n.jsxs(n.Fragment, {
-                    children: [
-                      n.jsx("button", {
-                        type: "button",
-                        className: "quiet-button",
-                        disabled: !ia,
-                        onClick: ma(na),
-                        title: "回到上一頁或上一個演出步驟",
-                        children: "◂ 上一頁",
-                      }),
-                      n.jsx("button", {
-                        type: "button",
-                        className: "quiet-button",
-                        onClick: () => Et((w) => !w),
-                        title: ze ? "繼續自動演出計時" : "暫停自動演出計時",
-                        children: ze ? "▶ 繼續" : "⏸ 暫停",
-                      }),
-                      n.jsx("button", {
-                        type: "button",
-                        className: "quiet-button",
-                        onClick: () => Ve(!0),
-                        title: "查看目前這筆事件的完整未分頁原文與判定明細",
-                        children: "📄 全文",
-                      }),
-                    ],
+                  n.jsx("button", {
+                    type: "button",
+                    className: "quiet-button",
+                    onClick: () => Et((w) => !w),
+                    title: ze ? "繼續自動演出計時" : "暫停自動演出計時",
+                    children: ze ? "▶ 繼續" : "⏸ 暫停",
                   }),
                 Pt &&
                   n.jsx("button", {
@@ -62278,7 +62276,8 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                                   "",
                               }),
                           sceneTransition:
-                            S === "open" || S === "prologue"
+                            S === "prologue" ||
+                            (S === "open" && !(s == null ? void 0 : s.prelude) && ((s == null ? void 0 : s.node) || 1) > 1)
                               ? {
                                   active: !0,
                                   kind: S,
