@@ -328,6 +328,7 @@ export function mapStorySessionTo3DConfig(session) {
           foeWaves: typeof tac?.foeWaves === "boolean" ? tac.foeWaves : Boolean(textBlueprint?.foeWaves),
           objectiveName: tac?.objectiveName || textBlueprint?.objectiveName || undefined,
           interactables: buildStoryInteractables(session?.node),
+          tabletopMapId: tac?.tabletopMap || session?.node?.map || undefined,
         }
       : null;
 

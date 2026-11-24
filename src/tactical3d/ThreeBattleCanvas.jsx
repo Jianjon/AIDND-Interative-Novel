@@ -651,6 +651,8 @@ export default function ThreeBattleCanvas({
       const flatGeo = new THREE.PlaneGeometry(0.9, 0.9);
       const spikeGeo = new THREE.ConeGeometry(0.32, 0.95, 5);
       const crystalGeo = new THREE.OctahedronGeometry(0.24, 0);
+      const buildingVisuals = [];
+      const scenicBillboards = [];
 
       function rebuildMapMeshes(map) {
         tileGroup.clear();
@@ -663,9 +665,15 @@ export default function ThreeBattleCanvas({
         overlayTiles.clear();
         propVisuals.clear();
         pointLights.length = 0;
+        buildingVisuals.length = 0;
+        scenicBillboards.length = 0;
 
         applyEnvironmentAtmosphere(map.lighting, map.weather);
         const biomeTex = textures.getBiomeTextures(map.palette);
+        const backdropTex = map.tabletopBackdrop ? getImgTexture(map.tabletopBackdrop, "tabletop_backdrop", "hero") : null;
+        if (backdropTex) {
+          backdropTex.colorSpace = THREE.SRGBColorSpace;
+        }
 
         for (let y = 0; y < MAP_ROWS; y++) {
           for (let x = 0; x < MAP_COLS; x++) {
@@ -717,6 +725,33 @@ export default function ThreeBattleCanvas({
 
             // Surface + highlight quad hovering cleanly above tile top face
             const topY = t.type === "water" ? -0.04 : t.h * ELEV_H;
+
+            // 2D Tabletop Backdrop UV Projection on each extruded 3D tile top
+            if (backdropTex) {
+              const uvGeo = new THREE.PlaneGeometry(0.98, 0.98);
+              const u0 = x / MAP_COLS;
+              const u1 = (x + 1) / MAP_COLS;
+              const vTop = 1 - y / MAP_ROWS;
+              const vBot = 1 - (y + 1) / MAP_ROWS;
+              const uvAttr = uvGeo.attributes.uv;
+              uvAttr.setXY(0, u0, vTop);
+              uvAttr.setXY(1, u1, vTop);
+              uvAttr.setXY(2, u0, vBot);
+              uvAttr.setXY(3, u1, vBot);
+              uvAttr.needsUpdate = true;
+              const capMat = new THREE.MeshStandardMaterial({
+                map: backdropTex,
+                roughness: isWater ? 0.22 : 0.85,
+                metalness: isWater ? 0.18 : 0.04,
+                transparent: isWater,
+                opacity: isWater ? 0.72 : 1,
+              });
+              const capMesh = new THREE.Mesh(uvGeo, capMat);
+              capMesh.rotation.x = -Math.PI / 2;
+              capMesh.position.set(x, topY + 0.003, y);
+              capMesh.receiveShadow = true;
+              tileGroup.add(capMesh);
+            }
 
             // Dedicated persistent elemental surface quad (oil/fire/elec/steam)
             const surfMat = new THREE.MeshBasicMaterial({
@@ -900,6 +935,95 @@ export default function ThreeBattleCanvas({
             lightGroup.add(ppl);
             pointLights.push({ light: ppl, base: 1.8, flicker: true, phase: p.x + p.y });
           }
+        }
+
+        // Dense 2D HD-2D Decorative Scenery Props (non-blocking visual environment richness)
+        for (const sp of map.scenicProps || []) {
+          const sw = sp.scaleW || 0.75;
+          const sh = sp.scaleH || 0.75;
+          const smat = new THREE.MeshStandardMaterial({
+            map: null,
+            transparent: true,
+            alphaTest: 0.15,
+            side: THREE.DoubleSide,
+            roughness: 0.85,
+          });
+          const sPlane = new THREE.Mesh(new THREE.PlaneGeometry(sw, sh), smat);
+          smat.map = getImgTexture(sp.img, sp.name, "foe", (img) => {
+            if (!img?.width || !img?.height) return;
+            const natAspect = Math.max(0.45, Math.min(2.1, img.width / img.height));
+            sPlane.scale.set((sh * natAspect) / sw, 1, 1);
+          });
+          const baseH = Number.isFinite(sp.h) ? sp.h : map.grid[Math.round(sp.y)]?.[Math.round(sp.x)]?.h ?? 1;
+          sPlane.position.set(sp.x, baseH * ELEV_H + sh * 0.46, sp.y);
+          sPlane.castShadow = true;
+          propGroup.add(sPlane);
+          scenicBillboards.push(sPlane);
+        }
+
+        // 3D Architectural Buildings (with auto-fading pitched roofs) & Harbor Cranes
+        for (const b of map.buildings || []) {
+          if (b.kind === "crane") {
+            const baseY = (b.baseH || 2) * ELEV_H;
+            const mastMat = new THREE.MeshStandardMaterial({ color: 0x6b4423, roughness: 0.86 });
+            const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.19, 2.4, 8), mastMat);
+            mast.position.set(b.x, baseY + 1.2, b.y);
+            mast.castShadow = true;
+            tileGroup.add(mast);
+
+            const dx = (b.targetX ?? b.x - 3) - b.x;
+            const dz = (b.targetY ?? b.y - 1) - b.y;
+            const len = Math.hypot(dx, dz) || 3.5;
+            const jib = new THREE.Mesh(new THREE.BoxGeometry(len, 0.14, 0.16), mastMat);
+            jib.position.set(b.x + dx * 0.48, baseY + 2.25, b.y + dz * 0.48);
+            jib.rotation.y = -Math.atan2(dz, dx);
+            jib.rotation.z = 0.14;
+            jib.castShadow = true;
+            tileGroup.add(jib);
+
+            const rope = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.025, 0.025, 1.85, 6),
+              new THREE.MeshStandardMaterial({ color: 0xd6c7a9, roughness: 0.9 })
+            );
+            rope.position.set(b.x + dx * 0.88, baseY + 1.45, b.y + dz * 0.88);
+            tileGroup.add(rope);
+          } else if (b.kind === "house") {
+            const w = b.x2 - b.x1 + 1;
+            const d = b.y2 - b.y1 + 1;
+            const cx = (b.x1 + b.x2) / 2;
+            const cz = (b.y1 + b.y2) / 2;
+            const wh = b.wallHeight || 1.6;
+            const roofGroup = new THREE.Group();
+            const roofMat = new THREE.MeshStandardMaterial({
+              color: b.roofColor || 0x3b4d63,
+              transparent: true,
+              opacity: 0.9,
+              roughness: 0.78,
+              side: THREE.DoubleSide,
+            });
+            const slopeGeo = new THREE.PlaneGeometry(w * 0.56 + 0.35, d + 0.35);
+            const leftSlope = new THREE.Mesh(slopeGeo, roofMat);
+            leftSlope.rotation.x = -Math.PI / 2;
+            leftSlope.rotation.y = 0.38;
+            leftSlope.position.set(cx - w * 0.25, 1 * ELEV_H + wh + 0.35, cz);
+            leftSlope.castShadow = true;
+            const rightSlope = new THREE.Mesh(slopeGeo, roofMat);
+            rightSlope.rotation.x = -Math.PI / 2;
+            rightSlope.rotation.y = -0.38;
+            rightSlope.position.set(cx + w * 0.25, 1 * ELEV_H + wh + 0.35, cz);
+            rightSlope.castShadow = true;
+            roofGroup.add(leftSlope, rightSlope);
+            tileGroup.add(roofGroup);
+            buildingVisuals.push({ b, roofMat, roofGroup });
+          }
+        }
+
+        // Map Point Lights (torches, lanterns, harbor beacons)
+        for (const ml of map.lights || []) {
+          const pl = new THREE.PointLight(ml.color || 0xff9d47, ml.intensity || 2.0, ml.distance || 6.0);
+          pl.position.set(ml.x, (ml.h || 1) * ELEV_H + 0.6, ml.y);
+          lightGroup.add(pl);
+          pointLights.push({ light: pl, base: ml.intensity || 2.0, flicker: true, phase: ml.x * 1.7 + ml.y });
         }
       }
 
@@ -1339,6 +1463,24 @@ export default function ThreeBattleCanvas({
             const rotSteps = Math.round((currentYaw - 0.785) / (Math.PI / 2));
             const flipForYaw = Math.abs(rotSteps) % 2 === 1 ? !pv.prop.mirror : Boolean(pv.prop.mirror);
             pv.mesh.scale.x = flipForYaw ? -basePropX : basePropX;
+          }
+
+          // Upright-billboard scenic 2D props + auto-fade building roofs when heroes enter
+          for (const sb of scenicBillboards) {
+            sb.lookAt(camera.position.x, sb.position.y, camera.position.z);
+          }
+          for (const bv of buildingVisuals) {
+            const heroInside = (curBattle.units || []).some(
+              (u) =>
+                u.side === "hero" &&
+                !u.dead &&
+                u.x >= bv.b.x1 &&
+                u.x <= bv.b.x2 &&
+                u.y >= bv.b.y1 &&
+                u.y <= bv.b.y2
+            );
+            const targetOpacity = heroInside ? 0.14 : 0.9;
+            bv.roofMat.opacity += (targetOpacity - bv.roofMat.opacity) * Math.min(1, dt * 8);
           }
 
           // Hover path & AoE highlights

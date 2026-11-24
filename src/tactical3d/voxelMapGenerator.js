@@ -974,8 +974,153 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
   ];
   const props = [];
   const bp = envOverrides?.blueprint || null;
+  let tabletopBackdrop = null;
+  let buildings = null;
+  let scenicProps = null;
+  let mapLights = null;
+  const tabletopId = bp?.tabletopMapId || (scenarioId === "harbour_fort" ? "harbour_fort" : null);
 
-  if (bp?.layout === "twin_ships") {
+  if (tabletopId === "harbour_fort" && bp?.layout !== "twin_ships") {
+    // 1:1 3D HD-2D conversion of /prototype-assets/table-maps/harbour_fort.jpg (16x12)
+    tabletopBackdrop = "/prototype-assets/table-maps/harbour_fort.jpg";
+    for (let y = 0; y < MAP_ROWS; y++) {
+      for (let x = 0; x < MAP_COLS; x++) {
+        setTile(x, y, "floor", 1, "none");
+      }
+    }
+    // Harbor water basins (top-left & top-center)
+    for (let y = 0; y <= 4; y++) {
+      for (let x = 1; x <= 4; x++) setTile(x, y, "water", 0, "water");
+    }
+    for (let y = 0; y <= 2; y++) {
+      for (let x = 6; x <= 8; x++) setTile(x, y, "water", 0, "water");
+      for (let x = 10; x <= 13; x++) setTile(x, y, "water", 0, "water");
+    }
+    // Wooden piers / jetties (h=1 bridges)
+    for (let y = 0; y <= 5; y++) setTile(0, y, "bridge", 1, "none");
+    for (let y = 0; y <= 3; y++) {
+      setTile(5, y, "bridge", 1, "none");
+      setTile(9, y, "bridge", 1, "none");
+      setTile(14, y, "bridge", 1, "none");
+      setTile(15, y, "bridge", 1, "none");
+    }
+    // Dockside wooden boardwalk (left-mid)
+    for (let y = 5; y <= 7; y++) {
+      for (let x = 0; x <= 5; x++) setTile(x, y, "floor", 1, "none");
+    }
+    // Raised stone quay terrace (h=2) + stairs
+    for (let y = 3; y <= 5; y++) {
+      for (let x = 6; x <= 9; x++) setTile(x, y, "ledge", 2, "none");
+    }
+    setTile(12, 3, "ledge", 1.5, "none"); // Quay steps
+    // Harbor Warehouse walls (x:10..13, y:5..10) with west doorway at (10,7)
+    for (let y = 5; y <= 10; y++) {
+      for (let x = 10; x <= 13; x++) {
+        const isBorder = x === 10 || x === 13 || y === 5 || y === 10;
+        if (isBorder && !(x === 10 && y === 7)) {
+          setTile(x, y, "wall", 3, "none");
+        } else {
+          setTile(x, y, "floor", 1, "none");
+        }
+      }
+    }
+    // Bastion Watchhouse (x:0..3, y:9..11) with north doorway at (2,9)
+    for (let y = 9; y <= 11; y++) {
+      for (let x = 0; x <= 3; x++) {
+        const isBorder = x === 0 || x === 3 || y === 9 || y === 11;
+        if (isBorder && !(x === 2 && y === 9)) {
+          setTile(x, y, "wall", 3, "none");
+        } else {
+          setTile(x, y, "floor", 1, "none");
+        }
+      }
+    }
+    // Interactive tactical props on piers, quay & warehouse
+    props.push(
+      makeProp("oil_barrel", "hf_oil_pier", 5, 4),
+      makeProp("crate", "hf_crate_quay", 8, 5),
+      makeProp("crate", "hf_crate_road", 6, 8),
+      makeProp("barricade", "hf_barricade_west", 4, 7),
+      makeProp("chest", "hf_chest_warehouse", 12, 8)
+    );
+    // Dense 2D HD-2D decorative scenery components (non-blocking visual richness)
+    scenicProps = [
+      { id: "sc_pier_crate_1", name: "碼頭貨箱", x: 0.1, y: 1.5, img: "/prototype-assets/lego-props-v2/components/prop_009_03_s0.png", scaleW: 0.72, scaleH: 0.72, h: 1 },
+      { id: "sc_pier_crate_2", name: "碼頭木桶", x: 5.1, y: 1.6, img: "/prototype-assets/lego-props-v2/components/prop_011_01_s0.png", scaleW: 0.68, scaleH: 0.68, h: 1 },
+      { id: "sc_pier_crate_3", name: "棧橋補給箱", x: 9.1, y: 1.4, img: "/prototype-assets/lego-props-v2/components/prop_014_03_s0.png", scaleW: 0.7, scaleH: 0.7, h: 1 },
+      { id: "sc_pier_crate_4", name: "東側泊位木箱", x: 14.3, y: 1.8, img: "/prototype-assets/lego-props-v2/components/prop_016_01_s0.png", scaleW: 0.75, scaleH: 0.75, h: 1 },
+      { id: "sc_quay_banner_1", name: "港口藍旗", x: 6.1, y: 5.4, img: "/prototype-assets/lego-props-v2/components/prop_003_02_s0.png", scaleW: 0.7, scaleH: 0.95, h: 2 },
+      { id: "sc_quay_banner_2", name: "石堡旗幟", x: 6.1, y: 8.6, img: "/prototype-assets/lego-props-v2/components/prop_003_02_s0.png", scaleW: 0.7, scaleH: 0.95, h: 1 },
+      { id: "sc_warehouse_table", name: "倉屋工作台", x: 11.5, y: 6.3, img: "/prototype-assets/lego-props-v2/components/prop_006_02_s0.png", scaleW: 0.9, scaleH: 0.85, h: 1 },
+      { id: "sc_warehouse_goods", name: "倉屋囤貨", x: 12.1, y: 9.1, img: "/prototype-assets/lego-props-v2/components/prop_019_03_s0.png", scaleW: 0.8, scaleH: 0.8, h: 1 },
+      { id: "sc_bastion_table", name: "哨所桌椅", x: 1.4, y: 10.2, img: "/prototype-assets/lego-props-v2/components/prop_006_02_s0.png", scaleW: 0.85, scaleH: 0.8, h: 1 },
+      { id: "sc_road_lantern_1", name: "碼頭火把", x: 7.2, y: 6.2, img: "/prototype-assets/lego-props-v2/components/prop_002_01_s0.png", scaleW: 0.6, scaleH: 0.85, h: 1 },
+      { id: "sc_road_lantern_2", name: "倉屋門燈", x: 9.7, y: 6.4, img: "/prototype-assets/lego-props-v2/components/prop_002_01_s0.png", scaleW: 0.6, scaleH: 0.85, h: 1 },
+      { id: "sc_quay_lantern", name: "石台燈柱", x: 9.2, y: 3.3, img: "/prototype-assets/lego-props-v2/components/prop_002_01_s0.png", scaleW: 0.6, scaleH: 0.85, h: 2 },
+      { id: "sc_dock_chest", name: "棧橋工具箱", x: 1.5, y: 6.3, img: "/prototype-assets/lego-props-v2/components/prop_021_01_s0.png", scaleW: 0.72, scaleH: 0.72, h: 1 },
+      { id: "sc_east_dock_barrel", name: "漁獲木桶", x: 14.5, y: 4.2, img: "/prototype-assets/lego-props-v2/components/prop_024_03_s0.png", scaleW: 0.72, scaleH: 0.72, h: 1 },
+    ];
+    // 3D Architectural Buildings (roof auto-fades when heroes enter) + Harbor Crane
+    buildings = [
+      {
+        id: "hf_warehouse",
+        kind: "house",
+        name: "港邊倉屋",
+        x1: 10,
+        y1: 5,
+        x2: 13,
+        y2: 10,
+        wallHeight: 1.65,
+        roofColor: 0x3b4d63,
+        wallColor: 0x7c583c,
+        doorAt: { x: 10, y: 7 },
+      },
+      {
+        id: "hf_bastion",
+        kind: "house",
+        name: "港邊石堡哨所",
+        x1: 0,
+        y1: 9,
+        x2: 3,
+        y2: 11,
+        wallHeight: 1.55,
+        roofColor: 0x475569,
+        wallColor: 0x64748b,
+        doorAt: { x: 2, y: 9 },
+      },
+      {
+        id: "hf_crane",
+        kind: "crane",
+        name: "港口木吊臂",
+        x: 7,
+        y: 4,
+        baseH: 2,
+        targetX: 3.2,
+        targetY: 3.3,
+      },
+    ];
+    mapLights = [
+      { x: 7.2, y: 6.2, h: 1.4, color: 0xff9d47, intensity: 2.2, distance: 6.5 },
+      { x: 9.7, y: 6.4, h: 1.4, color: 0xff9d47, intensity: 2.1, distance: 6.0 },
+      { x: 9.2, y: 3.3, h: 1.9, color: 0xfbbf24, intensity: 2.0, distance: 6.0 },
+      { x: 2.0, y: 8.6, h: 1.4, color: 0x38bdf8, intensity: 1.5, distance: 5.5 },
+    ];
+    heroSpawns = [
+      { x: 7, y: 9 },
+      { x: 8, y: 9 },
+      { x: 9, y: 9 },
+      { x: 7, y: 10 },
+      { x: 8, y: 10 },
+    ];
+    foeSpawns = [
+      { x: 0, y: 4 },
+      { x: 5, y: 2 },
+      { x: 9, y: 2 },
+      { x: 3, y: 6 },
+      { x: 14, y: 2 },
+      { x: 7, y: 4 },
+    ];
+  } else if (bp?.layout === "twin_ships") {
     // Two ships on open ocean connected by twin wooden boarding planks
     for (let y = 0; y < MAP_ROWS; y++) {
       for (let x = 0; x < MAP_COLS; x++) {
@@ -1860,6 +2005,10 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
     wallCount,
     connected: bfs.connected,
     reachableCount: bfs.reachableCount,
+    ...(tabletopBackdrop ? { tabletopBackdrop } : {}),
+    ...(buildings ? { buildings } : {}),
+    ...(scenicProps ? { scenicProps } : {}),
+    ...(mapLights ? { lights: mapLights } : {}),
   };
 }
 
