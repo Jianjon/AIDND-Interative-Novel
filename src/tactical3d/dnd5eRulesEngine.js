@@ -2714,6 +2714,19 @@ function tryAutoShieldReaction(battle, defender, rollTotal, effAc, isMagicMissil
   return true;
 }
 
+function setUnitProne(unit, fromX = null, fromY = null) {
+  if (!unit) return;
+  unit.conditions.Prone = 99;
+  if (fromX !== null && fromY !== null && (fromX !== unit.x || fromY !== unit.y)) {
+    unit.proneDir = { dx: Math.sign(unit.x - fromX), dy: Math.sign(unit.y - fromY) };
+  } else if (unit.facingTarget) {
+    unit.proneDir = {
+      dx: Math.sign((unit.facingTarget.x ?? unit.x) - unit.x),
+      dy: Math.sign((unit.facingTarget.y ?? unit.y) - unit.y),
+    };
+  }
+}
+
 export function applyKnockback(battle, target, dirX, dirY, pushCells, events = []) {
   if (target?.telegraphing) {
     target.telegraphing = null;
@@ -2805,9 +2818,18 @@ function triggerTileHazardOnEnter(battle, unit, events) {
     if (t.surface === "ice" && !unit.conditions?.Prone) {
       const dexSave = rollDie(battle.rng, 20) + (unit.mods?.dex ?? 0);
       if (dexSave < 11) {
-        unit.conditions.Prone = 99;
+        setUnitProne(unit);
         events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: "❄️ 滑倒!", color: "#bae6fd" });
         battle.logs.push(`❄️ ${unit.name} 在冰面滑倒（DEX豁免 ${dexSave} < DC 11）！`);
+      }
+      break;
+    }
+    if (t.surface === "grease" && !unit.conditions?.Prone) {
+      const dexSave = rollDie(battle.rng, 20) + (unit.mods?.dex ?? 0);
+      if (dexSave < 12) {
+        setUnitProne(unit);
+        events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: "🛢️ 油膩滑倒!", color: "#f59e0b" });
+        battle.logs.push(`🛢️ ${unit.name} 踩入油膩術範圍滑倒（DEX豁免 ${dexSave} < DC 12）！`);
       }
       break;
     }
@@ -3236,6 +3258,7 @@ function resolveAttackInternal(battle, attacker, defender, wpn, opts = {}, event
         : "slash";
   events.push({
     type: wpn.isRanged ? "bolt" : "strike",
+    isSpell: Boolean(wpn.isSpell),
     weaponStyle: wpnStyle,
     dmgType: wpn.damageType || "slashing",
     fromX: attacker.x,
@@ -3711,6 +3734,7 @@ export function executeSpellCast(battle, casterId, spellKey, targetX, targetY, u
     const key = spell.key === "Haste" ? "Hasted" : "Blessed";
     ally.conditions[key] = 3;
     if (spell.concentration) caster.concentration = { spellKey: spell.key, name: spell.name, targetId: ally.id, conditionKey: key };
+    events.push({ type: "buff", x: ally.x, y: ally.y, z: getUnitBaseH(battle, ally), color: "#fde047" });
     events.push({ type: "float", x: ally.x, y: ally.y, z: getUnitBaseH(battle, ally) + 1.2, text: `✨ ${spell.name}`, color: "#fde047" });
     battle.logs.push(`✨ ${caster.name} 對 ${ally.name} 施放【${spell.name}】！`);
     return { ok: true, events, battleEnded: false };
@@ -3781,8 +3805,59 @@ export function executeSpellCast(battle, casterId, spellKey, targetX, targetY, u
                     : "#a78bfa",
   });
 
+  // Darkness / Grease surface spells
+  const isDarknessSpell = spell.key === "Darkness" || /黑暗術/.test(spell.name || "");
+  const isGreaseSpell = spell.key === "Grease" || /油膩術/.test(spell.name || "");
+  if (isDarknessSpell) {
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const cx = targetX + dx;
+        const cy = targetY + dy;
+        const tile = battle.map.grid[cy]?.[cx];
+        if (tile && tile.type !== "wall") {
+          tile.surface = "darkness";
+          tile.surfaceRounds = 3;
+          const u = getUnitAtCell(battle, cx, cy);
+          if (u && u.hp > 0 && !u.conditions?.Lit) {
+            u.conditions.Blinded = Math.max(u.conditions.Blinded || 0, 2);
+          }
+        }
+      }
+    }
+    events.push({ type: "blast", x: targetX, y: targetY, color: "#1e1b4b", aoeCells: [] });
+    battle.logs.push(`🌑 ${caster.name} 施放【${spell.name || "黑暗術"}】，3×3 空間陷入伸手不見五指的漆黑！`);
+    return { ok: true, events, battleEnded: false };
+  }
+  if (isGreaseSpell) {
+    const greaseCells = [];
+    for (let dy = 0; dy <= 1; dy++) {
+      for (let dx = 0; dx <= 1; dx++) {
+        const cx = targetX + dx;
+        const cy = targetY + dy;
+        const tile = battle.map.grid[cy]?.[cx];
+        if (tile && tile.type !== "wall") {
+          tile.surface = "grease";
+          tile.surfaceRounds = 3;
+          greaseCells.push({ x: cx, y: cy });
+          const u = getUnitAtCell(battle, cx, cy);
+          if (u && u.hp > 0 && !u.flies && !u.conditions?.Prone) {
+            const dexSave = rollDie(battle.rng, 20) + (u.mods?.dex ?? 0);
+            if (dexSave < (caster.spellSaveDc || 13)) {
+              setUnitProne(u, caster.x, caster.y);
+              events.push({ type: "float", x: u.x, y: u.y, z: getUnitBaseH(battle, u) + 1.1, text: "🛢️ 滑倒!", color: "#f59e0b" });
+              battle.logs.push(`🛢️ ${u.name} 敏捷豁免 ${dexSave} < DC ${caster.spellSaveDc || 13}，在油膩術中重摔倒地！`);
+            }
+          }
+        }
+      }
+    }
+    events.push({ type: "blast", x: targetX, y: targetY, color: "#d97706", aoeCells: greaseCells });
+    battle.logs.push(`🛢️ ${caster.name} 施放【${spell.name || "油膩術"}】，覆蓋 2×2 滑溜困難地面！`);
+    return { ok: true, events, battleEnded: false };
+  }
+
   // Trigger Elemental Surface Chain Reactions + Surface creation
-  const createSurf = spell.key === "Grease" ? "oil" : isFire && spell.aoe ? "fire" : null;
+  const createSurf = spell.key === "Grease" ? "grease" : isFire && spell.aoe ? "fire" : null;
   const surfRes = applyElementalSurfaceReaction(battle.map, targetX, targetY, dmgType, createSurf);
   if (surfRes.reaction) {
     battle.logs.push(`🌪️ 元素連鎖：【${surfRes.label}】引爆周邊 ${surfRes.cells.length} 格地形！`);
@@ -3867,6 +3942,7 @@ export function executeSpellCast(battle, casterId, spellKey, targetX, targetY, u
       const spWeapon = {
         id: spell.key,
         name: spell.name,
+        isSpell: true,
         isRanged: spell.attackType === "ranged_spell",
         hitBonus: caster.spellAtkBonus,
         damageDice: `${spell.damageDice || "1d10"}${upDelta > 0 && spell.upcastDice ? `+${upDelta}d8` : ""}`,
@@ -4013,11 +4089,12 @@ export function executeStandardAction(battle, unitId, kind, targetId = null, opt
       delete ally.conditions.Unconscious;
       ally.deathSaves = { success: 0, fail: 0, stabilized: false };
     }
-    events.push({ type: "heal", x: ally.x, y: ally.y, z: getUnitBaseH(battle, ally) });
+    events.push({ type: "heal", x: ally.x, y: ally.y, z: getUnitBaseH(battle, ally), color: "#34d399" });
     events.push({ type: "float", x: ally.x, y: ally.y, z: getUnitBaseH(battle, ally) + 1.2, text: `🧪 +${heal}${wasKo ? " 救醒!" : ""}`, color: "#4ade80" });
     battle.logs.push(`🧪 ${unit.name} 為 ${ally.name} 使用【${pot.name}】，回復 ${heal} HP！`);
   } else if (kind === "torch") {
     unit.conditions.Lit = 10;
+    events.push({ type: "buff", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit), color: "#fbbf24" });
     events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.2, text: "🔥 點亮火把!", color: "#fbbf24" });
     battle.logs.push(`🔥 ${unit.name} 點亮火把，照亮周圍 4 格黑暗區域！`);
   }

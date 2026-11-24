@@ -1866,11 +1866,14 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
 export function getSurfaceMoveCost(tile) {
   if (!tile) return 99;
   if (
+    tile.difficult ||
     tile.type === "water" ||
     tile.surface === "water" ||
     tile.surface === "oil" ||
+    tile.surface === "grease" ||
     tile.surface === "ice" ||
-    tile.surface === "poison"
+    tile.surface === "poison" ||
+    tile.surface === "difficult"
   ) {
     return 2;
   }
@@ -1921,20 +1924,21 @@ export function applyElementalSurfaceReaction(map, originX, originY, damageType,
   };
 
   const centerTile = grid[originY][originX];
+  const isOilOrGrease = (s) => s === "oil" || s === "grease";
   const hasOilNearby =
-    centerTile?.surface === "oil" ||
+    isOilOrGrease(centerTile?.surface) ||
     [
       [1, 0],
       [-1, 0],
       [0, 1],
       [0, -1],
-    ].some(([dx, dy]) => inMapBounds(originX + dx, originY + dy) && grid[originY + dy][originX + dx].surface === "oil");
+    ].some(([dx, dy]) => inMapBounds(originX + dx, originY + dy) && isOilOrGrease(grid[originY + dy][originX + dx].surface));
 
   const hasWaterHere = centerTile && (centerTile.surface === "water" || centerTile.type === "water");
   const hasFireHere = centerTile && (centerTile.surface === "fire" || centerTile.type === "brazier");
 
   if (dmgLower === "fire" && hasOilNearby) {
-    // Seed BFS from any touching oil tile
+    // Seed BFS from any touching oil/grease tile
     for (const [dx, dy] of [
       [0, 0],
       [1, 0],
@@ -1944,8 +1948,8 @@ export function applyElementalSurfaceReaction(map, originX, originY, damageType,
     ]) {
       const tx = originX + dx;
       const ty = originY + dy;
-      if (inMapBounds(tx, ty) && grid[ty][tx].surface === "oil") {
-        floodConvert(new Set(["oil"]), "fire", 3);
+      if (inMapBounds(tx, ty) && isOilOrGrease(grid[ty][tx].surface)) {
+        floodConvert(new Set(["oil", "grease"]), "fire", 3);
       }
     }
     reaction = "oil_ignite";

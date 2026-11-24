@@ -4,21 +4,41 @@ import { MAP_COLS, MAP_ROWS } from "./voxelMapGenerator.js";
 const ELEV_H = 0.42;
 
 const COND_SHORT = {
-  Prone: "倒地",
-  Rage: "狂暴",
-  Shielded: "護盾",
-  Hidden: "潛行",
-  Dodging: "閃避",
-  Blessed: "祝福",
-  Hasted: "加速",
-  Paralyzed: "麻痺",
-  Stunned: "震懾",
-  Restrained: "束縛",
-  Unconscious: "瀕死",
-  Poisoned: "中毒",
-  Blinded: "失明",
-  Frightened: "恐懼",
-  FaerieFire: "妖火",
+  Prone: "🛌倒地",
+  Rage: "🔥狂暴",
+  Shielded: "🛡️護盾",
+  Hidden: "🥷潛行",
+  Dodging: "💨閃避",
+  Blessed: "✨祝福",
+  Hasted: "⚡加速",
+  Paralyzed: "⚡麻痺",
+  Stunned: "💫震懾",
+  Restrained: "🕸️束縛",
+  Unconscious: "😵昏迷",
+  Poisoned: "☠️中毒",
+  Blinded: "🕶️失明",
+  Frightened: "😱恐懼",
+  FaerieFire: "🌟妖火",
+  Lit: "🕯️照明",
+};
+
+const COND_EMOJI = {
+  Prone: "🛌",
+  Rage: "🔥",
+  Shielded: "🛡️",
+  Hidden: "🥷",
+  Dodging: "💨",
+  Blessed: "✨",
+  Hasted: "⚡",
+  Paralyzed: "⚡",
+  Stunned: "💫",
+  Restrained: "🕸️",
+  Unconscious: "😵",
+  Poisoned: "☠️",
+  Blinded: "🕶️",
+  Frightened: "😱",
+  FaerieFire: "🌟",
+  Lit: "🕯️",
 };
 
 const BIOME_PALETTES = {
@@ -204,6 +224,38 @@ function makeProceduralTextures(THREE) {
       g.arc(s * 0.65, s * 0.35, 9, 0, Math.PI * 2);
       g.fill();
     }),
+    grease: buildCanvas(64, (g, s) => {
+      g.fillStyle = "#3b2c14";
+      g.fillRect(0, 0, s, s);
+      g.fillStyle = "rgba(217,119,6,0.34)";
+      g.beginPath();
+      g.arc(s * 0.38, s * 0.45, 16, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = "rgba(253,224,71,0.26)";
+      g.beginPath();
+      g.arc(s * 0.62, s * 0.34, 7, 0, Math.PI * 2);
+      g.fill();
+    }),
+    darkness: buildCanvas(64, (g, s) => {
+      g.fillStyle = "#020308";
+      g.fillRect(0, 0, s, s);
+      g.fillStyle = "rgba(88,28,135,0.22)";
+      g.beginPath();
+      g.arc(s * 0.5, s * 0.5, 22, 0, Math.PI * 2);
+      g.fill();
+    }),
+    difficult: buildCanvas(64, (g, s) => {
+      g.fillStyle = "rgba(120,53,15,0.38)";
+      g.fillRect(0, 0, s, s);
+      g.strokeStyle = "rgba(245,158,11,0.35)";
+      g.lineWidth = 2;
+      for (let i = -s; i < s * 2; i += 14) {
+        g.beginPath();
+        g.moveTo(i, 0);
+        g.lineTo(i + s, s);
+        g.stroke();
+      }
+    }),
     fire: buildCanvas(64, (g, s) => {
       g.fillStyle = "#7c2d12";
       g.fillRect(0, 0, s, s);
@@ -363,7 +415,7 @@ export default function ThreeBattleCanvas({
           born: performance.now(),
           ttl: isBubble ? 2600 : ev.variant ? 1550 : 1300,
         });
-      } else if (["fireball", "blast", "bolt", "strike", "heal", "teleport", "cone", "line"].includes(ev.type)) {
+      } else if (["fireball", "blast", "bolt", "strike", "heal", "buff", "teleport", "cone", "line"].includes(ev.type)) {
         s.fxList.push({
           ...ev,
           born: performance.now(),
@@ -1303,7 +1355,13 @@ export default function ThreeBattleCanvas({
             const tile = curBattle.map.grid[ty]?.[tx];
 
             // Layer 1: Persistent elemental terrain surface
-            if (tile?.surface === "fire") {
+            if (tile?.surface === "darkness") {
+              ov.surfMat.map = textures.darkness;
+              ov.surfMat.opacity = 0.94;
+            } else if (tile?.surface === "grease") {
+              ov.surfMat.map = textures.grease;
+              ov.surfMat.opacity = 0.85;
+            } else if (tile?.surface === "fire") {
               ov.surfMat.map = textures.fire;
               ov.surfMat.opacity = 0.84;
             } else if (tile?.surface === "oil") {
@@ -1321,6 +1379,9 @@ export default function ThreeBattleCanvas({
             } else if (tile?.surface === "poison") {
               ov.surfMat.map = textures.poison;
               ov.surfMat.opacity = 0.78;
+            } else if (tile?.difficult || tile?.surface === "difficult") {
+              ov.surfMat.map = textures.difficult;
+              ov.surfMat.opacity = 0.58;
             } else {
               ov.surfMat.map = null;
               ov.surfMat.opacity = 0;
@@ -1374,7 +1435,15 @@ export default function ThreeBattleCanvas({
                       ? 0x3b82f6
                       : 0xef4444
             );
-            vis.card.rotation.x = isKo ? -Math.PI / 2.2 : 0;
+            const isProne = Boolean(u.conditions?.Prone || u.conditions?.Unconscious || isKo);
+            if (isProne) {
+              const pdx = u.proneDir?.dx ?? (u.facingTarget ? Math.sign(u.facingTarget.x - u.x) : u.side === "hero" ? -1 : 1);
+              const pdy = u.proneDir?.dy ?? (u.facingTarget ? Math.sign(u.facingTarget.y - u.y) : 0);
+              const fallYaw = Math.atan2(pdx, pdy);
+              vis.card.rotation.set(-Math.PI / 2.25, 0, fallYaw * 0.45);
+            } else {
+              vis.card.rotation.set(0, 0, 0);
+            }
 
             // Persistent 3D Aura & Status Ring (Paladin Aura, Bard Song, Rage, Shielded, Blessed, Poisoned)
             const auraColor =
@@ -1717,19 +1786,27 @@ export default function ThreeBattleCanvas({
               );
               pulse.position.copy(startVec).addScaledVector(unitDir, len * Math.min(1, p * 1.25));
               fxGroup.add(pulse);
-            } else if (fx.type === "heal" && fx.x !== undefined) {
+            } else if ((fx.type === "heal" || fx.type === "buff") && fx.x !== undefined) {
               const hz = (curBattle.map.grid[fx.y]?.[fx.x]?.h ?? 1) * ELEV_H;
+              const col = fx.color || (fx.type === "heal" ? "#4ade80" : "#fde047");
               const pillar = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.28 * (1 - p * 0.4), 0.36, 1.8 * (0.4 + p * 0.7), 14, 1, true),
+                new THREE.CylinderGeometry(0.3 * (1 - p * 0.35), 0.38, 1.65 * (0.4 + p * 0.7), 14, 1, true),
                 new THREE.MeshBasicMaterial({
-                  color: "#fde047",
+                  color: col,
                   transparent: true,
-                  opacity: 0.55 * (1 - p),
+                  opacity: 0.48 * (1 - p),
                   side: THREE.DoubleSide,
                 })
               );
-              pillar.position.set(fx.x, hz + 0.7 + p * 0.35, fx.y);
+              pillar.position.set(fx.x, hz + 0.65 + p * 0.35, fx.y);
               fxGroup.add(pillar);
+              const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(0.32 + p * 0.22, 0.04, 8, 22),
+                new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.85 * (1 - p) })
+              );
+              ring.rotation.x = Math.PI / 2;
+              ring.position.set(fx.x, hz + 0.15 + p * 1.15, fx.y);
+              fxGroup.add(ring);
             } else if (fx.type === "strike" && fx.toX !== undefined) {
               const tz = (fx.toZ ?? 1) * ELEV_H + 0.6;
               const style = fx.weaponStyle || "slash";
@@ -1780,17 +1857,56 @@ export default function ThreeBattleCanvas({
                 }
                 const lGeo = new THREE.BufferGeometry().setFromPoints(pts);
                 fxGroup.add(new THREE.Line(lGeo, new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 1 - p * 0.7 })));
-              } else {
-                const orb = new THREE.Mesh(
-                  new THREE.SphereGeometry(fx.type === "fireball" ? 0.3 : 0.16, 10, 10),
-                  new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.95 * (1 - p * 0.35) })
+              } else if (fx.type === "bolt" && !fx.isSpell) {
+                // Physical arrow / crossbow bolt / throwing knife (no plain red dot!)
+                const curPos = new THREE.Vector3(
+                  fx.fromX + (fx.toX - fx.fromX) * p,
+                  (fx.fromZ ?? 1) * ELEV_H + 0.55 + ((fx.toZ ?? 1) - (fx.fromZ ?? 1)) * ELEV_H * p + Math.sin(p * Math.PI) * 0.45,
+                  fx.fromY + (fx.toY - fx.fromY) * p
                 );
-                orb.position.set(
+                const nextP = Math.min(1, p + 0.05);
+                const nextPos = new THREE.Vector3(
+                  fx.fromX + (fx.toX - fx.fromX) * nextP,
+                  (fx.fromZ ?? 1) * ELEV_H + 0.55 + ((fx.toZ ?? 1) - (fx.fromZ ?? 1)) * ELEV_H * nextP + Math.sin(nextP * Math.PI) * 0.45,
+                  fx.fromY + (fx.toY - fx.fromY) * nextP
+                );
+                const dir = new THREE.Vector3().subVectors(nextPos, curPos);
+                if (dir.lengthSq() > 0.0001) dir.normalize();
+                else dir.set(0, 0, 1);
+                const arrowGrp = new THREE.Group();
+                const shaft = new THREE.Mesh(
+                  new THREE.CylinderGeometry(0.025, 0.025, 0.52, 6),
+                  new THREE.MeshBasicMaterial({ color: "#e2e8f0" })
+                );
+                const tip = new THREE.Mesh(
+                  new THREE.ConeGeometry(0.065, 0.16, 6),
+                  new THREE.MeshBasicMaterial({ color: "#fbbf24" })
+                );
+                tip.position.y = 0.28;
+                arrowGrp.add(shaft, tip);
+                arrowGrp.position.copy(curPos);
+                arrowGrp.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+                fxGroup.add(arrowGrp);
+              } else {
+                // Magic spell orb + glowing halo ring
+                const orbPos = new THREE.Vector3(
                   fx.fromX + (fx.toX - fx.fromX) * p,
                   (fx.fromZ ?? 1) * ELEV_H + 0.55 + ((fx.toZ ?? 1) - (fx.fromZ ?? 1)) * ELEV_H * p + Math.sin(p * Math.PI) * 0.65,
                   fx.fromY + (fx.toY - fx.fromY) * p
                 );
+                const orb = new THREE.Mesh(
+                  dt === "cold" ? new THREE.OctahedronGeometry(0.22, 0) : new THREE.SphereGeometry(fx.type === "fireball" ? 0.3 : 0.17, 10, 10),
+                  new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.95 * (1 - p * 0.35) })
+                );
+                orb.position.copy(orbPos);
                 fxGroup.add(orb);
+                const halo = new THREE.Mesh(
+                  new THREE.TorusGeometry(0.28, 0.03, 6, 16),
+                  new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.65 * (1 - p) })
+                );
+                halo.position.copy(orbPos);
+                halo.rotation.set(nowSec * 6, nowSec * 4, 0);
+                fxGroup.add(halo);
               }
               if (fx.type === "fireball" && p > 0.55) {
                 const ep = (p - 0.55) / 0.45;
@@ -1971,10 +2087,12 @@ export default function ThreeBattleCanvas({
                   <span style={{ background: "#b45309", color: "#fef3c7", borderColor: "#f59e0b" }}>⚠️蓄力重踏</span>
                 </div>
               )}
-              {showFull && conds.length > 0 && (
+              {conds.length > 0 && (
                 <div className="tac3d-uh-conds">
-                  {conds.slice(0, 2).map((ck) => (
-                    <span key={ck}>{COND_SHORT[ck] || ck}</span>
+                  {conds.slice(0, showFull ? 3 : 2).map((ck) => (
+                    <span key={ck} title={COND_SHORT[ck] || ck}>
+                      {showFull ? COND_SHORT[ck] || ck : COND_EMOJI[ck] || ck.slice(0, 2)}
+                    </span>
                   ))}
                 </div>
               )}
