@@ -64,6 +64,7 @@ const Tactical3DArena = I.lazy(() =>
   })
 );
 const ThreeStoryStage = I.lazy(() => import("./tactical3d/ThreeStoryStage.jsx"));
+const TacticalDiceModal = I.lazy(() => import("./tactical3d/TacticalDiceModal.jsx"));
 
 const Ep = {
     guild_hall: [
@@ -49911,9 +49912,17 @@ function H0(e, t, a) {
         return (g = e.cast.find((p) => p.id === c)) == null ? void 0 : g.name;
       })
       .filter(Boolean),
-    o = e.stage === "scene";
+    o = e.stage === "scene",
+    isBEdition =
+      typeof window !== "undefined" &&
+      (new URLSearchParams(window.location.search).get("mode") === "theater" ||
+        localStorage.getItem("table-view-mode") === "theater");
   return `你是繁體中文桌上角色扮演遊戲的主持人，正在帶模組「${jt(e).title}」。這一輪每個人要做的事已經決定，骰子也已經擲完。請把這一輪演出來。骰子的結果不能更改，也不能寫成別的結果。
-【桌面現況（唯一權威）】${JSON.stringify(Li(e))}
+${
+  isBEdition
+    ? `【B 版 3D 劇院節奏要求】目前為 3D 視覺探索模式，每段敘事請精簡控制在 35～60 字以內，直接表達行動成敗結果、環境變化與一句精煉角色對白；大幅減少角色的自我心理描述、冗長感嘆與重複意見，優先推動劇情前進。\n`
+    : ""
+}【桌面現況（唯一權威）】${JSON.stringify(Li(e))}
 【隊伍這一輪的行動與骰子結果】
 ${t.map(
   (c, g) =>
@@ -53064,7 +53073,49 @@ function Y0({
   )
     return null;
   const u = e.ability || (e.skill ? `${Jr(e.skill)}檢定` : "行動判定"),
-    m = p ? c : A ? a.natural || "✦" : "d20";
+    m = p ? c : A ? a.natural || "✦" : "d20",
+    isBEdition =
+      typeof window !== "undefined" &&
+      (new URLSearchParams(window.location.search).get("mode") === "theater" ||
+        localStorage.getItem("table-view-mode") === "theater");
+  if (isBEdition && a && a.hasRoll) {
+    const isHit = ["crit", "success"].includes(a.degree);
+    const modList = (a.parts || []).map(
+      (pt) => `${pt.label} (${pt.value >= 0 ? "+" : ""}${pt.value})`,
+    );
+    const outcomeLine = e.outcome || e.text || "";
+    const rollPayload = {
+      type: "dice",
+      side: e.side || "hero",
+      role: "check",
+      actorName: e.name || "角色",
+      targetName: e.targetName || e.place || "劇情檢定",
+      actionName: u,
+      d20: Number(a.natural) || 10,
+      advState: a.advState || "normal",
+      rolls: [Number(a.natural) || 10],
+      modTotal: Number(a.bonus) || 0,
+      modifiers: modList.length ? modList : [`修正 (${(a.bonus || 0) >= 0 ? "+" : ""}${a.bonus || 0})`],
+      total: Number(a.total) || Number(a.natural) || 10,
+      targetValue: a.dc ?? 10,
+      targetLabel: a.dcLabel || "DC",
+      formula: `1d20(${a.natural ?? "?"}) + (${a.bonus ?? 0}) = ${a.total ?? "?"} vs ${a.dcLabel || "DC"} ${a.dc ?? "?"}`,
+      hit: isHit,
+      crit: a.degree === "crit",
+      outcomeText: `${isHit ? "【成功】" : "【失敗】"}${outcomeLine}`,
+      confirmLabel: "✓ 確認並換下一位（空白鍵 / 點擊）",
+    };
+    return n.jsx(I.Suspense, {
+      fallback: null,
+      children: n.jsx(TacticalDiceModal, {
+        roll: rollPayload,
+        onComplete: () => {
+          if (l && s) s();
+          else if (r) r();
+        },
+      }),
+    });
+  }
   return n.jsx("div", {
     className: "theater-stage-focus-backdrop",
     onClick: (b) => b.stopPropagation(),

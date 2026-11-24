@@ -409,6 +409,24 @@ export default function TacticalDiceModal({ roll, onComplete }) {
           </div>
         )}
 
+        {phase === "outcome" && !dmgRolling && roll.outcomeText && (
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 12px",
+              borderRadius: 8,
+              background: roll.hit ? "rgba(6, 78, 59, 0.35)" : "rgba(127, 29, 29, 0.32)",
+              border: `1px solid ${roll.hit ? "rgba(52, 211, 153, 0.45)" : "rgba(248, 113, 113, 0.45)"}`,
+              color: "#f1f5f9",
+              fontSize: 12.5,
+              lineHeight: 1.55,
+              textAlign: "left",
+            }}
+          >
+            {roll.outcomeText}
+          </div>
+        )}
+
         {phase === "outcome" && !dmgRolling ? (
           <div style={{ marginTop: 10, display: "flex", justifyContent: "center" }}>
             <button
@@ -430,7 +448,7 @@ export default function TacticalDiceModal({ roll, onComplete }) {
                 boxShadow: `0 0 14px ${accentColor}33`,
               }}
             >
-              ✓ 確認繼續（空白鍵 / 點擊）
+              {roll.confirmLabel || "✓ 確認繼續（空白鍵 / 點擊）"}
             </button>
           </div>
         ) : (

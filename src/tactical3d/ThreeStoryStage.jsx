@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./tactical3d.css";
 import ThreeBattleCanvas from "./ThreeBattleCanvas.jsx";
+import TacticalDiceModal from "./TacticalDiceModal.jsx";
 import { mapStorySessionTo3DConfig } from "./storyBridge.js";
 import {
   createBattleState,
@@ -57,6 +58,7 @@ export default function ThreeStoryStage({
   const [eventsBatch, setEventsBatch] = useState([]);
   const [leaderStoryId, setLeaderStoryId] = useState(null);
   const [activeScreenPos, setActiveScreenPos] = useState(null);
+  const [activeDiceRoll, setActiveDiceRoll] = useState(null);
   const [localHint, setLocalHint] = useState("");
   const hintTimerRef = useRef(null);
 
@@ -197,6 +199,16 @@ export default function ThreeStoryStage({
               setBattle(next);
               const stamp = `${Date.now()}_${Math.random()}`;
               setEventsBatch((res.events || []).map((e, i) => ({ ...e, _uid: `${stamp}_${i}` })));
+              const diceEv = (res.events || []).find((ev) => ev.type === "dice");
+              if (diceEv) {
+                setActiveDiceRoll({
+                  ...diceEv,
+                  outcomeText: res.success
+                    ? `【檢定成功】${clickedProp.rewardDesc || "物件互動成功！"}`
+                    : `【檢定失敗】${clickedProp.name} 暫時無法啟動，可再試一次。`,
+                  confirmLabel: "✓ 確認結果（空白鍵 / 點擊）",
+                });
+              }
               showHint(res.success ? `✨ ${clickedProp.rewardDesc || "互動成功！"}` : `🔍 ${clickedProp.name} 檢定未過`);
               return;
             }
@@ -290,6 +302,14 @@ export default function ThreeStoryStage({
           </div>
           <div>{speechBubble.text}</div>
         </div>
+      )}
+
+      {/* Unified 3D Polyhedral Dice Modal for exploration prop checks */}
+      {activeDiceRoll && (
+        <TacticalDiceModal
+          roll={activeDiceRoll}
+          onComplete={() => setActiveDiceRoll(null)}
+        />
       )}
 
       {/* Lightweight 3D Individual Movement Controls (top-left) */}
