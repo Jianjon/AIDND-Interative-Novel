@@ -273,3 +273,65 @@ export function unequipHeroSlotOnSession(session, heroId, slotKey) {
     lootStash: nextStash,
   };
 }
+
+export function rollChestLootD100(rng = Math.random) {
+  const randFn = typeof rng === "function" ? rng : Math.random;
+  const d100 = Math.max(1, Math.min(100, Math.floor(randFn() * 100) + 1));
+  const tens = Math.floor((d100 % 100) / 10); // 0-9 (representing 00-90)
+  const ones = d100 % 10; // 0-9
+
+  if (d100 >= 89) {
+    const rarePool = LOOT_EQUIPMENT_POOL.filter((it) => it.rarity === "rare");
+    const chosen = rarePool[Math.floor(randFn() * rarePool.length)] || LOOT_EQUIPMENT_POOL[0];
+    const item = createLootInstance(chosen);
+    return {
+      d100,
+      tens,
+      ones,
+      tierLabel: "✨ 稀有寶藏 (89–100)",
+      item,
+      potions: 1,
+      gold: 30 + Math.floor(randFn() * 21),
+      summaryText: `🎲 d100=${d100}【稀有寶藏】獲得裝備「${item.name}」、治療藥水 ×1！`,
+    };
+  }
+  if (d100 >= 66) {
+    const uncPool = LOOT_EQUIPMENT_POOL.filter((it) => it.rarity === "uncommon" || it.rarity === "common");
+    const chosen = uncPool[Math.floor(randFn() * uncPool.length)] || LOOT_EQUIPMENT_POOL[0];
+    const item = createLootInstance(chosen);
+    return {
+      d100,
+      tens,
+      ones,
+      tierLabel: "🗡️ 精良裝備 (66–88)",
+      item,
+      potions: 0,
+      gold: 15 + Math.floor(randFn() * 16),
+      summaryText: `🎲 d100=${d100}【精良裝備】獲得裝備「${item.name}」！`,
+    };
+  }
+  if (d100 >= 31) {
+    return {
+      d100,
+      tens,
+      ones,
+      tierLabel: "🧪 雙倍補給 (31–65)",
+      item: null,
+      potions: 1,
+      antidotes: 1,
+      gold: 15 + Math.floor(randFn() * 20),
+      summaryText: `🎲 d100=${d100}【雙倍補給】獲得治療藥水 ×1、解毒劑 ×1！`,
+    };
+  }
+  return {
+    d100,
+    tens,
+    ones,
+    tierLabel: "🧰 基礎補給 (1–30)",
+    item: null,
+    potions: 1,
+    antidotes: 0,
+    gold: 5 + Math.floor(randFn() * 10),
+    summaryText: `🎲 d100=${d100}【基礎補給】獲得治療藥水 ×1。`,
+  };
+}

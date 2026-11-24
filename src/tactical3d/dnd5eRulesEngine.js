@@ -13,6 +13,7 @@ import {
 } from "../artifactDeps.js";
 import { CONDITIONS } from "../data/rules/conditions.js";
 import { getLootGuidelines } from "../data/rules/loot_tables.js";
+import { rollChestLootD100 } from "./equipmentCatalog.js";
 import { pickCombatBark } from "./combatBarkLines.js";
 import { CREATURE_TOKENS_CATALOG } from "./creatureTokensCatalog.js";
 import { TOKEN_FACING_MAP } from "./tokenFacingMap.js";
@@ -5080,6 +5081,7 @@ export function executePropInteract(battle, actorId, propId) {
   const heroes = battle.units.filter((u) => u.side === "hero" && !u.dead);
   const foes = battle.units.filter((u) => u.side === "foe" && u.hp > 0);
 
+  let chestLoot = null;
   if (prop.rewardEffect === "heal_party") {
     for (const h of heroes) {
       if (h.hp === 0 && h.conditions?.Unconscious) {
@@ -5144,10 +5146,30 @@ export function executePropInteract(battle, actorId, propId) {
     }
   } else {
     // Generic prop tactical interaction (cover/loot/oil)
-    if (prop.kind === "crate" || /箱|櫃|攤|market|camp|tavern/.test(`${prop.kind} ${prop.name}`)) {
-      addHeroConsumable(actor, "potion");
-      addHeroConsumable(actor, "antidote");
-      battle.logs.push(`🧪 ${actor.name} 從【${prop.name}】搜出治療藥水 +1 與萬用解毒淨化劑 +1！`);
+    if (prop.kind === "crate" || /箱|櫃|攤|寶|chest|crate|cache|stash|market|camp|tavern/.test(`${prop.kind} ${prop.name}`)) {
+      chestLoot = rollChestLootD100(battle.rng);
+      if (chestLoot.potions) addHeroConsumable(actor, "potion");
+      if (chestLoot.antidotes) addHeroConsumable(actor, "antidote");
+      if (chestLoot.item) {
+        battle.chestLootItems = [...(battle.chestLootItems || []), chestLoot.item];
+      }
+      const diceEv = events.find((ev) => ev.type === "dice");
+      if (diceEv) {
+        diceEv.dmgDice = [
+          { sides: 10, value: chestLoot.tens * 10, tag: "十位 d10" },
+          { sides: 10, value: chestLoot.ones, tag: "個位 d10" },
+        ];
+        diceEv.dmgSummary = chestLoot.summaryText;
+      }
+      events.push({
+        type: "float",
+        x: prop.x,
+        y: prop.y,
+        z: 1.9,
+        text: chestLoot.item ? `🎲 d100=${chestLoot.d100} 得【${chestLoot.item.name}】!` : `🎲 d100=${chestLoot.d100} 搜獲補給!`,
+        color: chestLoot.item ? "#fbbf24" : "#34d399",
+      });
+      battle.logs.push(`🎁 ${actor.name} 打開【${prop.name}】擲出 d100=${chestLoot.d100}：${chestLoot.summaryText}`);
     } else if (prop.flammable) {
       battle.map.grid[prop.y][prop.x].surface = "oil";
       battle.logs.push(`🛢️ ${actor.name} 推倒【${prop.name}】，地面灑落易燃油漬（可用火焰引爆）！`);
@@ -5163,7 +5185,7 @@ export function executePropInteract(battle, actorId, propId) {
   }
   emitSpeechBubble(battle, actor, "interact_ok", events);
   checkBattleOutcome(battle);
-  return { ok: true, success: true, events };
+  return { ok: true, success: true, chestLoot, events };
 }
 
 export function executePartyRetreat(battle) {
@@ -5491,6 +5513,7 @@ export function exportBattleSummary(battle) {
     completedObjectives,
     totalXp: foes.filter((f) => f.hp <= 0).reduce((acc, f) => acc + (f.xp || 50), 0),
     suggestedLootTier: lootGuide?.maxRarity || "uncommon",
+    chestLootItems: battle.chestLootItems || [],
     scriptBeats: battle._scriptBeats || [],
     recentLogs: battle.logs.slice(-8),
   };

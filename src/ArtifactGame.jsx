@@ -36907,6 +36907,7 @@ function yA({
   ambientEffects: v = [],
   lightingMood: h = "daylight",
   sceneTransition: M = null,
+  onExplorationLoot = null,
   stageProps: j = [],
   overlay: x = null,
   onToggleFamiliar: T = null,
@@ -37602,6 +37603,7 @@ function yA({
                 turnKey: threeStorySession?.turn || 1,
                 speechBubble: (k && A && k[A]) || S || null,
                 onBubbleClick: H,
+                onExplorationLoot,
               }),
             })
           : n.jsx("div", {
@@ -61816,6 +61818,33 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                           threeStorySession: ue === "theater" ? s : null,
                           focusedHeroId: ue === "theater" ? $a : null,
                           isPickingActions: ue === "theater" ? wa : false,
+                          onExplorationLoot:
+                            ue === "theater"
+                              ? (chestLoot, propObj, actorUnit) => {
+                                  if (!chestLoot) return;
+                                  r((prev) => {
+                                    if (!prev) return prev;
+                                    const nextStash = chestLoot.item
+                                      ? [chestLoot.item, ...(Array.isArray(prev.lootStash) ? prev.lootStash : [])]
+                                      : prev.lootStash || [];
+                                    return {
+                                      ...prev,
+                                      potions: (prev.potions || 0) + (chestLoot.potions || 0),
+                                      gold: (prev.gold || 0) + (chestLoot.gold || 0),
+                                      lootStash: nextStash,
+                                      log: [
+                                        ...(Array.isArray(prev.log) ? prev.log : []),
+                                        {
+                                          id: `exp_loot_${Date.now()}`,
+                                          type: "system",
+                                          turn: prev.turn || 1,
+                                          text: `🎁 ${actorUnit?.name || "隊伍"} 在【${propObj?.name || "寶箱"}】${chestLoot.summaryText}${chestLoot.item ? "（已放入「🎒 裝備」行囊）" : ""}`,
+                                        },
+                                      ],
+                                    };
+                                  });
+                                }
+                              : null,
                           snapGrid: ue === "classic" ? tacCtx?.grid || null : null,
                           style:
                             ue === "theater"

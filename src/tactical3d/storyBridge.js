@@ -548,7 +548,10 @@ export function applyBattleSummaryToSession(session, summary) {
   const beatsNote = Array.isArray(summary.scriptBeats) && summary.scriptBeats.length > 0
     ? `關鍵對話：${summary.scriptBeats.slice(0, 3).join(" / ")}`
     : "";
-  const lootDrops = generateBattleLootDrops(summary);
+  const lootDrops = [
+    ...generateBattleLootDrops(summary),
+    ...(Array.isArray(summary.chestLootItems) ? summary.chestLootItems : []),
+  ];
   const lootNote = lootDrops.length > 0 ? `獲得戰利品裝備：${lootDrops.map((it) => it.name).join("、")}（已放入隊伍行囊，可在「裝備」分配穿戴）` : "";
   const extraNotes = [
     capturedList ? `俘虜：${capturedList}` : "",

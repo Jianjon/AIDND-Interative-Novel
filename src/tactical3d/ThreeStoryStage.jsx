@@ -52,6 +52,7 @@ export default function ThreeStoryStage({
   onSelectUnit = null,
   onSelectProp = null,
   onPositionsChange = null,
+  onExplorationLoot = null,
 }) {
   const [rotation, setRotation] = useState(0);
   const [recenterToken, setRecenterToken] = useState(0);
@@ -244,7 +245,16 @@ export default function ThreeStoryStage({
                   confirmLabel: "✓ 確認結果（空白鍵 / 點擊）",
                 });
               }
-              showHint(res.success ? `✨ ${clickedProp.rewardDesc || "互動成功！"}` : `🔍 ${clickedProp.name} 檢定未過`);
+              if (res.chestLoot && onExplorationLoot) {
+                onExplorationLoot(res.chestLoot, clickedProp, leaderUnit);
+              }
+              showHint(
+                res.chestLoot
+                  ? res.chestLoot.summaryText
+                  : res.success
+                    ? `✨ ${clickedProp.rewardDesc || "互動成功！"}`
+                    : `🔍 ${clickedProp.name} 檢定未過`
+              );
               return;
             }
           }
