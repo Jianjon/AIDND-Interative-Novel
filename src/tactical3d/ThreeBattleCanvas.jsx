@@ -1714,7 +1714,7 @@ export default function ThreeBattleCanvas({
 
             const mv = anims.get(uid);
             if (mv) {
-              mv.t += dt * 2.4;
+              mv.t += dt * (latestPropsRef.current.storyMode ? 3.6 : 2.8);
               if (mv.t >= 1) {
                 mv.t = 0;
                 mv.stepIdx += 1;
@@ -1729,7 +1729,8 @@ export default function ThreeBattleCanvas({
                 const b = mv.path[mv.stepIdx + 1];
                 const za = (curBattle.map.grid[a.y]?.[a.x]?.h ?? 1) * ELEV_H;
                 const zb = (curBattle.map.grid[b.y]?.[b.x]?.h ?? 1) * ELEV_H;
-                const hop = Math.sin(mv.t * Math.PI) * 0.36;
+                const hopAmp = latestPropsRef.current.storyMode ? 0.03 : 0.14;
+                const hop = Math.sin(mv.t * Math.PI) * hopAmp;
                 vis.grp.position.set(
                   a.x + (b.x - a.x) * mv.t + offset,
                   za + (zb - za) * mv.t + hop,

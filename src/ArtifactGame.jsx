@@ -51921,30 +51921,15 @@ async function M0(e, t, { signal: a, onText: s } = {}) {
     m = [],
     _ = [],
     b = [];
-  (l(u, { kind: "gm", title: "序幕", text: W(r.world, 500) || i.synopsis }),
-    W(r.mission, 400) &&
+  (l(u, { kind: "gm", title: "序幕", text: W(r.world, 320) || i.synopsis }),
+    W(r.mission, 320) &&
       l(m, {
         kind: "gm",
-        title: c ? `委託 · ${c}` : "委託",
-        text: W(r.mission, 400),
+        title: c ? `委託 · ${c}` : "任務委託",
+        text: W(r.mission, 320),
       }),
-    A(m, br(r.briefing, o, 6, [c])));
-  for (const y of o.heroes) {
-    const k =
-      W(
-        (H = (Array.isArray(r.heroes) ? r.heroes : []).find(
-          (E) =>
-            (E == null ? void 0 : E.id) === y.id ||
-            (E == null ? void 0 : E.id) === y.name,
-        )) == null
-          ? void 0
-          : H.text,
-        200,
-      ) || W(y.bio || y.personality, 120);
-    k && l(_, { kind: "hero", title: y.name, text: k });
-  }
-  A(b, br(r.banter, o, 6));
-  for (const y of [u, m, _, b]) y.length && g.push(y);
+    A(m, br(r.briefing, o, 2, [c])));
+  for (const y of [u, m]) y.length && g.push(y);
   const S =
     Math.max(
       0,
@@ -59241,14 +59226,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
             oe && ut(oe);
           },
         });
-        let V = G;
-        if (ue !== "classic" && G.length > 0) {
-          const oe = G[0][0] || 1,
-            K = B.log
-              .filter((ee) => ee.id < oe && ee.kind !== "scene")
-              .map((ee) => ee.id);
-          K.length > 0 && (V = [[...K, ...G[0]], ...G.slice(1)]);
-        }
+        const V = G;
         (de(B), V.length && Ae({ groups: V, g: 0, k: 0, gate: !0 }));
       } catch (B) {
         (B == null ? void 0 : B.code) !== "cancelled" &&
