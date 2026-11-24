@@ -5114,33 +5114,54 @@ export function executePropInteract(battle, actorId, propId) {
       prop.trapTriggered = true;
       const tKind = trap.kind || "poison_dart";
       const tSize = trap.size || "small";
-      const radius = tSize === "large" ? 2 : tSize === "medium" ? 1 : 0;
       const tx = Math.max(0, Math.min(MAP_COLS - 1, trap.targetX ?? prop.x + (trap.targetOffset?.dx || 0)));
       const ty = Math.max(0, Math.min(MAP_ROWS - 1, trap.targetY ?? prop.y + (trap.targetOffset?.dy || 0)));
       const tDmg = rollDie(battle.rng, tSize === "large" ? 8 : 6);
 
+      const trapCells = [];
+      if (tSize === "large") {
+        // 3x3 centered on (tx, ty)
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const cx = tx + dx;
+            const cy = ty + dy;
+            if (cx >= 0 && cx < MAP_COLS && cy >= 0 && cy < MAP_ROWS) trapCells.push({ x: cx, y: cy });
+          }
+        }
+      } else if (tSize === "medium") {
+        // 2x2 from (tx, ty)
+        for (let dy = 0; dy <= 1; dy++) {
+          for (let dx = 0; dx <= 1; dx++) {
+            const cx = tx + dx;
+            const cy = ty + dy;
+            if (cx >= 0 && cx < MAP_COLS && cy >= 0 && cy < MAP_ROWS) trapCells.push({ x: cx, y: cy });
+          }
+        }
+      } else {
+        trapCells.push({ x: tx, y: ty });
+      }
+      const trapCellSet = new Set(trapCells.map((c) => `${c.x},${c.y}`));
+
       if (tKind === "poison_vent" || tKind === "fire_burst") {
         const surf = tKind === "poison_vent" ? "poison" : "fire";
-        for (let dy = -radius; dy <= radius; dy++) {
-          for (let dx = -radius; dx <= radius; dx++) {
-            const tile = battle.map.grid[ty + dy]?.[tx + dx];
-            if (tile?.walkable) {
-              tile.surface = surf;
-              tile.surfaceRounds = 3;
-            }
+        for (const c of trapCells) {
+          const tile = battle.map.grid[c.y]?.[c.x];
+          if (tile?.walkable) {
+            tile.surface = surf;
+            tile.surfaceRounds = 3;
           }
         }
       }
       const hitUnits = battle.units.filter(
-        (u) => !u.dead && u.hp > 0 && Math.max(Math.abs(u.x - tx), Math.abs(u.y - ty)) <= radius
+        (u) => !u.dead && u.hp > 0 && trapCellSet.has(`${u.x},${u.y}`)
       );
-      if (hitUnits.length === 0 && radius === 0) hitUnits.push(actor);
+      if (hitUnits.length === 0 && tSize === "small") hitUnits.push(actor);
       for (const hu of hitUnits) {
         hu.hp = Math.max(1, hu.hp - tDmg);
         if (tKind === "snare") hu.conditions.Restrained = Math.max(hu.conditions.Restrained || 0, 1);
         else if (tKind !== "fire_burst") hu.conditions.Poisoned = Math.max(hu.conditions.Poisoned || 0, 2);
       }
-      const sizeLbl = tSize === "large" ? "大型" : tSize === "medium" ? "中型" : "小型";
+      const sizeLbl = tSize === "large" ? "3×3" : tSize === "medium" ? "2×2" : "單格";
       events.push({ type: "float", x: tx, y: ty, z: 1.65, text: `⚠️ ${sizeLbl}陷阱觸發! -${tDmg}`, color: "#ef4444" });
       battle.logs.push(`⚠️ 【${sizeLbl}陷阱觸發】${actor.name} 操作【${prop.name}】失敗（${total} < DC ${dc}），在 (${tx},${ty}) 引發陷阱，範圍內目標受 ${tDmg} 點傷害！`);
     } else if (d20 === 1) {

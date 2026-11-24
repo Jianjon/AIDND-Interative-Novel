@@ -275,9 +275,9 @@ function inferDualStateEffectFromText(txt = "") {
 
 function inferTrapOnFailFromText(txt = "") {
   if (!/陷阱|毒針|機關鎖|暗箭|絆索|地雷/.test(txt)) return undefined;
-  const size = /大型|巨型|大範圍|落石|群體/.test(txt)
+  const size = /3x3|3×3|大型|大範圍|落石|群體/.test(txt)
     ? "large"
-    : /區域|範圍|噴發|毒霧|火網/.test(txt)
+    : /2x2|2×2|區域|範圍|噴發|毒霧|火網/.test(txt)
       ? "medium"
       : "small";
   const targetOffset = /門口|通道|後方|對面|旁/.test(txt) ? { dx: 1, dy: 0 } : undefined;
