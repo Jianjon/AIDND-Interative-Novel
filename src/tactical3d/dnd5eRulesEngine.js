@@ -5146,7 +5146,15 @@ export function executePropInteract(battle, actorId, propId) {
     }
   } else {
     // Generic prop tactical interaction (cover/loot/oil)
-    if (prop.kind === "crate" || /箱|櫃|攤|寶|chest|crate|cache|stash|market|camp|tavern/.test(`${prop.kind} ${prop.name}`)) {
+    const propMetaTxt = `${prop.kind || ""} ${prop.templateKey || ""} ${prop.key || ""} ${prop.name || ""}`;
+    const isModuleExclusiveProp = Boolean(prop.isObjective || prop.requiresKey || prop.isQuestProp || prop.moduleExclusive);
+    const isTreasureChest =
+      !isModuleExclusiveProp &&
+      (prop.kind === "chest" || /chest|寶箱|密箱|補給箱|藏寶/i.test(propMetaTxt));
+    const chestRollsSoFar = battle.chestLootRollCount || 0;
+
+    if (isTreasureChest && chestRollsSoFar < 2) {
+      battle.chestLootRollCount = chestRollsSoFar + 1;
       chestLoot = rollChestLootD100(battle.rng);
       if (chestLoot.potions) addHeroConsumable(actor, "potion");
       if (chestLoot.antidotes) addHeroConsumable(actor, "antidote");
@@ -5170,6 +5178,9 @@ export function executePropInteract(battle, actorId, propId) {
         color: chestLoot.item ? "#fbbf24" : "#34d399",
       });
       battle.logs.push(`🎁 ${actor.name} 打開【${prop.name}】擲出 d100=${chestLoot.d100}：${chestLoot.summaryText}`);
+    } else if (prop.kind === "crate" || /箱|櫃|貨箱/i.test(propMetaTxt)) {
+      addHeroConsumable(actor, "potion");
+      battle.logs.push(`🧪 ${actor.name} 從【${prop.name}】搜出治療藥水 +1。`);
     } else if (prop.flammable) {
       battle.map.grid[prop.y][prop.x].surface = "oil";
       battle.logs.push(`🛢️ ${actor.name} 推倒【${prop.name}】，地面灑落易燃油漬（可用火焰引爆）！`);

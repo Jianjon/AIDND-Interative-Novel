@@ -63317,10 +63317,23 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                             }),
                           ],
                         }),
-                        baseEqList.length > 0 &&
+                        (baseEqList.length > 0 || (activeHero.personalItems?.length || 0) > 0) &&
                           n.jsxs("div", {
-                            style: { fontSize: 12, color: "#94a3b8", marginBottom: 10 },
-                            children: ["原角卡攜帶：", baseEqList.join("、")],
+                            style: { fontSize: 12, color: "#94a3b8", marginBottom: 10, lineHeight: 1.5 },
+                            children: [
+                              baseEqList.length > 0 &&
+                                n.jsxs("div", { children: ["🔒 原角卡／模組專屬裝備（獨立保留）：", baseEqList.join("、")] }),
+                              (activeHero.personalItems?.length || 0) > 0 &&
+                                n.jsxs("div", {
+                                  children: [
+                                    "🗝️ 模組關鍵／隨身道具（獨立）：",
+                                    activeHero.personalItems
+                                      .filter((it) => (it.quantity ?? 1) > 0)
+                                      .map((it) => `${it.name}${it.quantity > 1 ? `×${it.quantity}` : ""}`)
+                                      .join("、"),
+                                  ],
+                                }),
+                            ],
                           }),
                         n.jsx("div", {
                           style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 8 },
