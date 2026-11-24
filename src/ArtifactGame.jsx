@@ -55813,6 +55813,7 @@ function Q0({
                                           children: ["「", me.monologue, "」"],
                                         }),
                                       tacCtx?.isCombat &&
+                                        e !== "theater" &&
                                         n.jsx(HeroMoveSelector, {
                                           hero: w,
                                           moveOptions: tacHeroMeta?.[w.id]?.moveOptions || [],
@@ -62486,6 +62487,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                                           children: ["「", B.monologue, "」"],
                                         }),
                                       tacCtx.isCombat &&
+                                        ue !== "theater" &&
                                         n.jsx(HeroMoveSelector, {
                                           hero: f,
                                           moveOptions: tacHeroMeta[f.id]?.moveOptions || [],

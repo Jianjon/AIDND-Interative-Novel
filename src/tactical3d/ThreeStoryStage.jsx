@@ -206,8 +206,10 @@ export default function ThreeStoryStage({
   }, [battle, leaderUnit, speechBubble]);
 
   const handleClickTile = useCallback(
-    (x, y) => {
-      if (!battle) return;
+    (pt) => {
+      if (!battle || !pt) return;
+      const { x, y } = pt;
+      if (!Number.isInteger(x) || !Number.isInteger(y)) return;
       const clickedUnit = battle.units.find(
         (u) => !u.dead && x >= u.x && x < u.x + (u.footprint || 1) && y >= u.y && y < u.y + (u.footprint || 1)
       );
@@ -289,7 +291,7 @@ export default function ThreeStoryStage({
       const stamp = `${Date.now()}_${Math.random()}`;
       setBattle(next);
       setEventsBatch([{ type: "move", unitId: nextLeader.id, path, _uid: `${stamp}_0` }]);
-      showHint(`🦶 ${nextLeader.name} 移動完畢（剩 ${nextLeader.turn.movementLeft} 格）→ 請於右側選擇他的行動`);
+      showHint(`🦶 ${nextLeader.name} 已移動（剩 ${nextLeader.turn.movementLeft} 格）`);
     },
     [battle, leaderUnit, onSelectProp, onSelectUnit, showHint]
   );
@@ -411,9 +413,9 @@ export default function ThreeStoryStage({
           <span
             className="stage-pill-btn"
             style={{ borderColor: "#38bdf8", color: "#e0f2fe", cursor: "default" }}
-            title="藍格為本輪可移動範圍；移動後請在右側選擇此角色的行動，全部角色完成後送出給 AI"
+            title="藍格為可自由移動範圍；點擊角色切換操作，點擊藍格移動，點擊相鄰物件可互動"
           >
-            🦶 {leaderUnit.name}（剩 {leaderUnit.turn?.movementLeft ?? leaderUnit.speedCells ?? 6} 格）{isPicking ? "· 移動後選右側行動" : ""}
+            🦶 {leaderUnit.name}（剩 {leaderUnit.turn?.movementLeft ?? leaderUnit.speedCells ?? 6} 格）
           </span>
         )}
         {localHint && (
