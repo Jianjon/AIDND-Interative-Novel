@@ -464,18 +464,24 @@ export function buildFallbackBattleScript({ storyContext = null, battle = null }
   const objProp = (battle?.map?.props || []).find((p) => p.interactable || p.isObjective);
   const objName = storyContext?.blueprint?.objectiveName || objProp?.name || "戰場關鍵目標";
   const placeName = storyContext?.placeName || battle?.map?.name || "戰場";
+  const nodeTitle = storyContext?.storySummary?.nodeTitle || "";
+  const sitSnippet = String(storyContext?.storySummary?.situation || "").replace(/\s+/g, " ").trim().slice(0, 38);
 
   const base = {
     missionGoal: objProp
       ? `擊退敵軍並處理【${objName}】`
-      : `制伏【${placeName}】的敵方勢力`,
+      : nodeTitle
+        ? `${nodeTitle}：制伏敵方勢力`
+        : `制伏【${placeName}】的敵方勢力`,
     opening: [
       {
         speaker: leadHero,
         side: "hero",
-        line: objProp
-          ? `大家注意陣型！這場必須壓制敵人並掌控【${objName}】，別讓他們包抄！`
-          : `全體戒備！就在「${placeName}」解決他們，彼此照應別落單！`,
+        line: sitSnippet
+          ? `${sitSnippet}……全體戒備，準備接戰！`
+          : objProp
+            ? `大家注意陣型！這場必須壓制敵人並掌控【${objName}】，別讓他們包抄！`
+            : `全體戒備！就在「${placeName}」解決他們，彼此照應別落單！`,
       },
       {
         speaker: leadFoe,
