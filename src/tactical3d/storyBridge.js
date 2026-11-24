@@ -442,9 +442,12 @@ export function mapStorySessionTo3DConfig(session, opts = {}) {
     const roleTxt = `${a.role || ""} ${a.name || ""} ${a.note || ""}`;
     const isCombatGuard = /衛兵|護衛|戰士|傭兵|騎士|遊俠|法師|牧師|弓手|士兵/.test(roleTxt);
     const isVip = a.kind === "npc" ? !isCombatGuard : /護送|被保護|保護|商旅|學者|村長|平民|人質|vip|受困/.test(roleTxt);
+    const isDwarf = /矮人|格羅金恩|glowkindle|鍛造|鐵匠/i.test(roleTxt);
     const inferredToken =
       !a.image && !a.avatar && !a.spriteHint
-        ? findCreatureToken({ query: `${a.name || ""} ${a.role || ""}` })
+        ? isDwarf
+          ? { id: "dwarven_hammer_smith", image: "/prototype-assets/lego-creatures-v1/dwarven_hammer_smith.png" }
+          : findCreatureToken({ query: a.name || "" }) || findCreatureToken({ query: a.role || "" })
         : null;
     return {
       storyCastId: a.id,

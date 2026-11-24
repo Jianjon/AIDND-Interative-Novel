@@ -239,7 +239,7 @@ function inferTokenCategory(txt = "") {
   return "";
 }
 
-export function resolveMonsterSprite(monsterId, nameHint = "") {
+export function resolveMonsterSprite(monsterId, nameHint = "", opts = {}) {
   if (CREATURE_SPRITE_MAP[monsterId]) return CREATURE_SPRITE_MAP[monsterId];
   const idLower = String(monsterId || "").toLowerCase();
   if (TOKEN_BY_ID.has(idLower)) return TOKEN_BY_ID.get(idLower);
@@ -301,8 +301,9 @@ export function resolveMonsterSprite(monsterId, nameHint = "") {
   if (/orc/.test(idLower)) return "/prototype-assets/lego-creatures-v1/orc.png";
   if (/wolf|worg/.test(idLower)) return "/prototype-assets/lego-creatures-v1/wolf_guard.png";
   if (/spider/.test(idLower)) return "/prototype-assets/lego-creatures-v1/cellar_spider_queen.png";
-  if (/npc|vip|merchant|noble|villager|citizen|bard|ally/.test(idLower) || /商|領袖|平民|貴族|護衛|友軍/.test(cleanName)) return pickLegacyHumanoidAvatar("npc", idLower + cleanName);
-  return "/prototype-assets/lego-creatures-v1/goblin_sword_grunt.png";
+  if (/dwarf|smith|glowkindle/.test(idLower) || /矮人|鍛造|鐵匠|格羅金恩/.test(cleanName)) return "/prototype-assets/lego-creatures-v1/dwarven_hammer_smith.png";
+  if (/npc|vip|merchant|noble|villager|citizen|bard|ally|tavern|innkeeper|bartender|alchemist/.test(idLower) || /商|領袖|平民|貴族|護衛|友軍|酒館|老闆|旅店|掌櫃|酒保|煉金/.test(cleanName)) return pickLegacyHumanoidAvatar("npc", idLower + cleanName);
+  return opts.fallback !== undefined ? opts.fallback : "/prototype-assets/lego-creatures-v1/goblin_sword_grunt.png";
 }
 
 export function abilityMod(score) {
@@ -1600,7 +1601,7 @@ export function hydrateAllyUnit(spec = {}, idx = 0, spawn = { x: 2, y: 4 }, part
     : pickLegacyHumanoidAvatar("martial", `${spec?.name || "guard"}_${idx}`);
   const resolvedAvatar =
     normalizeTokenPath(spec?.avatar) ||
-    (spec?.name ? resolveMonsterSprite(spec.catalogId || spec.id, spec.name) : null) ||
+    (spec?.name ? resolveMonsterSprite(spec.catalogId || spec.id, spec.name, { fallback: defaultAllyAvatar }) : null) ||
     defaultAllyAvatar;
 
   return {
