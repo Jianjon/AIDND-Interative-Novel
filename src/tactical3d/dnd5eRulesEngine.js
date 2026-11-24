@@ -1014,6 +1014,49 @@ export function hydrateHeroUnit(preset, level = 3, spawn = { x: 1, y: 5 }) {
     raceText
   );
 
+  // Level-scaled Skill Table (proficiency + expertise)
+  const rawSkillTxt = (Array.isArray(preset?.skills) ? preset.skills : []).join(" ").toLowerCase();
+  const clsLower = String(scaled.class || "").toLowerCase();
+  const skillProfs = [];
+  if (isFighter || isBarbarian || isPaladin || isRanger || isMonk || /運動|athletics/.test(rawSkillTxt)) skillProfs.push("athletics");
+  if (isRogue || isMonk || isBard || isRanger || /特技|體操|acrobatics/.test(rawSkillTxt)) skillProfs.push("acrobatics");
+  if (isRogue || isRanger || /隱匿|stealth/.test(rawSkillTxt)) skillProfs.push("stealth");
+  if (isRogue || isBard || /巧手|盜賊|sleight/.test(rawSkillTxt)) skillProfs.push("sleight");
+  if (/法師|術士|邪術師|調查員|念襲|wizard|sorcerer|warlock|investigator|psychic|kinetic/.test(clsLower) || /奧秘|arcana/.test(rawSkillTxt)) skillProfs.push("arcana");
+  if (/牧師|神官|聖武|cleric|paladin|oracle/.test(clsLower) || /宗教|religion/.test(rawSkillTxt)) skillProfs.push("religion");
+  if (isRanger || isRogue || isFighter || /察覺|perception/.test(rawSkillTxt)) skillProfs.push("perception");
+  if (isBard || isPaladin || isFighter || /說服|威嚇|交際|persuasion|intimidation/.test(rawSkillTxt)) skillProfs.push("persuasion");
+
+  const skillExpertise = new Set();
+  if (isRogue) {
+    skillExpertise.add("acrobatics");
+    skillExpertise.add("stealth");
+    skillExpertise.add("sleight");
+  }
+  if (isBard) {
+    skillExpertise.add("acrobatics");
+    skillExpertise.add("persuasion");
+  }
+  if (isBarbarian || isFighter) {
+    if (level >= 3) skillExpertise.add("athletics");
+  }
+
+  const calcSkill = (key, statKey) => {
+    const hasProf = skillProfs.includes(key);
+    const mult = skillExpertise.has(key) ? 2 : hasProf ? 1 : 0;
+    return (mods[statKey] ?? 0) + mult * profBonus;
+  };
+  const skillBonuses = {
+    athletics: calcSkill("athletics", "str"),
+    acrobatics: calcSkill("acrobatics", "dex"),
+    stealth: calcSkill("stealth", "dex"),
+    sleight: calcSkill("sleight", "dex"),
+    arcana: calcSkill("arcana", "int"),
+    religion: calcSkill("religion", "wis"),
+    perception: calcSkill("perception", "wis"),
+    persuasion: calcSkill("persuasion", "cha"),
+  };
+
   return {
     id: scaled.id,
     name: scaled.name.split(/[（(]/)[0].trim(),
@@ -1021,6 +1064,8 @@ export function hydrateHeroUnit(preset, level = 3, spawn = { x: 1, y: 5 }) {
     presetId: preset?.id || scaled?.id || null,
     race: scaled.race || "",
     hasDarkvision,
+    skillProfs,
+    skillBonuses,
     hasEvasion50,
     regenPerTurn,
     flatDr,
@@ -1298,14 +1343,15 @@ function isStepLegal(battle, unit, x0, y0, x1, y1) {
   const grid = battle.map.grid;
   const h0 = grid[y0][x0].h;
   const h1 = grid[y1][x1].h;
-  if (!unit.flies && Math.abs(h1 - h0) > 1) return false;
+  const maxClimbDiff = unit.skillProfs?.includes("athletics") ? 2 : 1;
+  if (!unit.flies && Math.abs(h1 - h0) > maxClimbDiff) return false;
 
   // Prevent diagonal corner cutting through blocked orthogonal cells
   if (dx !== 0 && dy !== 0) {
     const ortho1 = grid[y0][x0 + dx];
     const ortho2 = grid[y0 + dy][x0];
     if (!ortho1?.walkable || !ortho2?.walkable) return false;
-    if (!unit.flies && (Math.abs(ortho1.h - h0) > 1 || Math.abs(ortho2.h - h0) > 1)) return false;
+    if (!unit.flies && (Math.abs(ortho1.h - h0) > maxClimbDiff || Math.abs(ortho2.h - h0) > maxClimbDiff)) return false;
   }
   return true;
 }
@@ -2051,7 +2097,20 @@ export function computeReachable3D(battle, unit, budgetOverride = null) {
         if (!isStepLegal(battle, unit, cur.x, cur.y, nx, ny)) continue;
 
         const targetTile = battle.map.grid[ny][nx];
-        const moveCost = unit.flies ? 1 : getSurfaceMoveCost(targetTile);
+        const curTile = battle.map.grid[cur.y][cur.x];
+        const hDiff = Math.abs((targetTile.h ?? 1) - (curTile.h ?? 1));
+        let moveCost = unit.flies ? 1 : getSurfaceMoveCost(targetTile);
+        if (!unit.flies) {
+          const isWater = targetTile.type === "water" || targetTile.surface === "water";
+          const isDiffGround = Boolean(
+            targetTile.difficult || targetTile.surface === "difficult" || targetTile.surface === "grease" || targetTile.surface === "ice"
+          );
+          // Athletics enables swimming without slowdown and climbing 2-step ledges
+          if (isWater && unit.skillProfs?.includes("athletics")) moveCost = 1;
+          // Acrobatics lets nimble units vault across difficult terrain at normal cost
+          if (isDiffGround && unit.skillProfs?.includes("acrobatics")) moveCost = 1;
+          if (hDiff >= 2) moveCost = Math.max(2, moveCost + 1);
+        }
         const nextCost = cur.cost + moveCost;
         if (nextCost > budget) continue;
 
@@ -2816,20 +2875,22 @@ function triggerTileHazardOnEnter(battle, unit, events) {
       break;
     }
     if (t.surface === "ice" && !unit.conditions?.Prone) {
-      const dexSave = rollDie(battle.rng, 20) + (unit.mods?.dex ?? 0);
+      const acroBonus = Math.max(unit.mods?.dex ?? 0, unit.skillBonuses?.acrobatics ?? -99);
+      const dexSave = rollDie(battle.rng, 20) + acroBonus;
       if (dexSave < 11) {
         setUnitProne(unit);
         events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: "❄️ 滑倒!", color: "#bae6fd" });
-        battle.logs.push(`❄️ ${unit.name} 在冰面滑倒（DEX豁免 ${dexSave} < DC 11）！`);
+        battle.logs.push(`❄️ ${unit.name} 在冰面滑倒（特技/DEX豁免 ${dexSave} < DC 11）！`);
       }
       break;
     }
     if (t.surface === "grease" && !unit.conditions?.Prone) {
-      const dexSave = rollDie(battle.rng, 20) + (unit.mods?.dex ?? 0);
+      const acroBonus = Math.max(unit.mods?.dex ?? 0, unit.skillBonuses?.acrobatics ?? -99);
+      const dexSave = rollDie(battle.rng, 20) + acroBonus;
       if (dexSave < 12) {
         setUnitProne(unit);
         events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: "🛢️ 油膩滑倒!", color: "#f59e0b" });
-        battle.logs.push(`🛢️ ${unit.name} 踩入油膩術範圍滑倒（DEX豁免 ${dexSave} < DC 12）！`);
+        battle.logs.push(`🛢️ ${unit.name} 踩入油膩術範圍滑倒（特技/DEX豁免 ${dexSave} < DC 12）！`);
       }
       break;
     }
@@ -4045,26 +4106,95 @@ export function executeStandardAction(battle, unitId, kind, targetId = null, opt
     events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: "🛡️ 閃避姿勢", color: "#93c5fd" });
     battle.logs.push(`🛡️ ${unit.name} 進入【閃避】姿勢，敵方攻擊皆具劣勢。`);
   } else if (kind === "hide") {
-    const roll = rollDie(battle.rng, 20) + (unit.mods?.dex ?? 0) + unit.profBonus;
+    const stealthBonus = Math.max(unit.skillBonuses?.stealth ?? -99, (unit.mods?.dex ?? 0) + unit.profBonus);
+    const roll = rollDie(battle.rng, 20) + stealthBonus;
     if (roll >= 11) {
       unit.conditions.Hidden = 2;
       unit.turn.hidden = true;
       events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: `🕶️ 潛行成功 (${roll})`, color: "#94a3b8" });
-      battle.logs.push(`🕶️ ${unit.name} 潛行檢定 ${roll}，獲得下次攻擊優勢！`);
+      battle.logs.push(`🕶️ ${unit.name} 隱匿檢定 ${roll}，獲得下次攻擊優勢！`);
     } else {
       events.push({ type: "float", x: unit.x, y: unit.y, z: getUnitBaseH(battle, unit) + 1.0, text: `潛行失敗 (${roll})`, color: "#fca5a5" });
     }
   } else if (kind === "shove") {
+    const athBonus = Math.max(unit.skillBonuses?.athletics ?? -99, (unit.mods?.str ?? 0) + unit.profBonus);
+    const targetProp = opts.propId
+      ? (battle.map.props || []).find((p) => p.id === opts.propId && !p.broken)
+      : (battle.map.props || []).find((p) => p.id === targetId && !p.broken);
+    if (targetProp) {
+      if (Math.max(Math.abs(targetProp.x - unit.x), Math.abs(targetProp.y - unit.y)) > 1) {
+        if (asBonus) unit.turn.bonusLeft += 1;
+        else unit.turn.actionLeft += 1;
+        return { ok: false, reason: "須貼近物件才能推動", events, battleEnded: false };
+      }
+      const d20 = rollDie(battle.rng, 20);
+      const total = d20 + athBonus;
+      const dc = 10;
+      if (unit.side === "hero") {
+        events.push({
+          type: "dice",
+          side: "hero",
+          role: "check",
+          actorName: unit.name,
+          targetName: targetProp.name,
+          actionName: "運動推物",
+          d20,
+          advState: "normal",
+          rolls: [d20],
+          modTotal: athBonus,
+          modifiers: [`運動 (+${athBonus})`],
+          total,
+          targetValue: dc,
+          targetLabel: "DC",
+          formula: `1d20(${d20}) + 運動(+${athBonus}) = ${total} vs DC ${dc}`,
+          hit: total >= dc,
+          crit: d20 === 20,
+        });
+      }
+      if (total < dc) {
+        events.push({ type: "float", x: targetProp.x, y: targetProp.y, z: 1.4, text: `推不動 (${total}/${dc})`, color: "#fca5a5" });
+        battle.logs.push(`💪 ${unit.name} 嘗試推動【${targetProp.name}】（運動 ${total} < DC ${dc}），未推動。`);
+        return { ok: true, events, battleEnded: false };
+      }
+      const dx = Math.sign(targetProp.x - unit.x);
+      const dy = Math.sign(targetProp.y - unit.y);
+      const steps = total >= 16 ? 2 : 1;
+      for (let s = 0; s < steps; s++) {
+        const nx = targetProp.x + dx;
+        const ny = targetProp.y + dy;
+        const nTile = battle.map.grid[ny]?.[nx];
+        if (!nTile || nTile.type === "wall") break;
+        const hitUnit = getUnitAtCell(battle, nx, ny);
+        targetProp.x = nx;
+        targetProp.y = ny;
+        if (hitUnit) {
+          const smashDmg = rollDiceExpr(battle.rng, "1d6").total + Math.max(1, unit.mods?.str ?? 1);
+          applyDamageToUnit(battle, hitUnit, smashDmg, "bludgeoning", false, events);
+          setUnitProne(hitUnit, unit.x, unit.y);
+          events.push({ type: "float", x: nx, y: ny, z: 1.4, text: `💥 物件撞擊 -${smashDmg}!`, color: "#fb923c" });
+          battle.logs.push(`💪 ${unit.name} 將【${targetProp.name}】推撞向 ${hitUnit.name}，造成 ${smashDmg} 點鈍擊傷並將其撞倒！`);
+          if (targetProp.flammable) {
+            nTile.surface = "oil";
+            nTile.surfaceRounds = 3;
+          }
+          break;
+        }
+      }
+      events.push({ type: "float", x: targetProp.x, y: targetProp.y, z: 1.3, text: "💪 推動!", color: "#38bdf8" });
+      battle.logs.push(`💪 ${unit.name}（運動 ${total}）成功將【${targetProp.name}】推開至 (${targetProp.x},${targetProp.y})！`);
+      return { ok: true, events, battleEnded: checkBattleOutcome(battle) };
+    }
+
     const target = battle.units.find((u) => u.id === targetId);
     if (!target || unitGridDistance(unit, target) > 1) {
       if (asBonus) unit.turn.bonusLeft += 1;
       else unit.turn.actionLeft += 1;
       return { ok: false, reason: "須貼近敵人才能推擊", events, battleEnded: false };
     }
-    const aRoll = rollDie(battle.rng, 20) + (unit.mods?.str ?? 0) + unit.profBonus;
-    const dRoll = rollDie(battle.rng, 20) + Math.max(target.mods?.str ?? 0, target.mods?.dex ?? 0);
+    const aRoll = rollDie(battle.rng, 20) + athBonus;
+    const dRoll = rollDie(battle.rng, 20) + Math.max(target.skillBonuses?.athletics ?? target.mods?.str ?? 0, target.skillBonuses?.acrobatics ?? target.mods?.dex ?? 0);
     if (aRoll >= dRoll) {
-      battle.logs.push(`💥 ${unit.name} 力量推擊 ${target.name}（${aRoll} vs ${dRoll}）成功！`);
+      battle.logs.push(`💥 ${unit.name} 運動推擊 ${target.name}（${aRoll} vs ${dRoll}）成功！`);
       applyKnockback(battle, target, target.x - unit.x, target.y - unit.y, 1, events);
     } else {
       events.push({ type: "float", x: target.x, y: target.y, z: getUnitBaseH(battle, target) + 1.0, text: `頂住 (${dRoll}>${aRoll})`, color: "#cbd5e1" });
@@ -4808,7 +4938,12 @@ export function executePropInteract(battle, actorId, propId) {
   } else {
     skillLabel = skillLabel || (statKey === "dex" ? "巧手" : statKey === "int" ? "奧秘" : statKey === "wis" ? "宗教" : "運動");
   }
-  const bonus = (actor.mods?.[statKey] ?? 1) + (actor.profBonus || 2);
+  const skillMap = { str: "athletics", dex: "sleight", int: "arcana", wis: "religion" };
+  const mappedSkill = skillMap[statKey];
+  const rawStatBonus = (actor.mods?.[statKey] ?? 1) + (actor.profBonus || 2);
+  const bonus = mappedSkill && actor.skillBonuses?.[mappedSkill] !== undefined
+    ? Math.max(actor.skillBonuses[mappedSkill], rawStatBonus)
+    : rawStatBonus;
   const d20 = rollDie(battle.rng, 20);
   const total = d20 + bonus;
   const dc = prop.requiresKey && !hasRequiredKey ? Math.max(15, prop.dc || 15) : prop.dc || 10;
@@ -5002,7 +5137,12 @@ export function applyShoutOrImprovAction(battle, actorId, text, aiResult = null)
       skillLabel = "說服/領導";
       candidateEffect = "inspire_party";
     }
-    const bonus = (actor.mods?.[statKey] ?? 1) + (actor.profBonus || 2);
+    const skillMap = { str: "athletics", dex: "sleight", int: "arcana", wis: "religion" };
+  const mappedSkill = skillMap[statKey];
+  const rawStatBonus = (actor.mods?.[statKey] ?? 1) + (actor.profBonus || 2);
+  const bonus = mappedSkill && actor.skillBonuses?.[mappedSkill] !== undefined
+    ? Math.max(actor.skillBonuses[mappedSkill], rawStatBonus)
+    : rawStatBonus;
     const d20 = rollDie(battle.rng, 20);
     const total = d20 + bonus;
     const dc = 12;

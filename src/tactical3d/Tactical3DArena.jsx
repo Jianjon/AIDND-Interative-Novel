@@ -2372,15 +2372,25 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
               return (
                 <div className="tac3d-context-prop-bar">
                   {adjProps.map((obj) => (
-                    <button
-                      key={obj.id}
-                      type="button"
-                      className={`tac3d-btn${obj.interactable ? " is-primary" : ""}`}
-                      onClick={() => runQuickAction((b, u) => executePropInteract(b, u.id, obj.id))}
-                      title={`${obj.skillName || "巧手/運動"} DC ${obj.dc || 10}｜${obj.rewardDesc || obj.uses || "利用場上物件取得戰術優勢"}`}
-                    >
-                      {obj.interactable ? "🔍" : "🖐"} {obj.actionLabel || "利用"}：{obj.name} (DC {obj.dc || 10})
-                    </button>
+                    <span key={obj.id} style={{ display: "inline-flex", gap: 4 }}>
+                      <button
+                        type="button"
+                        className={`tac3d-btn${obj.interactable ? " is-primary" : ""}`}
+                        onClick={() => runQuickAction((b, u) => executePropInteract(b, u.id, obj.id))}
+                        title={`${obj.skillName || "巧手/運動"} DC ${obj.dc || 10}｜${obj.rewardDesc || obj.uses || "利用場上物件取得戰術優勢"}`}
+                      >
+                        {obj.interactable ? "🔍" : "🖐"} {obj.actionLabel || "利用"}：{obj.name} (DC {obj.dc || 10})
+                      </button>
+                      <button
+                        type="button"
+                        disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
+                        className="tac3d-btn"
+                        onClick={() => runQuickAction((b, u) => executeStandardAction(b, u.id, "shove", null, { propId: obj.id }))}
+                        title={`運動 +${activeUnit.skillBonuses?.athletics ?? 2}｜將物件推開 1～2 格撞擊敵人`}
+                      >
+                        💪 推動
+                      </button>
+                    </span>
                   ))}
                 </div>
               );
@@ -2400,6 +2410,15 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
               <span className="tac3d-pill" style={{ borderColor: activeUnit.reactionLeft > 0 ? "#c084fc" : undefined }}>
                 🟣 反應 {activeUnit.reactionLeft || 0}
               </span>
+              {activeUnit.skillBonuses && (
+                <span
+                  className="tac3d-pill"
+                  style={{ borderColor: "#64748b", color: "#cbd5e1" }}
+                  title={`隨等級成長技能｜運動+${activeUnit.skillBonuses.athletics}（游泳/攀爬/推物） · 特技+${activeUnit.skillBonuses.acrobatics}（越過困難地形/防滑） · 隱匿+${activeUnit.skillBonuses.stealth} · 巧手+${activeUnit.skillBonuses.sleight}`}
+                >
+                  💪運動+{activeUnit.skillBonuses.athletics} · 🤸特技+{activeUnit.skillBonuses.acrobatics}
+                </span>
+              )}
               {Object.entries(activeUnit.slots || {}).map(([lv, cnt]) => (
                 <span key={lv} className="tac3d-pill" style={{ borderColor: "#a78bfa", color: "#ddd6fe" }}>
                   {lv}環:{cnt}
