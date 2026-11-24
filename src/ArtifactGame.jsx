@@ -70,6 +70,7 @@ import {
   equipStashItemOnSession,
   unequipHeroSlotOnSession,
 } from "./tactical3d/equipmentCatalog.js";
+import { resolveMonsterSprite } from "./tactical3d/dnd5eRulesEngine.js";
 
 const Ep = {
     guild_hall: [
@@ -26458,8 +26459,26 @@ function mm(e, t = !1, a = "/") {
       ...Ll(!t && id(e.image)),
     };
   }
-  const o = Ps(e, t),
-    i = `${a}${o.image}${gm}`;
+  const o = Ps(e, t);
+  if (!t && (o.texture === "lego" || /lego_standees_packed|missing-token/.test(String(o.image || "")))) {
+    const unifiedImg = resolveMonsterSprite(
+      (e == null ? void 0 : e.catalogId) ||
+        (e == null ? void 0 : e.templateId) ||
+        (e == null ? void 0 : e.monsterId) ||
+        (e == null ? void 0 : e.id),
+      (e == null ? void 0 : e.name) || (e == null ? void 0 : e.spriteHint) || "",
+    );
+    if (unifiedImg && !/missing-token/.test(unifiedImg)) {
+      const cleanUrl = unifiedImg.startsWith("/") ? unifiedImg : `${a}${unifiedImg}`;
+      return {
+        backgroundImage: `url(${cleanUrl})`,
+        backgroundSize: "contain",
+        backgroundPosition: "50% 100%",
+        backgroundRepeat: "no-repeat",
+      };
+    }
+  }
+  const i = `${a}${o.image}${gm}`;
   return o.texture !== "lego"
     ? {
         backgroundImage: `url(${i})`,
