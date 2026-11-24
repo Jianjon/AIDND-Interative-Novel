@@ -1,5 +1,6 @@
 import { LEGO_PROPS_CATALOG } from "./legoPropsCatalog.js";
 import { TABLETOP_MAPS_CATALOG, TABLETOP_MAP_ALIASES } from "./tabletopMapsCatalog.js";
+import { THEMED_PROPS_BY_CATEGORY } from "./themedPropsCatalog.js";
 
 export const MAP_COLS = 16;
 export const MAP_ROWS = 12;
@@ -2120,6 +2121,69 @@ export function generateVoxelMap(scenarioId = "cave_ambush", seed = 101, partyLe
       props.push(makeProp("altar", "prop_bp_altar", 10, 4));
     }
     refreshMapDerivedFlags(grid, props);
+  }
+
+  // Enrich map with 2 deterministic theme-matched dual-state props from the 333-item LEGO_PROPS_MANIFEST
+  const scenTxt = `${scenario.id} ${scenario.name || ""} ${scenario.subtitle || ""}`.toLowerCase();
+  const themeCats =
+    /church|cathedral|temple|chapel|abbey|教堂|聖殿|修道/.test(scenTxt)
+      ? ["church", "gothic"]
+      : /tavern|inn|pub|market|guild|plaza|酒館|市集|公會/.test(scenTxt)
+        ? ["tavern", "market", "town"]
+        : /crypt|grave|cemetery|barrow|tomb|墓|陵|亡靈/.test(scenTxt)
+          ? ["cemetery", "gothic", "dungeon"]
+          : /ice|snow|glacier|frost|frozen|雪|冰|霜/.test(scenTxt)
+            ? ["ice", "camp"]
+            : /desert|oasis|dune|canyon|沙|綠洲|峽谷/.test(scenTxt)
+              ? ["desert", "camp"]
+              : /forest|woods|grove|swamp|marsh|林|沼|森/.test(scenTxt)
+                ? ["nature", "camp"]
+                : /tower|arcane|wizard|lab|library|observatory|法師|奧術|書庫|祭壇/.test(scenTxt)
+                  ? ["arcane", "alchemy"]
+                  : /castle|fort|bastion|gate|arena|siege|堡|城|要塞|競技/.test(scenTxt)
+                    ? ["siege", "craft", "town"]
+                    : /cave|dungeon|mine|underdark|ruin|洞|地城|礦|遺跡/.test(scenTxt)
+                      ? ["dungeon", "arcane"]
+                      : ["town", "camp"];
+  const themePool = themeCats.flatMap((c) => THEMED_PROPS_BY_CATEGORY[c] || []);
+  if (themePool.length > 0) {
+    const busySet = new Set([
+      ...heroSpawns.map((s) => `${s.x},${s.y}`),
+      ...foeSpawns.map((s) => `${s.x},${s.y}`),
+      ...props.map((p) => `${p.x},${p.y}`),
+    ]);
+    const decoSpots = [
+      [3, 2], [12, 2], [4, 9], [11, 9], [6, 2], [9, 9],
+    ].filter(([dx, dy]) => isBaseTileWalkable(grid[dy]?.[dx]) && !busySet.has(`${dx},${dy}`));
+    let placedTheme = 0;
+    for (const [dx, dy] of decoSpots) {
+      if (placedTheme >= 2) break;
+      const chosen = themePool[Math.floor(rng() * themePool.length)];
+      if (!chosen) continue;
+      const isFlammable = /木|桶|桌|椅|布|帳|書|草|hay|wood|crate|barrel|tent|book/i.test(`${chosen.name} ${chosen.uses}`);
+      props.push({
+        id: `prop_theme_${placedTheme}_${dx}_${dy}`,
+        key: chosen.id,
+        kind: /箱|寶|chest/i.test(chosen.name) ? "chest" : "decor",
+        name: chosen.name,
+        x: dx,
+        y: dy,
+        blocksMove: false,
+        blocksSight: false,
+        cover: 1,
+        hp: 16,
+        maxHp: 16,
+        broken: false,
+        flammable: isFlammable,
+        imgIntact: chosen.s0,
+        imgBroken: chosen.s1,
+        scaleW: 0.72,
+        scaleH: 0.72,
+      });
+      busySet.add(`${dx},${dy}`);
+      placedTheme++;
+    }
+    if (placedTheme > 0) refreshMapDerivedFlags(grid, props);
   }
 
   // Auto-align 45-degree isometric props (doors, gates, barricades, pews, stalls, chests) to nearby walls
