@@ -1436,14 +1436,6 @@ export default function ThreeBattleCanvas({
                       : 0xef4444
             );
             const isProne = Boolean(u.conditions?.Prone || u.conditions?.Unconscious || isKo);
-            if (isProne) {
-              const pdx = u.proneDir?.dx ?? (u.facingTarget ? Math.sign(u.facingTarget.x - u.x) : u.side === "hero" ? -1 : 1);
-              const pdy = u.proneDir?.dy ?? (u.facingTarget ? Math.sign(u.facingTarget.y - u.y) : 0);
-              const fallYaw = Math.atan2(pdx, pdy);
-              vis.card.rotation.set(-Math.PI / 2.25, 0, fallYaw * 0.45);
-            } else {
-              vis.card.rotation.set(0, 0, 0);
-            }
 
             // Persistent 3D Aura & Status Ring (Paladin Aura, Bard Song, Rage, Shielded, Blessed, Poisoned)
             const auraColor =
@@ -1461,14 +1453,14 @@ export default function ThreeBattleCanvas({
                           : null
                 : null;
             if (auraColor !== null) {
-              const isBigAura = Boolean(u.isPaladin || u.activeSong);
+              const isPalOrBard = Boolean(u.isPaladin || (u.isBard && u.activeSong));
               if (!vis.auraRing) {
-                const aGeo = new THREE.RingGeometry(isBigAura ? 0.52 : 0.44, isBigAura ? 0.68 : 0.56, 28);
+                const aGeo = new THREE.RingGeometry(0.45, 0.58, 28);
                 const aMat = new THREE.MeshBasicMaterial({
                   color: auraColor,
                   side: THREE.DoubleSide,
                   transparent: true,
-                  opacity: 0.48,
+                  opacity: 0.52,
                 });
                 vis.auraRing = new THREE.Mesh(aGeo, aMat);
                 vis.auraRing.rotation.x = -Math.PI / 2;
@@ -1480,8 +1472,32 @@ export default function ThreeBattleCanvas({
               const pulse = 1 + Math.sin(nowSec * 3.8 + u.x) * 0.09;
               vis.auraRing.scale.set(pulse, pulse, 1);
               vis.auraRing.material.opacity = 0.36 + 0.22 * (0.5 + 0.5 * Math.sin(nowSec * 4.5));
-            } else if (vis.auraRing) {
-              vis.auraRing.visible = false;
+
+              // Wide tactical aura boundary ring for Paladin (2 cells) and Bard Song (3 cells)
+              if (isPalOrBard) {
+                const auraRadius = u.isBard && u.activeSong ? 3.15 : 2.18;
+                if (!vis.wideAuraRing) {
+                  const wGeo = new THREE.RingGeometry(auraRadius - 0.1, auraRadius, 48);
+                  const wMat = new THREE.MeshBasicMaterial({
+                    color: auraColor,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.24,
+                  });
+                  vis.wideAuraRing = new THREE.Mesh(wGeo, wMat);
+                  vis.wideAuraRing.rotation.x = -Math.PI / 2;
+                  vis.wideAuraRing.position.y = 0.03;
+                  vis.grp.add(vis.wideAuraRing);
+                }
+                vis.wideAuraRing.visible = true;
+                vis.wideAuraRing.material.color.setHex(auraColor);
+                vis.wideAuraRing.material.opacity = 0.18 + 0.1 * (0.5 + 0.5 * Math.sin(nowSec * 3.0));
+              } else if (vis.wideAuraRing) {
+                vis.wideAuraRing.visible = false;
+              }
+            } else {
+              if (vis.auraRing) vis.auraRing.visible = false;
+              if (vis.wideAuraRing) vis.wideAuraRing.visible = false;
             }
 
             const isDarkMap = ["underground", "night", "horror"].includes(curBattle.map?.lighting);
@@ -1580,7 +1596,18 @@ export default function ThreeBattleCanvas({
               if (cardMat && cardMat.color) cardMat.color.setHex(0xffffff);
             }
 
-            if (!isKo) {
+            if (isProne) {
+              // Billboard toward camera first so 360-deg orbit NEVER hides or edge-clips fallen units,
+              // then tilt down & lean along directional knockdown vector above floor height.
+              vis.card.lookAt(camera.position.x, vis.grp.position.y + 0.26, camera.position.z);
+              const pdx = u.proneDir?.dx ?? (u.facingTarget ? Math.sign(u.facingTarget.x - u.x) : u.side === "hero" ? -1 : 1);
+              const pdy = u.proneDir?.dy ?? (u.facingTarget ? Math.sign(u.facingTarget.y - u.y) : 0);
+              const camRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+              const sideLean = pdx * camRight.x + pdy * camRight.z;
+              vis.card.rotateX(-Math.PI / 2.75);
+              vis.card.rotateZ(-sideLean * 0.55);
+              vis.card.position.y = 0.24;
+            } else {
               const flyOffset = u.flies ? 0.46 + Math.sin(nowSec * 3.8 + u.x) * 0.08 : Math.sin(nowSec * 3.2 + u.x) * 0.03;
               vis.card.lookAt(camera.position.x, vis.grp.position.y + vis.standeeH * 0.48 + (u.flies ? 0.46 : 0), camera.position.z);
               vis.card.position.y = vis.standeeH * 0.48 + flyOffset;
