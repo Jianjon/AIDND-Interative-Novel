@@ -1,4 +1,5 @@
 import { M as MONSTER_DB, P as PRESET_HEROES } from "../artifactDeps.js";
+import { findCreatureToken } from "./creatureTokensCatalog.js";
 import { computeGearBonuses, generateBattleLootDrops } from "./equipmentCatalog.js";
 
 const VALID_LIGHTINGS = new Set(["daylight", "dusk", "night", "underground", "horror"]);
@@ -108,10 +109,11 @@ function matchMonsterTemplateId(foe) {
   if (/zombie|殭屍|喪屍/.test(txt)) return "zombie";
   if (/wolf|狼/.test(txt)) return "wolf";
   if (/spider|蜘蛛/.test(txt)) return "giant_spider";
-  if (/cultist|教徒|邪教/.test(txt)) return "cultist";
-  if (/mage|wizard|法師|術士/.test(txt)) return "cult_fanatic";
-  if (/bandit|thug|盜賊|強盜|土匪/.test(txt)) return "bandit";
-  return "goblin";
+  if (/cultist|異教徒|教徒|邪教|狂熱者/.test(txt)) return "cultist";
+  if (/mage|wizard|sorcerer|warlock|法師|術士|巫師/.test(txt)) return "cult_fanatic";
+  if (/bandit|thug|pirate|sailor|mercenary|assassin|guard|knight|盜賊|強盜|土匪|海盜|水手|傭兵|刺客|騎士|衛兵|守衛/.test(txt)) return "bandit";
+  if (/ghost|wraith|specter|lich|幽靈|怨靈|巫妖/.test(txt)) return "ghost";
+  return "bandit";
 }
 
 function matchHeroPreset(hero, idx) {
@@ -376,14 +378,20 @@ export function mapStorySessionTo3DConfig(session) {
       (c.hp === undefined || c.hp > 0)
   );
   let foeIds = activeFoes.length > 0 ? activeFoes.slice(0, 6).map((f) => matchMonsterTemplateId(f)) : null;
-  let foeSpecs = activeFoes.slice(0, 6).map((f) => ({
-    storyCastId: f.id,
-    catalogId: f.catalogId || f.templateId || undefined,
-    name: f.name,
-    hp: Number.isFinite(f.hp) ? f.hp : undefined,
-    maxHp: Number.isFinite(f.maxHp) ? f.maxHp : undefined,
-    avatar: f.image || f.avatar || f.spriteHint || undefined,
-  }));
+  let foeSpecs = activeFoes.slice(0, 6).map((f) => {
+    const inferredToken =
+      !f.image && !f.avatar && !f.spriteHint
+        ? findCreatureToken({ query: f.name })
+        : null;
+    return {
+      storyCastId: f.id,
+      catalogId: f.catalogId || f.templateId || inferredToken?.id || undefined,
+      name: f.name,
+      hp: Number.isFinite(f.hp) ? f.hp : undefined,
+      maxHp: Number.isFinite(f.maxHp) ? f.maxHp : undefined,
+      avatar: f.image || f.avatar || f.spriteHint || inferredToken?.image || undefined,
+    };
+  });
   if (foeIds === null && Array.isArray(session?.node?.foes) && session.node.foes.length > 0) {
     const expandedFoes = [];
     for (const entry of session.node.foes) {

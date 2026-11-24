@@ -15,7 +15,7 @@ import { CONDITIONS } from "../data/rules/conditions.js";
 import { getLootGuidelines } from "../data/rules/loot_tables.js";
 import { rollChestLootD100 } from "./equipmentCatalog.js";
 import { pickCombatBark } from "./combatBarkLines.js";
-import { CREATURE_TOKENS_CATALOG } from "./creatureTokensCatalog.js";
+import { CREATURE_TOKENS_CATALOG, findCreatureToken } from "./creatureTokensCatalog.js";
 import { TOKEN_FACING_MAP } from "./tokenFacingMap.js";
 import {
   MAP_COLS,
@@ -222,15 +222,43 @@ function pickLegacyHumanoidAvatar(poolKey, seedStr = "") {
   return pool[h % pool.length];
 }
 
+function inferTokenCategory(txt = "") {
+  const t = String(txt || "").toLowerCase();
+  if (/異怪|眼魔|奪心魔|觸手怪|克蘇魯|腦魔|史萊姆|寶箱怪|aberration|beholder|illithid/.test(t)) return "異怪";
+  if (/魚人|人魚|沙華魚|娜迦|海蛇|巨鯊|章魚|海怪|sahuagin|kuotoa|mermaid|kraken/.test(t)) return "水生";
+  if (/龍|飛龍|wyvern|dragon|drake/.test(t)) return "龍";
+  if (/蜘蛛|蜈蚣|蠍|甲蟲|毒蜂|螳螂|spider|scorpion|beetle|centipede/.test(t)) return "昆蟲";
+  if (/哥布林|地精|熊地精|大地精|goblin|bugbear|hobgoblin/.test(t)) return "哥布林";
+  if (/半獸人|獸人|orc/.test(t)) return "獸人";
+  if (/矮人|侏儒|杜爾加|dwarf|gnome|duergar/.test(t)) return "矮人";
+  if (/精靈|卓爾|樹精|花仙|elf|drow|fey|dryad/.test(t)) return "精靈";
+  if (/骷髏|殭屍|幽靈|怨靈|巫妖|吸血鬼|木乃伊|食屍鬼|屍妖|死亡騎士|skeleton|zombie|ghost|lich|vampire|mummy|wight|wraith/.test(t)) return "不死";
+  if (/魔像|發條|機甲|構裝|golem|clockwork|automaton|mech/.test(t)) return "構裝";
+  if (/食人魔|巨魔|巨人|惡魔|魔鬼|石像鬼|女妖|梅杜莎|半人馬|雪人|獨眼|梟熊|移位獸|豺狼人|狼人|蛇人|ogre|troll|giant|demon|devil|gargoyle|harpy|medusa|centaur|yeti|cyclops|owlbear|gnoll/.test(t)) return "怪物";
+  if (/異教徒|教徒|邪教|祭司|巫師|術士|法師|強盜|盜賊|海盜|水手|刺客|騎士|衛兵|士兵|守衛|傭兵|戰士|弓手|弩手|農夫|學者|貴族|蠻族|武僧|獵人|cultist|bandit|guard|knight|mage|pirate|assassin/.test(t)) return "人";
+  return "";
+}
+
 export function resolveMonsterSprite(monsterId, nameHint = "") {
   if (CREATURE_SPRITE_MAP[monsterId]) return CREATURE_SPRITE_MAP[monsterId];
   const idLower = String(monsterId || "").toLowerCase();
   if (TOKEN_BY_ID.has(idLower)) return TOKEN_BY_ID.get(idLower);
   const cleanName = String(nameHint || "").replace(/\s*#\d+.*$/, "").trim();
   if (cleanName && TOKEN_BY_NAME.has(cleanName)) return TOKEN_BY_NAME.get(cleanName);
+  const wantCat = inferTokenCategory(`${monsterId || ""} ${cleanName}`);
   if (cleanName) {
+    // Prefer same-category match first so e.g. "異教徒" (人) never pulls an "異怪" (aberration)
+    const catMatched = wantCat
+      ? findCreatureToken({ query: cleanName, category: wantCat })
+      : null;
+    if (catMatched && (!wantCat || catMatched.category === wantCat)) {
+      return catMatched.image;
+    }
     const partial = CREATURE_TOKENS_CATALOG.find(
-      (tk) => tk.name && (cleanName.includes(tk.name) || tk.name.includes(cleanName))
+      (tk) =>
+        tk.name &&
+        (!wantCat || tk.category === wantCat) &&
+        (cleanName.includes(tk.name) || tk.name.includes(cleanName))
     );
     if (partial) return partial.image;
   }
