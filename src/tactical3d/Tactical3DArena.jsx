@@ -361,6 +361,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
   const [dockTab, setDockTab] = useState("weapons");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
+  const [drawerTab, setDrawerTab] = useState("main");
   const [activeScreenPos, setActiveScreenPos] = useState(null);
   const [upcastSlot, setUpcastSlot] = useState(null);
   const [useSmite, setUseSmite] = useState(false);
@@ -584,6 +585,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
     (pt) => {
       if (!battle || battle.ended || !activeUnit || activeUnit.side !== "hero" || activeUnit.turn?.autoSkip) return;
       if (pt && (pt.unitId === activeUnit.id || (pt.x === activeUnit.x && pt.y === activeUnit.y))) {
+        setDrawerTab("main");
         setSideDrawerOpen((v) => !v);
         setPaletteOpen(false);
       }
@@ -1735,12 +1737,16 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
                   Math.max(Math.abs(activeUnit.x - p.x), Math.abs(activeUnit.y - p.y)) <= 1
               )
               .slice(0, 2);
-            const quickAb = (activeUnit.abilities || []).find((ab) => ab.usesLeft > 0);
+            const allAbilities = [
+              ...(activeUnit.signatureAbilities || []),
+              ...(activeUnit.abilities || []),
+            ].filter((ab, idx, arr) => ab && arr.findIndex((x) => x.id === ab.id) === idx);
+            const castableSpells = (activeUnit.spells || []).filter((sp) => sp.actionCost !== "reaction");
 
             return (
               <aside
                 className={`tac3d-side-drawer${placeLeft ? " is-left" : " is-right"}`}
-                style={{ left: `${leftPx}px`, top: `${topPx}px` }}
+                style={{ left: `${leftPx}px`, top: `${topPx}px`, maxHeight: "290px", display: "flex", flexDirection: "column" }}
                 aria-label={`${activeUnit.name} 快捷選單`}
               >
                 <div className="tac3d-drawer-head">
@@ -1761,72 +1767,193 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
                   </button>
                 </div>
 
-                <div className="tac3d-drawer-body">
-                  {(activeUnit.weapons || []).slice(0, 2).map((wpn) => (
-                    <button
-                      key={wpn.id}
-                      type="button"
-                      disabled={(activeUnit.turn?.actionLeft || 0) <= 0 && (activeUnit.turn?.attacksLeft || 0) <= 0}
-                      className={`tac3d-btn${actionMode.kind === "weapon" && actionMode.weaponId === wpn.id ? " is-on" : ""}`}
-                      onClick={() => {
-                        setActionMode({ kind: "weapon", weaponId: wpn.id, asBonus: false });
-                        setSideDrawerOpen(false);
-                      }}
-                    >
-                      {wpn.isRanged ? "🏹" : wpn.isShieldBash ? "🛡️" : "⚔️"} {wpn.name}
-                    </button>
-                  ))}
-                  {quickAb && (
-                    <button
-                      type="button"
-                      disabled={
-                        quickAb.actionType === "bonus"
-                          ? (activeUnit.turn?.bonusLeft || 0) <= 0
-                          : (activeUnit.turn?.actionLeft || 0) <= 0
-                      }
-                      className="tac3d-btn is-quick"
-                      onClick={() => {
-                        runQuickAction((b, u) => executeClassAbility(b, u.id, quickAb.id));
-                        setSideDrawerOpen(false);
-                      }}
-                    >
-                      {quickAb.actionType === "bonus" ? "🟠" : "⚡"} {quickAb.name}
-                    </button>
+                <div className="tac3d-drawer-body" style={{ overflowY: "auto", maxHeight: "200px" }}>
+                  {drawerTab === "main" && (
+                    <>
+                      {(activeUnit.weapons || []).slice(0, 3).map((wpn) => (
+                        <button
+                          key={wpn.id}
+                          type="button"
+                          disabled={(activeUnit.turn?.actionLeft || 0) <= 0 && (activeUnit.turn?.attacksLeft || 0) <= 0}
+                          className={`tac3d-btn${actionMode.kind === "weapon" && actionMode.weaponId === wpn.id ? " is-on" : ""}`}
+                          onClick={() => {
+                            setActionMode({ kind: "weapon", weaponId: wpn.id, asBonus: false });
+                            setSideDrawerOpen(false);
+                          }}
+                        >
+                          {wpn.isRanged ? "🏹" : wpn.isShieldBash ? "🛡️" : "⚔️"} {wpn.name}
+                        </button>
+                      ))}
+                      {castableSpells.length > 0 && (
+                        <button
+                          type="button"
+                          className="tac3d-btn"
+                          style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                          onClick={() => setDrawerTab("spell")}
+                        >
+                          <span>✨ 魔法與戲法 ({castableSpells.length})</span>
+                          <span>›</span>
+                        </button>
+                      )}
+                      {allAbilities.length > 0 && (
+                        <button
+                          type="button"
+                          className="tac3d-btn is-quick"
+                          style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                          onClick={() => setDrawerTab("ability")}
+                        >
+                          <span>🌟 特殊與職業技 ({allAbilities.length})</span>
+                          <span>›</span>
+                        </button>
+                      )}
+                      {adjObjs.map((obj) => (
+                        <button
+                          key={obj.id}
+                          type="button"
+                          className="tac3d-btn is-primary"
+                          onClick={() => {
+                            runQuickAction((b, u) => executePropInteract(b, u.id, obj.id));
+                            setSideDrawerOpen(false);
+                          }}
+                        >
+                          {obj.interactable ? "🔍" : "🖐"} {obj.actionLabel || "利用"}：{obj.name}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        className="tac3d-btn"
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                        onClick={() => setDrawerTab("util")}
+                      >
+                        <span>🛡️ 防禦／道具／喊話</span>
+                        <span>›</span>
+                      </button>
+                    </>
                   )}
-                  {adjObjs.map((obj) => (
-                    <button
-                      key={obj.id}
-                      type="button"
-                      className="tac3d-btn is-primary"
-                      onClick={() => {
-                        runQuickAction((b, u) => executePropInteract(b, u.id, obj.id));
-                        setSideDrawerOpen(false);
-                      }}
-                    >
-                      {obj.interactable ? "🔍" : "🖐"} {obj.actionLabel || "利用"}：{obj.name}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
-                    className="tac3d-btn"
-                    onClick={() => {
-                      runQuickAction((b, u) => executeStandardAction(b, u.id, "dodge"));
-                      setSideDrawerOpen(false);
-                    }}
-                  >
-                    🛡️ 閃避 (被攻劣勢)
-                  </button>
-                  <button
-                    type="button"
-                    className="tac3d-btn"
-                    onClick={() => {
-                      setShoutOpen(true);
-                      setSideDrawerOpen(false);
-                    }}
-                  >
-                    💬 喊話 / 創意行動
-                  </button>
+
+                  {drawerTab === "spell" && (
+                    <>
+                      <button
+                        type="button"
+                        className="tac3d-btn"
+                        style={{ fontSize: 11, opacity: 0.85 }}
+                        onClick={() => setDrawerTab("main")}
+                      >
+                        ‹ 返回主選單
+                      </button>
+                      {castableSpells.map((sp) => {
+                        const isBonusSp = sp.actionCost === "bonus";
+                        const noAct = isBonusSp ? (activeUnit.turn?.bonusLeft || 0) <= 0 : (activeUnit.turn?.actionLeft || 0) <= 0;
+                        const noSlot =
+                          sp.level > 0 &&
+                          !Object.entries(activeUnit.slots || {}).some(([lv, cnt]) => Number(lv) >= sp.level && cnt > 0);
+                        return (
+                          <button
+                            key={sp.key}
+                            type="button"
+                            disabled={noAct || noSlot}
+                            className={`tac3d-btn${actionMode.kind === "spell" && actionMode.spellKey === sp.key ? " is-on" : ""}`}
+                            title={sp.effect}
+                            onClick={() => {
+                              setUpcastSlot(sp.level || 0);
+                              setActionMode({ kind: "spell", spellKey: sp.key });
+                              setSideDrawerOpen(false);
+                            }}
+                          >
+                            {isBonusSp ? "🟠" : "🟢"} {sp.name} ({sp.level ? `${sp.level}環` : "戲法"})
+                          </button>
+                        );
+                      })}
+                    </>
+                  )}
+
+                  {drawerTab === "ability" && (
+                    <>
+                      <button
+                        type="button"
+                        className="tac3d-btn"
+                        style={{ fontSize: 11, opacity: 0.85 }}
+                        onClick={() => setDrawerTab("main")}
+                      >
+                        ‹ 返回主選單
+                      </button>
+                      {allAbilities.map((ab) => {
+                        const isBonus = ab.actionCost === "bonus_action" || ab.actionType === "bonus";
+                        const noAct = isBonus ? (activeUnit.turn?.bonusLeft || 0) <= 0 : (activeUnit.turn?.actionLeft || 0) <= 0;
+                        return (
+                          <button
+                            key={ab.id}
+                            type="button"
+                            disabled={noAct || (ab.usesLeft !== undefined && ab.usesLeft <= 0)}
+                            className="tac3d-btn is-quick"
+                            title={ab.desc}
+                            onClick={() => {
+                              runQuickAction((b, u) => executeClassAbility(b, u.id, ab.id));
+                              setSideDrawerOpen(false);
+                            }}
+                          >
+                            {isBonus ? "🟠" : "⚡"} {ab.name}
+                          </button>
+                        );
+                      })}
+                    </>
+                  )}
+
+                  {drawerTab === "util" && (
+                    <>
+                      <button
+                        type="button"
+                        className="tac3d-btn"
+                        style={{ fontSize: 11, opacity: 0.85 }}
+                        onClick={() => setDrawerTab("main")}
+                      >
+                        ‹ 返回主選單
+                      </button>
+                      <button
+                        type="button"
+                        disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
+                        className="tac3d-btn"
+                        onClick={() => {
+                          runQuickAction((b, u) => executeStandardAction(b, u.id, "dodge"));
+                          setSideDrawerOpen(false);
+                        }}
+                      >
+                        🛡️ 閃避 (被攻劣勢)
+                      </button>
+                      <button
+                        type="button"
+                        disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
+                        className="tac3d-btn"
+                        onClick={() => {
+                          runQuickAction((b, u) => executeStandardAction(b, u.id, "dash"));
+                          setSideDrawerOpen(false);
+                        }}
+                      >
+                        💨 疾走 (+移動力)
+                      </button>
+                      <button
+                        type="button"
+                        disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
+                        className="tac3d-btn"
+                        onClick={() => {
+                          runQuickAction((b, u) => executeStandardAction(b, u.id, "disengage"));
+                          setSideDrawerOpen(false);
+                        }}
+                      >
+                        🏃 撤離 (免借機)
+                      </button>
+                      <button
+                        type="button"
+                        className="tac3d-btn"
+                        onClick={() => {
+                          setShoutOpen(true);
+                          setSideDrawerOpen(false);
+                        }}
+                      >
+                        💬 喊話 / 創意行動
+                      </button>
+                    </>
+                  )}
                 </div>
 
                 <div className="tac3d-drawer-foot">
