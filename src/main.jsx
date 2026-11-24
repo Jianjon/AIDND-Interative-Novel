@@ -152,7 +152,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                         </div>
                     }
                 >
-                    {showArtifact ? <ArtifactGame /> : <App />}
                     {showTactics3d ? (
                         <Tactical3DArena onExit={exitStandaloneTactics} />
                     ) : showArtifact ? (
