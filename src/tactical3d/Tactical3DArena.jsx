@@ -547,7 +547,7 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
       setCopiedJson(false);
       setRecenterToken((t) => t + 1);
 
-      if (typeof sampler === "function") {
+      if (typeof sampler === "function" && !storyContext?.presetScript) {
         adjudicateBattleScriptWithAI(sampler, { storyContext, battle: created }).then((aiScript) => {
           if (!aiScript) return;
           setBattle((prev) => {

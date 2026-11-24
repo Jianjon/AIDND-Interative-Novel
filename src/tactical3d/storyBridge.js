@@ -234,12 +234,14 @@ export async function adjudicateMapBlueprintWithAI(sampler, session) {
 
 export function mapStorySessionTo3DConfig(session) {
   if (!session) return null;
-  const scenarioId = inferScenarioIdFromSession(session);
-  const rawLighting = session?.sceneMood?.lighting;
+  const tac = session?.node?.tactical || null;
+  const scenarioId = tac?.scenarioId || inferScenarioIdFromSession(session);
+  const rawLighting = tac?.lighting || session?.sceneMood?.lighting;
   const lighting = VALID_LIGHTINGS.has(rawLighting) ? rawLighting : "auto";
-  const weather = inferWeatherFromAmbient(session?.sceneMood?.ambient);
+  const weather = tac?.weather || inferWeatherFromAmbient(session?.sceneMood?.ambient);
+  const ambushMode = ["normal", "hero_surprise", "foe_surprise"].includes(tac?.ambushMode) ? tac.ambushMode : "normal";
   const partyLevel = Math.max(1, Math.min(5, Number(session?.level) || 3));
-  const blueprint = extractBlueprintFromText(
+  const textBlueprint = extractBlueprintFromText(
     [
       session?.place?.name,
       session?.node?.title,
@@ -249,6 +251,18 @@ export function mapStorySessionTo3DConfig(session) {
       .filter(Boolean)
       .join(" ")
   );
+  const blueprint =
+    tac || textBlueprint
+      ? {
+          layout: tac?.layout || textBlueprint?.layout || "auto",
+          features: Array.isArray(tac?.features) ? tac.features : textBlueprint?.features || [],
+          heroFormation: VALID_HERO_FORMATIONS.has(tac?.heroFormation) ? tac.heroFormation : textBlueprint?.heroFormation || "auto",
+          foeFormation: VALID_FOE_FORMATIONS.has(tac?.foeFormation) ? tac.foeFormation : textBlueprint?.foeFormation || "auto",
+          foeWaves: typeof tac?.foeWaves === "boolean" ? tac.foeWaves : Boolean(textBlueprint?.foeWaves),
+          objectiveName: tac?.objectiveName || textBlueprint?.objectiveName || undefined,
+          interactables: Array.isArray(tac?.interactables) ? tac.interactables : undefined,
+        }
+      : null;
 
   const livingHeroes = (session?.heroes || []).filter((h) => h && !h.dead);
   const partyPresets = livingHeroes.slice(0, 5).map((h, idx) => matchHeroPreset(h, idx));
@@ -261,8 +275,8 @@ export function mapStorySessionTo3DConfig(session) {
       !["倒下", "投降", "逃走", "離開"].includes(c.status) &&
       (c.hp === undefined || c.hp > 0)
   );
-  const foeIds = activeFoes.length > 0 ? activeFoes.slice(0, 6).map((f) => matchMonsterTemplateId(f)) : null;
-  const foeSpecs = activeFoes.slice(0, 6).map((f) => ({
+  let foeIds = activeFoes.length > 0 ? activeFoes.slice(0, 6).map((f) => matchMonsterTemplateId(f)) : null;
+  let foeSpecs = activeFoes.slice(0, 6).map((f) => ({
     storyCastId: f.id,
     catalogId: f.catalogId || f.templateId || undefined,
     name: f.name,
@@ -270,6 +284,20 @@ export function mapStorySessionTo3DConfig(session) {
     maxHp: Number.isFinite(f.maxHp) ? f.maxHp : undefined,
     avatar: f.image || f.avatar || f.spriteHint || undefined,
   }));
+  if (Array.isArray(tac?.namedFoes) && tac.namedFoes.length > 0) {
+    const existingNames = new Set(foeSpecs.map((f) => f.name));
+    const extraNamed = tac.namedFoes.filter((nf) => nf?.name && !existingNames.has(nf.name));
+    if (extraNamed.length > 0) {
+      const extraIds = extraNamed.map((nf) => nf.template || "cult_fanatic");
+      const extraSpecs = extraNamed.map((nf) => ({
+        catalogId: nf.template || "cult_fanatic",
+        name: nf.name,
+        isBoss: Boolean(nf.isBoss),
+      }));
+      foeIds = foeIds ? [...extraIds, ...foeIds].slice(0, 6) : extraIds;
+      foeSpecs = [...extraSpecs, ...foeSpecs].slice(0, 6);
+    }
+  }
 
   const situationTxt = `${session?.node?.title || ""} ${session?.node?.situation || ""}`;
   const activeAllies = (session?.cast || []).filter((c) => {
@@ -299,16 +327,30 @@ export function mapStorySessionTo3DConfig(session) {
     };
   });
 
+  const mergedAllies =
+    allySpecs.length > 0
+      ? allySpecs
+      : Array.isArray(tac?.allies)
+        ? tac.allies.slice(0, 2).map((a) => ({
+            name: a.name,
+            className: a.className || (a.role === "vip" ? "被保護人" : "友軍護衛"),
+            allyRole: a.role === "vip" ? "vip" : "combat",
+            ranged: Boolean(a.ranged),
+          }))
+        : null;
+
   return {
     scenarioId,
     weather,
     lighting,
+    ambushMode,
     partyLevel,
     partyPresets: partyPresets.length > 0 ? partyPresets : null,
     foeIds,
     foeSpecs,
-    allySpecs: allySpecs.length > 0 ? allySpecs : null,
+    allySpecs: mergedAllies,
     blueprint,
+    presetScript: tac?.script || null,
     seed: ((Number(session?.turn) || 1) * 37 + 101) % 9999,
     placeName: session?.place?.name || session?.map || "當前劇情場景",
     storySummary: {
@@ -423,7 +465,7 @@ export function buildFallbackBattleScript({ storyContext = null, battle = null }
   const objName = storyContext?.blueprint?.objectiveName || objProp?.name || "戰場關鍵目標";
   const placeName = storyContext?.placeName || battle?.map?.name || "戰場";
 
-  return {
+  const base = {
     missionGoal: objProp
       ? `擊退敵軍並處理【${objName}】`
       : `制伏【${placeName}】的敵方勢力`,
@@ -487,10 +529,45 @@ export function buildFallbackBattleScript({ storyContext = null, battle = null }
       ],
     },
   };
+  const preset = storyContext?.presetScript;
+  if (!preset) return base;
+  return {
+    missionGoal: preset.missionGoal || base.missionGoal,
+    opening: Array.isArray(preset.opening) && preset.opening.length > 0 ? preset.opening : base.opening,
+    triggers: {
+      foeHalfHp: preset.triggers?.foeHalfHp || base.triggers.foeHalfHp,
+      heroDown: preset.triggers?.heroDown || base.triggers.heroDown,
+      waveArrive: preset.triggers?.waveArrive || base.triggers.waveArrive,
+    },
+    propLine: preset.propLine || base.propLine,
+    ending: {
+      victory: Array.isArray(preset.ending?.victory) && preset.ending.victory.length > 0 ? preset.ending.victory : base.ending.victory,
+      retreat: Array.isArray(preset.ending?.retreat) && preset.ending.retreat.length > 0 ? preset.ending.retreat : base.ending.retreat,
+      defeat: Array.isArray(preset.ending?.defeat) && preset.ending.defeat.length > 0 ? preset.ending.defeat : base.ending.defeat,
+    },
+  };
 }
 
 export async function adjudicateBattleScriptWithAI(sampler, { storyContext = null, battle = null } = {}) {
   const fallback = buildFallbackBattleScript({ storyContext, battle });
+  const preset = storyContext?.presetScript;
+  if (preset) {
+    return {
+      missionGoal: preset.missionGoal || fallback.missionGoal,
+      opening: Array.isArray(preset.opening) && preset.opening.length > 0 ? preset.opening : fallback.opening,
+      triggers: {
+        foeHalfHp: preset.triggers?.foeHalfHp || fallback.triggers.foeHalfHp,
+        heroDown: preset.triggers?.heroDown || fallback.triggers.heroDown,
+        waveArrive: preset.triggers?.waveArrive || fallback.triggers.waveArrive,
+      },
+      propLine: preset.propLine || fallback.propLine,
+      ending: {
+        victory: Array.isArray(preset.ending?.victory) && preset.ending.victory.length > 0 ? preset.ending.victory : fallback.ending.victory,
+        retreat: Array.isArray(preset.ending?.retreat) && preset.ending.retreat.length > 0 ? preset.ending.retreat : fallback.ending.retreat,
+        defeat: Array.isArray(preset.ending?.defeat) && preset.ending.defeat.length > 0 ? preset.ending.defeat : fallback.ending.defeat,
+      },
+    };
+  }
   if (typeof sampler !== "function") return fallback;
 
   const heroList = (battle?.units || [])

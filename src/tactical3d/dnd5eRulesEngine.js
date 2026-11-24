@@ -1543,6 +1543,57 @@ export function createBattleState({
 } = {}) {
   const map = generateVoxelMap(scenarioId, seed, partyLevel, { weather, lighting, blueprint });
   map.drops = [];
+  if (Array.isArray(blueprint?.interactables) && blueprint.interactables.length > 0) {
+    const usedPropCoords = new Set((map.props || []).map((p) => `${p.x},${p.y}`));
+    const spawnCoords = new Set([...(map.heroSpawns || []), ...(map.foeSpawns || [])].map((s) => `${s.x},${s.y}`));
+    blueprint.interactables.slice(0, 3).forEach((item, idx) => {
+      if (!item?.name) return;
+      const existing = (map.props || []).find((p) => p.interactable && !p.completed && (p.kind === item.kind || idx === 0));
+      if (existing) {
+        existing.name = item.name;
+        if (Number.isFinite(item.dc)) existing.dc = item.dc;
+        if (item.rewardEffect) existing.rewardEffect = item.rewardEffect;
+        if (item.rewardDesc) existing.rewardDesc = item.rewardDesc;
+        existing.isObjective = true;
+        return;
+      }
+      const cx = Math.floor(MAP_COLS / 2) + (idx - 1) * 2;
+      const cy = Math.floor(MAP_ROWS / 2) + (idx % 2 === 0 ? 0 : 1);
+      for (let r = 0; r <= 4; r++) {
+        for (let dy = -r; dy <= r; dy++) {
+          for (let dx = -r; dx <= r; dx++) {
+            const px = cx + dx;
+            const py = cy + dy;
+            const tile = map.grid?.[py]?.[px];
+            const k = `${px},${py}`;
+            if (tile && tile.walkable && !usedPropCoords.has(k) && !spawnCoords.has(k)) {
+              usedPropCoords.add(k);
+              map.props.push({
+                id: `story_prop_${idx}_${px}_${py}`,
+                kind: item.kind || "crystal",
+                name: item.name,
+                x: px,
+                y: py,
+                h: tile.h || 0.5,
+                walkable: false,
+                blocksSight: false,
+                cover: "half",
+                hp: 15,
+                maxHp: 15,
+                broken: false,
+                interactable: true,
+                isObjective: true,
+                dc: Number.isFinite(item.dc) ? item.dc : 12,
+                rewardEffect: item.rewardEffect || "inspire_party",
+                rewardDesc: item.rewardDesc || "戰術目標達成！",
+              });
+              return;
+            }
+          }
+        }
+      }
+    });
+  }
   const chosenPresets =
     Array.isArray(partyPresets) && partyPresets.length > 0
       ? partyPresets
