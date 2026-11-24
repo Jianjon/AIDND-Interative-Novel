@@ -302,7 +302,16 @@ export function resolveMonsterSprite(monsterId, nameHint = "", opts = {}) {
   if (/wolf|worg/.test(idLower)) return "/prototype-assets/lego-creatures-v1/wolf_guard.png";
   if (/spider/.test(idLower)) return "/prototype-assets/lego-creatures-v1/cellar_spider_queen.png";
   if (/dwarf|smith|glowkindle/.test(idLower) || /矮人|鍛造|鐵匠|格羅金恩/.test(cleanName)) return "/prototype-assets/lego-creatures-v1/dwarven_hammer_smith.png";
-  if (/npc|vip|merchant|noble|villager|citizen|bard|ally|tavern|innkeeper|bartender|alchemist/.test(idLower) || /商|領袖|平民|貴族|護衛|友軍|酒館|老闆|旅店|掌櫃|酒保|煉金/.test(cleanName)) return pickLegacyHumanoidAvatar("npc", idLower + cleanName);
+  if (/innkeeper|bartender|tavern/.test(idLower) || /酒館|老闆|旅店|掌櫃|酒保/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_innkeeper.png";
+  if (/herbalist/.test(idLower) || /草藥|採藥|藥師/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_herbalist.png";
+  if (/miner/.test(idLower) || /礦工/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_dwarf_miner.png";
+  if (/carpenter|artisan|craftsman/.test(idLower) || /木匠|工匠|船匠/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_carpenter.png";
+  if (/tailor/.test(idLower) || /裁縫|布商/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_tailor.png";
+  if (/scribe|apprentice/.test(idLower) || /抄寫|書記|學徒|文官/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_scribe.png";
+  if (/jester|bard/.test(idLower) || /吟遊|樂師|詩人|小丑/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_jester.png";
+  if (/noblewoman|lady|madam/.test(idLower) || /貴族|夫人|仕女|侍女/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_noblewoman.png";
+  if (/sage|scholar/.test(idLower) || /賢者|學者|長老/.test(cleanName)) return "/prototype-assets/lego-module-tokens-v1/module_elf_sage.png";
+  if (/npc|vip|merchant|noble|villager|citizen|ally|alchemist/.test(idLower) || /商|領袖|平民|護衛|友軍|煉金|市民|旅人|水手|侍從/.test(cleanName)) return pickLegacyHumanoidAvatar("npc", idLower + cleanName);
   return opts.fallback !== undefined ? opts.fallback : "/prototype-assets/lego-creatures-v1/goblin_sword_grunt.png";
 }
 

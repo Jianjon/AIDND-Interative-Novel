@@ -877,40 +877,40 @@ export async function adjudicateTacticalShoutWithAI(sampler, battle, actor, play
 
 const AMBIENT_NPCS_BY_SCENARIO = {
   tavern_brawl: [
-    { name: "矮人酒客", role: "常客", avatar: "/prototype-assets/lego-creatures-v1/dwarf_thane.png", line: "這杯麥酒今天喝起來有點辣喉嚨……" },
-    { name: "流浪吟遊詩人", role: "樂師", avatar: "/prototype-assets/lego-creatures-v1/villager_merchant.png", line: "等你們解決麻煩，我免費替你們編首英雄詩！" },
-    { name: "微醺旅人", role: "商旅", avatar: "/prototype-assets/lego-creatures-v1/town_commoner_boy.png", line: "剛剛地板底下好像有什麼東西在晃動……" },
+    { name: "矮人酒客", role: "常客", avatar: "/prototype-assets/lego-module-tokens-v1/module_dwarf_miner.png", line: "這杯麥酒今天喝起來有點辣喉嚨……" },
+    { name: "流浪吟遊詩人", role: "樂師", avatar: "/prototype-assets/lego-module-tokens-v1/module_jester.png", line: "等你們解決麻煩，我免費替你們編首英雄詩！" },
+    { name: "微醺旅人", role: "商旅", avatar: "/prototype-assets/lego-module-tokens-v1/module_young_scribe.png", line: "剛剛地板底下好像有什麼東西在晃動……" },
   ],
   ship_deck: [
-    { name: "甲板水手", role: "船員", avatar: "/prototype-assets/lego-creatures-v1/pirate_duelist.png", line: "繩索都固定好了，隨時可以拉帆或放下跳板！" },
-    { name: "老練舵手", role: "舵手", avatar: "/prototype-assets/lego-creatures-v1/viking_elder_warrior.png", line: "風向不太對勁，大家站穩別被浪打下海了。" },
-    { name: "碼頭搬運工", role: "苦力", avatar: "/prototype-assets/lego-creatures-v1/village_farmer_pitchfork.png", line: "這批貨箱沉得要命，裡面到底裝了什麼？" },
+    { name: "資深船匠", role: "船員", avatar: "/prototype-assets/lego-module-tokens-v1/module_carpenter.png", line: "繩索都固定好了，隨時可以拉帆或放下跳板！" },
+    { name: "老練領航員", role: "領航員", avatar: "/prototype-assets/lego-module-tokens-v1/module_dwarf_sage.png", line: "風向不太對勁，大家站穩別被浪打下海了。" },
+    { name: "貨運書記", role: "帳房", avatar: "/prototype-assets/lego-module-tokens-v1/module_scribe.png", line: "這批貨箱沉得要命，裡面到底裝了什麼？" },
   ],
   urban_alley: [
-    { name: "巡邏衛兵", role: "城防衛兵", avatar: "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png", line: "最近街區不太平靜，你們經過巷口要多留神。" },
-    { name: "街角商販", role: "攤販", avatar: "/prototype-assets/lego-creatures-v1/villager_merchant.png", line: "要買乾糧還是火把？我這兒都有現貨！" },
-    { name: "好奇市民", role: "居民", avatar: "/prototype-assets/lego-creatures-v1/town_commoner_boy.png", line: "聽說昨晚那邊傳來怪聲，我可不敢靠太近。" },
+    { name: "街角布商", role: "商販", avatar: "/prototype-assets/lego-module-tokens-v1/module_tailor.png", line: "要買乾糧還是披風？我這兒都有現貨！" },
+    { name: "城鎮酒保", role: "店主", avatar: "/prototype-assets/lego-module-tokens-v1/module_innkeeper.png", line: "最近街區不太平靜，你們經過巷口要多留神。" },
+    { name: "好奇市民", role: "居民", avatar: "/prototype-assets/lego-module-tokens-v1/module_young_scribe.png", line: "聽說昨晚那邊傳來怪聲，我可不敢靠太近。" },
   ],
   castle_throne: [
-    { name: "宮廷侍從", role: "侍從", avatar: "/prototype-assets/lego-creatures-v1/white_gown_noble_maiden.png", line: "請保持肅靜，長官與貴族們正在議事。" },
-    { name: "殿前衛士", role: "近衛", avatar: "/prototype-assets/lego-creatures-v1/paladin_golden_crusader.png", line: "一切通行都需經過守衛檢視。" },
-    { name: "宮廷學者", role: "文官", avatar: "/prototype-assets/lego-creatures-v1/green_scholar.png", line: "古籍裡的記載也許能替你們指點迷津。" },
+    { name: "宮廷仕女", role: "侍從", avatar: "/prototype-assets/lego-module-tokens-v1/module_noblewoman.png", line: "請保持肅靜，長官與貴族們正在議事。" },
+    { name: "王國抄寫官", role: "文官", avatar: "/prototype-assets/lego-module-tokens-v1/module_scribe.png", line: "所有通行名冊都必須經過登錄。" },
+    { name: "宮廷賢者", role: "顧問", avatar: "/prototype-assets/lego-module-tokens-v1/module_elf_sage.png", line: "古籍裡的記載也許能替你們指點迷津。" },
   ],
   forest_ambush: [
-    { name: "巡林斥候", role: "斥候", avatar: "/prototype-assets/lego-creatures-v1/robin_hood_ranger.png", line: "前面灌木叢有剛折斷的樹枝，小心埋伏。" },
-    { name: "草藥採集者", role: "採藥人", avatar: "/prototype-assets/lego-creatures-v1/village_hermit_beggar.png", line: "這片林子的霧氣越來越重，早點穿過出口比較安全。" },
+    { name: "草藥採集師", role: "採藥人", avatar: "/prototype-assets/lego-module-tokens-v1/module_herbalist.png", line: "這片林子的霧氣越來越重，早點穿過出口比較安全。" },
+    { name: "精靈林間學者", role: "旅者", avatar: "/prototype-assets/lego-module-tokens-v1/module_elf_scholar.png", line: "前面灌木叢有剛折斷的樹枝，小心埋伏。" },
   ],
   haunted_crypt: [
-    { name: "謹慎的考古學徒", role: "學徒", avatar: "/prototype-assets/lego-creatures-v1/green_scholar.png", line: "別亂碰那些沒見過的石碑……會出事的。" },
-    { name: "持燈守墓人", role: "守墓人", avatar: "/prototype-assets/lego-creatures-v1/viking_elder_warrior.png", line: "深處的石門最近自己開開關關，邪門得很。" },
+    { name: "謹慎的考古學徒", role: "學徒", avatar: "/prototype-assets/lego-module-tokens-v1/module_young_scribe.png", line: "別亂碰那些沒見過的石碑……會出事的。" },
+    { name: "古墓研究員", role: "學者", avatar: "/prototype-assets/lego-module-tokens-v1/module_halfling_scholar.png", line: "深處的石門最近自己開開關關，邪門得很。" },
   ],
   volcanic_forge: [
-    { name: "矮人學徒鐵匠", role: "鐵匠", avatar: "/prototype-assets/lego-creatures-v1/village_smith_craftsman.png", line: "爐溫高得嚇人，小心別踩到流出的熔渣！" },
-    { name: "老練礦工", role: "礦工", avatar: "/prototype-assets/lego-creatures-v1/dwarven_hammer_smith.png", line: "前面的通風口好像被什麼堵住了。" },
+    { name: "矮人礦工", role: "礦工", avatar: "/prototype-assets/lego-module-tokens-v1/module_dwarf_miner.png", line: "爐溫高得嚇人，小心別踩到流出的熔渣！" },
+    { name: "侏儒工匠", role: "技師", avatar: "/prototype-assets/lego-module-tokens-v1/module_gnome_artificer.png", line: "前面的通風口好像被什麼堵住了。" },
   ],
   coral_underwater: [
-    { name: "海灣潛水夫", role: "漁民", avatar: "/prototype-assets/lego-creatures-v1/pirate_duelist.png", line: "潮水退了以後，那些珊瑚縫裡冒出不少怪東西。" },
-    { name: "海岸哨兵", role: "哨兵", avatar: "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png", line: "海霧裡的視線很差，沿著礁石邊緣走吧。" },
+    { name: "海岸草藥師", role: "採集者", avatar: "/prototype-assets/lego-module-tokens-v1/module_herbalist.png", line: "潮水退了以後，那些珊瑚縫裡冒出不少怪東西。" },
+    { name: "精靈潮汐學者", role: "學者", avatar: "/prototype-assets/lego-module-tokens-v1/module_elf_sage.png", line: "海霧裡的視線很差，沿著礁石邊緣走吧。" },
   ],
 };
 
@@ -918,7 +918,32 @@ export function getAmbientNpcsForScenario(scenarioId = "cave_ambush") {
   const list = AMBIENT_NPCS_BY_SCENARIO[scenarioId];
   if (Array.isArray(list) && list.length > 0) return list;
   return [
-    { name: "隨行嚮導", role: "嚮導", avatar: "/prototype-assets/lego-creatures-v1/ranger_strider.png", line: "前方就是離開這片區域的出口，準備好再過去吧。" },
-    { name: "商隊哨兵", role: "哨兵", avatar: "/prototype-assets/lego-creatures-v1/adventurer_iron_swordsman.png", line: "我會幫忙看著後方，你們放心調查周圍。" },
+    { name: "隨行學者", role: "嚮導", avatar: "/prototype-assets/lego-module-tokens-v1/module_halfling_scholar.png", line: "前方就是離開這片區域的出口，準備好再過去吧。" },
+    { name: "後勤工匠", role: "隨員", avatar: "/prototype-assets/lego-module-tokens-v1/module_carpenter.png", line: "我會幫忙看著後方，你們放心調查周圍。" },
   ];
+}
+
+export function extractModuleTacticalNodes(mod) {
+  if (!mod || !Array.isArray(mod.acts)) return [];
+  const list = [];
+  mod.acts.forEach((act, actIdx) => {
+    const nodes = Array.isArray(act?.nodes) ? act.nodes : [];
+    nodes.forEach((node, nodeIdx) => {
+      if (!node) return;
+      const hasFoes = Array.isArray(node.foes) && node.foes.length > 0;
+      const hasTac = Boolean(node.tactical);
+      if (!hasFoes && !hasTac && nodeIdx > 0 && node.calm) return;
+      list.push({
+        actIndex: actIdx,
+        actTitle: act.title || `第 ${act.act || actIdx + 1} 幕`,
+        nodeIndex: nodeIdx,
+        id: node.id || `${actIdx + 1}-${nodeIdx + 1}`,
+        title: node.title || `節點 ${nodeIdx + 1}`,
+        situation: node.situation || "",
+        node,
+        hasCombat: hasFoes || hasTac,
+      });
+    });
+  });
+  return list;
 }

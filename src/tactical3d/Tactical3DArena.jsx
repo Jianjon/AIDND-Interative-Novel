@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { B as BGM_MAP, p as AudioManagerClass } from "../artifactDeps.js";
+import { ALL_MODULES } from "../data/modules_data.js";
+const ALL_MODULES_LIST = Array.isArray(ALL_MODULES)
+  ? ALL_MODULES
+  : Object.values(ALL_MODULES || {}).filter((m) => m && m.id && Array.isArray(m.acts));
 import { TACTICAL3D_SCENARIOS, WEATHER_PRESETS, LIGHTING_PRESETS } from "./voxelMapGenerator.js";
 import {
   PRESET_HEROES,
@@ -35,6 +39,8 @@ import {
   adjudicateTacticalShoutWithAI,
   adjudicateBattleScriptWithAI,
   buildFallbackBattleScript,
+  mapStorySessionTo3DConfig,
+  extractModuleTacticalNodes,
 } from "./storyBridge.js";
 import ThreeBattleCanvas from "./ThreeBattleCanvas.jsx";
 import TacticalDiceModal from "./TacticalDiceModal.jsx";
@@ -374,7 +380,11 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
   const [rulesOpen, setRulesOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth > 768 : true));
   const [unitCardOpen, setUnitCardOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth > 768 : true));
-  const [soundOn, setSoundOn] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+  const [bgmTrack, setBgmTrack] = useState("auto");
+  const [selectedModuleId, setSelectedModuleId] = useState(() => ALL_MODULES_LIST[0]?.id || "potent_brew");
+  const [selectedNodeIdx, setSelectedNodeIdx] = useState(0);
+  const [activeCampaignCtx, setActiveCampaignCtx] = useState(null);
   const [eventsBatch, setEventsBatch] = useState([]);
   const [actionFeedback, setActionFeedback] = useState("");
   const [lastDiceRoll, setLastDiceRoll] = useState(null);
@@ -433,18 +443,36 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
 
   const hasBattle = battle !== null;
   const battleBgm = battle?.map?.bgm || "battle";
+  const resolvedBgmKey = bgmTrack !== "auto" && BGM_MAP[bgmTrack] ? bgmTrack : BGM_MAP[battleBgm] ? battleBgm : "battle";
 
   useEffect(() => {
+    if (!audioRef.current) audioRef.current = new AudioManagerClass();
+    audioRef.current.setSettings({ muted: !soundOn, bgm: 0.25, master: 0.75 });
     if (!soundOn || !hasBattle) {
-      if (audioRef.current) audioRef.current.stopBgm(true);
+      audioRef.current.stopBgm(true);
       return undefined;
     }
-    if (!audioRef.current) audioRef.current = new AudioManagerClass();
-    if (BGM_MAP[battleBgm]) audioRef.current.playBgm(battleBgm);
+    audioRef.current.playBgm(resolvedBgmKey);
+    const unlockRetry = () => {
+      if (!audioRef.current || !soundOn) return;
+      if (!audioRef.current.currentBgm || audioRef.current.currentBgm.paused) {
+        audioRef.current.playBgm(resolvedBgmKey);
+      }
+    };
+    window.addEventListener("pointerdown", unlockRetry, { passive: true });
+    window.addEventListener("keydown", unlockRetry, { passive: true });
     return () => {
+      window.removeEventListener("pointerdown", unlockRetry);
+      window.removeEventListener("keydown", unlockRetry);
       if (audioRef.current) audioRef.current.stopBgm(true);
     };
-  }, [soundOn, hasBattle, battleBgm]);
+  }, [soundOn, hasBattle, resolvedBgmKey]);
+
+  const selectedModule = useMemo(
+    () => ALL_MODULES_LIST.find((m) => m.id === selectedModuleId) || ALL_MODULES_LIST[0] || null,
+    [selectedModuleId]
+  );
+  const moduleNodes = useMemo(() => extractModuleTacticalNodes(selectedModule), [selectedModule]);
 
   const emitEvents = useCallback(
     (evList) => {
@@ -569,6 +597,82 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
       }
     },
     [allyPack, ambushMode, blueprintHint, foeFormation, foePack, foeWaves, heroFormation, lightingId, objectivePreset, paceMode, partyLevel, pickedHeroIds, sampler, scenarioId, seed, storyContext, weatherId]
+  );
+
+  const startModuleNodeBattle = useCallback(
+    (mod, nodeEntry, nodeIdx) => {
+      if (!mod || !nodeEntry) return;
+      const chosen = pickedHeroIds.map((id) => PRESET_HEROES.find((h) => h.id === id)).filter(Boolean);
+      const fakeSession = {
+        moduleKey: mod.id,
+        level: Math.max(1, Math.min(5, mod.startLevel || partyLevel || 3)),
+        map: nodeEntry.node?.map || "",
+        place: { name: nodeEntry.actTitle || mod.title },
+        node: nodeEntry.node,
+        heroes: chosen,
+        cast: [],
+      };
+      const cfg = mapStorySessionTo3DConfig(fakeSession);
+      const nextScenario = cfg?.scenarioId || "cave_ambush";
+      const nextSeed = (cfg?.seed || 101) + nodeIdx * 7;
+      setSelectedModuleId(mod.id);
+      setSelectedNodeIdx(nodeIdx);
+      setScenarioId(nextScenario);
+      setSeed(nextSeed);
+      setActiveCampaignCtx({
+        moduleId: mod.id,
+        moduleTitle: mod.title,
+        actTitle: nodeEntry.actTitle,
+        nodeIdx,
+        nodeTitle: nodeEntry.title,
+        situation: nodeEntry.situation,
+      });
+
+      const created = createBattleState({
+        scenarioId: nextScenario,
+        seed: nextSeed,
+        partyPresets: chosen.length > 0 ? chosen : null,
+        partyLevel: Math.max(1, Math.min(5, mod.startLevel || partyLevel || 3)),
+        foeIds: cfg?.foeIds?.length ? cfg.foeIds : null,
+        foeSpecs: cfg?.foeSpecs?.length ? cfg.foeSpecs : null,
+        allySpecs: cfg?.allySpecs || null,
+        weather: cfg?.weather || weatherId,
+        lighting: cfg?.lighting || lightingId,
+        ambushMode: cfg?.ambushMode || ambushMode,
+        paceMode,
+        blueprint: cfg?.blueprint || null,
+      });
+      const first = getActiveUnit(created);
+      const fallbackScript = {
+        missionGoal: nodeEntry.title || mod.title,
+        opening: [
+          {
+            speaker: mod.title,
+            side: "hero",
+            line: `${nodeEntry.actTitle} · ${nodeEntry.title}${nodeEntry.situation ? `：${String(nodeEntry.situation).slice(0, 68)}` : ""}`,
+          },
+        ],
+        ending: { victory: "關卡突破！準備推進下一個劇本節點。" },
+      };
+      created.battleScript = fallbackScript;
+      endedScriptFiredRef.current = false;
+      setMissionGoal(fallbackScript.missionGoal);
+      setDialogueQueue(fallbackScript.opening);
+      setDialoguePhase("opening");
+      setMidDialogue(null);
+      setDiceQueue([]);
+      setLastDiceRoll(null);
+      setBattle(created);
+      setActionMode({ kind: "move" });
+      setDockTab(chooseDefaultActionTab(first));
+      setUpcastSlot(null);
+      setHoverTile(null);
+      setEventsBatch([]);
+      setActionFeedback("");
+      setCopiedJson(false);
+      setRecenterToken((t) => t + 1);
+    },
+    [ambushMode, lightingId, paceMode, partyLevel, pickedHeroIds, weatherId]
   );
 
   const autoStartedRef = useRef(false);
@@ -1379,6 +1483,87 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
                 })}
               </div>
             </section>
+
+            {/* Shared Story Modules (Mode A & B Universal Campaign Mode) */}
+            <section
+              className="tac3d-panel"
+              style={{
+                gridColumn: "1 / -1",
+                borderColor: "rgba(240, 207, 122, 0.38)",
+                background: "linear-gradient(180deg, rgba(22, 31, 46, 0.92), rgba(11, 17, 27, 0.96))",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+                <h2 style={{ margin: 0 }}>📖 共用劇本戰役（與 A 模式共用全部劇本，純 3D 戰棋闖關）</h2>
+                <span style={{ fontSize: 11.5, color: "#94a3b8" }}>
+                  共 {ALL_MODULES_LIST.length} 套冒險劇本可直接以 3D 戰棋關卡體驗
+                </span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, alignItems: "end" }}>
+                <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "#cbd5e1" }}>
+                  <span>選擇劇本模組</span>
+                  <select
+                    value={selectedModuleId}
+                    onChange={(e) => {
+                      setSelectedModuleId(e.target.value);
+                      setSelectedNodeIdx(0);
+                    }}
+                    style={{
+                      background: "rgba(15,23,42,0.92)",
+                      border: "1px solid rgba(240, 207, 122, 0.35)",
+                      borderRadius: 6,
+                      color: "#f8fafc",
+                      padding: "6px 8px",
+                      fontSize: 12.5,
+                    }}
+                  >
+                    {ALL_MODULES_LIST.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.title}（Lv.{m.levels || m.startLevel || 1}）
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "#cbd5e1" }}>
+                  <span>選擇章節關卡（共 {moduleNodes.length} 戰）</span>
+                  <select
+                    value={Math.min(selectedNodeIdx, Math.max(0, moduleNodes.length - 1))}
+                    onChange={(e) => setSelectedNodeIdx(Number(e.target.value) || 0)}
+                    style={{
+                      background: "rgba(15,23,42,0.92)",
+                      border: "1px solid rgba(148,163,184,0.35)",
+                      borderRadius: 6,
+                      color: "#f8fafc",
+                      padding: "6px 8px",
+                      fontSize: 12.5,
+                    }}
+                  >
+                    {moduleNodes.map((n, idx) => (
+                      <option key={`${n.id}_${idx}`} value={idx}>
+                        [{n.actTitle}] {n.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  className="tac3d-btn is-primary"
+                  style={{ height: 34 }}
+                  disabled={!selectedModule || moduleNodes.length === 0}
+                  onClick={() => {
+                    const idx = Math.min(selectedNodeIdx, Math.max(0, moduleNodes.length - 1));
+                    startModuleNodeBattle(selectedModule, moduleNodes[idx], idx);
+                  }}
+                >
+                  ⚔️ 進入此劇本戰棋關卡
+                </button>
+              </div>
+              {moduleNodes[Math.min(selectedNodeIdx, Math.max(0, moduleNodes.length - 1))]?.situation && (
+                <p style={{ margin: "8px 0 0", fontSize: 12, color: "#94a3b8", lineHeight: 1.5 }}>
+                  {moduleNodes[Math.min(selectedNodeIdx, Math.max(0, moduleNodes.length - 1))].situation}
+                </p>
+              )}
+            </section>
           </div>
         </div>
 
@@ -1646,6 +1831,34 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
           >
             {soundOn ? "🔊 音樂開" : "🔇 靜音"}
           </button>
+          <select
+            aria-label="背景音樂曲目"
+            value={bgmTrack}
+            onChange={(e) => {
+              setBgmTrack(e.target.value);
+              if (!soundOn) setSoundOn(true);
+            }}
+            style={{
+              background: "rgba(15,23,42,0.92)",
+              border: "1px solid rgba(148,163,184,0.35)",
+              borderRadius: 6,
+              color: "#e2e8f0",
+              padding: "3px 6px",
+              fontSize: 11.5,
+              height: 26,
+            }}
+          >
+            <option value="auto">🎵 依場景配樂</option>
+            <option value="battle">⚔️ 戰鬥史詩</option>
+            <option value="epic">🐉 決戰Boss</option>
+            <option value="tavern">🍺 中世紀酒館</option>
+            <option value="dungeon">🕯️ 地下城潛行</option>
+            <option value="castle">🏰 王城殿堂</option>
+            <option value="forest">🌲 幽暗森林</option>
+            <option value="ocean">⛵ 航海波濤</option>
+            <option value="volcano">🌋 熔岩地獄</option>
+            <option value="ice">❄️ 極地冰霜</option>
+          </select>
           <button
             type="button"
             className={`tac3d-btn${diceAnimOn ? " is-on" : ""}`}
@@ -2479,9 +2692,33 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
                 <button type="button" className="tac3d-btn" onClick={() => setBattle(null)}>
                   切換地圖／隊伍
                 </button>
-                <button type="button" className="tac3d-btn" onClick={() => startNewBattle(scenarioId, seed + 19)}>
+                <button
+                  type="button"
+                  className="tac3d-btn"
+                  onClick={() =>
+                    activeCampaignCtx && selectedModule && moduleNodes[selectedNodeIdx]
+                      ? startModuleNodeBattle(selectedModule, moduleNodes[selectedNodeIdx], selectedNodeIdx)
+                      : startNewBattle(scenarioId, seed + 19)
+                  }
+                >
                   再戰一場
                 </button>
+                {activeCampaignCtx &&
+                  battle.outcome === "victory" &&
+                  !onApplyToStory &&
+                  selectedModule &&
+                  selectedNodeIdx + 1 < moduleNodes.length && (
+                    <button
+                      type="button"
+                      className="tac3d-btn is-primary"
+                      onClick={() => {
+                        const nextIdx = selectedNodeIdx + 1;
+                        startModuleNodeBattle(selectedModule, moduleNodes[nextIdx], nextIdx);
+                      }}
+                    >
+                      ▶ 推進劇本下一戰（{moduleNodes[selectedNodeIdx + 1]?.title?.slice(0, 12)}）
+                    </button>
+                  )}
                 {onApplyToStory && (
                   <button
                     type="button"
