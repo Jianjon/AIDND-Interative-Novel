@@ -995,7 +995,32 @@ export function hydrateHeroUnit(preset, level = 3, spawn = { x: 1, y: 5 }) {
       }
     }
   }
-  if (scaled.equippedWeaponName && weapons[0] && !weapons[0].isShieldBash) {
+  if (scaled.equippedWeaponItem) {
+    const wItem = scaled.equippedWeaponItem;
+    const spec = wItem.weaponSpec || {};
+    const isRanged = Boolean(spec.isRanged);
+    const useDex = isRanged || (spec.finesse && mods.dex > mods.str);
+    const atkStat = useDex ? "dex" : "str";
+    const wHit = mods[atkStat] + profBonus + weaponPlus + featHitBonus + gearAtk + 2;
+    const wDmgFlat = Math.max(0, mods[atkStat]) + weaponPlus + gearDmg;
+    const baseDice = spec.damageDice || "1d8";
+    const wId = wItem.id || `gear_${wItem.name}`;
+    if (!weapons.some((w) => w.id === wId)) {
+      weapons.unshift({
+        id: wId,
+        name: wItem.weaponName || wItem.name,
+        isRanged,
+        rangeCells: spec.rangeCells || (isRanged ? 6 : 1),
+        reach: Boolean(spec.reach),
+        light: Boolean(spec.light),
+        finesse: Boolean(spec.finesse),
+        damageDice: `${baseDice}${wDmgFlat >= 0 ? `+${wDmgFlat}` : wDmgFlat}`,
+        damageType: spec.damageType || "slashing",
+        hitBonus: wHit,
+        qty: 1,
+      });
+    }
+  } else if (scaled.equippedWeaponName && weapons[0] && !weapons[0].isShieldBash) {
     weapons[0].name = scaled.equippedWeaponName;
   }
 

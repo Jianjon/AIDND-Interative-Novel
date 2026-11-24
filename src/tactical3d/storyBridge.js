@@ -140,6 +140,7 @@ function matchHeroPreset(hero, idx) {
     acOverride: Number.isFinite(hero?.ac) ? hero.ac : undefined,
     gearBonuses: hero?.equippedGear ? computeGearBonuses(hero.equippedGear) : undefined,
     equippedWeaponName: hero?.equippedGear?.weapon?.weaponName || hero?.equippedGear?.weapon?.name || undefined,
+    equippedWeaponItem: hero?.equippedGear?.weapon || undefined,
   };
 }
 

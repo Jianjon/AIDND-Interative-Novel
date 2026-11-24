@@ -17,7 +17,8 @@ export const LOOT_EQUIPMENT_POOL = [
     attackBonus: 1,
     damageBonus: 1,
     weaponName: "精良長劍 +1",
-    desc: "鍛造精良的鋼鐵長劍，命中與傷害 +1。",
+    weaponSpec: { isRanged: false, rangeCells: 1, damageDice: "1d8", damageType: "slashing" },
+    desc: "鍛造精良的鋼鐵長劍，命中與傷害 +1（近戰 1d8 揮砍）。",
   },
   {
     id: "eq_hunter_bow",
@@ -27,7 +28,8 @@ export const LOOT_EQUIPMENT_POOL = [
     attackBonus: 1,
     damageBonus: 1,
     weaponName: "獵手長弓 +1",
-    desc: "弦力穩定的紫杉長弓，命中與傷害 +1。",
+    weaponSpec: { isRanged: true, rangeCells: 8, finesse: true, damageDice: "1d8", damageType: "piercing" },
+    desc: "弦力穩定的紫杉長弓，命中與傷害 +1（遠程 8 格 1d8 穿刺）。",
   },
   {
     id: "eq_arcane_staff",
@@ -37,7 +39,8 @@ export const LOOT_EQUIPMENT_POOL = [
     attackBonus: 1,
     damageBonus: 1,
     weaponName: "秘法法杖 +1",
-    desc: "鑲嵌奧術晶石的法杖，攻擊與法術傷害 +1。",
+    weaponSpec: { isRanged: true, rangeCells: 6, finesse: true, damageDice: "1d8", damageType: "force" },
+    desc: "鑲嵌奧術晶石的法杖，攻擊與法術傷害 +1（遠程 6 格 1d8 力場）。",
   },
   {
     id: "eq_cold_iron_axe",
@@ -47,7 +50,8 @@ export const LOOT_EQUIPMENT_POOL = [
     attackBonus: 1,
     damageBonus: 1,
     weaponName: "寒鐵戰斧 +1",
-    desc: "對妖精與魔物格外致命的寒鐵戰斧，命中與傷害 +1。",
+    weaponSpec: { isRanged: false, rangeCells: 1, damageDice: "1d10", damageType: "slashing" },
+    desc: "對妖精與魔物格外致命的寒鐵戰斧，命中與傷害 +1（近戰 1d10 揮砍）。",
   },
   {
     id: "eq_runic_blade_2",
@@ -57,7 +61,8 @@ export const LOOT_EQUIPMENT_POOL = [
     attackBonus: 2,
     damageBonus: 2,
     weaponName: "符文聖劍 +2",
-    desc: "刻滿古代戰紋的利刃，命中與傷害 +2。",
+    weaponSpec: { isRanged: false, rangeCells: 1, damageDice: "1d10", damageType: "radiant" },
+    desc: "刻滿古代戰紋的利刃，命中與傷害 +2（近戰 1d10 光耀）。",
   },
   // Armor & Shields
   {
