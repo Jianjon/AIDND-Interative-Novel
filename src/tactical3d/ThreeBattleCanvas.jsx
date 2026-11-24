@@ -1520,7 +1520,7 @@ export default function ThreeBattleCanvas({
 
             const mv = anims.get(uid);
             if (mv) {
-              mv.t += dt * 3.6;
+              mv.t += dt * 2.4;
               if (mv.t >= 1) {
                 mv.t = 0;
                 mv.stepIdx += 1;
@@ -1545,7 +1545,7 @@ export default function ThreeBattleCanvas({
             } else {
               const th = curBattle.map.grid[u.y]?.[u.x]?.h ?? 1;
               const targetPos = new THREE.Vector3(u.x + offset, th * ELEV_H, u.y + offset);
-              vis.grp.position.lerp(targetPos, Math.min(1, dt * 6));
+              vis.grp.position.lerp(targetPos, Math.min(1, dt * 4.2));
             }
 
             // Apply hit recoil/flash, miss dodge sway, and attacker lunge animations
