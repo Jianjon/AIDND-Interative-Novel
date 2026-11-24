@@ -968,7 +968,7 @@ export function hydrateHeroUnit(preset, level = 3, spawn = { x: 1, y: 5 }) {
 
   const featHpBonus = /矮人堅韌|岩石堅韌|健壯/i.test(featBlob) ? 4 : 0;
   const featAcBonus = /重甲精通|塔盾擅長|法器護盾|鶴翼招架/i.test(featBlob) ? 1 : 0;
-  const featSpeedBonus = /無影步|旋風步|逃跑大師|開路先鋒/i.test(featBlob) ? 1 : 0;
+  const featSpeedBonus = (/無影步|旋風步|逃跑大師|開路先鋒/i.test(featBlob) ? 1 : 0) + (Number(scaled.gearBonuses?.speedBonus) || 0);
   const featInitBonus = /狡黠先攻|時間感知|野性直覺/i.test(featBlob) ? 3 : 0;
   const featHitBonus = /巨武器大師|精準射擊|精確打擊|戰鬥風格|全武器精通/i.test(featBlob) ? 1 : 0;
   if (featHpBonus) passives.push(`堅韌(+${featHpBonus}HP)`);
@@ -977,8 +977,26 @@ export function hydrateHeroUnit(preset, level = 3, spawn = { x: 1, y: 5 }) {
   if (featInitBonus) passives.push(`先攻(+${featInitBonus})`);
   if (featHitBonus) passives.push(`武器專精(命中+${featHitBonus})`);
 
-  if (featHitBonus > 0) {
-    for (const w of weapons) w.hitBonus = (w.hitBonus || 0) + featHitBonus;
+  const gearB = scaled.gearBonuses || {};
+  const gearAtk = Number(gearB.attackBonus) || 0;
+  const gearDmg = Number(gearB.damageBonus) || 0;
+  const gearAc = Number(gearB.acBonus) || 0;
+  const gearSpd = Number(gearB.speedBonus) || 0;
+
+  if (featHitBonus > 0 || gearAtk > 0 || gearDmg > 0) {
+    for (const w of weapons) {
+      w.hitBonus = (w.hitBonus || 0) + featHitBonus + gearAtk;
+      if (gearDmg > 0 && w.damageDice) {
+        w.damageDice = w.damageDice.replace(/([+-]\d+)?$/, (m) => {
+          const cur = m ? parseInt(m, 10) : 0;
+          const next = cur + gearDmg;
+          return next >= 0 ? `+${next}` : `${next}`;
+        });
+      }
+    }
+  }
+  if (scaled.equippedWeaponName && weapons[0] && !weapons[0].isShieldBash) {
+    weapons[0].name = scaled.equippedWeaponName;
   }
 
   const hasEvasion50 = /50%\s*閃避|幻影身法|路人甲的直覺/i.test(featBlob);
@@ -989,7 +1007,7 @@ export function hydrateHeroUnit(preset, level = 3, spawn = { x: 1, y: 5 }) {
   const luckyReroll = /天選之運|幸運連鎖|天佑者/i.test(featBlob);
   const wildMagic = /混沌野魔法|升環暴走/i.test(featBlob);
   const stormRage = /風暴血怒|狂暴施法/i.test(featBlob);
-  const finalAc = ac + (isSwordSpirit ? 2 : 0) + featAcBonus;
+  const finalAc = ac + (isSwordSpirit ? 2 : 0) + featAcBonus + gearAc;
   const finalMaxHp = maxHp + (/獸人韌性/i.test(featBlob) ? 6 : 0) + featHpBonus;
   if (isLongShot) {
     for (const w of weapons) {

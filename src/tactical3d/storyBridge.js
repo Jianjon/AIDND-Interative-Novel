@@ -1,4 +1,5 @@
 import { M as MONSTER_DB, P as PRESET_HEROES } from "../artifactDeps.js";
+import { computeGearBonuses, generateBattleLootDrops } from "./equipmentCatalog.js";
 
 const VALID_LIGHTINGS = new Set(["daylight", "dusk", "night", "underground", "horror"]);
 const VALID_WEATHERS = new Set([
@@ -137,6 +138,8 @@ function matchHeroPreset(hero, idx) {
     hpOverride: Number.isFinite(hero?.hp) ? hero.hp : undefined,
     maxHpOverride: Number.isFinite(hero?.maxHp) ? hero.maxHp : undefined,
     acOverride: Number.isFinite(hero?.ac) ? hero.ac : undefined,
+    gearBonuses: hero?.equippedGear ? computeGearBonuses(hero.equippedGear) : undefined,
+    equippedWeaponName: hero?.equippedGear?.weapon?.weaponName || hero?.equippedGear?.weapon?.name || undefined,
   };
 }
 
@@ -544,11 +547,14 @@ export function applyBattleSummaryToSession(session, summary) {
   const beatsNote = Array.isArray(summary.scriptBeats) && summary.scriptBeats.length > 0
     ? `關鍵對話：${summary.scriptBeats.slice(0, 3).join(" / ")}`
     : "";
+  const lootDrops = generateBattleLootDrops(summary);
+  const lootNote = lootDrops.length > 0 ? `獲得戰利品裝備：${lootDrops.map((it) => it.name).join("、")}（已放入隊伍行囊，可在「裝備」分配穿戴）` : "";
   const extraNotes = [
     capturedList ? `俘虜：${capturedList}` : "",
     surrenderedList ? `投降：${surrenderedList}` : "",
     objList ? `達成戰場目標：${objList}` : "",
     vipNote,
+    lootNote,
     beatsNote,
   ]
     .filter(Boolean)
@@ -565,11 +571,14 @@ export function applyBattleSummaryToSession(session, summary) {
     },
   ];
 
+  const nextStash = [...(Array.isArray(session.lootStash) ? session.lootStash : []), ...lootDrops];
+
   return {
     ...session,
     heroes: nextHeroes,
     cast: nextCast,
     log: nextLog,
+    lootStash: nextStash,
     lastTacticalSummary: summary,
   };
 }

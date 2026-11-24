@@ -65,6 +65,11 @@ const Tactical3DArena = I.lazy(() =>
 );
 const ThreeStoryStage = I.lazy(() => import("./tactical3d/ThreeStoryStage.jsx"));
 const TacticalDiceModal = I.lazy(() => import("./tactical3d/TacticalDiceModal.jsx"));
+import {
+  EQUIP_SLOTS,
+  equipStashItemOnSession,
+  unequipHeroSlotOnSession,
+} from "./tactical3d/equipmentCatalog.js";
 
 const Ep = {
     guild_hall: [
@@ -6397,18 +6402,25 @@ function Zc(e, t, a) {
         })[p] || p,
     ),
     inventory: {
-      equipment: t.sourceProfile
-        ? [
-            ...(t.sourceProfile.equipment || []),
-            ...(Array.isArray(t.sourceInventory)
-              ? t.sourceInventory
-              : ((o = t.sourceInventory) == null ? void 0 : o.equipment) || []),
-          ]
-        : [
-            t.weapon,
-            ...(t.armorBonus ? [`護甲・AC +${t.armorBonus}`] : []),
-            ...(t.shield ? ["盾牌"] : []),
-          ],
+      equipment: [
+        ...(t.equippedGear
+          ? Object.values(t.equippedGear)
+              .filter((g) => g && g.slot !== "accessory")
+              .map((g) => `【已裝備】${g.name}`)
+          : []),
+        ...(t.sourceProfile
+          ? [
+              ...(t.sourceProfile.equipment || []),
+              ...(Array.isArray(t.sourceInventory)
+                ? t.sourceInventory
+                : ((o = t.sourceInventory) == null ? void 0 : o.equipment) || []),
+            ]
+          : [
+              t.weapon,
+              ...(t.armorBonus ? [`護甲・AC +${t.armorBonus}`] : []),
+              ...(t.shield ? ["盾牌"] : []),
+            ]),
+      ],
       consumables: [
         { name: "隊伍共用・腰帶藥水", quantity: e.potions },
         { name: "隊伍共用・繃帶", quantity: e.bandages },
@@ -58719,6 +58731,8 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
     [J, Q] = I.useState(!1),
     [pe, Ge] = I.useState(""),
     [combatPromptDismissedKey, setCombatPromptDismissedKey] = I.useState(""),
+    [showGearModal, setShowGearModal] = I.useState(!1),
+    [gearHeroId, setGearHeroId] = I.useState(null),
     handleApply3dAndNarrate = I.useCallback(
       async (summary, autoNarrate = false) => {
         r((prev) => applyBattleSummaryToSession(prev, summary));
@@ -61493,6 +61507,23 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                     ),
                   }),
                 n.jsx("button", {
+                  type: "button",
+                  className: `quiet-button${(s?.lootStash?.length || 0) > 0 ? " is-active" : ""}`,
+                  style:
+                    (s?.lootStash?.length || 0) > 0
+                      ? { borderColor: "#fbbf24", color: "#fde68a", fontWeight: 700 }
+                      : void 0,
+                  onClick: () => {
+                    setGearHeroId((prev) => prev || s?.heroes?.[0]?.id || null);
+                    setShowGearModal((v) => !v);
+                  },
+                  title: "檢視或更換隊伍裝備、分配戰利品給隊友",
+                  children:
+                    (s?.lootStash?.length || 0) > 0
+                      ? `🎒 裝備 (${s.lootStash.length})`
+                      : "🎒 裝備",
+                }),
+                n.jsx("button", {
                   className: "quiet-button",
                   "aria-expanded": q,
                   onClick: () => {
@@ -63189,6 +63220,189 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
             },
             h,
           ),
+        showGearModal &&
+          s &&
+          (() => {
+            const activeHero =
+              s.heroes.find((f) => f.id === gearHeroId) || s.heroes[0] || null;
+            const stash = Array.isArray(s.lootStash) ? s.lootStash : [];
+            const baseEqList = activeHero?.sourceProfile?.equipment || [];
+            return n.jsx("div", {
+              className: "proto-modal-backdrop",
+              style: { zIndex: 980 },
+              onClick: () => setShowGearModal(!1),
+              children: n.jsxs("section", {
+                className: "proto-modal",
+                role: "dialog",
+                "aria-modal": "true",
+                style: { maxWidth: 680, width: "94vw", maxHeight: "86vh", overflowY: "auto" },
+                onClick: (ev) => ev.stopPropagation(),
+                children: [
+                  n.jsx("button", {
+                    className: "modal-close",
+                    onClick: () => setShowGearModal(!1),
+                    "aria-label": "關閉",
+                    children: "×",
+                  }),
+                  n.jsx("span", { className: "eyebrow", children: "PARTY EQUIPMENT & LOOT" }),
+                  n.jsx("h2", { style: { marginTop: 4 }, children: "🎒 隊伍裝備與戰利品管理" }),
+                  n.jsx("div", {
+                    style: { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 },
+                    children: s.heroes.map((hero) =>
+                      n.jsxs(
+                        "button",
+                        {
+                          type: "button",
+                          className: `quiet-button${activeHero?.id === hero.id ? " is-active" : ""}`,
+                          style:
+                            activeHero?.id === hero.id
+                              ? { borderColor: "#fbbf24", color: "#fde68a", fontWeight: 700, padding: "6px 12px" }
+                              : { padding: "6px 12px" },
+                          onClick: () => setGearHeroId(hero.id),
+                          children: [hero.name.split(/[（(]/)[0].trim(), ` (AC ${hero.armor || 12})`],
+                        },
+                        hero.id,
+                      ),
+                    ),
+                  }),
+                  activeHero &&
+                    n.jsxs("div", {
+                      style: {
+                        background: "rgba(15, 23, 42, 0.72)",
+                        border: "1px solid rgba(148, 163, 184, 0.25)",
+                        borderRadius: 10,
+                        padding: 12,
+                        marginBottom: 14,
+                      },
+                      children: [
+                        n.jsxs("div", {
+                          style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
+                          children: [
+                            n.jsx("strong", {
+                              style: { color: "#fde68a", fontSize: 15 },
+                              children: `${activeHero.name} · ${activeHero.role || ""}`,
+                            }),
+                            n.jsx("span", {
+                              style: { fontSize: 12, color: "#cbd5e1" },
+                              children: `AC ${activeHero.armor || 12} ｜ 命中 ${activeHero.attackBonus >= 0 ? `+${activeHero.attackBonus}` : activeHero.attackBonus || 0} ｜ 傷害 ${activeHero.damageBonus >= 0 ? `+${activeHero.damageBonus}` : activeHero.damageBonus || 0} ｜ 移動 ${activeHero.speed || 6} 格`,
+                            }),
+                          ],
+                        }),
+                        baseEqList.length > 0 &&
+                          n.jsxs("div", {
+                            style: { fontSize: 12, color: "#94a3b8", marginBottom: 10 },
+                            children: ["原角卡攜帶：", baseEqList.join("、")],
+                          }),
+                        n.jsx("div", {
+                          style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 8 },
+                          children: EQUIP_SLOTS.map((slot) => {
+                            const equipped = activeHero.equippedGear?.[slot.key] || null;
+                            return n.jsxs(
+                              "div",
+                              {
+                                style: {
+                                  background: "rgba(30, 41, 59, 0.7)",
+                                  border: equipped ? "1px solid rgba(251, 191, 36, 0.5)" : "1px dashed rgba(148, 163, 184, 0.28)",
+                                  borderRadius: 8,
+                                  padding: "8px 10px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  gap: 8,
+                                },
+                                children: [
+                                  n.jsxs("div", {
+                                    children: [
+                                      n.jsx("div", {
+                                        style: { fontSize: 11, color: "#94a3b8" },
+                                        children: `${slot.icon} ${slot.label}`,
+                                      }),
+                                      n.jsx("div", {
+                                        style: { fontSize: 13, fontWeight: 600, color: equipped ? "#fef3c7" : "#64748b" },
+                                        children: equipped ? equipped.name : "（沿用預設／未替換）",
+                                      }),
+                                      equipped?.desc &&
+                                        n.jsx("div", {
+                                          style: { fontSize: 11, color: "#cbd5e1", marginTop: 2 },
+                                          children: equipped.desc,
+                                        }),
+                                    ],
+                                  }),
+                                  equipped &&
+                                    n.jsx("button", {
+                                      type: "button",
+                                      className: "quiet-button",
+                                      style: { fontSize: 11, padding: "4px 8px", flexShrink: 0 },
+                                      onClick: () =>
+                                        r((prev) => unequipHeroSlotOnSession(prev, activeHero.id, slot.key)),
+                                      children: "卸下",
+                                    }),
+                                ],
+                              },
+                              slot.key,
+                            );
+                          }),
+                        }),
+                      ],
+                    }),
+                  n.jsx("h3", {
+                    style: { fontSize: 14, color: "#e2e8f0", marginBottom: 8 },
+                    children: `📦 隊伍戰利品行囊（${stash.length} 件可分配／交換）`,
+                  }),
+                  stash.length === 0
+                    ? n.jsx("p", {
+                        style: { fontSize: 13, color: "#94a3b8", margin: 0 },
+                        children: "目前行囊內沒有未分配的戰利品裝備。戰勝敵人或卸下隊友裝備後，可在此直接穿戴或交換給其他隊友！",
+                      })
+                    : n.jsx("div", {
+                        style: { display: "flex", flexDirection: "column", gap: 8 },
+                        children: stash.map((item) => {
+                          const slotMeta = EQUIP_SLOTS.find((sl) => sl.key === item.slot);
+                          return n.jsxs(
+                            "div",
+                            {
+                              style: {
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 10,
+                                padding: "8px 12px",
+                                borderRadius: 8,
+                                background: "rgba(30, 41, 59, 0.55)",
+                                border: "1px solid rgba(148, 163, 184, 0.22)",
+                              },
+                              children: [
+                                n.jsxs("div", {
+                                  children: [
+                                    n.jsx("div", {
+                                      style: { fontSize: 13.5, fontWeight: 700, color: "#fde68a" },
+                                      children: `${slotMeta?.icon || "⚔️"} ${item.name}`,
+                                    }),
+                                    n.jsx("div", {
+                                      style: { fontSize: 11.5, color: "#cbd5e1" },
+                                      children: `${slotMeta?.label || "裝備"} · ${item.desc || ""}`,
+                                    }),
+                                  ],
+                                }),
+                                activeHero &&
+                                  n.jsx("button", {
+                                    type: "button",
+                                    className: "primary-action",
+                                    style: { fontSize: 12, padding: "5px 12px", flexShrink: 0 },
+                                    onClick: () =>
+                                      r((prev) => equipStashItemOnSession(prev, item.uid, activeHero.id)),
+                                    children: `給 ${activeHero.name.split(/[（(]/)[0].trim()} 換上`,
+                                  }),
+                              ],
+                            },
+                            item.uid,
+                          );
+                        }),
+                      }),
+                ],
+              }),
+            });
+          })(),
       ],
     }),
   });
