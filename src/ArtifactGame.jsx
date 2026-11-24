@@ -36725,7 +36725,7 @@ function resolveSessionFrame(session) {
 
 function buildSessionTacticalContext(session, frameOverride = null, stateOverride = null) {
   const isCombat = isCombatActive(session);
-  if (!session || !isCombat) {
+  if (!session) {
     return { isCombat: false, mapId: null, hasPaintedGrid: false, grid: null, unitPositions: {}, propSpots: {} };
   }
   const sc = session.stage === "scene" ? Ga(session) : null;
@@ -36900,6 +36900,7 @@ function yA({
   onStageClick: z = null,
   style: L = null,
   threeStorySession = null,
+  snapGrid = null,
   children: q,
 }) {
   const F = Is(a),
@@ -37281,6 +37282,36 @@ function yA({
         Number.isFinite(Y[0]) &&
         Number.isFinite(Y[1]) &&
         (vt[P] = [Math.max(4, Math.min(96, Y[0])), Math.max(10, Math.min(94, Y[1]))]);
+  if (snapGrid && snapGrid.cols && snapGrid.rows && !threeStorySession) {
+    const usedCells = new Set();
+    for (const [uid, xy] of Object.entries(vt)) {
+      if (!Array.isArray(xy) || xy.length < 2) continue;
+      let cx0 = Math.max(0, Math.min(snapGrid.cols - 1, Math.floor((xy[0] - snapGrid.x0) / snapGrid.cw)));
+      let cy0 = Math.max(0, Math.min(snapGrid.rows - 1, Math.floor((xy[1] - snapGrid.y0) / snapGrid.ch)));
+      let chosen = null;
+      for (let rad = 0; rad <= 4 && !chosen; rad++) {
+        for (let dy = -rad; dy <= rad && !chosen; dy++) {
+          for (let dx = -rad; dx <= rad && !chosen; dx++) {
+            const nx = cx0 + dx;
+            const ny = cy0 + dy;
+            if (nx < 0 || ny < 0 || nx >= snapGrid.cols || ny >= snapGrid.rows) continue;
+            const ck = `${nx},${ny}`;
+            if (usedCells.has(ck)) continue;
+            const cell = snapGrid.getCell ? snapGrid.getCell(nx, ny) : null;
+            if (cell && (cell.wall || cell.impassable)) continue;
+            chosen = [nx, ny, ck];
+          }
+        }
+      }
+      if (chosen) {
+        usedCells.add(chosen[2]);
+        vt[uid] = [
+          snapGrid.x0 + (chosen[0] + 0.5) * snapGrid.cw,
+          snapGrid.y0 + (chosen[1] + 0.5) * snapGrid.ch,
+        ];
+      }
+    }
+  }
   (ge != null && ge.id && Array.isArray(ge.xy) && (vt[ge.id] = ge.xy),
     r
       .filter((P) => P.isFamiliar && P.state === "perched" && P.ownerId)
@@ -58632,6 +58663,12 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
     [Et, he] = I.useState(!1),
     [ue, Rt] = I.useState(() => {
       try {
+        const sp = new URLSearchParams(window.location.search);
+        const qMode = sp.get("mode");
+        if (["classic", "theater"].includes(qMode)) {
+          localStorage.setItem("table-view-mode", qMode);
+          return qMode;
+        }
         const f = localStorage.getItem("table-view-mode");
         return ["classic", "theater"].includes(f) ? f : "classic";
       } catch {
@@ -58642,6 +58679,9 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
       Rt(f);
       try {
         localStorage.setItem("table-view-mode", f);
+        const url = new URL(window.location.href);
+        url.searchParams.set("mode", f);
+        window.history.replaceState(null, "", url.toString());
       } catch {}
     }, []),
     fa = I.useCallback((f) => {
@@ -59709,6 +59749,27 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                   onClick: () => i("table"),
                   children: ["繼續：", jt(s).title, " →"],
                 }),
+              n.jsxs("div", {
+                className: "view-mode-switcher",
+                role: "group",
+                "aria-label": "遊玩模式選擇",
+                children: [
+                  n.jsx("button", {
+                    type: "button",
+                    className: `quiet-button view-mode-btn${ue === "classic" ? " is-active" : ""}`,
+                    title: "經典版（2.5D 格線跑團桌，獨立連結 ?mode=classic）",
+                    onClick: () => Kt("classic"),
+                    children: "🏛️ 經典版",
+                  }),
+                  n.jsx("button", {
+                    type: "button",
+                    className: `quiet-button view-mode-btn${ue === "theater" ? " is-active" : ""}`,
+                    title: "劇院＋戰鬥版（3D HD-2D 探索與戰棋，獨立連結 ?mode=theater）",
+                    onClick: () => Kt("theater"),
+                    children: "🎭 劇院＋戰鬥版",
+                  }),
+                ],
+              }),
               n.jsx("button", {
                 type: "button",
                 className: `quiet-button sound-toggle ${j.sound ? "sound-on" : "sound-off"}`,
@@ -61257,27 +61318,14 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
             }),
             n.jsxs("nav", {
               children: [
-                n.jsxs("div", {
-                  className: "view-mode-switcher",
-                  role: "group",
-                  "aria-label": "畫面顯示模式",
-                  children: [
-                    n.jsx("button", {
-                      type: "button",
-                      className: `quiet-button view-mode-btn${ue === "classic" ? " is-active" : ""}`,
-                      title: "【原始/經典分割】上下分割，自由拖曳調整地圖高度",
-                      onClick: () => Kt("classic"),
-                      children: "🏛️ 經典",
-                    }),
-                    n.jsx("button", {
-                      type: "button",
-                      className: `quiet-button view-mode-btn${ue === "theater" ? " is-active" : ""}`,
-                      title:
-                        "【劇院＋戰鬥】全景大舞台地圖，底部浮動毛玻璃字幕與發言者大立繪，支援進入 3D 戰棋戰鬥模式",
-                      onClick: () => Kt("theater"),
-                      children: "🎭 劇院＋戰鬥",
-                    }),
-                  ],
+                n.jsx("span", {
+                  className: "quiet-button view-mode-btn is-active",
+                  style: { cursor: "default", opacity: 0.92 },
+                  title:
+                    ue === "classic"
+                      ? "目前為【經典版（2.5D 格線）】獨立模式；請回模組選單或使用 ?mode=theater 連結進入劇院版"
+                      : "目前為【劇院＋戰鬥版（3D）】獨立模式；請回模組選單或使用 ?mode=classic 連結進入經典版",
+                  children: ue === "classic" ? "🏛️ 經典版" : "🎭 劇院＋戰鬥版",
                 }),
                 ue === "theater" &&
                   isCombatActive(s) &&
@@ -61618,6 +61666,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                       Ve &&
                         n.jsx(yA, {
                           threeStorySession: ue === "theater" ? s : null,
+                          snapGrid: ue === "classic" ? tacCtx?.grid || null : null,
                           style:
                             ue === "theater"
                               ? void 0
@@ -61659,7 +61708,7 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                                 : ee.customSpots) || {}
                             : Oe.customSpots || s.customSpots || {},
                           tacticalOverlay:
-                            ue === "classic" && tacCtx.isCombat
+                            ue === "classic" && tacCtx?.grid
                               ? n.jsx(TacticalGridOverlay, {
                                 isCombat: tacCtx.isCombat,
                                 grid: tacCtx.grid,
@@ -61668,18 +61717,16 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                                   ? y.phase === "moving"
                                     ? "moving"
                                     : "acting"
-                                  : wa
-                                    ? "picking"
-                                    : "idle",
-                                focusedHeroId: $a,
-                                reachableMap: tacFocusedReachable,
-                                previewPaths: tacPreviewPaths,
+                                  : "idle",
+                                focusedHeroId: null,
+                                reachableMap: null,
+                                previewPaths: [],
                                 activePlaybackMove:
                                   y && (y.phase === "moving" || y.phase === "lead" || y.phase === "stamp")
                                     ? fe?.tacticalMove || null
                                     : null,
-                                pinnedCell: tacFocusedPinnedCell,
-                                onPickCell: tacOnPickCell,
+                                pinnedCell: null,
+                                onPickCell: null,
                               })
                             : null,
                           animatedSpots: tacAnimatedSpots,
@@ -61694,36 +61741,38 @@ function Fu({ sampler: e, ready: t, onOpenAiSettings: a, onOpenTactics3d }) {
                                 ? void 0
                                 : Te.sceneStaging) || null
                             : s.sceneStaging || null,
-                          onCustomSpotChange: Sr
-                            ? (He, la, Ot) => {
-                                de((Aa) => {
-                                  if (!Aa) return Aa;
-                                  const Va = { ...(Aa.customSpots || {}) };
-                                  la ? (Va[He] = la) : delete Va[He];
-                                  const vs =
-                                    Ot && Aa.heroes.some((ca) => ca.id === He)
-                                      ? { ...(Aa.zones || {}), [He]: Ot }
-                                      : Aa.zones;
-                                  return { ...Aa, customSpots: Va, zones: vs };
-                                });
-                              }
-                            : null,
-                          onMoveHero: Sr
-                            ? (He, la) => {
-                                de((Ot) => {
-                                  if (!Ot) return Ot;
-                                  const Aa = { ...(Ot.customSpots || {}) };
-                                  return (
-                                    delete Aa[He],
-                                    {
-                                      ...Ot,
-                                      zones: { ...(Ot.zones || {}), [He]: la },
-                                      customSpots: Aa,
-                                    }
-                                  );
-                                });
-                              }
-                            : null,
+                          onCustomSpotChange:
+                            ue !== "classic" && Sr
+                              ? (He, la, Ot) => {
+                                  de((Aa) => {
+                                    if (!Aa) return Aa;
+                                    const Va = { ...(Aa.customSpots || {}) };
+                                    la ? (Va[He] = la) : delete Va[He];
+                                    const vs =
+                                      Ot && Aa.heroes.some((ca) => ca.id === He)
+                                        ? { ...(Aa.zones || {}), [He]: Ot }
+                                        : Aa.zones;
+                                    return { ...Aa, customSpots: Va, zones: vs };
+                                  });
+                                }
+                              : null,
+                          onMoveHero:
+                            ue !== "classic" && Sr
+                              ? (He, la) => {
+                                  de((Ot) => {
+                                    if (!Ot) return Ot;
+                                    const Aa = { ...(Ot.customSpots || {}) };
+                                    return (
+                                      delete Aa[He],
+                                      {
+                                        ...Ot,
+                                        zones: { ...(Ot.zones || {}), [He]: la },
+                                        customSpots: Aa,
+                                      }
+                                    );
+                                  });
+                                }
+                              : null,
                           activeId: f.activeId,
                           targetId: f.targetId,
                           activityTag: f.activityTag,

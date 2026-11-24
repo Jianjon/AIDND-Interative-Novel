@@ -10,7 +10,7 @@ export function TacticalGridOverlay({
   pinnedCell = null,
   onPickCell = null,
 }) {
-  if (!isCombat || !grid) return null;
+  if (!grid) return null;
 
   const { cols, rows, cw, ch, x0, y0, cells } = grid;
   const vLines = [];
@@ -24,11 +24,13 @@ export function TacticalGridOverlay({
     if (y >= 0 && y <= 100) hLines.push(y);
   }
 
-  const specialTerrainCells = cells.filter(
-    (c) =>
-      !c.wall &&
-      (c.impassable || c.difficult || c.hazard || c.concealment),
-  );
+  const specialTerrainCells = isCombat
+    ? cells.filter(
+        (c) =>
+          !c.wall &&
+          (c.impassable || c.difficult || c.hazard || c.concealment),
+      )
+    : [];
 
   const cellRect = (cx, cy) => ({
     x: x0 + cx * cw,
