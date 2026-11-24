@@ -29,11 +29,14 @@
     allies: [                              // 選填：指定參戰友軍或需護送的 VIP
       { name: "受困探員", role: "vip" }     // role: "vip" | "combat"
     ],
-    interactables: [                       // 選填：指定雙態互動物件、檢定 DC 與觸發效果
+    interactables: [                       // 選填：指定劇情相關雙態互動物件、技能檢定與 DC（對應 approaches 或場景機關）
       {
-        kind: "crystal",                   // "crystal" | "oil_barrel" 等雙態物件類型
+        kind: "crystal",                   // "crystal" | "oil_barrel" | "altar" | "gate" | "boulder"
         name: "熔爐高壓導管",
+        skill: "奧秘",                     // 檢定技能："運動" | "特技" | "巧手" | "隱匿" | "奧秘" | "宗教" | "察覺" | "說服" | "威嚇" | "醫療" | "調查"
         dc: 13,
+        actionLabel: "破壞",               // 選填：按鈕動詞（如 "推動" / "撬開" / "引爆" / "破壞" / "破解"）
+        shovable: false,                   // 選填：若為可推動重物/油桶/石柱可設 true
         rewardEffect: "weaken_foes",       // "weaken_foes" | "inspire_party" | "aoe_holy_burst" | "haste_party"
         rewardDesc: "導管破裂噴出高溫蒸氣，灼裂達倫的黑鐵接縫！"
       }

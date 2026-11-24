@@ -1598,6 +1598,11 @@ export function createBattleState({
       if (existing) {
         existing.name = item.name;
         if (Number.isFinite(item.dc)) existing.dc = item.dc;
+        if (item.skill || item.skillName) existing.skillName = item.skillName || item.skill;
+        if (item.skillStat) existing.skillStat = item.skillStat;
+        if (item.actionLabel) existing.actionLabel = item.actionLabel;
+        if (typeof item.shovable === "boolean") existing.shovable = item.shovable;
+        if (Number.isFinite(item.pushDc)) existing.pushDc = item.pushDc;
         if (item.rewardEffect) existing.rewardEffect = item.rewardEffect;
         if (item.rewardDesc) existing.rewardDesc = item.rewardDesc;
         existing.isObjective = true;
@@ -1630,6 +1635,11 @@ export function createBattleState({
                 interactable: true,
                 isObjective: true,
                 dc: Number.isFinite(item.dc) ? item.dc : 12,
+                skillName: item.skillName || item.skill || undefined,
+                skillStat: item.skillStat || undefined,
+                actionLabel: item.actionLabel || undefined,
+                shovable: Boolean(item.shovable),
+                pushDc: Number.isFinite(item.pushDc) ? item.pushDc : undefined,
                 rewardEffect: item.rewardEffect || "inspire_party",
                 rewardDesc: item.rewardDesc || "戰術目標達成！",
               });
@@ -4129,7 +4139,11 @@ export function executeStandardAction(battle, unitId, kind, targetId = null, opt
       }
       const d20 = rollDie(battle.rng, 20);
       const total = d20 + athBonus;
-      const dc = 10;
+      const dc = Number.isFinite(targetProp.pushDc)
+        ? targetProp.pushDc
+        : targetProp.shovable && Number.isFinite(targetProp.dc)
+        ? targetProp.dc
+        : 10;
       if (unit.side === "hero") {
         events.push({
           type: "dice",
@@ -4917,29 +4931,42 @@ export function executePropInteract(battle, actorId, propId) {
     return { ok: false, reason: "本回合已無可用主動作" };
   }
 
-  // Stat-appropriate skill routing based on prop type
-  let statKey = prop.skillStat;
-  let skillLabel = prop.skillName;
-  if (!statKey) {
-    const pDesc = `${prop.kind || ""} ${prop.name || ""}`;
-    if (/arcane|well|obelisk|rune|魔|符文|奧術/.test(pDesc)) {
-      statKey = "int";
-      skillLabel = skillLabel || "奧秘";
-    } else if (/altar|shrine|organ|pew|祭壇|神龕|聖歌/.test(pDesc)) {
-      statKey = "wis";
-      skillLabel = skillLabel || "宗教";
-    } else if (prop.flammable || /chest|door|gate|lock|trap|箱|門|柵|鎖/.test(pDesc)) {
-      statKey = "dex";
-      skillLabel = skillLabel || "巧手";
-    } else {
-      statKey = "str";
-      skillLabel = skillLabel || "運動";
+  // Stat-appropriate skill routing based on story skill or prop type
+  const resolveSkillSpec = () => {
+    const explicit = String(prop.skillName || prop.skill || "").trim();
+    const explicitLower = explicit.toLowerCase();
+    if (explicit) {
+      if (/運動|athletics|力量|\bstr\b/.test(explicitLower)) return { statKey: "str", skillKey: "athletics", skillLabel: explicit };
+      if (/特技|雜技|體操|acrobatics/.test(explicitLower)) return { statKey: "dex", skillKey: "acrobatics", skillLabel: explicit };
+      if (/隱匿|潛行|stealth/.test(explicitLower)) return { statKey: "dex", skillKey: "stealth", skillLabel: explicit };
+      if (/巧手|開鎖|拆除|sleight|\bdex\b|敏捷/.test(explicitLower)) return { statKey: "dex", skillKey: "sleight", skillLabel: explicit };
+      if (/奧秘|arcana|調查|歷史|自然|戰術|智力|\bint\b/.test(explicitLower)) return { statKey: "int", skillKey: "arcana", skillLabel: explicit };
+      if (/宗教|religion/.test(explicitLower)) return { statKey: "wis", skillKey: "religion", skillLabel: explicit };
+      if (/察覺|洞悉|洞察|生存|求生|醫療|醫藥|馴獸|動物|perception|insight|survival|medicine|\bwis\b|感知/.test(explicitLower)) {
+        return { statKey: "wis", skillKey: "perception", skillLabel: explicit };
+      }
+      if (/說服|威嚇|欺瞞|表演|交涉|persuasion|intimidation|deception|\bcha\b|魅力/.test(explicitLower)) {
+        return { statKey: "cha", skillKey: "persuasion", skillLabel: explicit };
+      }
     }
-  } else {
-    skillLabel = skillLabel || (statKey === "dex" ? "巧手" : statKey === "int" ? "奧秘" : statKey === "wis" ? "宗教" : "運動");
-  }
-  const skillMap = { str: "athletics", dex: "sleight", int: "arcana", wis: "religion" };
-  const mappedSkill = skillMap[statKey];
+    if (prop.skillStat) {
+      const fallbackMap = {
+        str: { skillKey: "athletics", skillLabel: "運動" },
+        dex: { skillKey: "sleight", skillLabel: "巧手" },
+        int: { skillKey: "arcana", skillLabel: "奧秘" },
+        wis: { skillKey: "religion", skillLabel: "宗教" },
+        cha: { skillKey: "persuasion", skillLabel: "說服" },
+      };
+      const entry = fallbackMap[prop.skillStat] || fallbackMap.str;
+      return { statKey: prop.skillStat, skillKey: entry.skillKey, skillLabel: explicit || entry.skillLabel };
+    }
+    const pDesc = `${prop.kind || ""} ${prop.name || ""}`;
+    if (/arcane|well|obelisk|rune|魔|符文|奧術/.test(pDesc)) return { statKey: "int", skillKey: "arcana", skillLabel: "奧秘" };
+    if (/altar|shrine|organ|pew|祭壇|神龕|聖歌/.test(pDesc)) return { statKey: "wis", skillKey: "religion", skillLabel: "宗教" };
+    if (prop.flammable || /chest|door|gate|lock|trap|箱|門|柵|鎖/.test(pDesc)) return { statKey: "dex", skillKey: "sleight", skillLabel: "巧手" };
+    return { statKey: "str", skillKey: "athletics", skillLabel: "運動" };
+  };
+  const { statKey, skillKey: mappedSkill, skillLabel } = resolveSkillSpec();
   const rawStatBonus = (actor.mods?.[statKey] ?? 1) + (actor.profBonus || 2);
   const bonus = mappedSkill && actor.skillBonuses?.[mappedSkill] !== undefined
     ? Math.max(actor.skillBonuses[mappedSkill], rawStatBonus)

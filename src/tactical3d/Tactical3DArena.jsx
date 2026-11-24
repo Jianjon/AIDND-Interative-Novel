@@ -2371,27 +2371,31 @@ export default function Tactical3DArena({ onExit, storyContext = null, onApplyTo
               if (adjProps.length === 0) return null;
               return (
                 <div className="tac3d-context-prop-bar">
-                  {adjProps.map((obj) => (
-                    <span key={obj.id} style={{ display: "inline-flex", gap: 4 }}>
-                      <button
-                        type="button"
-                        className={`tac3d-btn${obj.interactable ? " is-primary" : ""}`}
-                        onClick={() => runQuickAction((b, u) => executePropInteract(b, u.id, obj.id))}
-                        title={`${obj.skillName || "巧手/運動"} DC ${obj.dc || 10}｜${obj.rewardDesc || obj.uses || "利用場上物件取得戰術優勢"}`}
-                      >
-                        {obj.interactable ? "🔍" : "🖐"} {obj.actionLabel || "利用"}：{obj.name} (DC {obj.dc || 10})
-                      </button>
-                      <button
-                        type="button"
-                        disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
-                        className="tac3d-btn"
-                        onClick={() => runQuickAction((b, u) => executeStandardAction(b, u.id, "shove", null, { propId: obj.id }))}
-                        title={`運動 +${activeUnit.skillBonuses?.athletics ?? 2}｜將物件推開 1～2 格撞擊敵人`}
-                      >
-                        💪 推動
-                      </button>
-                    </span>
-                  ))}
+                  {adjProps.map((obj) => {
+                    const skillLabel = obj.skillName || obj.skill || (obj.flammable ? "巧手" : "運動/巧手");
+                    const pushDc = Number.isFinite(obj.pushDc) ? obj.pushDc : obj.shovable && Number.isFinite(obj.dc) ? obj.dc : 10;
+                    return (
+                      <span key={obj.id} style={{ display: "inline-flex", gap: 4 }}>
+                        <button
+                          type="button"
+                          className={`tac3d-btn${obj.interactable ? " is-primary" : ""}`}
+                          onClick={() => runQuickAction((b, u) => executePropInteract(b, u.id, obj.id))}
+                          title={`${skillLabel} DC ${obj.dc || 10}｜${obj.rewardDesc || obj.uses || "利用場上物件取得戰術優勢"}`}
+                        >
+                          {obj.interactable ? "🔍" : "🖐"} {obj.actionLabel || "利用"}：{obj.name} ({skillLabel} DC {obj.dc || 10})
+                        </button>
+                        <button
+                          type="button"
+                          disabled={(activeUnit.turn?.actionLeft || 0) <= 0}
+                          className="tac3d-btn"
+                          onClick={() => runQuickAction((b, u) => executeStandardAction(b, u.id, "shove", null, { propId: obj.id }))}
+                          title={`運動 +${activeUnit.skillBonuses?.athletics ?? 2} vs DC ${pushDc}｜將物件推開 1～2 格撞擊敵人`}
+                        >
+                          💪 推動{obj.shovable || Number.isFinite(obj.pushDc) ? ` (DC ${pushDc})` : ""}
+                        </button>
+                      </span>
+                    );
+                  })}
                 </div>
               );
             })()}

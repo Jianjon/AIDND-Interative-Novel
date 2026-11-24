@@ -232,6 +232,73 @@ export async function adjudicateMapBlueprintWithAI(sampler, session) {
   }
 }
 
+function inferInteractableRewardFromText(txt = "") {
+  if (/火|炸|爆|燒|油|雷|擊碎|砸|重創|墜|塌|撞/.test(txt)) return "aoe_holy_burst";
+  if (/速|飛|躍|蕩|先機|搶先|撤|突圍|閃/.test(txt)) return "haste_party";
+  if (/護|療|救|釋放|鬆綁|士氣|激勵|清醒/.test(txt)) return "inspire_party";
+  return "weaken_foes";
+}
+
+function inferInteractableKindFromText(txt = "", skill = "") {
+  if (/油|酒|火藥|炸|爆|燃/.test(txt)) return "oil_barrel";
+  if (/祭壇|神龕|聖|宗教|祈禱|淨化/.test(txt) || /宗教/.test(skill)) return "altar";
+  if (/門|鎖|籠|柵|閥|閘|橋|繩|索|機關/.test(txt) || /巧手/.test(skill)) return "gate";
+  if (/推|撞|石|柱|箱|車|桶|倒/.test(txt) || /運動/.test(skill)) return "boulder";
+  return "crystal";
+}
+
+function inferActionLabelFromText(txt = "", skill = "") {
+  if (/推|撞|推倒|掀翻/.test(txt)) return "推動";
+  if (/炸|引爆|點燃|燒/.test(txt)) return "引爆";
+  if (/撬|開鎖|打開|開啟|解鎖|釋放/.test(txt)) return "開啟";
+  if (/拆|毀|破壞|砸|切斷|砍斷|射斷/.test(txt)) return "破壞";
+  if (/潛|摸|躲|繞/.test(txt) || /隱匿/.test(skill)) return "潛行";
+  if (/說服|威嚇|欺瞞|喝斥|交涉|談/.test(txt) || /說服|威嚇|欺瞞/.test(skill)) return "交涉";
+  if (/奧秘|法陣|符文|施法|反制/.test(txt) || /奧秘/.test(skill)) return "破解";
+  if (/宗教|祈|祝|淨化/.test(txt) || /宗教/.test(skill)) return "祝聖";
+  return "利用";
+}
+
+function buildStoryInteractables(node) {
+  const tacInters = Array.isArray(node?.tactical?.interactables) ? node.tactical.interactables : null;
+  if (tacInters && tacInters.length > 0) {
+    return tacInters.map((item) => {
+      const skill = item.skillName || item.skill || "";
+      const txt = `${item.name || ""} ${item.rewardDesc || ""}`;
+      return {
+        ...item,
+        skill: skill || undefined,
+        skillName: skill || undefined,
+        actionLabel: item.actionLabel || inferActionLabelFromText(txt, skill),
+        shovable: typeof item.shovable === "boolean" ? item.shovable : /推|撞|桶|柱|石|箱|車/.test(txt),
+      };
+    });
+  }
+  const approaches = Array.isArray(node?.approaches) ? node.approaches : [];
+  const derived = [];
+  for (const app of approaches) {
+    const m = String(app?.check || "").match(/([^\s\d]+)\s*DC\s*(\d+)/i);
+    if (!m) continue;
+    const skill = m[1];
+    const dc = Number(m[2]);
+    const rawTitle = String(app?.type || "").replace(/[（(][^）)]*[）)]/g, "").trim();
+    const shortName = rawTitle.length > 16 ? rawTitle.slice(0, 16) : rawTitle || `${skill}戰術互動`;
+    const txt = `${app?.type || ""} ${app?.outcome || ""}`;
+    derived.push({
+      kind: inferInteractableKindFromText(txt, skill),
+      name: shortName,
+      skill,
+      dc: Number.isFinite(dc) ? dc : 12,
+      actionLabel: inferActionLabelFromText(txt, skill),
+      shovable: /推|撞|推倒|掀翻|桶|石|柱|箱|車/.test(txt),
+      rewardEffect: inferInteractableRewardFromText(txt),
+      rewardDesc: app?.outcome || `${shortName}檢定成功，取得戰術優勢！`,
+    });
+    if (derived.length >= 2) break;
+  }
+  return derived.length > 0 ? derived : undefined;
+}
+
 export function mapStorySessionTo3DConfig(session) {
   if (!session) return null;
   const tac = session?.node?.tactical || null;
@@ -260,7 +327,7 @@ export function mapStorySessionTo3DConfig(session) {
           foeFormation: VALID_FOE_FORMATIONS.has(tac?.foeFormation) ? tac.foeFormation : textBlueprint?.foeFormation || "auto",
           foeWaves: typeof tac?.foeWaves === "boolean" ? tac.foeWaves : Boolean(textBlueprint?.foeWaves),
           objectiveName: tac?.objectiveName || textBlueprint?.objectiveName || undefined,
-          interactables: Array.isArray(tac?.interactables) ? tac.interactables : undefined,
+          interactables: buildStoryInteractables(session?.node),
         }
       : null;
 
