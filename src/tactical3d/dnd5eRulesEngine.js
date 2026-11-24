@@ -2749,8 +2749,15 @@ function triggerPropDualStateEvent(battle, prop, actor, events = []) {
     refreshMapDerivedFlags(battle.map.grid, battle.map.props);
     events.push({ type: "float", x: prop.x, y: prop.y, z: 1.6, text: "🚪 機關開啟通道!", color: "#34d399" });
     battle.logs.push(`🚪 【雙態機關觸發】${prop.name} 開啟了封鎖的通道！`);
-  } else if (eff === "flood_water" || eff === "ignite_oil") {
-    const surf = eff === "flood_water" ? "water" : "fire";
+  } else if (eff === "flood_water" || eff === "ignite_oil" || eff === "poison_vent" || eff === "ice_burst") {
+    const surf =
+      eff === "flood_water"
+        ? "water"
+        : eff === "poison_vent"
+          ? "poison"
+          : eff === "ice_burst"
+            ? "ice"
+            : "fire";
     const cells = [];
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {
@@ -2759,12 +2766,20 @@ function triggerPropDualStateEvent(battle, prop, actor, events = []) {
         const t = battle.map.grid[ny]?.[nx];
         if (t?.walkable) {
           t.surface = surf;
+          t.surfaceRounds = 3;
           cells.push({ x: nx, y: ny });
         }
       }
     }
     events.push({ type: "surface_chain", reaction: eff, cells });
-    battle.logs.push(`${eff === "flood_water" ? "🌊" : "🔥"} 【雙態機關觸發】${prop.name} 釋放出${eff === "flood_water" ? "洪水" : "烈焰"}覆蓋周圍地形！`);
+    const labelMap = {
+      flood_water: ["🌊", "洪水"],
+      ignite_oil: ["🔥", "烈焰"],
+      poison_vent: ["☠️", "劇毒霧氣"],
+      ice_burst: ["❄️", "寒冰霜面"],
+    };
+    const [ico, lbl] = labelMap[eff] || ["✦", "元素"];
+    battle.logs.push(`${ico} 【雙態機關觸發】${prop.name} 釋放出${lbl}覆蓋周圍地形！`);
   } else if (eff === "alarm_suppress") {
     battle.foeWaves = false;
     for (const f of foes) {
@@ -5043,7 +5058,30 @@ export function executePropInteract(battle, actorId, propId) {
   }
 
   if (!(prop.requiresKey && hasRequiredKey) && total < dc) {
-    if (d20 === 1) {
+    if (prop.trapOnFail && !prop.trapTriggered) {
+      prop.trapTriggered = true;
+      const tKind = prop.trapOnFail.kind || "poison_dart";
+      const tDmg = rollDie(battle.rng, 6);
+      actor.hp = Math.max(1, actor.hp - tDmg);
+      if (tKind === "poison_vent" || tKind === "fire_burst") {
+        const surf = tKind === "poison_vent" ? "poison" : "fire";
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const tile = battle.map.grid[prop.y + dy]?.[prop.x + dx];
+            if (tile?.walkable) {
+              tile.surface = surf;
+              tile.surfaceRounds = 3;
+            }
+          }
+        }
+      } else if (tKind === "snare") {
+        actor.conditions.Restrained = Math.max(actor.conditions.Restrained || 0, 1);
+      } else {
+        actor.conditions.Poisoned = Math.max(actor.conditions.Poisoned || 0, 2);
+      }
+      events.push({ type: "float", x: prop.x, y: prop.y, z: 1.65, text: `⚠️ 觸動陷阱! -${tDmg}`, color: "#ef4444" });
+      battle.logs.push(`⚠️ 【陷阱觸發】${actor.name} 操作【${prop.name}】失敗（${total} < DC ${dc}），觸動了隱藏機關，受到 ${tDmg} 點傷害！`);
+    } else if (d20 === 1) {
       const chip = rollDie(battle.rng, 4);
       actor.hp = Math.max(1, actor.hp - chip);
       events.push({ type: "float", x: prop.x, y: prop.y, z: 1.5, text: `💥 大失敗! 觸發反彈 -${chip}`, color: "#ef4444" });

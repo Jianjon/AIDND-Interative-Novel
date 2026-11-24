@@ -263,6 +263,24 @@ function inferActionLabelFromText(txt = "", skill = "") {
   return "利用";
 }
 
+function inferDualStateEffectFromText(txt = "") {
+  if (/水閘|閥門|放水|蓄水|引水|洪水/.test(txt)) return "flood_water";
+  if (/毒氣|毒霧|瘴氣|沼氣|毒閥/.test(txt)) return "poison_vent";
+  if (/火機關|噴火|引燃|火油閥/.test(txt)) return "ignite_oil";
+  if (/寒氣|冰結|冷凍/.test(txt)) return "ice_burst";
+  if (/警鐘|警報|號角|訊號/.test(txt)) return "alarm_suppress";
+  if (/門|鎖|閘|柵/.test(txt)) return "open_gate";
+  return undefined;
+}
+
+function inferTrapOnFailFromText(txt = "") {
+  if (!/陷阱|毒針|機關鎖|暗箭|絆索|地雷/.test(txt)) return undefined;
+  if (/毒氣|毒霧/.test(txt)) return { kind: "poison_vent" };
+  if (/火|炸|燃/.test(txt)) return { kind: "fire_burst" };
+  if (/絆索|網|夾|困/.test(txt)) return { kind: "snare" };
+  return { kind: "poison_dart" };
+}
+
 function buildStoryInteractables(node) {
   const tacInters = Array.isArray(node?.tactical?.interactables) ? node.tactical.interactables : null;
   if (tacInters && tacInters.length > 0) {
@@ -274,6 +292,8 @@ function buildStoryInteractables(node) {
         skill: skill || undefined,
         skillName: skill || undefined,
         actionLabel: item.actionLabel || inferActionLabelFromText(txt, skill),
+        dualStateEffect: item.dualStateEffect || inferDualStateEffectFromText(txt),
+        trapOnFail: item.trapOnFail || inferTrapOnFailFromText(txt),
         shovable: typeof item.shovable === "boolean" ? item.shovable : /推|撞|桶|柱|石|箱|車/.test(txt),
       };
     });
@@ -294,6 +314,8 @@ function buildStoryInteractables(node) {
       skill,
       dc: Number.isFinite(dc) ? dc : 12,
       actionLabel: inferActionLabelFromText(txt, skill),
+      dualStateEffect: inferDualStateEffectFromText(txt),
+      trapOnFail: inferTrapOnFailFromText(txt),
       shovable: /推|撞|推倒|掀翻|桶|石|柱|箱|車/.test(txt),
       rewardEffect: inferInteractableRewardFromText(txt),
       rewardDesc: app?.outcome || `${shortName}檢定成功，取得戰術優勢！`,
