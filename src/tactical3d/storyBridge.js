@@ -352,6 +352,19 @@ export function mapStorySessionTo3DConfig(session) {
     maxHp: Number.isFinite(f.maxHp) ? f.maxHp : undefined,
     avatar: f.image || f.avatar || f.spriteHint || undefined,
   }));
+  if (foeIds === null && Array.isArray(session?.node?.foes) && session.node.foes.length > 0) {
+    const expandedFoes = [];
+    for (const entry of session.node.foes) {
+      if (!Array.isArray(entry) || !entry[0]) continue;
+      const tpl = String(entry[0]);
+      const count = Math.max(1, Number(entry[1]) || 1);
+      for (let i = 0; i < count && expandedFoes.length < 6; i++) {
+        expandedFoes.push(tpl);
+      }
+      if (expandedFoes.length >= 6) break;
+    }
+    if (expandedFoes.length > 0) foeIds = expandedFoes;
+  }
   if (Array.isArray(tac?.namedFoes) && tac.namedFoes.length > 0) {
     const existingNames = new Set(foeSpecs.map((f) => f.name));
     const extraNamed = tac.namedFoes.filter((nf) => nf?.name && !existingNames.has(nf.name));
@@ -365,6 +378,9 @@ export function mapStorySessionTo3DConfig(session) {
       foeIds = foeIds ? [...extraIds, ...foeIds].slice(0, 6) : extraIds;
       foeSpecs = [...extraSpecs, ...foeSpecs].slice(0, 6);
     }
+  }
+  if (foeIds === null) {
+    foeIds = [];
   }
 
   const situationTxt = `${session?.node?.title || ""} ${session?.node?.situation || ""}`;

@@ -101,18 +101,20 @@ export default function ThreeStoryStage({
 
   useEffect(() => {
     if (!cfg) return;
+    const isSurpriseAmbush = cfg.ambushMode === "foe_surprise";
     const created = createBattleState({
       scenarioId: cfg.scenarioId || "cave_ambush",
-      seed: 101 + ((session?.turn || 1) % 7) * 17,
+      seed: cfg.seed || 101,
       partyPresets: cfg.partyPresets,
       partyLevel: cfg.partyLevel || 3,
-      foeIds: cfg.foeIds,
-      foeSpecs: cfg.foeSpecs,
+      foeIds: isSurpriseAmbush ? [] : cfg.foeIds,
+      foeSpecs: isSurpriseAmbush ? [] : cfg.foeSpecs,
       allySpecs: cfg.allySpecs,
       weather: cfg.weather || "auto",
       lighting: cfg.lighting || "auto",
       blueprint: cfg.blueprint,
       ambushMode: "normal",
+      allowZeroFoes: true,
     });
     const livingHeroes = (session?.heroes || []).filter((h) => h && !h.dead);
     let hIdx = 0;

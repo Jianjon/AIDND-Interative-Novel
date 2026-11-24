@@ -1586,6 +1586,7 @@ export function createBattleState({
   blueprint = null,
   ambushMode = "normal",
   paceMode = "fast",
+  allowZeroFoes = false,
 } = {}) {
   const map = generateVoxelMap(scenarioId, seed, partyLevel, { weather, lighting, blueprint });
   map.drops = [];
@@ -1657,7 +1658,7 @@ export function createBattleState({
           .map((pid) => PRESET_HEROES.find((h) => h.id === pid))
           .filter(Boolean);
 
-  const chosenFoes = Array.isArray(foeIds) && foeIds.length > 0 ? foeIds : map.defaultFoes;
+  const chosenFoes = Array.isArray(foeIds) && (foeIds.length > 0 || allowZeroFoes) ? foeIds : map.defaultFoes;
   const rng = createBattleRng(seed);
 
   const units = [];
